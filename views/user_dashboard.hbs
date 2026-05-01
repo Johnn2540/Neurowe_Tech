@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>User Dashboard - NeurowexTech</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --blue: #2563eb;
+            --orange: #f97316;
+            --dark: #050b18;
+            --dark-2: #0d1526;
+            --light: #f8fafc;
+            --light-2: #e2e8f0;
+            --text: #334155;
+            --text-light: #94a3b8;
+            --green: #10b981;
+            --yellow: #f59e0b;
+            --red: #ef4444;
+            --grad-blue: linear-gradient(135deg, #2563eb, #1d4ed8);
+            --font-head: 'Syne', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: all 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-body);
+            background: var(--light);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 280px;
+            background: var(--dark);
+            color: white;
+            transition: var(--transition);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        .sidebar.collapsed { width: 80px; }
+        .sidebar-header { padding: 25px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-header h3 { font-family: var(--font-head); font-size: 1.3rem; white-space: nowrap; }
+        .sidebar-header span { color: var(--orange); }
+        .sidebar-nav { padding: 20px 0; }
+        .nav-item {
+            padding: 10px 20px;
+            margin: 5px 10px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .nav-item:hover, .nav-item.active { background: rgba(37,99,235,0.2); }
+        .nav-item a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+        }
+        .nav-item.active a, .nav-item:hover a { color: white; }
+        .nav-item i { width: 24px; font-size: 1.1rem; }
+
+        /* Main Content */
+        .main-content { margin-left: 280px; transition: var(--transition); min-height: 100vh; }
+        .main-content.expanded { margin-left: 80px; }
+        
+        /* Top Navbar */
+        .top-navbar {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+        .toggle-sidebar { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text); }
+        .user-menu { display: flex; align-items: center; gap: 20px; }
+        .user-avatar { width: 40px; height: 40px; background: var(--grad-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; }
+        
+        /* Stats Cards */
+        .stat-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+            border: 1px solid var(--light-2);
+        }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .stat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .stat-info h3 { font-size: 1.8rem; font-weight: 800; margin-bottom: 5px; }
+        
+        /* Activity Timeline */
+        .timeline { position: relative; padding-left: 30px; }
+        .timeline::before { content: ''; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: var(--light-2); }
+        .timeline-item { position: relative; margin-bottom: 25px; }
+        .timeline-dot { position: absolute; left: -26px; top: 5px; width: 12px; height: 12px; border-radius: 50%; }
+        
+        /* Projects Grid */
+        .project-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid var(--light-2);
+            height: 100%;
+        }
+        .project-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .project-image { height: 180px; overflow: hidden; }
+        .project-image img { width: 100%; height: 100%; object-fit: cover; }
+        .project-info { padding: 20px; }
+        .project-status { position: absolute; top: 15px; right: 15px; }
+        
+        /* Dark Mode */
+        body.dark {
+            background: var(--dark-2);
+        }
+        body.dark .top-navbar,
+        body.dark .stat-card,
+        body.dark .project-card,
+        body.dark .data-table {
+            background: var(--dark);
+            border-color: rgba(255,255,255,0.08);
+            color: var(--light);
+        }
+        
+        /* Toast */
+        .toast-notification {
+            position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+            background: var(--dark); color: white; padding: 12px 20px;
+            border-radius: 8px; animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.show { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+        }
+        @media (max-width: 768px) { .stat-card { margin-bottom: 15px; } }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header"><h3>Neurowex<span>Tech</span></h3></div>
+    <div class="sidebar-nav">
+        <div class="nav-item active" data-page="dashboard"><a href="#"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></div>
+        <div class="nav-item" data-page="projects"><a href="#"><i class="fas fa-project-diagram"></i> <span>My Projects</span></a></div>
+        <div class="nav-item" data-page="activities"><a href="#"><i class="fas fa-history"></i> <span>My Activities</span></a></div>
+        <div class="nav-item" data-page="profile"><a href="#"><i class="fas fa-user"></i> <span>Profile</span></a></div>
+        <div class="nav-item" data-page="settings"><a href="#"><i class="fas fa-cog"></i> <span>Settings</span></a></div>
+        <div class="nav-item"><a href="/"><i class="fas fa-home"></i> <span>Back to Site</span></a></div>
+        <div class="nav-item"><a href="/logout"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content" id="mainContent">
+    <div class="top-navbar">
+        <div><button class="toggle-sidebar" id="toggleSidebar"><i class="fas fa-bars"></i></button></div>
+        <div class="user-menu">
+            <button id="theme-toggle" class="btn btn-sm btn-outline-secondary"><i class="fas fa-moon"></i></button>
+            <div class="user-avatar"><i class="fas fa-user"></i></div>
+            <span>Welcome, {{user.username}}!</span>
+        </div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="container-fluid p-4" id="dashboardContent">
+        <div class="mb-4"><h2>Welcome back, {{user.username}}!</h2><p class="text-muted">Track your projects and manage your account from here.</p></div>
+
+        <!-- Stats Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-6 col-lg-3"><div class="stat-card"><div class="stat-info"><h3 id="totalProjects">0</h3><p class="text-muted mb-0">Total Projects</p></div><div class="stat-icon bg-primary bg-opacity-10 text-primary"><i class="fas fa-project-diagram"></i></div></div></div>
+            <div class="col-md-6 col-lg-3"><div class="stat-card"><div class="stat-info"><h3 id="completedProjects">0</h3><p class="text-muted mb-0">Completed</p></div><div class="stat-icon bg-success bg-opacity-10 text-success"><i class="fas fa-check-circle"></i></div></div></div>
+            <div class="col-md-6 col-lg-3"><div class="stat-card"><div class="stat-info"><h3 id="activeProjects">0</h3><p class="text-muted mb-0">In Progress</p></div><div class="stat-icon bg-warning bg-opacity-10 text-warning"><i class="fas fa-spinner"></i></div></div></div>
+            <div class="col-md-6 col-lg-3"><div class="stat-card"><div class="stat-info"><h3>24/7</h3><p class="text-muted mb-0">Support</p></div><div class="stat-icon bg-info bg-opacity-10 text-info"><i class="fas fa-headset"></i></div></div></div>
+        </div>
+
+        <!-- Account Info & Chart -->
+        <div class="row g-4 mb-4">
+            <div class="col-lg-6">
+                <div class="stat-card">
+                    <h5 class="mb-3"><i class="fas fa-user-circle me-2"></i> Account Information</h5>
+                    <div class="mb-2"><strong>Name:</strong> {{user.username}}</div>
+                    <div class="mb-2"><strong>Email:</strong> {{user.email}}</div>
+                    <div class="mb-2"><strong>Role:</strong> <span class="badge bg-primary">{{user.role}}</span></div>
+                    <div class="mb-2"><strong>Member Since:</strong> {{formatDate user.created_at}}</div>
+                    <div class="mb-2"><strong>Last Login:</strong> {{formatDate user.last_login}}</div>
+                    <button class="btn btn-outline-primary btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#editProfileModal"><i class="fas fa-edit"></i> Edit Profile</button>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="stat-card">
+                    <h5 class="mb-3"><i class="fas fa-chart-line me-2"></i> Project Activity</h5>
+                    <canvas id="activityChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="stat-card mb-4">
+            <h5 class="mb-3"><i class="fas fa-history me-2"></i> Recent Activity</h5>
+            <div class="timeline" id="activityTimeline"></div>
+        </div>
+
+        <!-- Featured Projects -->
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5><i class="fas fa-star me-2 text-warning"></i> Featured Projects You Might Like</h5>
+            </div>
+            <div class="row g-4" id="featuredProjectsGrid"></div>
+        </div>
+    </div>
+
+    <!-- Projects Page -->
+    <div class="container-fluid p-4" id="projectsContent" style="display: none;">
+        <div class="stat-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4><i class="fas fa-project-diagram me-2"></i> My Projects</h4>
+                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#requestProjectModal"><i class="fas fa-plus"></i> Request Project</button>
+            </div>
+            <div class="row g-4" id="projectsGrid"></div>
+        </div>
+    </div>
+
+    <!-- Activities Page -->
+    <div class="container-fluid p-4" id="activitiesContent" style="display: none;">
+        <div class="stat-card">
+            <h4 class="mb-3"><i class="fas fa-history me-2"></i> My Activity Log</h4>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead><tr><th>Date</th><th>Activity</th><th>Status</th></tr></thead>
+                    <tbody id="activitiesBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Page -->
+    <div class="container-fluid p-4" id="profileContent" style="display: none;">
+        <div class="stat-card">
+            <h4 class="mb-3"><i class="fas fa-user me-2"></i> Edit Profile</h4>
+            <form id="profileForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3"><label>Full Name</label><input type="text" class="form-control" id="profileName" value="{{user.username}}"></div>
+                    <div class="col-md-6 mb-3"><label>Email Address</label><input type="email" class="form-control" id="profileEmail" value="{{user.email}}"></div>
+                    <div class="col-12 mb-3"><label>Bio</label><textarea class="form-control" id="profileBio" rows="3" placeholder="Tell us about yourself...">Tech enthusiast passionate about building innovative solutions.</textarea></div>
+                    <div class="col-12"><button type="submit" class="btn btn-primary">Save Changes</button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Settings Page -->
+    <div class="container-fluid p-4" id="settingsContent" style="display: none;">
+        <div class="stat-card">
+            <h4 class="mb-3"><i class="fas fa-cog me-2"></i> Account Settings</h4>
+            <form id="settingsForm">
+                <div class="mb-3"><label>Current Password</label><input type="password" class="form-control" id="currentPassword"></div>
+                <div class="mb-3"><label>New Password</label><input type="password" class="form-control" id="newPassword"></div>
+                <div class="mb-3"><label>Confirm New Password</label><input type="password" class="form-control" id="confirmNewPassword"></div>
+                <div class="mb-3"><div class="form-check"><input class="form-check-input" type="checkbox" id="emailNotifications" checked><label class="form-check-label">Receive email notifications about project updates</label></div></div>
+                <div class="mb-3"><div class="form-check"><input class="form-check-input" type="checkbox" id="newsletterSubscription" checked><label class="form-check-label">Subscribe to newsletter</label></div></div>
+                <button type="submit" class="btn btn-primary">Update Settings</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Edit Profile</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body">
+                <form><div class="mb-3"><label>Full Name</label><input type="text" class="form-control" id="modalName" value="{{user.username}}"></div><div class="mb-3"><label>Email</label><input type="email" class="form-control" id="modalEmail" value="{{user.email}}"></div></form>
+            </div>
+            <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" onclick="updateProfile()">Save Changes</button></div>
+        </div>
+    </div>
+</div>
+
+<!-- Request Project Modal -->
+<div class="modal fade" id="requestProjectModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title">Request a Project</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body">
+                <form><div class="mb-3"><label>Project Name</label><input type="text" class="form-control" id="projectName"></div><div class="mb-3"><label>Project Type</label><select class="form-control" id="projectType"><option>Web Development</option><option>Mobile App</option><option>E-commerce</option><option>AI Integration</option><option>Graphic Design</option></select></div><div class="mb-3"><label>Description</label><textarea class="form-control" id="projectDesc" rows="3"></textarea></div><div class="mb-3"><label>Budget (Kshs)</label><input type="number" class="form-control" id="projectBudget"></div></form>
+            </div>
+            <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button class="btn btn-primary" onclick="submitProjectRequest()">Submit Request</button></div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({ duration: 800, once: true });
+    
+    // Sidebar Toggle
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    document.getElementById('toggleSidebar').addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        mainContent.classList.toggle('expanded');
+    });
+    
+    // Page Navigation
+    const pages = { dashboard: 'dashboardContent', projects: 'projectsContent', activities: 'activitiesContent', profile: 'profileContent', settings: 'settingsContent' };
+    document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+        item.addEventListener('click', () => {
+            const page = item.dataset.page;
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            item.classList.add('active');
+            Object.keys(pages).forEach(p => {
+                const el = document.getElementById(pages[p]);
+                if (el) el.style.display = p === page ? 'block' : 'none';
+            });
+            if (page === 'projects') loadUserProjects();
+            if (page === 'activities') loadUserActivities();
+        });
+    });
+    
+    // Dark Mode
+    let dark = localStorage.getItem('theme') === 'dark';
+    function applyTheme() { document.body.classList.toggle('dark', dark); }
+    applyTheme();
+    document.getElementById('theme-toggle')?.addEventListener('click', () => { dark = !dark; localStorage.setItem('theme', dark ? 'dark' : 'light'); applyTheme(); });
+    
+    // Chart
+    new Chart(document.getElementById('activityChart'), {
+        type: 'line',
+        data: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], datasets: [{ label: 'Projects Completed', data: [2, 4, 3, 5, 7, 9], borderColor: '#2563eb', tension: 0.4, fill: true, backgroundColor: 'rgba(37,99,235,0.1)' }] },
+        options: { responsive: true, maintainAspectRatio: true }
+    });
+    
+    function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `toast-notification alert alert-${type === 'success' ? 'success' : 'danger'}`;
+        toast.innerHTML = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+    
+    // ========== LOAD USER DATA ==========
+    async function loadUserStats() {
+        try {
+            const res = await fetch('/api/user/stats');
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('totalProjects').innerText = data.totalProjects || 0;
+                document.getElementById('completedProjects').innerText = data.completedProjects || 0;
+                document.getElementById('activeProjects').innerText = data.activeProjects || 0;
+            }
+        } catch(err) { console.error(err); }
+    }
+    
+    async function loadUserProjects() {
+        try {
+            const res = await fetch('/api/user/projects');
+            const data = await res.json();
+            const grid = document.getElementById('projectsGrid');
+            if (data.projects && data.projects.length > 0) {
+                grid.innerHTML = data.projects.map(p => `
+                    <div class="col-md-6 col-lg-4">
+                        <div class="project-card position-relative">
+                            <div class="project-image"><img src="/images/${p.image || 'web_development.jpg'}" alt="${p.name}"></div>
+                            <div class="project-info">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h5>${p.name}</h5>
+                                    <span class="badge ${p.status === 'Completed' ? 'bg-success' : (p.status === 'In Progress' ? 'bg-warning' : 'bg-secondary')}">${p.status || 'Planning'}</span>
+                                </div>
+                                <p class="text-muted small mt-2">${p.description || 'No description provided'}</p>
+                                <div class="progress mb-2" style="height: 5px;"><div class="progress-bar bg-primary" style="width: ${p.progress || 0}%"></div></div>
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <small class="text-muted">Progress: ${p.progress || 0}%</small>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="viewProjectDetails(${p.id})">View Details</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                grid.innerHTML = '<div class="col-12 text-center py-5"><i class="fas fa-folder-open fa-3x text-muted mb-3"></i><p>You have no projects yet. Click "Request Project" to get started!</p></div>';
+            }
+        } catch(err) { console.error(err); }
+    }
+    
+    async function loadUserActivities() {
+        try {
+            const res = await fetch('/api/user/activities');
+            const data = await res.json();
+            const tbody = document.getElementById('activitiesBody');
+            if (data.activities && data.activities.length > 0) {
+                tbody.innerHTML = data.activities.map(a => `
+                    <tr><td>${new Date(a.date).toLocaleDateString()}</td><td>${a.activity}</td><td><span class="badge bg-${a.status === 'Completed' ? 'success' : 'warning'}">${a.status || 'In Progress'}</span></td></tr>
+                `).join('');
+            } else {
+                tbody.innerHTML = '<tr><td colspan="3" class="text-center">No activities yet</td></tr>';
+            }
+        } catch(err) { console.error(err); }
+    }
+    
+    async function loadFeaturedProjects() {
+        try {
+            const res = await fetch('/api/projects/featured');
+            const data = await res.json();
+            const grid = document.getElementById('featuredProjectsGrid');
+            if (data.projects && data.projects.length > 0) {
+                grid.innerHTML = data.projects.slice(0, 3).map(p => `
+                    <div class="col-md-4">
+                        <div class="project-card">
+                            <div class="project-image"><img src="/images/${p.image || 'web_development.jpg'}" alt="${p.name}"></div>
+                            <div class="project-info">
+                                <h6>${p.name}</h6>
+                                <p class="text-muted small">${p.description?.substring(0, 80)}...</p>
+                                <a href="/portfolio/${p.id}" class="btn btn-sm btn-outline-primary w-100">View Project</a>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                grid.innerHTML = '<div class="col-12 text-center"><p class="text-muted">Check back for featured projects!</p></div>';
+            }
+        } catch(err) { console.error(err); }
+    }
+    
+    async function loadRecentActivity() {
+        try {
+            const res = await fetch('/api/user/recent-activity');
+            const data = await res.json();
+            const timeline = document.getElementById('activityTimeline');
+            if (data.activities && data.activities.length > 0) {
+                timeline.innerHTML = data.activities.map(a => `
+                    <div class="timeline-item">
+                        <div class="timeline-dot" style="background: var(--${a.type === 'login' ? 'green' : 'blue'});"></div>
+                        <div class="ms-3"><strong>${a.title}</strong><p class="text-muted small mb-0">${a.description} • ${new Date(a.date).toLocaleString()}</p></div>
+                    </div>
+                `).join('');
+            } else {
+                timeline.innerHTML = '<div class="text-center text-muted">No recent activity</div>';
+            }
+        } catch(err) { console.error(err); }
+    }
+    
+    // Initial Load
+    loadUserStats();
+    loadUserProjects();
+    loadUserActivities();
+    loadFeaturedProjects();
+    loadRecentActivity();
+    
+    // ========== USER ACTIONS ==========
+    function updateProfile() {
+        const name = document.getElementById('modalName').value;
+        const email = document.getElementById('modalEmail').value;
+        fetch('/api/user/profile', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email })
+        }).then(res => res.json()).then(data => {
+            if (data.success) { showToast('Profile updated!', 'success'); setTimeout(() => location.reload(), 1500); }
+            else { showToast(data.message, 'error'); }
+        }).catch(() => showToast('Error updating profile', 'error'));
+    }
+    
+    function submitProjectRequest() {
+        const name = document.getElementById('projectName').value;
+        const type = document.getElementById('projectType').value;
+        const description = document.getElementById('projectDesc').value;
+        const budget = document.getElementById('projectBudget').value;
+        if (!name || !description) { showToast('Please fill all fields', 'error'); return; }
+        fetch('/api/user/request-project', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, type, description, budget })
+        }).then(res => res.json()).then(data => {
+            if (data.success) { showToast('Project request submitted!', 'success'); setTimeout(() => location.reload(), 1500); }
+            else { showToast(data.message, 'error'); }
+        }).catch(() => showToast('Error submitting request', 'error'));
+    }
+    
+    // Profile Form
+    document.getElementById('profileForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('profileName').value;
+        const email = document.getElementById('profileEmail').value;
+        const bio = document.getElementById('profileBio').value;
+        const res = await fetch('/api/user/profile', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, bio })
+        });
+        const data = await res.json();
+        showToast(data.message, data.success ? 'success' : 'error');
+        if (data.success) setTimeout(() => location.reload(), 1500);
+    });
+    
+    // Settings Form
+    document.getElementById('settingsForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmNewPassword').value;
+        if (newPassword !== confirmPassword) { showToast('New passwords do not match', 'error'); return; }
+        const res = await fetch('/api/user/change-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ currentPassword, newPassword })
+        });
+        const data = await res.json();
+        showToast(data.message, data.success ? 'success' : 'error');
+        if (data.success) document.getElementById('settingsForm').reset();
+    });
+    
+    function viewProjectDetails(id) { window.location.href = `/portfolio/${id}`; }
+</script>
+</body>
+</html>

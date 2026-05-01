@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Admin Dashboard - NeurowexTech</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --blue: #2563eb;
+            --orange: #f97316;
+            --dark: #050b18;
+            --dark-2: #0d1526;
+            --light: #f8fafc;
+            --light-2: #e2e8f0;
+            --text: #334155;
+            --text-light: #94a3b8;
+            --green: #10b981;
+            --red: #ef4444;
+            --yellow: #f59e0b;
+            --purple: #8b5cf6;
+            --grad-blue: linear-gradient(135deg, #2563eb, #1d4ed8);
+            --font-head: 'Syne', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: all 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-body);
+            background: var(--light);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 280px;
+            background: var(--dark);
+            color: white;
+            transition: var(--transition);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        .sidebar.collapsed { width: 80px; }
+        .sidebar-header { padding: 25px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-header h3 { font-family: var(--font-head); font-size: 1.3rem; white-space: nowrap; }
+        .sidebar-header span { color: var(--orange); }
+        .sidebar-nav { padding: 20px 0; }
+        .nav-item {
+            padding: 10px 20px;
+            margin: 5px 10px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .nav-item:hover, .nav-item.active { background: rgba(37,99,235,0.2); }
+        .nav-item a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+        }
+        .nav-item.active a, .nav-item:hover a { color: white; }
+        .nav-item i { width: 24px; font-size: 1.1rem; }
+
+        /* Main Content */
+        .main-content { margin-left: 280px; transition: var(--transition); min-height: 100vh; }
+        .main-content.expanded { margin-left: 80px; }
+        
+        /* Top Navbar */
+        .top-navbar {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+        .toggle-sidebar { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--text); }
+        .user-menu { display: flex; align-items: center; gap: 20px; }
+        .user-avatar { width: 40px; height: 40px; background: var(--grad-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; }
+        
+        /* Stats Cards */
+        .stat-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+            border: 1px solid var(--light-2);
+        }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .stat-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .stat-info h3 { font-size: 1.8rem; font-weight: 800; margin-bottom: 5px; }
+        
+        /* Tables */
+        .data-table { background: white; border-radius: var(--radius); padding: 20px; border: 1px solid var(--light-2); }
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--light-2); }
+        th { font-weight: 700; color: var(--text); }
+        .badge { padding: 4px 10px; border-radius: 50px; font-size: 0.7rem; font-weight: 600; }
+        .badge-admin { background: var(--purple); color: white; }
+        .badge-user { background: var(--blue); color: white; }
+        .badge-active { background: var(--green); color: white; }
+        .badge-inactive { background: var(--red); color: white; }
+        .badge-new { background: var(--yellow); color: white; }
+        .badge-read { background: var(--green); color: white; }
+        
+        /* Action Buttons */
+        .action-btn { background: none; border: none; cursor: pointer; margin: 0 5px; font-size: 1rem; transition: var(--transition); }
+        .action-btn.edit { color: var(--blue); }
+        .action-btn.delete { color: var(--red); }
+        .action-btn.promote { color: var(--purple); }
+        .action-btn.view { color: var(--green); }
+        .action-btn:hover { transform: scale(1.1); }
+        
+        /* Modal */
+        .modal-content { border-radius: var(--radius); }
+        
+        /* Dark Mode */
+        body.dark { background: var(--dark-2); }
+        body.dark .top-navbar, body.dark .stat-card, body.dark .data-table {
+            background: var(--dark);
+            border-color: rgba(255,255,255,0.08);
+            color: var(--light);
+        }
+        body.dark th, body.dark td { border-color: rgba(255,255,255,0.08); }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.show { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+        }
+        @media (max-width: 768px) { .stat-card { margin-bottom: 15px; } }
+        
+        /* Loading Spinner */
+        .spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid #f3f3f3; border-top: 2px solid var(--blue); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Toast */
+        .toast-notification {
+            position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+            background: var(--dark); color: white; padding: 12px 20px;
+            border-radius: 8px; animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header"><h3>Neurowex<span>Tech</span></h3></div>
+    <div class="sidebar-nav">
+        <div class="nav-item active" data-page="dashboard"><a href="#"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></div>
+        <div class="nav-item" data-page="users"><a href="#"><i class="fas fa-users"></i> <span>Users</span></a></div>
+        <div class="nav-item" data-page="projects"><a href="#"><i class="fas fa-project-diagram"></i> <span>Projects</span></a></div>
+        <div class="nav-item" data-page="contacts"><a href="#"><i class="fas fa-envelope"></i> <span>Contacts</span></a></div>
+        <div class="nav-item" data-page="subscribers"><a href="#"><i class="fas fa-newspaper"></i> <span>Subscribers</span></a></div>
+        <div class="nav-item" data-page="blog"><a href="#"><i class="fas fa-blog"></i> <span>Blog Posts</span></a></div>
+        <div class="nav-item" data-page="testimonials"><a href="#"><i class="fas fa-star"></i> <span>Testimonials</span></a></div>
+        <div class="nav-item" data-page="settings"><a href="#"><i class="fas fa-cog"></i> <span>Settings</span></a></div>
+        <div class="nav-item"><a href="/"><i class="fas fa-home"></i> <span>Back to Site</span></a></div>
+        <div class="nav-item"><a href="/logout"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content" id="mainContent">
+    <div class="top-navbar">
+        <div><button class="toggle-sidebar" id="toggleSidebar"><i class="fas fa-bars"></i></button></div>
+        <div class="user-menu">
+            <button id="theme-toggle" class="btn btn-sm btn-outline-secondary"><i class="fas fa-moon"></i></button>
+            <div class="user-avatar"><i class="fas fa-user"></i></div>
+            <span>{{userName}}</span>
+        </div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="container-fluid p-4" id="dashboardContent">
+        <div class="mb-4"><h2>Welcome back, {{userName}}!</h2><p class="text-muted">Here's what's happening with your NeurowexTech platform today.</p></div>
+
+        <!-- Stats Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-6 col-lg-3"><div class="stat-card"><div class="stat-info"><h3 id="totalUsers">{{stats.total_users}}</h3><p class="text-muted mb-0">Total Users</p></div><div class="stat-icon bg-primary bg-opacity-10 text-primary"><i class="fas fa-users"></i></div></div></div>
+            <div class="col-md-6 col-lg-3"><div class="stat-card"><div class="stat-info"><h3 id="totalProjects">{{stats.total_projects}}</h3><p class="text-muted mb-0">Projects</p></div><div class="stat-icon bg-success bg-opacity-10 text-success"><i class="fas fa-project-diagram"></i></div></div></div>
+            <div class="col-md-6 col-lg-3"><div class="stat-card"><div class="stat-info"><h3 id="totalContacts">{{stats.total_contacts}}</h3><p class="text-muted mb-0">Contact Messages</p></div><div class="stat-icon bg-warning bg-opacity-10 text-warning"><i class="fas fa-envelope"></i></div></div></div>
+            <div class="col-md-6 col-lg-3"><div class="stat-card"><div class="stat-info"><h3 id="totalSubscribers">{{stats.total_subscribers}}</h3><p class="text-muted mb-0">Subscribers</p></div><div class="stat-icon bg-info bg-opacity-10 text-info"><i class="fas fa-newspaper"></i></div></div></div>
+        </div>
+
+        <!-- Charts -->
+        <div class="row g-4 mb-4">
+            <div class="col-lg-6"><div class="data-table"><h5 class="mb-3">User Growth</h5><canvas id="userGrowthChart" height="200"></canvas></div></div>
+            <div class="col-lg-6"><div class="data-table"><h5 class="mb-3">Role Distribution</h5><canvas id="roleChart" height="200"></canvas></div></div>
+        </div>
+
+        <!-- Recent Users Table -->
+        <div class="data-table">
+            <div class="d-flex justify-content-between align-items-center mb-3"><h5>Recent Users</h5><button class="btn btn-sm btn-primary" id="addUserBtn"><i class="fas fa-plus"></i> Add User</button></div>
+            <div class="table-responsive"><table class="table" id="recentUsersTable"><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="recentUsersBody"></tbody></table></div>
+        </div>
+    </div>
+
+    <!-- Users Page -->
+    <div class="container-fluid p-4" id="usersContent" style="display: none;"><div class="data-table"><div class="d-flex justify-content-between align-items-center mb-3"><h4><i class="fas fa-users me-2"></i> All Users</h4><button class="btn btn-primary" id="addUserBtn2"><i class="fas fa-plus"></i> Add User</button></div><div class="table-responsive"><table class="table"><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Last Login</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="allUsersBody"></tbody></table></div></div></div>
+
+    <!-- Projects Page -->
+    <div class="container-fluid p-4" id="projectsContent" style="display: none;"><div class="data-table"><div class="d-flex justify-content-between align-items-center mb-3"><h4><i class="fas fa-project-diagram me-2"></i> Projects</h4><button class="btn btn-primary" id="addProjectBtn"><i class="fas fa-plus"></i> Add Project</button></div><div class="table-responsive"><table class="table"><thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Year</th><th>Featured</th><th>Actions</th></tr></thead><tbody id="projectsBody"></tbody></table></div></div></div>
+
+    <!-- Contacts Page -->
+    <div class="container-fluid p-4" id="contactsContent" style="display: none;"><div class="data-table"><h4><i class="fas fa-envelope me-2"></i> Contact Messages</h4><div class="table-responsive"><table class="table"><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Message</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody id="contactsBody"></tbody></table></div></div></div>
+
+    <!-- Subscribers Page -->
+    <div class="container-fluid p-4" id="subscribersContent" style="display: none;"><div class="data-table"><h4><i class="fas fa-newspaper me-2"></i> Subscribers</h4><div class="table-responsive"><table class="table"><thead><tr><th>ID</th><th>Email</th><th>Subscribed Date</th><th>Actions</th></tr></thead><tbody id="subscribersBody"></tbody></table></div></div></div>
+
+    <!-- Blog Page -->
+    <div class="container-fluid p-4" id="blogContent" style="display: none;"><div class="data-table"><div class="d-flex justify-content-between align-items-center mb-3"><h4><i class="fas fa-blog me-2"></i> Blog Posts</h4><button class="btn btn-primary" id="addBlogBtn"><i class="fas fa-plus"></i> Add Post</button></div><div class="table-responsive"><table class="table"><thead><tr><th>ID</th><th>Title</th><th>Author</th><th>Published</th><th>Views</th><th>Date</th><th>Actions</th></tr></thead><tbody id="blogBody"></tbody></table></div></div></div>
+
+    <!-- Testimonials Page -->
+    <div class="container-fluid p-4" id="testimonialsContent" style="display: none;"><div class="data-table"><div class="d-flex justify-content-between align-items-center mb-3"><h4><i class="fas fa-star me-2"></i> Testimonials</h4><button class="btn btn-primary" id="addTestimonialBtn"><i class="fas fa-plus"></i> Add Testimonial</button></div><div class="table-responsive"><table class="table"><thead><tr><th>ID</th><th>Name</th><th>Role</th><th>Rating</th><th>Status</th><th>Actions</th></tr></thead><tbody id="testimonialsBody"></tbody></table></div></div></div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({ duration: 800, once: true });
+    
+    // Sidebar Toggle
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    document.getElementById('toggleSidebar').addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        mainContent.classList.toggle('expanded');
+    });
+    
+    // Page Navigation
+    const pages = ['dashboard', 'users', 'projects', 'contacts', 'subscribers', 'blog', 'testimonials', 'settings'];
+    document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+        item.addEventListener('click', () => {
+            const page = item.dataset.page;
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            item.classList.add('active');
+            pages.forEach(p => {
+                const el = document.getElementById(`${p}Content`);
+                if (el) el.style.display = p === page ? 'block' : 'none';
+            });
+            if (page === 'users') loadAllUsers();
+            if (page === 'projects') loadProjects();
+            if (page === 'contacts') loadContacts();
+            if (page === 'subscribers') loadSubscribers();
+            if (page === 'blog') loadBlogPosts();
+            if (page === 'testimonials') loadTestimonials();
+        });
+    });
+    
+    // Dark Mode
+    let dark = localStorage.getItem('theme') === 'dark';
+    function applyTheme() { document.body.classList.toggle('dark', dark); }
+    applyTheme();
+    document.getElementById('theme-toggle')?.addEventListener('click', () => { dark = !dark; localStorage.setItem('theme', dark ? 'dark' : 'light'); applyTheme(); });
+    
+    // Charts
+    function initCharts() {
+        new Chart(document.getElementById('userGrowthChart'), {
+            type: 'line',
+            data: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], datasets: [{ label: 'New Users', data: [5, 8, 12, 18, 25, 32], borderColor: '#2563eb', tension: 0.4 }] }
+        });
+        new Chart(document.getElementById('roleChart'), {
+            type: 'doughnut',
+            data: { labels: ['Admins', 'Users'], datasets: [{ data: [{{stats.total_admins}}, {{stats.total_users}}], backgroundColor: ['#8b5cf6', '#2563eb'] }] }
+        });
+    }
+    initCharts();
+    
+    function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `toast-notification alert alert-${type === 'success' ? 'success' : 'danger'}`;
+        toast.innerHTML = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+    
+    // ========== USER MANAGEMENT ==========
+    async function loadAllUsers() {
+        try {
+            const res = await fetch('/api/admin/users');
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('allUsersBody').innerHTML = data.users.map(u => `
+                    <tr><td>${u.id}</td><td>${u.username}</td><td>${u.email}</td>
+                    <td><span class="badge ${u.role === 'admin' ? 'badge-admin' : 'badge-user'}">${u.role}</span></td>
+                    <td><span class="badge ${u.is_active ? 'badge-active' : 'badge-inactive'}">${u.is_active ? 'Active' : 'Inactive'}</span></td>
+                    <td>${u.last_login ? new Date(u.last_login).toLocaleDateString() : 'Never'}</td>
+                    <td>${new Date(u.created_at).toLocaleDateString()}</td>
+                    <td><button class="action-btn edit" onclick='editUser(${u.id})'><i class="fas fa-edit"></i></button><button class="action-btn promote" onclick='toggleAdmin(${u.id}, "${u.role}")'><i class="fas ${u.role === 'admin' ? 'fa-user-minus' : 'fa-user-plus'}"></i></button><button class="action-btn delete" onclick='deleteUser(${u.id})'><i class="fas fa-trash"></i></button></td></tr>
+                `).join('');
+                document.getElementById('recentUsersBody').innerHTML = data.users.slice(0,5).map(u => `
+                    <tr><td>${u.id}</td><td>${u.username}</td><td>${u.email}</td>
+                    <td><span class="badge ${u.role === 'admin' ? 'badge-admin' : 'badge-user'}">${u.role}</span></td>
+                    <td><span class="badge ${u.is_active ? 'badge-active' : 'badge-inactive'}">${u.is_active ? 'Active' : 'Inactive'}</span></td>
+                    <td>${new Date(u.created_at).toLocaleDateString()}</td>
+                    <td><button class="action-btn edit" onclick='editUser(${u.id})'><i class="fas fa-edit"></i></button><button class="action-btn promote" onclick='toggleAdmin(${u.id}, "${u.role}")'><i class="fas ${u.role === 'admin' ? 'fa-user-minus' : 'fa-user-plus'}"></i></button><button class="action-btn delete" onclick='deleteUser(${u.id})'><i class="fas fa-trash"></i></button></td></tr>
+                `).join('');
+            }
+        } catch(err) { console.error(err); }
+    }
+    
+    async function toggleAdmin(userId, currentRole) {
+        const endpoint = currentRole === 'admin' ? '/api/admin/remove-admin' : '/api/admin/make-admin';
+        const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId }) });
+        const data = await res.json();
+        showToast(data.message, data.success ? 'success' : 'error');
+        if (data.success) setTimeout(() => location.reload(), 1500);
+    }
+    
+    async function deleteUser(userId) {
+        if (confirm('Are you sure you want to delete this user?')) {
+            const res = await fetch(`/api/admin/delete-user/${userId}`, { method: 'DELETE' });
+            const data = await res.json();
+            showToast(data.message, data.success ? 'success' : 'error');
+            if (data.success) setTimeout(() => location.reload(), 1500);
+        }
+    }
+    
+    // ========== PROJECT MANAGEMENT ==========
+    async function loadProjects() {
+        const res = await fetch('/api/projects');
+        const data = await res.json();
+        document.getElementById('projectsBody').innerHTML = data.projects?.map(p => `
+            <tr><td>${p.id}</td><td>${p.name}</td><td>${p.category}</td><td>${p.year}</td><td>${p.featured ? 'Yes' : 'No'}</td>
+            <td><button class="action-btn edit" onclick="editProject(${p.id})"><i class="fas fa-edit"></i></button><button class="action-btn delete" onclick="deleteProject(${p.id})"><i class="fas fa-trash"></i></button></td></tr>
+        `).join('') || '<tr><td colspan="6" class="text-center">No projects</td></tr>';
+    }
+    
+    async function deleteProject(id) {
+        if (confirm('Delete this project?')) {
+            const res = await fetch(`/api/projects/${id}`, { method: 'DELETE' });
+            const data = await res.json();
+            showToast(data.message, data.success ? 'success' : 'error');
+            if (data.success) loadProjects();
+        }
+    }
+    
+    // ========== CONTACT MANAGEMENT ==========
+    async function loadContacts() {
+        const res = await fetch('/api/contacts');
+        const data = await res.json();
+        document.getElementById('contactsBody').innerHTML = data.contacts?.map(c => `
+            <tr><td>${c.id}</td><td>${c.name}</td><td>${c.email}</td><td>${c.message.substring(0, 50)}...</td>
+            <td>${new Date(c.created_at).toLocaleDateString()}</td>
+            <td><span class="badge ${c.status === 'read' ? 'badge-read' : 'badge-new'}">${c.status || 'New'}</span></td>
+            <td><button class="action-btn view" onclick="markContactRead(${c.id})"><i class="fas fa-check-circle"></i></button><button class="action-btn delete" onclick="deleteContact(${c.id})"><i class="fas fa-trash"></i></button></td></tr>
+        `).join('') || '<tr><td colspan="7" class="text-center">No messages</td></tr>';
+    }
+    
+    async function markContactRead(id) {
+        await fetch(`/api/contacts/${id}/read`, { method: 'PUT' });
+        loadContacts();
+        showToast('Message marked as read', 'success');
+    }
+    
+    async function deleteContact(id) {
+        if (confirm('Delete this message?')) {
+            await fetch(`/api/contacts/${id}`, { method: 'DELETE' });
+            loadContacts();
+            showToast('Message deleted', 'success');
+        }
+    }
+    
+    // ========== SUBSCRIBER MANAGEMENT ==========
+    async function loadSubscribers() {
+        const res = await fetch('/api/subscribers');
+        const data = await res.json();
+        document.getElementById('subscribersBody').innerHTML = data.subscribers?.map(s => `
+            <tr><td>${s.id}</td><td>${s.email}</td><td>${new Date(s.subscribed_at).toLocaleDateString()}</td>
+            <td><button class="action-btn delete" onclick="deleteSubscriber(${s.id})"><i class="fas fa-trash"></i></button></td></tr>
+        `).join('') || '<tr><td colspan="4" class="text-center">No subscribers</td></tr>';
+    }
+    
+    async function deleteSubscriber(id) {
+        if (confirm('Remove this subscriber?')) {
+            await fetch(`/api/subscribers/${id}`, { method: 'DELETE' });
+            loadSubscribers();
+            showToast('Subscriber removed', 'success');
+        }
+    }
+    
+    // ========== BLOG MANAGEMENT ==========
+    async function loadBlogPosts() {
+        const res = await fetch('/api/blog-posts');
+        const data = await res.json();
+        document.getElementById('blogBody').innerHTML = data.posts?.map(p => `
+            <tr><td>${p.id}</td><td>${p.title}</td><td>${p.author}</td>
+            <td><span class="badge ${p.published ? 'badge-active' : 'badge-inactive'}">${p.published ? 'Published' : 'Draft'}</span></td>
+            <td>${p.views || 0}</td>
+            <td>${new Date(p.created_at).toLocaleDateString()}</td>
+            <td><button class="action-btn edit"><i class="fas fa-edit"></i></button><button class="action-btn delete"><i class="fas fa-trash"></i></button></td></tr>
+        `).join('') || '<tr><td colspan="7" class="text-center">No blog posts</td></tr>';
+    }
+    
+    // ========== TESTIMONIAL MANAGEMENT ==========
+    async function loadTestimonials() {
+        const res = await fetch('/api/testimonials');
+        const data = await res.json();
+        document.getElementById('testimonialsBody').innerHTML = data.testimonials?.map(t => `
+            <tr><td>${t.id}</td><td>${t.name}</td><td>${t.role}</td>
+            <td>${'★'.repeat(t.rating)}${'☆'.repeat(5-t.rating)}</td>
+            <td><span class="badge ${t.published ? 'badge-active' : 'badge-inactive'}">${t.published ? 'Published' : 'Draft'}</span></td>
+            <td><button class="action-btn edit"><i class="fas fa-edit"></i></button><button class="action-btn delete"><i class="fas fa-trash"></i></button></td></tr>
+        `).join('') || '<tr><td colspan="6" class="text-center">No testimonials</td></tr>';
+    }
+    
+    // Initial Load
+    loadAllUsers();
+    loadProjects();
+    loadContacts();
+    loadSubscribers();
+    loadBlogPosts();
+    loadTestimonials();
+    
+    // Add User Button
+    document.getElementById('addUserBtn')?.addEventListener('click', () => {
+        const name = prompt('Enter full name:');
+        const email = prompt('Enter email:');
+        const password = prompt('Enter password:');
+        if (name && email && password) {
+            fetch('/api/admin/users', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, email, password }) })
+            .then(res => res.json()).then(data => { showToast(data.message, data.success ? 'success' : 'error'); if (data.success) loadAllUsers(); });
+        }
+    });
+</script>
+</body>
+</html>

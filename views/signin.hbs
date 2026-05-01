@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Sign In - NeurowexTech</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --blue: #2563eb;
+            --orange: #f97316;
+            --dark: #050b18;
+            --light: #f8fafc;
+            --light-2: #e2e8f0;
+            --text: #334155;
+            --red: #ef4444;
+            --green: #10b981;
+            --grad-blue: linear-gradient(135deg, #2563eb, #1d4ed8);
+            --font-head: 'Syne', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --radius: 20px;
+            --radius-sm: 12px;
+            --transition: all 0.35s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-body);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .back-home {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            z-index: 1000;
+        }
+        .back-home a {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .back-home a:hover {
+            background: white;
+            color: var(--blue);
+            transform: translateY(-2px);
+        }
+
+        .signin-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+        }
+        .signin-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            overflow: hidden;
+            max-width: 480px;
+            width: 100%;
+            animation: fadeInUp 0.6s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .signin-header {
+            background: var(--grad-blue);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+        .signin-header h1 { font-family: var(--font-head); font-size: 1.8rem; margin-bottom: 8px; }
+        .signin-header p { opacity: 0.85; font-size: 0.9rem; }
+        .signin-body { padding: 40px 30px; }
+        .form-group { margin-bottom: 25px; }
+        .form-group label { font-weight: 600; margin-bottom: 8px; display: block; color: var(--text); font-size: 0.85rem; }
+        .input-group-custom { position: relative; }
+        .input-group-custom i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1rem;
+            z-index: 1;
+        }
+        .form-control-custom {
+            width: 100%;
+            padding: 12px 45px 12px 45px;
+            border: 2px solid var(--light-2);
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        .form-control-custom:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+        .form-control-custom.error {
+            border-color: var(--red);
+        }
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #94a3b8;
+            transition: var(--transition);
+            z-index: 2;
+        }
+        .password-toggle:hover {
+            color: var(--blue);
+        }
+        .forgot-password { text-align: right; margin-top: 8px; }
+        .forgot-password a { color: #94a3b8; font-size: 0.75rem; text-decoration: none; transition: var(--transition); }
+        .forgot-password a:hover { color: var(--blue); text-decoration: underline; }
+        .btn-signin-submit {
+            background: var(--grad-blue);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+        .btn-signin-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(37,99,235,0.3);
+        }
+        .btn-signin-submit:disabled { opacity: 0.7; cursor: not-allowed; }
+        .signup-link { text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--light-2); }
+        .signup-link a { color: var(--blue); text-decoration: none; font-weight: 600; }
+        .signup-link a:hover { text-decoration: underline; }
+        .alert {
+            padding: 12px 15px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+        }
+        .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+        .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .checkbox-group { display: flex; align-items: center; justify-content: space-between; margin: 20px 0; }
+        .checkbox-group .remember { display: flex; align-items: center; gap: 8px; }
+        .checkbox-group .remember input { width: 16px; height: 16px; cursor: pointer; }
+        
+        /* Dark mode */
+        body.dark .signin-card {
+            background: var(--dark-2);
+        }
+        body.dark .form-group label {
+            color: var(--light);
+        }
+        body.dark .form-control-custom {
+            background: var(--dark-3);
+            border-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        @media (max-width: 576px) {
+            .signin-header { padding: 30px 20px; }
+            .signin-body { padding: 30px 20px; }
+            .signin-header h1 { font-size: 1.5rem; }
+            .back-home { top: 20px; left: 20px; }
+            .back-home a { padding: 6px 14px; font-size: 0.8rem; }
+            .checkbox-group { flex-direction: column; gap: 15px; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="back-home">
+    <a href="/"><i class="fas fa-arrow-left"></i> Back to Home</a>
+</div>
+
+<div class="signin-wrapper">
+    <div class="signin-card">
+        <div class="signin-header">
+            <h1>Welcome Back</h1>
+            <p>Sign in to your NeurowexTech account</p>
+        </div>
+        <div class="signin-body">
+            <div id="alert-message"></div>
+            
+            <form id="signinForm">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <div class="input-group-custom">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" class="form-control-custom" id="email" name="email" placeholder="hello@neurowextech.com" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-group-custom">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" class="form-control-custom" id="password" name="password" placeholder="••••••••" required>
+                        <span class="password-toggle" id="togglePassword">
+                            <i class="fas fa-eye-slash"></i>
+                        </span>
+                    </div>
+                    <div class="forgot-password">
+                        <a href="/forgot-password"><i class="fas fa-key me-1"></i> Forgot password?</a>
+                    </div>
+                </div>
+                
+                <div class="checkbox-group">
+                    <div class="remember">
+                        <input type="checkbox" id="rememberCheckbox">
+                        <label for="rememberCheckbox">Remember me</label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-signin-submit" id="submitBtn">
+                    <i class="fas fa-sign-in-alt me-2"></i> Sign In
+                </button>
+            </form>
+            
+            <div class="signup-link">
+                Don't have an account? <a href="/sign_up">Sign Up</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const signinForm = document.getElementById('signinForm');
+    const alertMessage = document.getElementById('alert-message');
+    const submitBtn = document.getElementById('submitBtn');
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+
+    // ============================================
+    // SHOW/HIDE PASSWORD TOGGLE
+    // ============================================
+    togglePassword.addEventListener('click', function() {
+        // Toggle password visibility
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        
+        // Toggle eye icon
+        this.innerHTML = type === 'password' ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+    });
+
+    // ============================================
+    // LOAD REMEMBERED EMAIL
+    // ============================================
+    const rememberedEmail = localStorage.getItem('rememberedEmail');
+    if (rememberedEmail) {
+        document.getElementById('email').value = rememberedEmail;
+        document.getElementById('rememberCheckbox').checked = true;
+    }
+
+    // ============================================
+    // SHOW ALERT FUNCTION
+    // ============================================
+    function showAlert(message, type) {
+        alertMessage.innerHTML = `<div class="alert alert-${type === 'error' ? 'error' : 'success'}">${type === 'error' ? '⚠️ ' : '✅ '}${message}</div>`;
+        alertMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        setTimeout(() => { 
+            if (alertMessage.firstChild) alertMessage.firstChild.remove(); 
+        }, 5000);
+    }
+
+    // ============================================
+    // FORM SUBMISSION
+    // ============================================
+    signinForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const rememberMe = document.getElementById('rememberCheckbox').checked;
+        
+        // Validation
+        if (!email) {
+            showAlert('Please enter your email address', 'error');
+            document.getElementById('email').classList.add('error');
+            return;
+        }
+        if (!/^\S+@\S+\.\S+$/.test(email)) {
+            showAlert('Please enter a valid email address', 'error');
+            document.getElementById('email').classList.add('error');
+            return;
+        }
+        document.getElementById('email').classList.remove('error');
+        
+        if (!password) {
+            showAlert('Please enter your password', 'error');
+            document.getElementById('password').classList.add('error');
+            return;
+        }
+        document.getElementById('password').classList.remove('error');
+        
+        // Show loading state
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Signing in...';
+        submitBtn.disabled = true;
+        
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password, rememberMe })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Save remember me preference
+                if (rememberMe) {
+                    localStorage.setItem('rememberedEmail', email);
+                } else {
+                    localStorage.removeItem('rememberedEmail');
+                }
+                
+                showAlert(data.message, 'success');
+                
+                // Redirect based on role
+                setTimeout(() => {
+                    window.location.href = data.redirect;
+                }, 1000);
+            } else {
+                showAlert(data.message, 'error');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        } catch (err) {
+            console.error('Login error:', err);
+            showAlert('Network error. Please try again.', 'error');
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+
+    // ============================================
+    // ENTER KEY SUBMIT
+    // ============================================
+    passwordInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            signinForm.dispatchEvent(new Event('submit'));
+        }
+    });
+
+    // ============================================
+    // REMOVE ERROR STYLES ON INPUT
+    // ============================================
+    document.getElementById('email').addEventListener('input', function() {
+        this.classList.remove('error');
+    });
+    
+    passwordInput.addEventListener('input', function() {
+        this.classList.remove('error');
+    });
+
+    // ============================================
+    // DARK MODE (optional)
+    // ============================================
+    let dark = localStorage.getItem('theme') === 'dark';
+    function applyTheme() {
+        document.body.classList.toggle('dark', dark);
+    }
+    applyTheme();
+</script>
+</body>
+</html>

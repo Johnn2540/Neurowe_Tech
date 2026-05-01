@@ -915,26 +915,36 @@
     <button id="cookie-accept">Accept</button>
 </div>
 
-<!-- ======================== NAVBAR ======================== -->
+<!-- ======================== NAVBAR WITH SIGN IN/SIGN UP (FIXED) ======================== -->
 <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container">
+        <!-- Logo - Left Side -->
         <a class="navbar-brand" href="#">Neurowex<span>Tech</span></a>
         
+        <!-- Mobile Right Side Buttons -->
         <div class="d-flex align-items-center gap-2 order-lg-3">
+            <!-- Dark Mode Button for Mobile -->
             <button id="theme-toggle-mobile" class="btn-theme-mobile d-lg-none" title="Toggle dark mode">
                 <i class="fas fa-moon"></i>
             </button>
+            
+            <!-- Start Project Button for Mobile (Compact) -->
             <a href="#contact" class="btn btn-blue-mobile d-lg-none">
                 <i class="fas fa-arrow-right"></i>
             </a>
+            
+            <!-- Navbar Toggler -->
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
         </div>
         
+        <!-- Navbar Links - Collapsible -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto align-items-lg-center">
                 <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                
+                <!-- Services Dropdown -->
                 <li class="nav-item dropdown services-dropdown">
                     <a class="nav-link dropdown-toggle" href="#services">
                         Services <i class="fas fa-chevron-down dropdown-arrow"></i>
@@ -945,16 +955,25 @@
                         <a class="dropdown-item" href="#services"><i class="fas fa-mobile-alt me-2"></i> Mobile Apps</a>
                         <a class="dropdown-item" href="#services"><i class="fas fa-shopping-cart me-2"></i> E-commerce</a>
                         <a class="dropdown-item" href="#services"><i class="fas fa-rocket me-2"></i> MVP Development</a>
+                        <div class="dropdown-divider d-lg-none"></div>
+                        <div class="dropdown-header d-lg-none">Cloud & Security</div>
                         <a class="dropdown-item" href="#services"><i class="fas fa-cloud-upload-alt me-2"></i> Cloud Solutions</a>
                         <a class="dropdown-item" href="#services"><i class="fas fa-shield-alt me-2"></i> Cyber Security</a>
                         <a class="dropdown-item" href="#services"><i class="fas fa-robot me-2"></i> AI Integration</a>
                         <a class="dropdown-item" href="#graphic"><i class="fas fa-palette me-2"></i> Graphic Design</a>
+                        <div class="dropdown-divider d-lg-none"></div>
+                        <div class="dropdown-header d-lg-none">Data & Support</div>
                         <a class="dropdown-item" href="#services"><i class="fas fa-chart-line me-2"></i> Analytics & BI</a>
                         <a class="dropdown-item" href="#services"><i class="fas fa-headset me-2"></i> IT Consulting</a>
                         <a class="dropdown-item" href="#services"><i class="fas fa-database me-2"></i> Database Design</a>
                         <a class="dropdown-item" href="#services"><i class="fas fa-search me-2"></i> SEO Optimization</a>
+                        <div class="dropdown-footer d-none d-lg-block text-center mt-2 pt-2">
+                            <img src="/images/logo.png" alt="Logo" class="dropdown-logo" style="max-height: 30px;">
+                            <p class="small mb-0">30+ services available</p>
+                        </div>
                     </div>
                 </li>
+                
                 <li class="nav-item"><a class="nav-link" href="#process">Process</a></li>
                 <li class="nav-item"><a class="nav-link" href="#portfolio">Portfolio</a></li>
                 <li class="nav-item"><a class="nav-link" href="#team">Team</a></li>
@@ -963,21 +982,61 @@
                 <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
                 <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
             </ul>
+            
+            <!-- Auth Buttons for Desktop -->
             <div class="d-none d-lg-flex align-items-center gap-2 ms-3">
-                <a href="#signin" class="btn btn-signin">Sign In</a>
-                <a href="#signup" class="btn btn-signup">Sign Up</a>
-                <a href="#contact" class="btn btn-blue ms-2">Start Project <i class="fas fa-arrow-right"></i></a>
+                {{#if isAuthenticated}}
+                    <!-- User Dropdown when logged in -->
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle me-1"></i> {{userName}}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            {{#if (eq userRole 'admin')}}
+                                <li><a class="dropdown-item" href="/admin_dashboard"><i class="fas fa-tachometer-alt me-2"></i> Admin Dashboard</a></li>
+                            {{else}}
+                                <li><a class="dropdown-item" href="/user_dashboard"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a></li>
+                            {{/if}}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt me-2"></i> Sign Out</a></li>
+                        </ul>
+                    </div>
+                    <a href="#contact" class="btn btn-blue ms-2">Start Project <i class="fas fa-arrow-right"></i></a>
+                {{else}}
+                    <!-- Show Sign In/Sign Up when logged out -->
+                    <a href="/login" class="btn btn-signin">Sign In</a>
+                    <a href="/sign_up" class="btn btn-signup">Sign Up</a>
+                    <a href="#contact" class="btn btn-blue ms-2">Start Project <i class="fas fa-arrow-right"></i></a>
+                {{/if}}
             </div>
+            
+            <!-- Auth Buttons for Mobile (Inside Collapse) -->
             <div class="d-lg-none mt-3 pt-2 border-top">
-                <div class="d-flex flex-column gap-2">
-                    <a href="#signin" class="btn btn-signin w-100">Sign In</a>
-                    <a href="#signup" class="btn btn-signup w-100">Sign Up</a>
-                    <a href="#contact" class="btn btn-blue w-100">Start a Project <i class="fas fa-arrow-right"></i></a>
-                    <!-- WhatsApp in Mobile Menu -->
-                    <a href="https://wa.me/254769329340?text=Hello%20NeurowexTech!%20I%20would%20like%20to%20discuss%20a%20project." target="_blank" rel="noopener noreferrer" class="whatsapp-cta w-100 justify-content-center">
-                        <i class="fab fa-whatsapp"></i> Chat on WhatsApp
-                    </a>
-                </div>
+                {{#if isAuthenticated}}
+                    <div class="d-flex flex-column gap-2">
+                        <div class="dropdown w-100">
+                            <button class="btn btn-outline-primary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle me-1"></i> {{userName}}
+                            </button>
+                            <ul class="dropdown-menu w-100">
+                                {{#if (eq userRole 'admin')}}
+                                    <li><a class="dropdown-item" href="/admin_dashboard"><i class="fas fa-tachometer-alt me-2"></i> Admin Dashboard</a></li>
+                                {{else}}
+                                    <li><a class="dropdown-item" href="/user_dashboard"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a></li>
+                                {{/if}}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt me-2"></i> Sign Out</a></li>
+                            </ul>
+                        </div>
+                        <a href="#contact" class="btn btn-blue w-100">Start Project <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                {{else}}
+                    <div class="d-flex flex-column gap-2">
+                        <a href="/login" class="btn btn-signin w-100">Sign In</a>
+                        <a href="/sign_up" class="btn btn-signup w-100">Sign Up</a>
+                        <a href="#contact" class="btn btn-blue w-100">Start Project <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                {{/if}}
             </div>
         </div>
     </div>
@@ -1200,14 +1259,14 @@
             <p style="color:rgba(255,255,255,0.5); max-width:540px; margin:0 auto;">Stunning visuals that make your brand impossible to forget.</p>
         </div>
         <div class="row g-4">
-            <div class="col-6 col-md-4 col-lg-3" data-aos="flip-left"><div class="graphic-card"><span class="graphic-icon">🎨</span><h4>Logo Design</h4><p>Unique brand identities</p><span class="badge" style="background:rgba(249,115,22,0.2);color:var(--orange);border-radius:50px;padding:4px 12px;font-size:0.72rem;">From $299</span></div></div>
-            <div class="col-6 col-md-4 col-lg-3" data-aos="flip-left" data-aos-delay="100"><div class="graphic-card"><span class="graphic-icon">✨</span><h4>Brand Identity</h4><p>Complete brand guidelines</p><span class="badge" style="background:rgba(249,115,22,0.2);color:var(--orange);border-radius:50px;padding:4px 12px;font-size:0.72rem;">From $599</span></div></div>
-            <div class="col-6 col-md-4 col-lg-3" data-aos="flip-left" data-aos-delay="200"><div class="graphic-card"><span class="graphic-icon">📱</span><h4>UI/UX Design</h4><p>Intuitive interfaces</p><span class="badge" style="background:rgba(249,115,22,0.2);color:var(--orange);border-radius:50px;padding:4px 12px;font-size:0.72rem;">From $999</span></div></div>
-            <div class="col-6 col-md-4 col-lg-3" data-aos="flip-left" data-aos-delay="300"><div class="graphic-card"><span class="graphic-icon">📊</span><h4>Infographics</h4><p>Data storytelling</p><span class="badge" style="background:rgba(249,115,22,0.2);color:var(--orange);border-radius:50px;padding:4px 12px;font-size:0.72rem;">From $199</span></div></div>
-            <div class="col-6 col-md-4 col-lg-3" data-aos="flip-left" data-aos-delay="400"><div class="graphic-card"><span class="graphic-icon">🎬</span><h4>Motion Graphics</h4><p>Animated explainers</p><span class="badge" style="background:rgba(249,115,22,0.2);color:var(--orange);border-radius:50px;padding:4px 12px;font-size:0.72rem;">From $499</span></div></div>
-            <div class="col-6 col-md-4 col-lg-3" data-aos="flip-left" data-aos-delay="500"><div class="graphic-card"><span class="graphic-icon">🖨️</span><h4>Print Design</h4><p>Brochures, flyers, cards</p><span class="badge" style="background:rgba(249,115,22,0.2);color:var(--orange);border-radius:50px;padding:4px 12px;font-size:0.72rem;">From $149</span></div></div>
-            <div class="col-6 col-md-4 col-lg-3" data-aos="flip-left" data-aos-delay="600"><div class="graphic-card"><span class="graphic-icon">🖼️</span><h4>Figma Design</h4><p>Prototypes & wireframes</p><span class="badge" style="background:rgba(249,115,22,0.2);color:var(--orange);border-radius:50px;padding:4px 12px;font-size:0.72rem;">From $399</span></div></div>
-            <div class="col-6 col-md-4 col-lg-3" data-aos="flip-left" data-aos-delay="700"><div class="graphic-card"><span class="graphic-icon">📸</span><h4>Photo Editing</h4><p>Professional retouching</p><span class="badge" style="background:rgba(249,115,22,0.2);color:var(--orange);border-radius:50px;padding:4px 12px;font-size:0.72rem;">From $49</span></div></div>
+            <div class="col-6 col-md-4 col-lg-3" data-aos="flip-left"><div class="graphic-card"><span class="graphic-icon">🎨</span><h4>Logo Design</h4><p>Unique brand identities</p><span class="badge" style="background:rgba(249,115,22,0.2);color:var(--orange);border-radius:50px;padding:4px 12px;font-size:0.72rem;">From Kshs. 500</span></div></div>
+            <div class="col-6 col-md-4 col-lg-3" data-aos="flip-left" data-aos-delay="100"><div class="graphic-card"><span class="graphic-icon">✨</span><h4>Brand Identity</h4><p>Complete brand guidelines</p><span class="badge" style="background:rgba(249,115,22,0.2);color:var(--orange);border-radius:50px;padding:4px 12px;font-size:0.72rem;">From Kshs. 700</span></div></div>
+            <div class="col-6 col-md-4 col-lg-3" data-aos="flip-left" data-aos-delay="200"><div class="graphic-card"><span class="graphic-icon">📱</span><h4>UI/UX Design</h4><p>Intuitive interfaces</p><span class="badge" style="background:rgba(249,115,22,0.2);color:var(--orange);border-radius:50px;padding:4px 12px;font-size:0.72rem;">From Kshs. 700</span></div></div>
+            <div class="col-6 col-md-4 col-lg-3" data-aos="flip-left" data-aos-delay="300"><div class="graphic-card"><span class="graphic-icon">📊</span><h4>Infographics</h4><p>Data storytelling</p><span class="badge" style="background:rgba(249,115,22,0.2);color:var(--orange);border-radius:50px;padding:4px 12px;font-size:0.72rem;">From Kshs. 500</span></div></div>
+            <div class="col-6 col-md-4 col-lg-3" data-aos="flip-left" data-aos-delay="400"><div class="graphic-card"><span class="graphic-icon">🎬</span><h4>Motion Graphics</h4><p>Animated explainers</p><span class="badge" style="background:rgba(249,115,22,0.2);color:var(--orange);border-radius:50px;padding:4px 12px;font-size:0.72rem;">From Kshs. 700</span></div></div>
+            <div class="col-6 col-md-4 col-lg-3" data-aos="flip-left" data-aos-delay="500"><div class="graphic-card"><span class="graphic-icon">🖨️</span><h4>Print Design</h4><p>Brochures, flyers, cards</p><span class="badge" style="background:rgba(249,115,22,0.2);color:var(--orange);border-radius:50px;padding:4px 12px;font-size:0.72rem;">From Kshs. 500</span></div></div>
+            <div class="col-6 col-md-4 col-lg-3" data-aos="flip-left" data-aos-delay="600"><div class="graphic-card"><span class="graphic-icon">🖼️</span><h4>Figma Design</h4><p>Prototypes & wireframes</p><span class="badge" style="background:rgba(249,115,22,0.2);color:var(--orange);border-radius:50px;padding:4px 12px;font-size:0.72rem;">From Kshs. 1000</span></div></div>
+            <div class="col-6 col-md-4 col-lg-3" data-aos="flip-left" data-aos-delay="700"><div class="graphic-card"><span class="graphic-icon">📸</span><h4>Photo Editing</h4><p>Professional retouching</p><span class="badge" style="background:rgba(249,115,22,0.2);color:var(--orange);border-radius:50px;padding:4px 12px;font-size:0.72rem;">From Kshs. 500</span></div></div>
         </div>
         <div class="text-center mt-5" data-aos="zoom-in" data-aos-delay="800">
             <a href="/images/Graphic_Design.pdf" class="btn-graphic-pdf" target="_blank" rel="noopener noreferrer">
