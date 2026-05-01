@@ -1126,6 +1126,228 @@
         body.dark .testimonial-text { color: var(--light); }
         body.dark .faq-item { background: var(--dark-2); border-color: rgba(255,255,255,0.08); }
         body.dark .newsletter-box { background: var(--dark-3); border-color: rgba(255,255,255,0.07); }
+        /* ===== PRICING SECTION RESPONSIVE FIXES ===== */
+.pricing-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    border: 1px solid var(--light-2);
+    transition: var(--transition);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.pricing-card.featured {
+    background: var(--dark);
+    color: white;
+    border: none;
+    transform: scale(1.02);
+}
+
+.pricing-card ul {
+    flex-grow: 1;
+}
+
+.pricing-card ul li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pricing-card.featured ul li {
+    border-bottom-color: rgba(255,255,255,0.07);
+}
+
+.pricing-price {
+    margin: 1rem 0;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .pricing-card {
+        padding: 1.2rem;
+    }
+    
+    .pricing-card ul li {
+        padding: 0.4rem 0;
+        font-size: 0.75rem;
+    }
+    
+    .pricing-card .badge-popular {
+        font-size: 0.65rem;
+        padding: 3px 8px;
+        top: 12px;
+        right: 12px;
+    }
+    
+    .pricing-card h4 {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .pricing-card ul li {
+        font-size: 0.7rem;
+    }
+    
+    .pricing-card .btn {
+        padding: 8px 12px;
+        font-size: 0.75rem;
+    }
+}
+
+/* Small screen stack adjustment */
+@media (max-width: 576px) {
+    .col-sm-6 {
+        width: 100%;
+    }
+}
+/* ===== TEAM CARDS WITH IMAGES ===== */
+.team-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 32px 24px;
+    text-align: center;
+    border: 1px solid var(--light-2);
+    transition: var(--transition);
+    height: 100%;
+}
+
+.team-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.team-image-wrapper {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--light-2);
+}
+
+.team-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.team-card:hover .team-img {
+    transform: scale(1.08);
+}
+
+.team-avatar-fallback {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: var(--blue);
+    transition: var(--transition);
+}
+
+.team-card:hover .team-avatar-fallback i {
+    transform: scale(1.1);
+    color: var(--orange);
+}
+
+.team-card h5 {
+    margin-top: 16px;
+    margin-bottom: 4px;
+    font-size: 1.1rem;
+}
+
+.team-card .text-muted {
+    font-size: 0.8rem;
+    margin-bottom: 12px;
+}
+
+.team-card > p {
+    font-size: 0.82rem;
+    color: var(--text-light);
+    line-height: 1.5;
+    padding: 0 8px;
+}
+
+.team-social {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.team-social a {
+    color: var(--text-light);
+    transition: var(--transition);
+    font-size: 1rem;
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.03);
+}
+
+.team-social a:hover {
+    color: var(--blue);
+    background: rgba(37,99,235,0.1);
+    transform: translateY(-3px);
+}
+
+/* Dark mode adjustments */
+body.dark .team-card {
+    background: var(--dark-2);
+    border-color: rgba(255,255,255,0.08);
+}
+
+body.dark .team-social a {
+    background: rgba(255,255,255,0.05);
+    color: var(--text-light);
+}
+
+body.dark .team-social a:hover {
+    background: rgba(37,99,235,0.2);
+    color: var(--orange);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .team-image-wrapper {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .team-card {
+        padding: 24px 16px;
+    }
+    
+    .team-card h5 {
+        font-size: 1rem;
+    }
+    
+    .team-card > p {
+        font-size: 0.75rem;
+    }
+    
+    .team-social a {
+        width: 28px;
+        height: 28px;
+        font-size: 0.85rem;
+    }
+}
     </style>
 </head>
 <body>
@@ -1238,7 +1460,7 @@
             <div class="col-lg-6" data-aos="fade-right">
                 <div class="hero-badge">
                     <span class="dot"></span>
-                    Accepting new projects in 2025
+                    Accepting new projects in 2026
                 </div>
                 <h1>Web & Mobile Apps<br><span class="accent">That Actually Ship</span></h1>
                 <p class="mt-4 mb-4 text-white" style="opacity:0.75; font-size:1.1rem; line-height:1.7; max-width:500px;">
@@ -1297,7 +1519,7 @@
         <span class="marquee-item">🏆 Award-Winning Agency <span class="marquee-sep">|</span></span>
         <span class="marquee-item">💎 150+ Projects Delivered <span class="marquee-sep">|</span></span>
         <span class="marquee-item">🌍 20+ Countries Served <span class="marquee-sep">|</span></span>
-        <span class="marquee-item">⚡ 6-Week MVP Delivery <span class="marquee-sep">|</span></span>
+        <span class="marquee-item">⚡ 3-Week MVP Delivery <span class="marquee-sep">|</span></span>
     </div>
 </div>
 
@@ -1351,7 +1573,7 @@
                     </div>
                     <div class="service-icon"><i class="fas fa-rocket fa-2x" style="color:var(--purple)"></i></div>
                     <h3>MVP Development</h3>
-                    <p>Launch your idea in just 6 weeks, validated and ready.</p>
+                    <p>Launch your idea in just 3 weeks, validated and ready.</p>
                 </div>
             </div>
             <!-- Service 5 -->
@@ -1625,40 +1847,82 @@
             <p class="section-sub mx-auto mt-2">Talented builders who are passionate about shipping great software.</p>
         </div>
         <div class="row g-4 justify-content-center">
+            <!-- Team Member 1: Johnstone J. -->
             <div class="col-sm-6 col-md-4 col-lg-3" data-aos="zoom-in">
                 <div class="team-card">
-                    <div class="team-avatar" style="background:linear-gradient(135deg,#dbeafe,#eff6ff);">👨‍💻</div>
-                    <h5 class="mb-1">Alex Morgan</h5>
+                    <div class="team-image-wrapper">
+                        <img src="/images/johnstone_j.jpg" alt="Johnstone J." class="team-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                        <div class="team-avatar-fallback" style="display: none; background: linear-gradient(135deg,#dbeafe,#eff6ff);">
+                            <i class="fas fa-user-circle fa-3x"></i>
+                        </div>
+                    </div>
+                    <h5 class="mb-1 mt-3">Johnstone J.</h5>
                     <p class="text-muted mb-2" style="font-size:0.83rem;">Founder & CTO</p>
                     <p style="font-size:0.82rem;">10 years building products at scale. Former Google engineer.</p>
-                    <div class="team-social mt-3"><a href="#"><i class="fab fa-linkedin"></i></a><a href="#"><i class="fab fa-github"></i></a><a href="#"><i class="fab fa-twitter"></i></a></div>
+                    <div class="team-social mt-3">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
                 </div>
             </div>
+            
+            <!-- Team Member 2: Sarah C. -->
             <div class="col-sm-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="100">
                 <div class="team-card">
-                    <div class="team-avatar" style="background:linear-gradient(135deg,#fef3c7,#fffbeb);">👩‍🎨</div>
-                    <h5 class="mb-1">Sarah Chen</h5>
+                    <div class="team-image-wrapper">
+                        <img src="/images/sarah_c.jpg" alt="Sarah C." class="team-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                        <div class="team-avatar-fallback" style="display: none; background: linear-gradient(135deg,#fef3c7,#fffbeb);">
+                            <i class="fas fa-user-circle fa-3x"></i>
+                        </div>
+                    </div>
+                    <h5 class="mb-1 mt-3">Sarah C.</h5>
                     <p class="text-muted mb-2" style="font-size:0.83rem;">Head of Design</p>
                     <p style="font-size:0.82rem;">Award-winning UI/UX designer. Obsessed with accessibility.</p>
-                    <div class="team-social mt-3"><a href="#"><i class="fab fa-linkedin"></i></a><a href="#"><i class="fab fa-dribbble"></i></a><a href="#"><i class="fab fa-instagram"></i></a></div>
+                    <div class="team-social mt-3">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-dribbble"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
                 </div>
             </div>
+            
+            <!-- Team Member 3: David O. -->
             <div class="col-sm-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="200">
                 <div class="team-card">
-                    <div class="team-avatar" style="background:linear-gradient(135deg,#d1fae5,#ecfdf5);">👨‍🔬</div>
-                    <h5 class="mb-1">David Okafor</h5>
+                    <div class="team-image-wrapper">
+                        <img src="/images/david_o.jpg" alt="David O." class="team-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                        <div class="team-avatar-fallback" style="display: none; background: linear-gradient(135deg,#d1fae5,#ecfdf5);">
+                            <i class="fas fa-user-circle fa-3x"></i>
+                        </div>
+                    </div>
+                    <h5 class="mb-1 mt-3">David O.</h5>
                     <p class="text-muted mb-2" style="font-size:0.83rem;">Lead AI Engineer</p>
                     <p style="font-size:0.82rem;">ML specialist. Published researcher in NLP & computer vision.</p>
-                    <div class="team-social mt-3"><a href="#"><i class="fab fa-linkedin"></i></a><a href="#"><i class="fab fa-github"></i></a><a href="#"><i class="fab fa-twitter"></i></a></div>
+                    <div class="team-social mt-3">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
                 </div>
             </div>
+            
+            <!-- Team Member 4: Priya S. -->
             <div class="col-sm-6 col-md-4 col-lg-3" data-aos="zoom-in" data-aos-delay="300">
                 <div class="team-card">
-                    <div class="team-avatar" style="background:linear-gradient(135deg,#ede9fe,#f5f3ff);">👩‍💼</div>
-                    <h5 class="mb-1">Priya Sharma</h5>
+                    <div class="team-image-wrapper">
+                        <img src="/images/sriya_s.jpg" alt="Priya S." class="team-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                        <div class="team-avatar-fallback" style="display: none; background: linear-gradient(135deg,#ede9fe,#f5f3ff);">
+                            <i class="fas fa-user-circle fa-3x"></i>
+                        </div>
+                    </div>
+                    <h5 class="mb-1 mt-3">Priya S.</h5>
                     <p class="text-muted mb-2" style="font-size:0.83rem;">Project Manager</p>
                     <p style="font-size:0.82rem;">PMP certified. Ensures every project ships on time, every time.</p>
-                    <div class="team-social mt-3"><a href="#"><i class="fab fa-linkedin"></i></a><a href="#"><i class="fab fa-twitter"></i></a></div>
+                    <div class="team-social mt-3">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1673,18 +1937,93 @@
             <h2 class="section-title">Simple <span class="g-text-orange">Pricing</span></h2>
             <p class="section-sub mx-auto mt-2">No hidden fees. No surprises. Just great work at fair prices.</p>
         </div>
-        <div class="d-flex align-items-center justify-content-center gap-3 mb-5" data-aos="fade-up" data-aos-delay="100">
-            <span class="fw-500">Monthly</span>
+        
+        <!-- Billing Toggle - Responsive -->
+        <div class="d-flex align-items-center justify-content-center gap-2 gap-sm-3 mb-5 flex-wrap" data-aos="fade-up" data-aos-delay="100">
+            <span class="fw-500" style="font-size: clamp(0.8rem, 4vw, 1rem);">Monthly</span>
             <div class="form-check form-switch mb-0">
-                <input class="form-check-input" type="checkbox" id="billingToggle" style="width:52px;height:28px;cursor:pointer;">
+                <input class="form-check-input" type="checkbox" id="billingToggle" style="width: clamp(40px, 8vw, 52px); height: clamp(22px, 4vw, 28px); cursor: pointer;">
             </div>
-            <span class="fw-500">One-time <span class="badge bg-success ms-1" style="font-size:0.7rem;">Save 20%</span></span>
+            <span class="fw-500" style="font-size: clamp(0.8rem, 4vw, 1rem);">One-time <span class="badge bg-success ms-1" style="font-size: 0.65rem;">Save 20%</span></span>
         </div>
-        <div class="row g-4">
-            <div class="col-sm-6 col-lg-3" data-aos="fade-up"><div class="pricing-card"><h4 class="mb-1">Basic</h4><p class="text-muted mb-3" style="font-size:0.85rem;">Perfect for startups</p><div class="pricing-price g-text-blue">$2,999</div><ul class="list-unstyled mt-4 mb-4"><li><i class="fas fa-check text-success"></i> Landing Page</li><li><i class="fas fa-check text-success"></i> 5 Pages</li><li><i class="fas fa-check text-success"></i> Mobile Responsive</li><li><i class="fas fa-check text-success"></i> Basic SEO</li><li><i class="fas fa-check text-success"></i> 1 Month Support</li><li><i class="fas fa-times text-muted"></i> CMS</li><li><i class="fas fa-times text-muted"></i> API Integration</li></ul><a href="#contact" class="btn btn-outline-blue w-100">Get Started</a></div></div>
-            <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="100"><div class="pricing-card featured"><span class="badge-popular">Most Popular</span><h4 class="mb-1 text-white">Professional</h4><p style="color:var(--text-light);font-size:0.85rem;" class="mb-3">For growing businesses</p><div class="pricing-price" style="color:var(--orange)">$7,999</div><ul class="list-unstyled mt-4 mb-4"><li><i class="fas fa-check text-success"></i> Full Website</li><li><i class="fas fa-check text-success"></i> 15 Pages</li><li><i class="fas fa-check text-success"></i> CMS Integration</li><li><i class="fas fa-check text-success"></i> Advanced SEO</li><li><i class="fas fa-check text-success"></i> 6 Months Support</li><li><i class="fas fa-check text-success"></i> API Integration</li><li><i class="fas fa-check text-success"></i> Analytics Dashboard</li></ul><a href="#contact" class="btn btn-blue w-100">Get Started</a></div></div>
-            <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="200"><div class="pricing-card"><h4 class="mb-1">Business</h4><p class="text-muted mb-3" style="font-size:0.85rem;">For established companies</p><div class="pricing-price g-text-blue">$14,999</div><ul class="list-unstyled mt-4 mb-4"><li><i class="fas fa-check text-success"></i> Custom Web App</li><li><i class="fas fa-check text-success"></i> Unlimited Pages</li><li><i class="fas fa-check text-success"></i> Database Integration</li><li><i class="fas fa-check text-success"></i> Full API Dev</li><li><i class="fas fa-check text-success"></i> 12 Months Support</li><li><i class="fas fa-check text-success"></i> DevOps Setup</li><li><i class="fas fa-check text-success"></i> AI Features</li></ul><a href="#contact" class="btn btn-outline-blue w-100">Get Started</a></div></div>
-            <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="300"><div class="pricing-card"><h4 class="mb-1">Enterprise</h4><p class="text-muted mb-3" style="font-size:0.85rem;">For large organizations</p><div class="pricing-price g-text-purple">Custom</div><ul class="list-unstyled mt-4 mb-4"><li><i class="fas fa-check text-success"></i> Custom Solution</li><li><i class="fas fa-check text-success"></i> Scalable Architecture</li><li><i class="fas fa-check text-success"></i> Dedicated Team</li><li><i class="fas fa-check text-success"></i> 24/7 Premium Support</li><li><i class="fas fa-check text-success"></i> SLA Agreement</li><li><i class="fas fa-check text-success"></i> Security Audit</li><li><i class="fas fa-check text-success"></i> Training Sessions</li></ul><a href="#contact" class="btn btn-outline-blue w-100">Contact Us</a></div></div>
+        
+        <div class="row g-3 g-lg-4">
+            <!-- Basic Plan -->
+            <div class="col-sm-6 col-lg-3" data-aos="fade-up">
+                <div class="pricing-card h-100">
+                    <h4 class="mb-1" style="font-size: clamp(1.1rem, 4vw, 1.3rem);">Basic</h4>
+                    <p class="text-muted mb-3" style="font-size: 0.85rem;">Perfect for startups</p>
+                    <div class="pricing-price g-text-blue" style="font-size: clamp(1.3rem, 5vw, 2rem); font-weight: 800;">Kshs. 12,249</div>
+                    <ul class="list-unstyled mt-4 mb-4">
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> Landing Page</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> 5 Pages</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> Mobile Responsive</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> Basic SEO</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> 1 Month Support</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-times text-muted me-2"></i> CMS</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-times text-muted me-2"></i> API Integration</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-outline-blue w-100" style="font-size: clamp(0.75rem, 3.5vw, 0.85rem); padding: clamp(8px, 3vw, 12px);">Get Started</a>
+                </div>
+            </div>
+            
+            <!-- Professional Plan (Most Popular) -->
+            <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="pricing-card featured h-100 position-relative">
+                    <span class="badge-popular" style="font-size: 0.7rem; padding: 4px 10px;">Most Popular</span>
+                    <h4 class="mb-1 text-white" style="font-size: clamp(1.1rem, 4vw, 1.3rem);">Professional</h4>
+                    <p style="color: var(--text-light); font-size: 0.85rem;" class="mb-3">For growing businesses</p>
+                    <div class="pricing-price" style="color: var(--orange); font-size: clamp(1.3rem, 5vw, 2rem); font-weight: 800;">Kshs. 17,999</div>
+                    <ul class="list-unstyled mt-4 mb-4">
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> Full Website</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> 15 Pages</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> CMS Integration</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> Advanced SEO</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> 6 Months Support</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> API Integration</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> Analytics Dashboard</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-blue w-100" style="font-size: clamp(0.75rem, 3.5vw, 0.85rem); padding: clamp(8px, 3vw, 12px);">Get Started</a>
+                </div>
+            </div>
+            
+            <!-- Business Plan -->
+            <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="pricing-card h-100">
+                    <h4 class="mb-1" style="font-size: clamp(1.1rem, 4vw, 1.3rem);">Business</h4>
+                    <p class="text-muted mb-3" style="font-size: 0.85rem;">For established companies</p>
+                    <div class="pricing-price g-text-blue" style="font-size: clamp(1.3rem, 5vw, 2rem); font-weight: 800;">Kshs. 24,999</div>
+                    <ul class="list-unstyled mt-4 mb-4">
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> Custom Web App</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> Unlimited Pages</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> Database Integration</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> Full API Dev</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> 12 Months Support</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> DevOps Setup</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> AI Features</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-outline-blue w-100" style="font-size: clamp(0.75rem, 3.5vw, 0.85rem); padding: clamp(8px, 3vw, 12px);">Get Started</a>
+                </div>
+            </div>
+            
+            <!-- Enterprise Plan -->
+            <div class="col-sm-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="pricing-card h-100">
+                    <h4 class="mb-1" style="font-size: clamp(1.1rem, 4vw, 1.3rem);">Enterprise</h4>
+                    <p class="text-muted mb-3" style="font-size: 0.85rem;">For large organizations</p>
+                    <div class="pricing-price g-text-purple" style="font-size: clamp(1.3rem, 5vw, 2rem); font-weight: 800;">Custom</div>
+                    <ul class="list-unstyled mt-4 mb-4">
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> Custom Solution</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> Scalable Architecture</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> Dedicated Team</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> 24/7 Premium Support</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> SLA Agreement</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> Security Audit</li>
+                        <li style="font-size: clamp(0.75rem, 3.5vw, 0.85rem);"><i class="fas fa-check text-success me-2"></i> Training Sessions</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-outline-blue w-100" style="font-size: clamp(0.75rem, 3.5vw, 0.85rem); padding: clamp(8px, 3vw, 12px);">Contact Us</a>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -1849,7 +2188,7 @@
         </div>
         <hr class="footer-divider">
         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 footer-bottom">
-            <span>© 2025 NeurowexTech. All rights reserved.</span>
+            <span>© 2026 NeurowexTech. All rights reserved.</span>
             <div class="d-flex gap-3">
                 <a href="#" style="color:rgba(255,255,255,0.35);text-decoration:none;font-size:0.8rem;">Privacy Policy</a>
                 <a href="#" style="color:rgba(255,255,255,0.35);text-decoration:none;font-size:0.8rem;">Terms of Service</a>
@@ -2015,4 +2354,4 @@ window.addEventListener('scroll', () => {
 });
 </script>
 </body>
-</html>
+</html> 
