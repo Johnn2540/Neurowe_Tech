@@ -1,0 +1,11 @@
+<div class="project-card">
+    <h3>{{project.name}}</h3>
+    <span class="project-category">{{project.category}}</span>
+    <p class="project-description">{{truncate project.description 100}}</p>
+    <div class="project-tech">
+        {{#each project.tech_stack}}
+            <span class="tech-tag">{{this}}</span>
+        {{/each}}
+    </div>
+    <a href="/portfolio/{{project.id}}" class="btn-small">Learn More →</a>
+</div>

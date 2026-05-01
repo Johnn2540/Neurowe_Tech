@@ -1,0 +1,33 @@
+<section class="page-header">
+    <div class="container">
+        <h1>Our Portfolio</h1>
+        <p>Real apps built for real businesses</p>
+    </div>
+</section>
+
+<section class="portfolio-grid-section">
+    <div class="container">
+        <div class="portfolio-filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="Web App">Web Apps</button>
+            <button class="filter-btn" data-filter="Mobile App">Mobile Apps</button>
+            <button class="filter-btn" data-filter="E-commerce">E-commerce</button>
+        </div>
+        
+        <div class="portfolio-grid">
+            {{#each projects}}
+                <div class="portfolio-item" data-category="{{category}}">
+                    <div class="portfolio-item-content">
+                        <h3>{{name}}</h3>
+                        <p class="category">{{category}}</p>
+                        <p class="tech">{{join tech_stack ', '}}</p>
+                        <a href="/portfolio/{{id}}" class="btn-small">View Project →</a>
+                    </div>
+                    {{#if featured}}
+                        <span class="featured-badge">Featured</span>
+                    {{/if}}
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</section>
