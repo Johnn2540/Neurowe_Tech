@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Cookie Policy - NeurowexTech</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --blue: #2563eb;
+            --orange: #f97316;
+            --dark: #050b18;
+            --dark-2: #0d1526;
+            --light: #f8fafc;
+            --light-2: #e2e8f0;
+            --text: #334155;
+            --text-light: #94a3b8;
+            --green: #10b981;
+            --grad-blue: linear-gradient(135deg, #2563eb, #1d4ed8);
+            --font-head: 'Syne', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --radius: 20px;
+            --radius-sm: 12px;
+            --transition: all 0.35s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-body);
+            background: var(--light);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4, h5 { font-family: var(--font-head); }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+            padding: 0.8rem 0;
+            transition: var(--transition);
+        }
+        .navbar.scrolled { padding: 0.5rem 0; }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--grad-blue);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .navbar-brand span { color: var(--orange); background: none; }
+        .nav-link {
+            font-weight: 500;
+            color: var(--text) !important;
+            transition: var(--transition);
+        }
+        .nav-link:hover { color: var(--blue) !important; }
+
+        /* Page Header */
+        .page-header {
+            background: var(--grad-blue);
+            padding: 120px 0 60px;
+            color: white;
+            text-align: center;
+        }
+        .page-header h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 15px; }
+        .page-header p { opacity: 0.85; font-size: 1rem; }
+
+        /* Content Section */
+        .policy-content {
+            padding: 60px 0;
+        }
+        .policy-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 40px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            border: 1px solid var(--light-2);
+        }
+        .policy-card h2 {
+            font-size: 1.5rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: var(--blue);
+        }
+        .policy-card h2:first-of-type { margin-top: 0; }
+        .policy-card h3 {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .policy-card p {
+            line-height: 1.7;
+            margin-bottom: 15px;
+            color: var(--text);
+        }
+        .policy-card ul, .policy-card ol {
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+        .policy-card li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        .policy-card .last-updated {
+            background: rgba(37,99,235,0.08);
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 30px;
+            font-size: 0.85rem;
+            color: var(--blue);
+            border-left: 3px solid var(--blue);
+        }
+        .cookie-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .cookie-table th,
+        .cookie-table td {
+            border: 1px solid var(--light-2);
+            padding: 12px;
+            text-align: left;
+        }
+        .cookie-table th {
+            background: rgba(37,99,235,0.08);
+            font-weight: 700;
+        }
+        body.dark .cookie-table th,
+        body.dark .cookie-table td {
+            border-color: rgba(255,255,255,0.1);
+        }
+        .back-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--grad-blue);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            margin-top: 30px;
+        }
+        .back-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37,99,235,0.3);
+            color: white;
+        }
+        .cookie-settings {
+            background: rgba(37,99,235,0.05);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .cookie-settings h3 {
+            margin-top: 0;
+        }
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--light-2);
+        }
+        .toggle-switch:last-child {
+            border-bottom: none;
+        }
+        .toggle-label {
+            font-weight: 500;
+        }
+        .toggle-checkbox {
+            width: 50px;
+            height: 26px;
+            background: #ccc;
+            border-radius: 50px;
+            position: relative;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .toggle-checkbox.active {
+            background: var(--blue);
+        }
+        .toggle-checkbox::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 3px;
+            transition: var(--transition);
+        }
+        .toggle-checkbox.active::after {
+            left: 25px;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: rgba(255,255,255,0.7);
+            padding: 60px 0 30px;
+            margin-top: 60px;
+        }
+        footer h4, footer h5 { color: white; margin-bottom: 1rem; font-family: var(--font-head); }
+        footer a { color: rgba(255,255,255,0.55); text-decoration: none; transition: var(--transition); }
+        footer a:hover { color: var(--orange); }
+        footer ul li { padding: 4px 0; }
+        .footer-divider { border-color: rgba(255,255,255,0.08); margin: 32px 0 24px; }
+        .footer-bottom { color: rgba(255,255,255,0.4); font-size: 0.82rem; }
+        .social-btn {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.07);
+            color: white;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        .social-btn:hover { background: var(--blue); color: white; transform: translateY(-3px); }
+        .footer-logo-img { max-width: 160px; height: auto; }
+
+        /* Dark Mode */
+        body.dark {
+            background: var(--dark);
+            color: var(--light);
+        }
+        body.dark .navbar { background: rgba(5,11,24,0.98) !important; }
+        body.dark .policy-card {
+            background: var(--dark-2);
+            border-color: rgba(255,255,255,0.08);
+        }
+        body.dark .policy-card p,
+        body.dark .policy-card li {
+            color: var(--text-light);
+        }
+        body.dark footer { background: var(--dark-2); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header { padding: 100px 0 40px; }
+            .page-header h1 { font-size: 1.8rem; }
+            .policy-card { padding: 24px; }
+            .policy-card h2 { font-size: 1.3rem; }
+            .cookie-table { font-size: 0.8rem; }
+            .cookie-table th, .cookie-table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ======================== NAVBAR ======================== -->
+<nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">Neurowex<span>Tech</span></a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+                <li class="nav-item"><a class="nav-link" href="/#home">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#services">Services</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#portfolio">Portfolio</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#contact">Contact</a></li>
+            </ul>
+            <div class="d-none d-lg-flex align-items-center gap-2 ms-3">
+                <a href="/login" class="btn btn-outline-primary btn-sm rounded-pill">Sign In</a>
+                <a href="/sign_up" class="btn btn-primary btn-sm rounded-pill">Sign Up</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- ======================== PAGE HEADER ======================== -->
+<section class="page-header">
+    <div class="container">
+        <h1 data-aos="fade-up">Cookie Policy</h1>
+        <p data-aos="fade-up" data-aos-delay="100">Understand how we use cookies to enhance your browsing experience.</p>
+    </div>
+</section>
+
+<!-- ======================== COOKIE POLICY CONTENT ======================== -->
+<section class="policy-content">
+    <div class="container">
+        <div class="policy-card" data-aos="fade-up">
+            <div class="last-updated">
+                <i class="fas fa-calendar-alt me-2"></i> Last Updated: May 1, 2026
+            </div>
+
+            <h2>1. What Are Cookies?</h2>
+            <p>Cookies are small text files that are placed on your computer, smartphone, or other device when you visit a website. They are widely used to make websites work more efficiently, enhance user experience, and provide information to website owners.</p>
+            <p>Cookies do not typically contain any information that personally identifies a user, but personal information that we store about you may be linked to the information stored in and obtained from cookies.</p>
+
+            <h2>2. How We Use Cookies</h2>
+            <p>At NeurowexTech, we use cookies for the following purposes:</p>
+            <ul>
+                <li><strong>Essential Cookies:</strong> Necessary for the website to function properly (e.g., session management, authentication).</li>
+                <li><strong>Preference Cookies:</strong> Remember your preferences and settings (e.g., dark mode, language selection).</li>
+                <li><strong>Analytics Cookies:</strong> Help us understand how visitors interact with our website, measure traffic, and improve our services.</li>
+                <li><strong>Functional Cookies:</strong> Enable enhanced functionality and personalization (e.g., form data persistence).</li>
+                <li><strong>Security Cookies:</strong> Help protect your account and prevent fraudulent activity.</li>
+            </ul>
+
+            <h2>3. Types of Cookies We Use</h2>
+            <table class="cookie-table">
+                <thead>
+                    <tr>
+                        <th>Cookie Name</th>
+                        <th>Purpose</th>
+                        <th>Duration</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>session_id</code></td>
+                        <td>Maintains your session and authentication state</td>
+                        <td>Session (24 hours)</td>
+                        <td>Essential</td>
+                    </tr>
+                    <tr>
+                        <td><code>theme_preference</code></td>
+                        <td>Stores your dark/light mode preference</td>
+                        <td>Persistent (1 year)</td>
+                        <td>Preference</td>
+                    </tr>
+                    <tr>
+                        <td><code>remember_me</code></td>
+                        <td>Keeps you logged in across sessions</td>
+                        <td>Persistent (30 days)</td>
+                        <td>Essential</td>
+                    </tr>
+                    <tr>
+                        <td><code>cookie_consent</code></td>
+                        <td>Records your cookie consent preference</td>
+                        <td>Persistent (1 year)</td>
+                        <td>Essential</td>
+                    </tr>
+                    <tr>
+                        <td><code>_ga</code></td>
+                        <td>Google Analytics - distinguishes unique users</td>
+                        <td>Persistent (2 years)</td>
+                        <td>Analytics</td>
+                    </tr>
+                    <tr>
+                        <td><code>_gid</code></td>
+                        <td>Google Analytics - distinguishes users</td>
+                        <td>Persistent (24 hours)</td>
+                        <td>Analytics</td>
+                    </tr>
+                    <tr>
+                        <td><code>_gat</code></td>
+                        <td>Google Analytics - throttles request rate</td>
+                        <td>Session (1 minute)</td>
+                        <td>Analytics</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>4. Third-Party Cookies</h2>
+            <p>We also use cookies from trusted third-party services to enhance your experience:</p>
+            <ul>
+                <li><strong>Google Analytics:</strong> Helps us analyze website traffic and user behavior.</li>
+                <li><strong>Cloudflare:</strong> Provides security and performance optimization.</li>
+                <li><strong>Font Awesome:</strong> Delivers icon fonts used on our website.</li>
+                <li><strong>Google Fonts:</strong> Provides custom typography.</li>
+            </ul>
+            <p>These third parties may set cookies on your device. We do not control these cookies, and you should check the respective privacy policies of these services for more information.</p>
+
+            <h2>5. Managing Your Cookie Preferences</h2>
+            <div class="cookie-settings">
+                <h3>Cookie Preference Center</h3>
+                <p>Select which types of cookies you want to accept:</p>
+                <div class="toggle-switch">
+                    <span class="toggle-label">Essential Cookies (Required)</span>
+                    <div class="toggle-checkbox active" data-cookie="essential" style="opacity: 0.6; cursor: not-allowed;"></div>
+                </div>
+                <div class="toggle-switch">
+                    <span class="toggle-label">Preference Cookies</span>
+                    <div class="toggle-checkbox active" data-cookie="preference"></div>
+                </div>
+                <div class="toggle-switch">
+                    <span class="toggle-label">Analytics Cookies</span>
+                    <div class="toggle-checkbox active" data-cookie="analytics"></div>
+                </div>
+                <div class="toggle-switch">
+                    <span class="toggle-label">Functional Cookies</span>
+                    <div class="toggle-checkbox active" data-cookie="functional"></div>
+                </div>
+                <button id="saveCookiePreferences" class="btn btn-primary btn-sm mt-3">Save Preferences</button>
+            </div>
+
+            <h3>Browser Settings</h3>
+            <p>You can also manage cookies through your browser settings. Most browsers allow you to:</p>
+            <ul>
+                <li>View and delete cookies stored on your device.</li>
+                <li>Block third-party cookies.</li>
+                <li>Block all cookies from specific websites.</li>
+                <li>Clear all cookies when you close your browser.</li>
+            </ul>
+            <p>Instructions for managing cookies in popular browsers:</p>
+            <ul>
+                <li><strong>Google Chrome:</strong> Settings → Privacy and Security → Cookies and other site data</li>
+                <li><strong>Mozilla Firefox:</strong> Options → Privacy & Security → Cookies and Site Data</li>
+                <li><strong>Safari:</strong> Preferences → Privacy → Cookies and website data</li>
+                <li><strong>Microsoft Edge:</strong> Settings → Site permissions → Cookies and site data</li>
+                <li><strong>Opera:</strong> Settings → Privacy & security → Cookies</li>
+            </ul>
+
+            <h2>6. Consequences of Disabling Cookies</h2>
+            <p>If you choose to disable cookies, some features of our website may not function properly. Specifically, you may experience:</p>
+            <ul>
+                <li>Inability to stay logged in to your account.</li>
+                <li>Loss of saved preferences (e.g., dark mode).</li>
+                <li>Reduced website performance.</li>
+                <li>Repeated cookie consent prompts.</li>
+            </ul>
+            <p>Essential cookies are required for the website to function and cannot be disabled.</p>
+
+            <h2>7. Cookie Consent</h2>
+            <p>When you first visit our website, you will see a cookie banner asking for your consent to set non-essential cookies. By clicking "Accept," you agree to our use of cookies as described in this policy. You can change your cookie preferences at any time by:</p>
+            <ul>
+                <li>Clicking the "Cookie Settings" link in the footer.</li>
+                <li>Using the preference center above.</li>
+                <li>Adjusting your browser settings.</li>
+            </ul>
+
+            <h2>8. Updates to This Cookie Policy</h2>
+            <p>We may update this Cookie Policy from time to time to reflect changes in technology, legal requirements, or our practices. Any changes will be posted on this page with an updated "Last Updated" date. We encourage you to review this policy periodically.</p>
+
+            <h2>9. Contact Us</h2>
+            <p>If you have any questions about our use of cookies or this Cookie Policy, please contact us:</p>
+            <ul>
+                <li><strong>Email:</strong> <a href="mailto:techneurowex@gmail.com">techneurowex@gmail.com</a></li>
+                <li><strong>Phone:</strong> <a href="tel:+254769329340">+254 769 329 340</a></li>
+                <li><strong>WhatsApp:</strong> <a href="https://wa.me/254769329340">+254 769 329 340</a></li>
+                <li><strong>Address:</strong> Nairobi, Kenya</li>
+            </ul>
+
+            <div class="d-flex gap-3 flex-wrap">
+                <a href="/" class="back-home">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+                <a href="/privacy-policy" class="back-home" style="background: var(--orange);">
+                    <i class="fas fa-shield-alt"></i> Privacy Policy
+                </a>
+                <a href="/terms-of-service" class="back-home" style="background: var(--green);">
+                    <i class="fas fa-file-alt"></i> Terms of Service
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ======================== FOOTER ======================== -->
+<footer>
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="footer-logo mb-3">
+                    <img src="/images/logo.png" alt="Neurowex Tech Logo" class="footer-logo-img" onerror="this.style.display='none'">
+                </div>
+                <p style="max-width:300px;font-size:0.88rem;">We turn ideas into successful digital products. Fast, scalable, and built to last.</p>
+                <div class="d-flex gap-2 mt-3">
+                    <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
+                    <a href="https://wa.me/254769329340" target="_blank" class="social-btn wa"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="col-6 col-md-2">
+                <h5>Company</h5>
+                <ul class="list-unstyled">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/#services">Services</a></li>
+                    <li><a href="/#portfolio">Portfolio</a></li>
+                    <li><a href="/#team">Team</a></li>
+                    <li><a href="/#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-md-2">
+                <h5>Legal</h5>
+                <ul class="list-unstyled">
+                    <li><a href="/privacy-policy">Privacy Policy</a></li>
+                    <li><a href="/terms-of-service">Terms of Service</a></li>
+                    <li><a href="/cookie-policy">Cookie Policy</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Contact Us</h5>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-envelope me-2"></i><a href="mailto:techneurowex@gmail.com">techneurowex@gmail.com</a></li>
+                    <li><i class="fas fa-phone me-2"></i>+254 769 329 340</li>
+                    <li><i class="fas fa-map-marker-alt me-2"></i>Nairobi, Kenya</li>
+                </ul>
+                <div class="mt-3">
+                    <a href="https://wa.me/254769329340" target="_blank" class="whatsapp-cta" style="padding: 10px 18px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: white; border-radius: 50px; text-decoration: none;">
+                        <i class="fab fa-whatsapp"></i> WhatsApp Us
+                    </a>
+                </div>
+            </div>
+        </div>
+        <hr class="footer-divider">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 footer-bottom">
+            <span>© 2026 NeurowexTech. All rights reserved.</span>
+            <div class="d-flex gap-3">
+                <a href="/privacy-policy">Privacy Policy</a>
+                <a href="/terms-of-service">Terms of Service</a>
+                <a href="/cookie-policy">Cookie Policy</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({ duration: 800, once: true });
+    
+    window.addEventListener('scroll', () => {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+    
+    let dark = localStorage.getItem('theme') === 'dark';
+    function applyTheme() {
+        document.body.classList.toggle('dark', dark);
+    }
+    applyTheme();
+    
+    // Cookie preference toggles
+    const toggles = document.querySelectorAll('.toggle-checkbox');
+    toggles.forEach(toggle => {
+        if (toggle.dataset.cookie !== 'essential') {
+            toggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
+        }
+    });
+    
+    // Save preferences
+    document.getElementById('saveCookiePreferences')?.addEventListener('click', () => {
+        const preferences = {};
+        toggles.forEach(toggle => {
+            if (toggle.dataset.cookie) {
+                preferences[toggle.dataset.cookie] = toggle.classList.contains('active');
+            }
+        });
+        localStorage.setItem('cookiePreferences', JSON.stringify(preferences));
+        showToast('Cookie preferences saved!', 'success');
+    });
+    
+    function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `alert alert-${type === 'success' ? 'success' : 'info'} position-fixed bottom-0 end-0 m-3`;
+        toast.style.zIndex = '9999';
+        toast.innerHTML = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+    
+    // Load saved preferences
+    const savedPrefs = localStorage.getItem('cookiePreferences');
+    if (savedPrefs) {
+        const prefs = JSON.parse(savedPrefs);
+        toggles.forEach(toggle => {
+            if (toggle.dataset.cookie && prefs[toggle.dataset.cookie] !== undefined) {
+                if (prefs[toggle.dataset.cookie]) {
+                    toggle.classList.add('active');
+                } else {
+                    toggle.classList.remove('active');
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

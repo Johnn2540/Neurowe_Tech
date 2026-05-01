@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Terms of Service - NeurowexTech</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --blue: #2563eb;
+            --orange: #f97316;
+            --dark: #050b18;
+            --dark-2: #0d1526;
+            --light: #f8fafc;
+            --light-2: #e2e8f0;
+            --text: #334155;
+            --text-light: #94a3b8;
+            --grad-blue: linear-gradient(135deg, #2563eb, #1d4ed8);
+            --font-head: 'Syne', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --radius: 20px;
+            --radius-sm: 12px;
+            --transition: all 0.35s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-body);
+            background: var(--light);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4, h5 { font-family: var(--font-head); }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+            padding: 0.8rem 0;
+            transition: var(--transition);
+        }
+        .navbar.scrolled { padding: 0.5rem 0; }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--grad-blue);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .navbar-brand span { color: var(--orange); background: none; }
+        .nav-link {
+            font-weight: 500;
+            color: var(--text) !important;
+            transition: var(--transition);
+        }
+        .nav-link:hover { color: var(--blue) !important; }
+
+        /* Page Header */
+        .page-header {
+            background: var(--grad-blue);
+            padding: 120px 0 60px;
+            color: white;
+            text-align: center;
+        }
+        .page-header h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 15px; }
+        .page-header p { opacity: 0.85; font-size: 1rem; }
+
+        /* Content Section */
+        .policy-content {
+            padding: 60px 0;
+        }
+        .policy-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 40px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            border: 1px solid var(--light-2);
+        }
+        .policy-card h2 {
+            font-size: 1.5rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: var(--blue);
+        }
+        .policy-card h2:first-of-type { margin-top: 0; }
+        .policy-card h3 {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .policy-card p {
+            line-height: 1.7;
+            margin-bottom: 15px;
+            color: var(--text);
+        }
+        .policy-card ul, .policy-card ol {
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+        .policy-card li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        .policy-card .last-updated {
+            background: rgba(37,99,235,0.08);
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 30px;
+            font-size: 0.85rem;
+            color: var(--blue);
+            border-left: 3px solid var(--blue);
+        }
+        .back-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--grad-blue);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            margin-top: 30px;
+        }
+        .back-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37,99,235,0.3);
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: rgba(255,255,255,0.7);
+            padding: 60px 0 30px;
+            margin-top: 60px;
+        }
+        footer h4, footer h5 { color: white; margin-bottom: 1rem; font-family: var(--font-head); }
+        footer a { color: rgba(255,255,255,0.55); text-decoration: none; transition: var(--transition); }
+        footer a:hover { color: var(--orange); }
+        footer ul li { padding: 4px 0; }
+        .footer-divider { border-color: rgba(255,255,255,0.08); margin: 32px 0 24px; }
+        .footer-bottom { color: rgba(255,255,255,0.4); font-size: 0.82rem; }
+        .social-btn {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.07);
+            color: white;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        .social-btn:hover { background: var(--blue); color: white; transform: translateY(-3px); }
+        .footer-logo-img { max-width: 160px; height: auto; }
+
+        /* Dark Mode */
+        body.dark {
+            background: var(--dark);
+            color: var(--light);
+        }
+        body.dark .navbar { background: rgba(5,11,24,0.98) !important; }
+        body.dark .policy-card {
+            background: var(--dark-2);
+            border-color: rgba(255,255,255,0.08);
+        }
+        body.dark .policy-card p,
+        body.dark .policy-card li {
+            color: var(--text-light);
+        }
+        body.dark footer { background: var(--dark-2); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header { padding: 100px 0 40px; }
+            .page-header h1 { font-size: 1.8rem; }
+            .policy-card { padding: 24px; }
+            .policy-card h2 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ======================== NAVBAR ======================== -->
+<nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">Neurowex<span>Tech</span></a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+                <li class="nav-item"><a class="nav-link" href="/#home">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#services">Services</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#portfolio">Portfolio</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#contact">Contact</a></li>
+            </ul>
+            <div class="d-none d-lg-flex align-items-center gap-2 ms-3">
+                <a href="/login" class="btn btn-outline-primary btn-sm rounded-pill">Sign In</a>
+                <a href="/sign_up" class="btn btn-primary btn-sm rounded-pill">Sign Up</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- ======================== PAGE HEADER ======================== -->
+<section class="page-header">
+    <div class="container">
+        <h1 data-aos="fade-up">Terms of Service</h1>
+        <p data-aos="fade-up" data-aos-delay="100">Please read these terms carefully before using our services.</p>
+    </div>
+</section>
+
+<!-- ======================== TERMS OF SERVICE CONTENT ======================== -->
+<section class="policy-content">
+    <div class="container">
+        <div class="policy-card" data-aos="fade-up">
+            <div class="last-updated">
+                <i class="fas fa-calendar-alt me-2"></i> Last Updated: May 1, 2026
+            </div>
+
+            <h2>1. Acceptance of Terms</h2>
+            <p>By accessing or using the NeurowexTech website ("the Site"), services, or any related applications (collectively, the "Services"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, please do not use our Services.</p>
+
+            <h2>2. Description of Services</h2>
+            <p>NeurowexTech provides web and mobile app development, software development, graphic design, IT consulting, and related technology services. We work with clients to build custom digital solutions tailored to their specific needs.</p>
+
+            <h2>3. Eligibility</h2>
+            <p>By using our Services, you represent and warrant that:</p>
+            <ul>
+                <li>You are at least 18 years of age or have parental/guardian consent.</li>
+                <li>You have the legal capacity to enter into a binding agreement.</li>
+                <li>You will provide accurate, current, and complete information.</li>
+                <li>You will comply with all applicable laws and regulations.</li>
+            </ul>
+
+            <h2>4. User Accounts</h2>
+            <h3>4.1 Account Registration</h3>
+            <p>To access certain features of our Services, you may need to create an account. You agree to provide accurate, current, and complete information during registration and to update such information as needed.</p>
+            
+            <h3>4.2 Account Security</h3>
+            <p>You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify us immediately of any unauthorized use of your account.</p>
+            
+            <h3>4.3 Account Types</h3>
+            <ul>
+                <li><strong>User Accounts:</strong> For clients who request services and manage their projects.</li>
+                <li><strong>Admin Accounts:</strong> For NeurowexTech staff and authorized administrators.</li>
+            </ul>
+
+            <h2>5. Project Engagement & Payment Terms</h2>
+            <h3>5.1 Project Initiation</h3>
+            <p>All projects begin with a consultation to define scope, requirements, and deliverables. A formal agreement or Statement of Work (SOW) will be provided for approval before work commences.</p>
+            
+            <h3>5.2 Pricing</h3>
+            <p>Our pricing is based on project complexity, timeline, and resource requirements. We offer:</p>
+            <ul>
+                <li>Fixed-price packages (Basic, Professional, Business, Enterprise)</li>
+                <li>Custom quotes for enterprise solutions</li>
+                <li>Monthly maintenance retainers</li>
+            </ul>
+            
+            <h3>5.3 Payment Terms</h3>
+            <p>Payment terms are specified in individual agreements. Typically:</p>
+            <ul>
+                <li>50% deposit required to initiate work</li>
+                <li>25% upon milestone completion</li>
+                <li>25% upon project delivery</li>
+                <li>All prices are in Kenyan Shillings (Kshs) unless otherwise specified</li>
+            </ul>
+            
+            <h3>5.4 Refund Policy</h3>
+            <p>Due to the custom nature of our services, deposits are non-refundable once work has commenced. However, if we fail to deliver as agreed, a partial or full refund may be issued at our discretion.</p>
+
+            <h2>6. Intellectual Property Rights</h2>
+            <h3>6.1 Our Intellectual Property</h3>
+            <p>The NeurowexTech name, logo, website design, and original content are owned by NeurowexTech and protected by copyright, trademark, and other intellectual property laws.</p>
+            
+            <h3>6.2 Client Intellectual Property</h3>
+            <p>Upon full payment, the client owns the final delivered code and assets. Our templates, libraries, and proprietary methodologies remain our property.</p>
+            
+            <h3>6.3 License to Use</h3>
+            <p>We grant you a non-exclusive, non-transferable license to use the deliverables for their intended purpose. You may not resell or redistribute our work without explicit permission.</p>
+
+            <h2>7. Client Responsibilities</h2>
+            <p>As a client, you agree to:</p>
+            <ul>
+                <li>Provide timely feedback and approvals.</li>
+                <li>Supply necessary assets, content, and access to systems.</li>
+                <li>Cooperate with our team and respond to communications within reasonable timeframes.</li>
+                <li>Comply with all applicable laws regarding your business and the use of deliverables.</li>
+            </ul>
+
+            <h2>8. Project Timeline & Delivery</h2>
+            <ul>
+                <li>Estimated timelines are provided in project agreements but may vary based on scope changes or client delays.</li>
+                <li>We use agile methodologies with regular updates and demos.</li>
+                <li>Force majeure events (natural disasters, internet outages, etc.) may extend timelines.</li>
+            </ul>
+
+            <h2>9. Confidentiality</h2>
+            <p>Both parties agree to keep confidential all non-public information shared during the engagement. We are happy to sign NDAs upon request. We will not share your project details or trade secrets with third parties without your consent, except as required by law.</p>
+
+            <h2>10. Limitation of Liability</h2>
+            <p>To the maximum extent permitted by law, NeurowexTech shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or business opportunities, arising from your use of our Services or any project deliverables.</p>
+            <p>Our total liability shall not exceed the amount paid by you for the specific service or project giving rise to the claim.</p>
+
+            <h2>11. Disclaimer of Warranties</h2>
+            <p>Our Services are provided "as is" and "as available" without warranties of any kind, either express or implied. We do not warrant that the Services will be uninterrupted, error-free, or free of viruses or other harmful components.</p>
+
+            <h2>12. Indemnification</h2>
+            <p>You agree to indemnify and hold harmless NeurowexTech, its employees, directors, and affiliates from any claims, damages, losses, or expenses arising from your use of our Services, violation of these Terms, or infringement of any third-party rights.</p>
+
+            <h2>13. Termination</h2>
+            <p>Either party may terminate a project agreement with written notice. If you terminate a project without cause, you remain responsible for work completed and any non-refundable deposits. We reserve the right to suspend or terminate your access to our Services for violation of these Terms.</p>
+
+            <h2>14. Modifications to Services and Terms</h2>
+            <p>We may update these Terms from time to time. Continued use of our Services after changes constitutes acceptance of the modified Terms. We will notify you of significant changes via email or website notice.</p>
+
+            <h2>15. Governing Law</h2>
+            <p>These Terms shall be governed by and construed in accordance with the laws of Kenya. Any disputes arising under these Terms shall be subject to the exclusive jurisdiction of the courts in Nairobi, Kenya.</p>
+
+            <h2>16. Dispute Resolution</h2>
+            <p>Before filing a lawsuit, you agree to attempt to resolve any dispute through good-faith negotiation. If negotiation fails, disputes shall be resolved through binding arbitration in Nairobi, Kenya, in accordance with Kenyan arbitration rules.</p>
+
+            <h2>17. Third-Party Services</h2>
+            <p>Our Services may integrate with third-party platforms (e.g., Shopify, Stripe, Firebase). We are not responsible for the terms, privacy practices, or performance of these third-party services.</p>
+
+            <h2>18. Data Backup</h2>
+            <p>While we implement reasonable security measures, you are responsible for maintaining backups of your data. We recommend regular backups of your project files and databases.</p>
+
+            <h2>19. Support & Maintenance</h2>
+            <p>Support and maintenance terms are specified in your project agreement. Standard included support:</p>
+            <ul>
+                <li>3 months of free bug fixes after launch</li>
+                <li>Email support during business hours</li>
+                <li>Optional paid maintenance plans for ongoing support</li>
+            </ul>
+
+            <h2>20. Entire Agreement</h2>
+            <p>These Terms, together with any project-specific agreements, constitute the entire agreement between you and NeurowexTech regarding our Services and supersede all prior agreements.</p>
+
+            <h2>21. Contact Information</h2>
+            <p>If you have any questions about these Terms, please contact us:</p>
+            <ul>
+                <li><strong>Email:</strong> <a href="mailto:techneurowex@gmail.com">techneurowex@gmail.com</a></li>
+                <li><strong>Phone:</strong> <a href="tel:+254769329340">+254 769 329 340</a></li>
+                <li><strong>WhatsApp:</strong> <a href="https://wa.me/254769329340">+254 769 329 340</a></li>
+                <li><strong>Address:</strong> Nairobi, Kenya</li>
+            </ul>
+
+            <div class="d-flex gap-3 flex-wrap">
+                <a href="/" class="back-home">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+                <a href="/privacy-policy" class="back-home" style="background: var(--orange);">
+                    <i class="fas fa-shield-alt"></i> Privacy Policy
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ======================== FOOTER ======================== -->
+<footer>
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="footer-logo mb-3">
+                    <img src="/images/logo.png" alt="Neurowex Tech Logo" class="footer-logo-img" onerror="this.style.display='none'">
+                </div>
+                <p style="max-width:300px;font-size:0.88rem;">We turn ideas into successful digital products. Fast, scalable, and built to last.</p>
+                <div class="d-flex gap-2 mt-3">
+                    <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
+                    <a href="https://wa.me/254769329340" target="_blank" class="social-btn wa"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="col-6 col-md-2">
+                <h5>Company</h5>
+                <ul class="list-unstyled">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/#services">Services</a></li>
+                    <li><a href="/#portfolio">Portfolio</a></li>
+                    <li><a href="/#team">Team</a></li>
+                    <li><a href="/#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-md-2">
+                <h5>Legal</h5>
+                <ul class="list-unstyled">
+                    <li><a href="/privacy-policy">Privacy Policy</a></li>
+                    <li><a href="/terms-of-service">Terms of Service</a></li>
+                    <li><a href="/cookie-policy">Cookie Policy</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Contact Us</h5>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-envelope me-2"></i><a href="mailto:techneurowex@gmail.com">techneurowex@gmail.com</a></li>
+                    <li><i class="fas fa-phone me-2"></i>+254 769 329 340</li>
+                    <li><i class="fas fa-map-marker-alt me-2"></i>Nairobi, Kenya</li>
+                </ul>
+                <div class="mt-3">
+                    <a href="https://wa.me/254769329340" target="_blank" class="whatsapp-cta" style="padding: 10px 18px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: white; border-radius: 50px; text-decoration: none;">
+                        <i class="fab fa-whatsapp"></i> WhatsApp Us
+                    </a>
+                </div>
+            </div>
+        </div>
+        <hr class="footer-divider">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 footer-bottom">
+            <span>© 2026 NeurowexTech. All rights reserved.</span>
+            <div class="d-flex gap-3">
+                <a href="/privacy-policy">Privacy Policy</a>
+                <a href="/terms-of-service">Terms of Service</a>
+                <a href="/cookie-policy">Cookie Policy</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({ duration: 800, once: true });
+    
+    window.addEventListener('scroll', () => {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+    
+    let dark = localStorage.getItem('theme') === 'dark';
+    function applyTheme() {
+        document.body.classList.toggle('dark', dark);
+    }
+    applyTheme();
+</script>
+</body>
+</html>
