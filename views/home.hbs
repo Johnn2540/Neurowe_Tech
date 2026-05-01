@@ -883,6 +883,522 @@
             .service-card p { padding: 0 20px 20px; font-size: 0.85rem; }
             .footer-logo-img { max-width: 140px; }
         }
+/* ===== REFINED CONTACT SECTION ===== */
+.contact-form {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius);
+    padding: 40px;
+    transition: var(--transition);
+}
+
+.contact-form:hover {
+    border-color: rgba(255,255,255,0.2);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.form-label {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.form-label .text-danger {
+    color: #ef4444;
+}
+
+.form-control {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    color: white;
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.form-control:focus {
+    background: rgba(255,255,255,0.12);
+    border-color: var(--blue);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
+    color: white;
+}
+
+.form-control::placeholder {
+    color: rgba(255,255,255,0.4);
+}
+
+select.form-control option {
+    background: var(--dark-2);
+    color: white;
+}
+
+/* Service Checkboxes */
+.service-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.service-check span {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.7);
+    border-radius: 50px;
+    padding: 6px 16px;
+    font-size: 0.8rem;
+    transition: var(--transition);
+}
+
+.service-check input {
+    display: none;
+}
+
+.service-check input:checked + span {
+    background: var(--grad-blue);
+    border-color: var(--blue);
+    color: white;
+}
+
+.service-check:hover span {
+    background: rgba(255,255,255,0.15);
+    transform: translateY(-2px);
+}
+
+/* Divider Text */
+.divider-text {
+    text-align: center;
+    position: relative;
+    margin: 20px 0;
+}
+
+.divider-text::before,
+.divider-text::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: calc(50% - 80px);
+    height: 1px;
+    background: rgba(255,255,255,0.2);
+}
+
+.divider-text::before {
+    left: 0;
+}
+
+.divider-text::after {
+    right: 0;
+}
+
+.divider-text span {
+    background: rgba(255,255,255,0.05);
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.5);
+    display: inline-block;
+}
+
+/* WhatsApp CTA Button */
+.whatsapp-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(37,211,102,0.3);
+}
+
+.whatsapp-cta:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(37,211,102,0.4);
+    color: white;
+}
+
+.whatsapp-cta i {
+    font-size: 1.2rem;
+}
+
+/* Contact Info Cards */
+.contact-info-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-sm);
+    padding: 20px 15px;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.contact-info-card:hover {
+    background: rgba(255,255,255,0.1);
+    transform: translateY(-5px);
+    border-color: rgba(255,255,255,0.2);
+}
+
+.contact-info-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(37,99,235,0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    font-size: 1.3rem;
+    color: var(--orange);
+    transition: var(--transition);
+}
+
+.contact-info-card:hover .contact-info-icon {
+    background: var(--grad-blue);
+    color: white;
+    transform: scale(1.1);
+}
+
+.contact-info-card h6 {
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.contact-info-card a,
+.contact-info-card span {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.6);
+    transition: var(--transition);
+}
+
+.contact-info-card a:hover {
+    color: var(--orange);
+}
+
+/* Success/Error Messages */
+.contact-success {
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid var(--green);
+    border-radius: 12px;
+    padding: 12px;
+    color: #6ee7b7;
+}
+
+.contact-error {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid #ef4444;
+    border-radius: 12px;
+    padding: 12px;
+    color: #fca5a5;
+}
+
+/* Loading Spinner */
+.btn-loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.btn-loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .contact-form {
+        padding: 24px;
+    }
+    
+    .service-check span {
+        padding: 4px 12px;
+        font-size: 0.7rem;
+    }
+    
+    .whatsapp-cta {
+        padding: 12px 20px;
+        font-size: 0.8rem;
+    }
+    
+    .contact-info-card {
+        padding: 15px 10px;
+    }
+    
+    .contact-info-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+}
+/* ===== REFINED NEWSLETTER SECTION ===== */
+.newsletter-section {
+    background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+body.dark .newsletter-section {
+    background: linear-gradient(135deg, #0d1526 0%, #111827 100%);
+}
+
+.newsletter-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(37,99,235,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.newsletter-section::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -10%;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(249,115,22,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.newsletter-box {
+    background: white;
+    border-radius: var(--radius);
+    padding: 48px 40px;
+    border: 1px solid var(--light-2);
+    position: relative;
+    z-index: 1;
+    transition: var(--transition);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.newsletter-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+body.dark .newsletter-box {
+    background: var(--dark-3);
+    border-color: rgba(255,255,255,0.07);
+}
+
+.newsletter-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, rgba(37,99,235,0.1), rgba(37,99,235,0.05));
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    color: var(--blue);
+}
+
+.newsletter-box h3 {
+    font-family: var(--font-head);
+    font-weight: 700;
+}
+
+.newsletter-box h3 .gradient-text {
+    background: var(--grad-blue);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.newsletter-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.newsletter-features span {
+    font-size: 0.75rem;
+    color: var(--text-light);
+}
+
+.input-group-custom {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-group-custom i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    font-size: 1rem;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.newsletter-form .form-control {
+    width: 100%;
+    padding: 14px 140px 14px 48px;
+    border: 2px solid var(--light-2);
+    border-radius: 60px;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    background: white;
+}
+
+body.dark .newsletter-form .form-control {
+    background: var(--dark-2);
+    border-color: rgba(255,255,255,0.1);
+    color: white;
+}
+
+.newsletter-form .form-control:focus {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.newsletter-form .form-control::placeholder {
+    color: var(--text-light);
+}
+
+.btn-newsletter {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--grad-blue);
+    color: white;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: var(--transition);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.btn-newsletter:hover {
+    background: var(--grad-orange);
+    transform: translateY(-50%) scale(1.02);
+    box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+}
+
+.btn-newsletter:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.form-check-input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.form-check-label {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    cursor: pointer;
+}
+
+.newsletter-message {
+    font-size: 0.8rem;
+    transition: var(--transition);
+}
+
+.newsletter-message.success {
+    color: var(--green);
+}
+
+.newsletter-message.error {
+    color: #ef4444;
+}
+
+/* Loading spinner for button */
+.btn-newsletter.loading {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.btn-newsletter.loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .newsletter-box {
+        padding: 32px 24px;
+    }
+    
+    .newsletter-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.4rem;
+    }
+    
+    .newsletter-box h3 {
+        font-size: 1.3rem;
+    }
+    
+    .newsletter-features {
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .newsletter-features span {
+        display: block;
+        margin-left: 0 !important;
+    }
+    
+    .input-group-custom {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .input-group-custom i {
+        top: 22px;
+    }
+    
+    .newsletter-form .form-control {
+        padding: 12px 16px 12px 48px;
+        border-radius: 12px;
+    }
+    
+    .btn-newsletter {
+        position: static;
+        transform: none;
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+    }
+    
+    .btn-newsletter:hover {
+        transform: scale(1.02);
+    }
+}
     </style>
 </head>
 <body>
@@ -1659,33 +2175,103 @@
         <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="100">
             <div class="col-lg-8">
                 <div class="contact-form">
-                    <div class="row g-4">
-                        <div class="col-sm-6"><label class="form-label">Your Name</label><input type="text" class="form-control" placeholder="John Smith"></div>
-                        <div class="col-sm-6"><label class="form-label">Email Address</label><input type="email" class="form-control" placeholder="john@company.com"></div>
-                        <div class="col-sm-6"><label class="form-label">Company</label><input type="text" class="form-control" placeholder="Acme Inc."></div>
-                        <div class="col-sm-6"><label class="form-label">Budget Range</label><select class="form-control"><option>Select budget...</option><option>$1,000 – $5,000</option><option>$5,000 – $15,000</option><option>$15,000 – $50,000</option><option>$50,000+</option></select></div>
-                        <div class="col-12"><label class="form-label">Service Needed</label><div class="d-flex gap-2 flex-wrap"><label class="service-check"><input type="checkbox"> <span>Web Dev</span></label><label class="service-check"><input type="checkbox"> <span>Mobile App</span></label><label class="service-check"><input type="checkbox"> <span>UI/UX Design</span></label><label class="service-check"><input type="checkbox"> <span>AI Integration</span></label><label class="service-check"><input type="checkbox"> <span>E-commerce</span></label></div></div>
-                        <div class="col-12"><label class="form-label">Project Description</label><textarea class="form-control" rows="4" placeholder="Tell us about your project..."></textarea></div>
-                        <div class="col-12"><button id="contact-submit" class="btn btn-blue btn-lg w-100">Send Message <i class="fas fa-paper-plane ms-2"></i></button></div>
-                        
-                        <!-- WhatsApp Alternative -->
-                        <div class="col-12">
-                            <div style="text-align:center; color:rgba(255,255,255,0.4); font-size:0.85rem; margin: 4px 0;">— or reach us instantly —</div>
-                            <a href="https://wa.me/254769329340?text=Hello%20NeurowexTech!%20I%20would%20like%20to%20discuss%20a%20project." target="_blank" rel="noopener noreferrer" class="whatsapp-cta w-100 justify-content-center" style="border-radius: 14px;">
-                                <i class="fab fa-whatsapp"></i> Message us on WhatsApp &nbsp;·&nbsp; +254 769 329 340
-                            </a>
+                    <form id="contactForm">
+                        <div class="row g-4">
+                            <div class="col-sm-6">
+                                <label class="form-label">Your Name <span class="text-danger">*</span></label>
+                                <input type="text" id="contactName" class="form-control" placeholder="John Doe" required>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                                <input type="email" id="contactEmail" class="form-control" placeholder="hello@neurowextech.com" required>
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label">Company</label>
+                                <input type="text" id="contactCompany" class="form-control" placeholder="Acme Inc.">
+                            </div>
+                            <div class="col-sm-6">
+                                <label class="form-label">Budget Range (Kshs)</label>
+                                <select id="contactBudget" class="form-control">
+                                    <option value="">Select budget...</option>
+                                    <option value="10,000 - 15,000">Kshs 10,000 – Kshs 15,000</option>
+                                    <option value="15,000 - 20,000">Kshs 15,000 – Kshs 20,000</option>
+                                    <option value="20,000 - 25,000">Kshs 20,000 – Kshs 25,000</option>
+                                    <option value="25,000+">Kshs 25,000+</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Service Needed</label>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <label class="service-check"><input type="checkbox" value="Web Dev"> <span>Web Dev</span></label>
+                                    <label class="service-check"><input type="checkbox" value="Mobile App"> <span>Mobile App</span></label>
+                                    <label class="service-check"><input type="checkbox" value="UI/UX Design"> <span>UI/UX Design</span></label>
+                                    <label class="service-check"><input type="checkbox" value="AI Integration"> <span>AI Integration</span></label>
+                                    <label class="service-check"><input type="checkbox" value="E-commerce"> <span>E-commerce</span></label>
+                                    <label class="service-check"><input type="checkbox" value="Graphic Design"> <span>Graphic Design</span></label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Project Description <span class="text-danger">*</span></label>
+                                <textarea id="contactMessage" class="form-control" rows="5" placeholder="Tell us about your project, goals, and requirements..."></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" id="contactSubmitBtn" class="btn btn-blue btn-lg w-100">
+                                    <i class="fas fa-paper-plane me-2"></i> Send Message
+                                </button>
+                            </div>
+                            
+                            <!-- WhatsApp Alternative -->
+                            <div class="col-12">
+                                <div class="divider-text">
+                                    <span>or reach us instantly</span>
+                                </div>
+                                <a href="https://wa.me/254769329340?text=Hello%20NeurowexTech!%20I%20would%20like%20to%20discuss%20a%20project." 
+                                   target="_blank" 
+                                   rel="noopener noreferrer" 
+                                   class="whatsapp-cta w-100 justify-content-center">
+                                    <i class="fab fa-whatsapp me-2"></i> Message us on WhatsApp 
+                                    <span class="ms-2">📱 +254 769 329 340</span>
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="contactMsg" class="text-center mt-3" style="font-size:0.9rem;"></div>
+                </div>
+                
+                <!-- Contact Info Cards -->
+                <div class="row g-3 mt-3">
+                    <div class="col-md-4">
+                        <div class="contact-info-card text-center">
+                            <div class="contact-info-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <h6>Email Us</h6>
+                            <a href="mailto:techneurowex@gmail.com" class="text-white text-decoration-none">techneurowex@gmail.com</a>
                         </div>
                     </div>
-                    <p id="contact-msg" class="text-center mt-3" style="font-size:0.88rem;"></p>
-                </div>
-                <div class="row g-3 mt-2">
-                    <div class="col-4 text-center text-white" style="opacity:0.65;"><i class="fas fa-envelope mb-2 d-block"></i><a href="mailto:hello@neurowextech.com" class="text-white text-decoration-none" style="font-size:0.82rem;">hello@neurowextech.com</a></div>
-                    <div class="col-4 text-center text-white" style="opacity:0.65;"><i class="fas fa-phone mb-2 d-block"></i><span style="font-size:0.82rem;">+254 769 329 340</span></div>
-                    <div class="col-4 text-center text-white" style="opacity:0.65;"><i class="fas fa-map-marker-alt mb-2 d-block"></i><span style="font-size:0.82rem;">Silicon Valley, CA</span></div>
+                    <div class="col-md-4">
+                        <div class="contact-info-card text-center">
+                            <div class="contact-info-icon">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <h6>Call Us</h6>
+                            <a href="tel:+254769329340" class="text-white text-decoration-none">+254 769 329 340</a>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="contact-info-card text-center">
+                            <div class="contact-info-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <h6>Visit Us</h6>
+                            <span class="text-white-50">Nairobi, Kenya</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </section>
 
 <!-- ======================== NEWSLETTER ======================== -->
@@ -1693,12 +2279,40 @@
     <div class="container">
         <div class="newsletter-box" data-aos="zoom-in">
             <div class="row align-items-center g-4">
-                <div class="col-lg-6"><h3 class="mb-2">Stay in the loop 📬</h3><p class="text-muted mb-0">Get weekly insights on tech, design, and startup growth. No spam, ever.</p></div>
-                <div class="col-lg-6"><div class="d-flex gap-2"><input type="email" id="newsletter-email" class="form-control" placeholder="your@email.com"><button class="btn btn-blue" id="newsletter-btn" style="white-space:nowrap;">Subscribe →</button></div><p id="newsletter-msg" class="mt-2 mb-0" style="font-size:0.82rem;"></p></div>
+                <div class="col-lg-6">
+                    <div class="newsletter-icon">
+                        <i class="fas fa-envelope-open-text"></i>
+                    </div>
+                    <h3 class="mb-2">Stay in the <span class="gradient-text">Loop</span> 📬</h3>
+                    <p class="text-muted mb-0">Get weekly insights on tech, design, and startup growth. No spam, ever.</p>
+                    <div class="newsletter-features mt-3">
+                        <span><i class="fas fa-check-circle text-success me-1"></i> Weekly updates</span>
+                        <span><i class="fas fa-check-circle text-success me-1 ms-3"></i> Exclusive tips</span>
+                        <span><i class="fas fa-check-circle text-success me-1 ms-3"></i> Early access</span>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <form id="newsletterForm" class="newsletter-form">
+                        <div class="input-group-custom">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="newsletter-email" class="form-control" placeholder="Enter your email address" required>
+                            <button type="submit" id="newsletter-btn" class="btn-newsletter">
+                                Subscribe <i class="fas fa-arrow-right ms-1"></i>
+                            </button>
+                        </div>
+                        <div class="form-check mt-3">
+                            <input type="checkbox" class="form-check-input" id="newsletter-consent" checked>
+                            <label class="form-check-label" for="newsletter-consent">
+                                I agree to receive marketing emails
+                            </label>
+                        </div>
+                        <p id="newsletter-msg" class="mt-2 mb-0 newsletter-message"></p>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</section>
+</div>
 
 <!-- ======================== CTA ======================== -->
 <section class="cta-section py-5">
@@ -1755,9 +2369,9 @@
             <div class="col-md-4">
                 <h5 style="font-size:0.9rem;">Contact Us</h5>
                 <ul class="list-unstyled" style="font-size:0.85rem;">
-                    <li class="mb-1"><i class="fas fa-envelope me-2"></i><a href="mailto:hello@neurowextech.com">hello@neurowextech.com</a></li>
+                    <li class="mb-1"><i class="fas fa-envelope me-2"></i><a href="techneurowex@gmail.com">techneurowex@gmail.com</a></li>
                     <li class="mb-1"><i class="fas fa-phone me-2"></i>+254 769 329 340</li>
-                    <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>Silicon Valley, CA, USA</li>
+                    <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>Nairobi, Kenya</li>
                     <li>
                         <a href="https://wa.me/254769329340?text=Hello%20NeurowexTech!" target="_blank" rel="noopener noreferrer" class="whatsapp-cta" style="padding: 10px 18px; font-size: 0.82rem;">
                             <i class="fab fa-whatsapp"></i> WhatsApp Us Now
@@ -1875,16 +2489,97 @@ document.querySelectorAll('.faq-question').forEach(q => {
     });
 });
 
-// Newsletter
-document.getElementById('newsletter-btn').addEventListener('click', () => {
-    const email = document.getElementById('newsletter-email').value;
-    const msg = document.getElementById('newsletter-msg');
-    if (!email || !email.includes('@')) { msg.textContent = '⚠️ Please enter a valid email.'; msg.style.color = '#ef4444'; return; }
-    msg.textContent = '✅ You\'re subscribed! Welcome aboard.';
-    msg.style.color = '#10b981';
-    document.getElementById('newsletter-email').value = '';
-    showToast('Subscribed successfully!');
-});
+// ============================================
+// NEWSLETTER SUBSCRIPTION
+// ============================================
+const newsletterForm = document.getElementById('newsletterForm');
+const newsletterEmail = document.getElementById('newsletter-email');
+const newsletterBtn = document.getElementById('newsletter-btn');
+const newsletterMsg = document.getElementById('newsletter-msg');
+const newsletterConsent = document.getElementById('newsletter-consent');
+
+if (newsletterForm) {
+    newsletterForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = newsletterEmail.value.trim();
+        
+        // Validation
+        if (!email) {
+            showNewsletterMessage('Please enter your email address', 'error');
+            newsletterEmail.classList.add('error');
+            return;
+        }
+        
+        if (!/^\S+@\S+\.\S+$/.test(email)) {
+            showNewsletterMessage('Please enter a valid email address', 'error');
+            newsletterEmail.classList.add('error');
+            return;
+        }
+        
+        if (!newsletterConsent.checked) {
+            showNewsletterMessage('Please agree to receive marketing emails', 'error');
+            return;
+        }
+        
+        newsletterEmail.classList.remove('error');
+        
+        // Show loading state
+        const originalText = newsletterBtn.innerHTML;
+        newsletterBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Subscribing...';
+        newsletterBtn.disabled = true;
+        newsletterBtn.classList.add('loading');
+        
+        try {
+            const response = await fetch('/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                showNewsletterMessage(data.message || '🎉 Subscribed successfully! Check your inbox.', 'success');
+                newsletterForm.reset();
+                // Re-check consent by default
+                newsletterConsent.checked = true;
+                
+                // Trigger confetti effect (optional)
+                if (typeof confetti === 'function') {
+                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                }
+            } else {
+                showNewsletterMessage(data.message || 'Subscription failed. Please try again.', 'error');
+            }
+        } catch (err) {
+            console.error('Newsletter error:', err);
+            showNewsletterMessage('Network error. Please try again.', 'error');
+        } finally {
+            newsletterBtn.innerHTML = originalText;
+            newsletterBtn.disabled = false;
+            newsletterBtn.classList.remove('loading');
+        }
+    });
+    
+    // Real-time validation
+    newsletterEmail.addEventListener('input', function() {
+        this.classList.remove('error');
+        if (newsletterMsg.firstChild) {
+            newsletterMsg.firstChild.remove();
+        }
+    });
+    
+    function showNewsletterMessage(message, type) {
+        newsletterMsg.innerHTML = `<span class="newsletter-message ${type}"><i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-1"></i> ${message}</span>`;
+        
+        setTimeout(() => {
+            if (newsletterMsg.firstChild) {
+                newsletterMsg.firstChild.remove();
+            }
+        }, 5000);
+    }
+}
 
 // Contact Form
 document.getElementById('contact-submit').addEventListener('click', () => {
