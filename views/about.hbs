@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>About Us - NeurowexTech</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --blue: #2563eb;
+            --orange: #f97316;
+            --dark: #050b18;
+            --dark-2: #0d1526;
+            --light: #f8fafc;
+            --light-2: #e2e8f0;
+            --text: #334155;
+            --text-light: #94a3b8;
+            --grad-blue: linear-gradient(135deg, #2563eb, #1d4ed8);
+            --font-head: 'Syne', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --radius: 20px;
+            --radius-sm: 12px;
+            --transition: all 0.35s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-body);
+            background: var(--light);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4, h5 { font-family: var(--font-head); }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+            padding: 0.8rem 0;
+            transition: var(--transition);
+        }
+        .navbar.scrolled { padding: 0.5rem 0; }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--grad-blue);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .navbar-brand span { color: var(--orange); background: none; }
+        .nav-link {
+            font-weight: 500;
+            color: var(--text) !important;
+            transition: var(--transition);
+        }
+        .nav-link:hover { color: var(--blue) !important; }
+
+        /* Page Header */
+        .page-header {
+            background: var(--grad-blue);
+            padding: 120px 0 60px;
+            color: white;
+            text-align: center;
+        }
+        .page-header h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 15px; }
+        .page-header p { opacity: 0.85; font-size: 1rem; max-width: 600px; margin: 0 auto; }
+
+        /* Content Sections */
+        .about-section {
+            padding: 60px 0;
+        }
+        .about-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 40px;
+            height: 100%;
+            border: 1px solid var(--light-2);
+            transition: var(--transition);
+        }
+        .about-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        .about-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(37,99,235,0.1);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            color: var(--blue);
+        }
+        .stats-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 30px;
+            text-align: center;
+            border: 1px solid var(--light-2);
+            transition: var(--transition);
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--blue);
+        }
+        .team-member {
+            background: white;
+            border-radius: var(--radius);
+            padding: 30px;
+            text-align: center;
+            border: 1px solid var(--light-2);
+            transition: var(--transition);
+        }
+        .team-member:hover {
+            transform: translateY(-5px);
+        }
+        .team-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            overflow: hidden;
+        }
+        .team-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .back-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--grad-blue);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            margin-top: 30px;
+        }
+        .back-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37,99,235,0.3);
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: rgba(255,255,255,0.7);
+            padding: 60px 0 30px;
+            margin-top: 60px;
+        }
+        footer h4, footer h5 { color: white; margin-bottom: 1rem; font-family: var(--font-head); }
+        footer a { color: rgba(255,255,255,0.55); text-decoration: none; transition: var(--transition); }
+        footer a:hover { color: var(--orange); }
+        footer ul li { padding: 4px 0; }
+        .footer-divider { border-color: rgba(255,255,255,0.08); margin: 32px 0 24px; }
+        .footer-bottom { color: rgba(255,255,255,0.4); font-size: 0.82rem; }
+        .social-btn {
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.07);
+            color: white;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+        .social-btn:hover { background: var(--blue); color: white; transform: translateY(-3px); }
+        .footer-logo-img { max-width: 160px; height: auto; }
+
+        /* Dark Mode */
+        body.dark {
+            background: var(--dark);
+            color: var(--light);
+        }
+        body.dark .navbar { background: rgba(5,11,24,0.98) !important; }
+        body.dark .about-card,
+        body.dark .stats-card,
+        body.dark .team-member {
+            background: var(--dark-2);
+            border-color: rgba(255,255,255,0.08);
+        }
+        body.dark .about-card p,
+        body.dark .stats-card p,
+        body.dark .team-member p {
+            color: var(--text-light);
+        }
+        body.dark footer { background: var(--dark-2); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header { padding: 100px 0 40px; }
+            .page-header h1 { font-size: 1.8rem; }
+            .about-card { padding: 24px; }
+            .stats-number { font-size: 1.8rem; }
+            .team-avatar { width: 100px; height: 100px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ======================== NAVBAR ======================== -->
+<nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">Neurowex<span>Tech</span></a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+                <li class="nav-item"><a class="nav-link" href="/#home">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#services">Services</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#portfolio">Portfolio</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#contact">Contact</a></li>
+            </ul>
+            <div class="d-none d-lg-flex align-items-center gap-2 ms-3">
+                <a href="/login" class="btn btn-outline-primary btn-sm rounded-pill">Sign In</a>
+                <a href="/sign_up" class="btn btn-primary btn-sm rounded-pill">Sign Up</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- ======================== PAGE HEADER ======================== -->
+<section class="page-header">
+    <div class="container">
+        <h1 data-aos="fade-up">About NeurowexTech</h1>
+        <p data-aos="fade-up" data-aos-delay="100">We're on a mission to help businesses launch amazing digital products.</p>
+    </div>
+</section>
+
+<!-- ======================== ABOUT CONTENT ======================== -->
+<section class="about-section">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-6" data-aos="fade-right">
+                <div class="about-card">
+                    <div class="about-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h2>Our Mission</h2>
+                    <p class="text-muted">To empower businesses and startups with innovative, scalable, and high-performance digital solutions that drive growth and transform ideas into reality.</p>
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="about-card">
+                    <div class="about-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h2>Our Vision</h2>
+                    <p class="text-muted">To become Africa's leading technology partner, recognized for excellence in web and mobile app development, innovation, and client success.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Our Story -->
+        <div class="row mt-5" data-aos="fade-up">
+            <div class="col-12">
+                <div class="about-card">
+                    <div class="about-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h2>Our Story</h2>
+                    <p>Founded in 2024, NeurowexTech started with a simple belief: technology should work for people, not the other way around. We saw too many businesses struggling with complex, overpriced, and delayed software projects.</p>
+                    <p class="mt-3">Today, we've grown into a trusted technology partner for startups and businesses across Africa. Our team of passionate developers, designers, and strategists work together to deliver exceptional digital products that actually ship.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="row mt-5 g-4">
+            <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="100">
+                <div class="stats-card">
+                    <div class="stats-number">500+</div>
+                    <p class="text-muted">Projects Delivered</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="200">
+                <div class="stats-card">
+                    <div class="stats-number">98%</div>
+                    <p class="text-muted">Client Satisfaction</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="300">
+                <div class="stats-card">
+                    <div class="stats-number">50+</div>
+                    <p class="text-muted">Expert Developers</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="400">
+                <div class="stats-card">
+                    <div class="stats-number">20+</div>
+                    <p class="text-muted">Countries Served</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Core Values -->
+        <div class="row mt-5">
+            <div class="col-12" data-aos="fade-up">
+                <h2 class="text-center mb-4">Our Core Values</h2>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="about-card text-center">
+                    <div class="about-icon" style="margin: 0 auto 20px;">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Speed & Delivery</h3>
+                    <p class="text-muted">We ship in weeks, not months. Agile processes ensure you see progress constantly.</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="about-card text-center">
+                    <div class="about-icon" style="margin: 0 auto 20px;">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Quality & Security</h3>
+                    <p class="text-muted">Production-grade code, thorough testing, and enterprise security standards.</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="about-card text-center">
+                    <div class="about-icon" style="margin: 0 auto 20px;">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3>Client Partnership</h3>
+                    <p class="text-muted">We succeed when you succeed. Transparent communication and long-term relationships.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Section -->
+        <div class="row mt-5">
+            <div class="col-12" data-aos="fade-up">
+                <h2 class="text-center mb-4">Meet Our Leadership</h2>
+            </div>
+            <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="100">
+                <div class="team-member">
+                    <div class="team-avatar">
+                        <img src="/images/johnstone_j.jpg" alt="Johnstone J." onerror="this.src='https://placehold.co/120x120/2563eb/white?text=JJ'">
+                    </div>
+                    <h4>Johnstone J.</h4>
+                    <p class="text-muted">Founder & CTO</p>
+                    <p>10+ years building products at scale. Former Google engineer passionate about technology.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="200">
+                <div class="team-member">
+                    <div class="team-avatar">
+                        <img src="/images/sarah_c.jpg" alt="Sarah C." onerror="this.src='https://placehold.co/120x120/f97316/white?text=SC'">
+                    </div>
+                    <h4>Sarah C.</h4>
+                    <p class="text-muted">Head of Design</p>
+                    <p>Award-winning UI/UX designer obsessed with creating intuitive experiences.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="300">
+                <div class="team-member">
+                    <div class="team-avatar">
+                        <img src="/images/david_o.jpg" alt="David O." onerror="this.src='https://placehold.co/120x120/10b981/white?text=DO'">
+                    </div>
+                    <h4>David O.</h4>
+                    <p class="text-muted">Lead AI Engineer</p>
+                    <p>ML specialist and published researcher in NLP and computer vision.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="400">
+                <div class="team-member">
+                    <div class="team-avatar">
+                        <img src="/images/sriya_s.jpg" alt="Priya S." onerror="this.src='https://placehold.co/120x120/8b5cf6/white?text=PS'">
+                    </div>
+                    <h4>Priya S.</h4>
+                    <p class="text-muted">Project Manager</p>
+                    <p>PMP certified, ensuring every project ships on time and on budget.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="row mt-5" data-aos="fade-up">
+            <div class="col-12 text-center">
+                <a href="/#contact" class="back-home">
+                    Start Your Project <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+                <a href="/" class="back-home" style="background: var(--orange); margin-left: 15px;">
+                    <i class="fas fa-home"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ======================== FOOTER ======================== -->
+<footer>
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="footer-logo mb-3">
+                    <img src="/images/logo.png" alt="Neurowex Tech Logo" class="footer-logo-img" onerror="this.style.display='none'">
+                </div>
+                <p style="max-width:300px;font-size:0.88rem;">We turn ideas into successful digital products. Fast, scalable, and built to last.</p>
+                <div class="d-flex gap-2 mt-3">
+                    <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
+                    <a href="https://wa.me/254769329340" target="_blank" class="social-btn wa"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="col-6 col-md-2">
+                <h5>Company</h5>
+                <ul class="list-unstyled">
+                    <li><a href="/#home">Home</a></li>
+                    <li><a href="/#services">Services</a></li>
+                    <li><a href="/#portfolio">Portfolio</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-md-2">
+                <h5>Resources</h5>
+                <ul class="list-unstyled">
+                    <li><a href="/#blog">Blog</a></li>
+                    <li><a href="/#faq">FAQ</a></li>
+                    <li><a href="/#pricing">Pricing</a></li>
+                    <li><a href="/#graphic">Graphic Design</a></li>
+                    <li><a href="/#process">Process</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Contact Us</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-1"><i class="fas fa-envelope me-2"></i><a href="mailto:techneurowex@gmail.com">techneurowex@gmail.com</a></li>
+                    <li class="mb-1"><i class="fas fa-phone me-2"></i><a href="tel:+254769329340">+254 769 329 340</a></li>
+                    <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>Nairobi, Kenya</li>
+                </ul>
+                <div style="background:rgba(255,255,255,0.05);border-radius:var(--radius-sm);padding:12px 14px;border:1px solid rgba(255,255,255,0.07);font-size:0.8rem; margin-top: 12px;">
+                    <i class="fas fa-clock me-2"></i>Mon – Fri, 9am – 6pm EAT
+                </div>
+            </div>
+        </div>
+        <hr class="footer-divider">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 footer-bottom">
+            <span>© 2026 NeurowexTech. All rights reserved.</span>
+            <div class="d-flex gap-3">
+                <a href="/privacy-policy">Privacy Policy</a>
+                <a href="/terms-of-service">Terms of Service</a>
+                <a href="/cookie-policy">Cookie Policy</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({ duration: 800, once: true });
+    
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+    
+    // Dark Mode
+    let dark = localStorage.getItem('theme') === 'dark';
+    function applyTheme() {
+        document.body.classList.toggle('dark', dark);
+    }
+    applyTheme();
+</script>
+</body>
+</html>

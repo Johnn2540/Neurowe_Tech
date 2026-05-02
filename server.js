@@ -38,16 +38,15 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: process.env.NODE_ENV === 'production', // true on Render (HTTPS)
+        secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24, // 24 hours
+        maxAge: 1000 * 60 * 60 * 24,
         sameSite: 'lax'
     },
-    proxy: true // Important for Render (behind proxy)
+    proxy: true
 }));
 
 // ========== AUTH MIDDLEWARE ==========
-// Check if user is authenticated
 function isAuthenticated(req, res, next) {
     if (req.session.userId) {
         return next();
@@ -55,7 +54,6 @@ function isAuthenticated(req, res, next) {
     res.redirect('/login');
 }
 
-// Check if user is admin
 function isAdmin(req, res, next) {
     if (req.session.userId && req.session.userRole === 'admin') {
         return next();
@@ -70,7 +68,6 @@ function isAdmin(req, res, next) {
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Register partials directory
 const partialsPath = path.join(__dirname, 'views/partials');
 if (fs.existsSync(partialsPath)) {
     hbs.registerPartials(partialsPath);
@@ -166,11 +163,12 @@ app.use('/images', express.static(path.join(__dirname, 'views/images')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Security headers for production
+// Security headers
 app.use((req, res, next) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-Frame-Options', 'DENY');
     res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
     next();
 });
 
@@ -195,18 +193,15 @@ if (process.env.NODE_ENV !== 'production') {
 
 // ========== AUTH ROUTES ==========
 
-// Sign Up page
 app.get('/sign_up', (req, res) => {
     if (req.session.userId) {
         return res.redirect(req.session.userRole === 'admin' ? '/admin_dashboard' : '/user_dashboard');
     }
     res.render('signup', {
-        title: 'Sign Up - Neurowex Tech',
-        description: 'Create your Neurowex Tech account'
+        title: 'Sign Up - Neurowex Tech'
     });
 });
 
-// Sign Up API
 app.post('/api/signup', async (req, res) => {
     try {
         const { fullname, email, password } = req.body;
@@ -245,18 +240,15 @@ app.post('/api/signup', async (req, res) => {
     }
 });
 
-// Sign In page
 app.get('/login', (req, res) => {
     if (req.session.userId) {
         return res.redirect(req.session.userRole === 'admin' ? '/admin_dashboard' : '/user_dashboard');
     }
     res.render('signin', {
-        title: 'Sign In - Neurowex Tech',
-        description: 'Sign in to your Neurowex Tech account'
+        title: 'Sign In - Neurowex Tech'
     });
 });
 
-// Sign In API (FIXED FOR RENDER)
 app.post('/api/login', async (req, res) => {
     try {
         const { email, password, rememberMe } = req.body;
@@ -265,10 +257,7 @@ app.post('/api/login', async (req, res) => {
             return res.status(400).json({ success: false, message: 'Please enter email and password' });
         }
         
-        const result = await db.query(
-            'SELECT * FROM users WHERE email = $1',
-            [email.toLowerCase()]
-        );
+        const result = await db.query('SELECT * FROM users WHERE email = $1', [email.toLowerCase()]);
         
         if (result.rows.length === 0) {
             return res.status(401).json({ success: false, message: 'Invalid email or password' });
@@ -290,7 +279,6 @@ app.post('/api/login', async (req, res) => {
         req.session.userName = user.username;
         req.session.userRole = user.role;
         
-        // Save session before responding
         req.session.save((err) => {
             if (err) {
                 console.error('Session save error:', err);
@@ -318,31 +306,25 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// Sign Out
 app.get('/logout', (req, res) => {
     req.session.destroy((err) => {
-        if (err) {
-            console.error('Logout error:', err);
-        }
+        if (err) console.error('Logout error:', err);
         res.redirect('/');
     });
 });
 
-// Forgot Password page
 app.get('/forgot-password', (req, res) => {
     res.render('reset-password', {
         title: 'Forgot Password - Neurowex Tech'
     });
 });
 
-// Reset Password page
 app.get('/reset-password', (req, res) => {
     res.render('reset-password', {
         title: 'Reset Password - Neurowex Tech'
     });
 });
 
-// Forgot Password API
 app.post('/api/forgot-password', async (req, res) => {
     try {
         const { email } = req.body;
@@ -380,7 +362,6 @@ app.post('/api/forgot-password', async (req, res) => {
     }
 });
 
-// Reset Password API
 app.post('/api/reset-password', async (req, res) => {
     try {
         const { token, newPassword } = req.body;
@@ -413,11 +394,9 @@ app.post('/api/reset-password', async (req, res) => {
 
 // ========== DASHBOARD ROUTES ==========
 
-// User Dashboard
 app.get('/user_dashboard', isAuthenticated, async (req, res) => {
     try {
         const user = await db.query('SELECT * FROM users WHERE id = $1', [req.session.userId]);
-        
         res.render('user_dashboard', {
             title: 'User Dashboard - Neurowex Tech',
             user: user.rows[0],
@@ -429,7 +408,6 @@ app.get('/user_dashboard', isAuthenticated, async (req, res) => {
     }
 });
 
-// Admin Dashboard
 app.get('/admin_dashboard', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const users = await db.query(
@@ -461,11 +439,7 @@ app.get('/admin_dashboard', isAuthenticated, isAdmin, async (req, res) => {
 // ========== USER API ROUTES ==========
 
 app.get('/api/user/stats', isAuthenticated, async (req, res) => {
-    try {
-        res.json({ success: true, totalProjects: 0, completedProjects: 0, activeProjects: 0 });
-    } catch (err) {
-        res.json({ success: true, totalProjects: 0, completedProjects: 0, activeProjects: 0 });
-    }
+    res.json({ success: true, totalProjects: 0, completedProjects: 0, activeProjects: 0 });
 });
 
 app.get('/api/user/projects', isAuthenticated, async (req, res) => {
@@ -766,7 +740,26 @@ app.get('/about', (req, res) => {
     });
 });
 
-// Test auth endpoint for debugging
+// ========== LEGAL PAGES ==========
+app.get('/privacy-policy', (req, res) => {
+    res.render('privacy-policy', {
+        title: 'Privacy Policy - Neurowex Tech'
+    });
+});
+
+app.get('/terms-of-service', (req, res) => {
+    res.render('terms-of-service', {
+        title: 'Terms of Service - Neurowex Tech'
+    });
+});
+
+app.get('/cookie-policy', (req, res) => {
+    res.render('cookie-policy', {
+        title: 'Cookie Policy - Neurowex Tech'
+    });
+});
+
+// ========== UTILITY ROUTES ==========
 app.get('/test-auth', (req, res) => {
     res.json({
         sessionExists: !!req.session,
@@ -776,7 +769,6 @@ app.get('/test-auth', (req, res) => {
     });
 });
 
-// Health check endpoint
 app.get('/health', (req, res) => {
     res.status(200).json({ 
         status: 'OK', 
@@ -786,7 +778,390 @@ app.get('/health', (req, res) => {
     });
 });
 
-// 404 handler
+
+// ========== ADDITIONAL ADMIN API ROUTES FOR DASHBOARD ==========
+
+// Create a new project (POST)
+app.post('/api/projects', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const { name, description, category, year, featured, client_url, tech_stack } = req.body;
+        
+        if (!name) {
+            return res.status(400).json({ success: false, message: 'Project name is required' });
+        }
+        
+        const result = await db.query(
+            `INSERT INTO projects (name, description, category, year, featured, client_url, tech_stack, created_at) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, NOW()) 
+             RETURNING *`,
+            [name, description || '', category || 'Web', year || new Date().getFullYear(), featured || false, client_url || '', tech_stack || '']
+        );
+        
+        res.json({ success: true, message: 'Project created successfully', project: result.rows[0] });
+    } catch (err) {
+        console.error('Create project error:', err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Delete a project (DELETE)
+app.delete('/api/projects/:id', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await db.query('DELETE FROM projects WHERE id = $1 RETURNING *', [id]);
+        
+        if (result.rows.length === 0) {
+            return res.status(404).json({ success: false, message: 'Project not found' });
+        }
+        
+        res.json({ success: true, message: 'Project deleted successfully' });
+    } catch (err) {
+        console.error('Delete project error:', err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Update a project (PUT)
+app.put('/api/projects/:id', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const id = req.params.id;
+        const { name, description, category, year, featured, client_url, tech_stack } = req.body;
+        
+        const result = await db.query(
+            `UPDATE projects 
+             SET name = COALESCE($1, name),
+                 description = COALESCE($2, description),
+                 category = COALESCE($3, category),
+                 year = COALESCE($4, year),
+                 featured = COALESCE($5, featured),
+                 client_url = COALESCE($6, client_url),
+                 tech_stack = COALESCE($7, tech_stack)
+             WHERE id = $8 
+             RETURNING *`,
+            [name, description, category, year, featured, client_url, tech_stack, id]
+        );
+        
+        if (result.rows.length === 0) {
+            return res.status(404).json({ success: false, message: 'Project not found' });
+        }
+        
+        res.json({ success: true, message: 'Project updated successfully', project: result.rows[0] });
+    } catch (err) {
+        console.error('Update project error:', err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Delete a contact message (DELETE)
+app.delete('/api/contacts/:id', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await db.query('DELETE FROM contacts WHERE id = $1 RETURNING *', [id]);
+        
+        if (result.rows.length === 0) {
+            return res.status(404).json({ success: false, message: 'Contact not found' });
+        }
+        
+        res.json({ success: true, message: 'Contact deleted successfully' });
+    } catch (err) {
+        console.error('Delete contact error:', err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Delete a subscriber (DELETE)
+app.delete('/api/subscribers/:id', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await db.query('DELETE FROM subscribers WHERE id = $1 RETURNING *', [id]);
+        
+        if (result.rows.length === 0) {
+            return res.status(404).json({ success: false, message: 'Subscriber not found' });
+        }
+        
+        res.json({ success: true, message: 'Subscriber deleted successfully' });
+    } catch (err) {
+        console.error('Delete subscriber error:', err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Get all projects (public - for dashboard)
+app.get('/api/projects/public', async (req, res) => {
+    try {
+        const projects = await db.getAllProjects(false);
+        res.json({ success: true, projects: projects || [] });
+    } catch (err) {
+        console.error('Public projects error:', err);
+        res.json({ success: true, projects: [] });
+    }
+});
+
+// Get featured projects (public)
+app.get('/api/projects/featured', async (req, res) => {
+    try {
+        const projects = await db.query('SELECT * FROM projects WHERE featured = true LIMIT 6');
+        res.json({ success: true, projects: projects.rows || [] });
+    } catch (err) {
+        console.error('Featured projects error:', err);
+        res.json({ success: true, projects: [] });
+    }
+});
+
+// Create a new blog post
+app.post('/api/blog', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const { title, slug, content, excerpt, category, author, external_url, published } = req.body;
+        
+        if (!title) {
+            return res.status(400).json({ success: false, message: 'Title is required' });
+        }
+        
+        const blogSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        
+        const result = await db.query(
+            `INSERT INTO blog_posts (title, slug, content, excerpt, category, author, external_url, published, published_at, created_at) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW()) 
+             RETURNING *`,
+            [title, blogSlug, content || '', excerpt || '', category || 'General', author || 'Admin', external_url || '', published || false, published ? new Date() : null]
+        );
+        
+        res.json({ success: true, message: 'Blog post created', post: result.rows[0] });
+    } catch (err) {
+        console.error('Create blog error:', err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Get all blog posts (admin)
+app.get('/api/blog', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const posts = await db.query('SELECT * FROM blog_posts ORDER BY created_at DESC');
+        res.json({ success: true, posts: posts.rows || [] });
+    } catch (err) {
+        console.error('Get blogs error:', err);
+        res.json({ success: true, posts: [] });
+    }
+});
+
+// Delete a blog post
+app.delete('/api/blog/:id', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await db.query('DELETE FROM blog_posts WHERE id = $1 RETURNING *', [id]);
+        
+        if (result.rows.length === 0) {
+            return res.status(404).json({ success: false, message: 'Blog post not found' });
+        }
+        
+        res.json({ success: true, message: 'Blog post deleted successfully' });
+    } catch (err) {
+        console.error('Delete blog error:', err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Get all services (admin)
+app.get('/api/services', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const services = await db.getAllServices();
+        res.json({ success: true, services: services || [] });
+    } catch (err) {
+        console.error('Get services error:', err);
+        res.json({ success: true, services: [] });
+    }
+});
+
+// Create a new service
+app.post('/api/services', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const { name, description, icon_class, price, display_order, visible } = req.body;
+        
+        if (!name) {
+            return res.status(400).json({ success: false, message: 'Service name is required' });
+        }
+        
+        const result = await db.query(
+            `INSERT INTO services (name, description, icon_class, price, display_order, visible, created_at) 
+             VALUES ($1, $2, $3, $4, $5, $6, NOW()) 
+             RETURNING *`,
+            [name, description || '', icon_class || 'fas fa-cog', price || '', display_order || 0, visible !== false]
+        );
+        
+        res.json({ success: true, message: 'Service created', service: result.rows[0] });
+    } catch (err) {
+        console.error('Create service error:', err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Get all testimonials (admin)
+app.get('/api/testimonials', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const testimonials = await db.getTestimonials();
+        res.json({ success: true, testimonials: testimonials || [] });
+    } catch (err) {
+        console.error('Get testimonials error:', err);
+        res.json({ success: true, testimonials: [] });
+    }
+});
+
+// Create a new testimonial
+app.post('/api/testimonials', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const { client_name, client_role, company, rating, content, published, display_order } = req.body;
+        
+        if (!client_name || !content) {
+            return res.status(400).json({ success: false, message: 'Client name and content are required' });
+        }
+        
+        const result = await db.query(
+            `INSERT INTO testimonials (client_name, client_role, company, rating, content, published, display_order, created_at) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, NOW()) 
+             RETURNING *`,
+            [client_name, client_role || '', company || '', rating || 5, content, published !== false, display_order || 0]
+        );
+        
+        res.json({ success: true, message: 'Testimonial created', testimonial: result.rows[0] });
+    } catch (err) {
+        console.error('Create testimonial error:', err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Get all team members (admin)
+app.get('/api/team', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const team = await db.getTeamMembers();
+        res.json({ success: true, team: team || [] });
+    } catch (err) {
+        console.error('Get team error:', err);
+        res.json({ success: true, team: [] });
+    }
+});
+
+// Create a new team member
+app.post('/api/team', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const { name, role, bio, avatar_url, linkedin_url, github_url, twitter_url, display_order } = req.body;
+        
+        if (!name || !role) {
+            return res.status(400).json({ success: false, message: 'Name and role are required' });
+        }
+        
+        const result = await db.query(
+            `INSERT INTO team_members (name, role, bio, avatar_url, linkedin_url, github_url, twitter_url, display_order, created_at) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW()) 
+             RETURNING *`,
+            [name, role, bio || '', avatar_url || '', linkedin_url || '', github_url || '', twitter_url || '', display_order || 0]
+        );
+        
+        res.json({ success: true, message: 'Team member added', member: result.rows[0] });
+    } catch (err) {
+        console.error('Create team error:', err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Get all pricing plans (admin)
+app.get('/api/pricing', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        // Check if pricing table exists, if not return sample data
+        let pricing = [];
+        try {
+            const result = await db.query('SELECT * FROM pricing_plans ORDER BY price ASC');
+            pricing = result.rows;
+        } catch (err) {
+            // Return default pricing if table doesn't exist
+            pricing = [
+                { id: 1, name: 'Basic', price: '12,249', features: 'Landing Page,5 Pages,1 Month Support', popular: false },
+                { id: 2, name: 'Professional', price: '17,999', features: 'Full Website,15 Pages,6 Mo Support,Analytics', popular: true },
+                { id: 3, name: 'Business', price: '24,999', features: 'Custom App,Unlimited Pages,12 Mo Support,AI', popular: false },
+                { id: 4, name: 'Enterprise', price: 'Custom', features: 'Dedicated Team,SLA,Security Audit', popular: false }
+            ];
+        }
+        res.json({ success: true, pricing: pricing });
+    } catch (err) {
+        console.error('Get pricing error:', err);
+        res.json({ success: true, pricing: [] });
+    }
+});
+
+// System settings - get
+app.get('/api/settings', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        // Get settings from database or return defaults
+        let settings = {};
+        try {
+            const result = await db.query('SELECT * FROM system_settings LIMIT 1');
+            if (result.rows.length > 0) settings = result.rows[0];
+        } catch (err) {
+            // Return default settings if table doesn't exist
+            settings = {
+                site_name: 'NeurowexTech',
+                contact_email: 'hello@neurowextech.com',
+                whatsapp_number: '+254769329340',
+                location: 'Nairobi, Kenya',
+                google_analytics_enabled: true,
+                whatsapp_widget_enabled: true,
+                newsletter_enabled: true
+            };
+        }
+        res.json({ success: true, settings: settings });
+    } catch (err) {
+        console.error('Get settings error:', err);
+        res.json({ success: true, settings: {} });
+    }
+});
+
+// System settings - update
+app.put('/api/settings', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const { site_name, contact_email, whatsapp_number, location } = req.body;
+        
+        // Update or insert settings
+        await db.query(`
+            INSERT INTO system_settings (site_name, contact_email, whatsapp_number, location, updated_at) 
+            VALUES ($1, $2, $3, $4, NOW())
+            ON CONFLICT (id) DO UPDATE SET 
+                site_name = EXCLUDED.site_name,
+                contact_email = EXCLUDED.contact_email,
+                whatsapp_number = EXCLUDED.whatsapp_number,
+                location = EXCLUDED.location,
+                updated_at = NOW()
+        `, [site_name, contact_email, whatsapp_number, location]);
+        
+        res.json({ success: true, message: 'Settings saved successfully' });
+    } catch (err) {
+        console.error('Update settings error:', err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// Dashboard stats summary
+app.get('/api/dashboard/stats', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const stats = await db.getStats();
+        const userCount = await db.query('SELECT COUNT(*) FROM users');
+        const adminCount = await db.query('SELECT COUNT(*) FROM users WHERE role = $1', ['admin']);
+        
+        res.json({
+            success: true,
+            stats: {
+                total_users: parseInt(userCount.rows[0].count),
+                total_admins: parseInt(adminCount.rows[0].count),
+                total_projects: stats.projects,
+                total_contacts: stats.contacts,
+                total_subscribers: stats.subscribers
+            }
+        });
+    } catch (err) {
+        console.error('Dashboard stats error:', err);
+        res.json({ success: true, stats: { total_users: 0, total_admins: 0, total_projects: 0, total_contacts: 0, total_subscribers: 0 } });
+    }
+});
+
+// ========== ERROR HANDLERS ==========
 app.use((req, res) => {
     res.status(404).render('404', { 
         title: 'Page Not Found',
@@ -794,7 +1169,6 @@ app.use((req, res) => {
     });
 });
 
-// Global error handler
 app.use((err, req, res, next) => {
     console.error('Global error:', err.stack);
     const isDev = process.env.NODE_ENV === 'development';
@@ -805,7 +1179,7 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Start server
+// ========== START SERVER ==========
 app.listen(PORT, () => {
     console.log(`
     ╔═══════════════════════════════════════════════════════╗
