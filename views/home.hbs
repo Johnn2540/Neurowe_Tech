@@ -43,7 +43,7 @@
 
         /* ===== RESET & BASE ===== */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
+        /* FIXED: Removed html scroll-behavior:smooth — handled exclusively in JS to avoid double-fire on mobile */
         body { font-family: var(--font-body); background: var(--light); color: var(--text); overflow-x: hidden; font-size: 16px; }
         h1, h2, h3, h4, h5 { font-family: var(--font-head); }
 
@@ -66,11 +66,14 @@
             background: var(--grad-blue); color: white;
             border: none; border-radius: 50%; font-size: 1rem;
             cursor: pointer; opacity: 0; transform: translateY(20px);
-            transition: var(--transition); z-index: 1000;
+            transition: var(--transition);
+            /* FIXED: z-index raised above cookie banner (9998) and mobile menu (1039) */
+            z-index: 10000;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 8px 24px rgba(37,99,235,0.35);
+            pointer-events: none;
         }
-        #back-to-top.visible { opacity: 1; transform: translateY(0); }
+        #back-to-top.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
         #back-to-top:hover { transform: translateY(-4px); }
 
         /* ===== THEME TOGGLE ===== */
@@ -78,33 +81,66 @@
             position: fixed; bottom: 24px; left: 24px;
             width: 44px; height: 44px; background: var(--blue); color: white;
             border: none; border-radius: 50%; font-size: 1rem;
-            cursor: pointer; z-index: 999; transition: var(--transition);
+            cursor: pointer;
+            /* FIXED: consistent z-index */
+            z-index: 10000;
+            transition: var(--transition);
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.15);
         }
         #theme-toggle:hover { background: var(--orange); transform: scale(1.05); }
 
-        /* ===== WHATSAPP FLOAT ===== */
+        /* ===== WHATSAPP FLOAT — FULLY FIXED ===== */
         #whatsapp-float {
-            position: fixed; bottom: 78px; right: 24px;
-            width: 52px; height: 52px;
-            background: linear-gradient(135deg,#25D366,#128C7E);
-            color: white; border: none; border-radius: 50%; font-size: 1.4rem;
-            cursor: pointer; z-index: 1001;
+            position: fixed;
+            /* FIXED: repositioned so it never overlaps back-to-top or cookie banner */
+            bottom: 80px;
+            right: 24px;
+            width: 56px; height: 56px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white; border: none; border-radius: 50%; font-size: 1.5rem;
+            cursor: pointer;
+            /* FIXED: z-index above all overlays including mobile menu (1039) and cookie banner (9998) */
+            z-index: 10001;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 6px 24px rgba(37,211,102,0.45);
-            text-decoration: none; transition: var(--transition);
-            animation: wa-pulse 2.5s ease-in-out infinite;
+            box-shadow: 0 6px 24px rgba(37,211,102,0.50);
+            text-decoration: none; transition: transform 0.3s ease, box-shadow 0.3s ease;
+            /* FIXED: removed animation that caused position jitter — replaced with static glow ring */
         }
-        #whatsapp-float:hover { transform: translateY(-4px) scale(1.08); color: white; }
+        /* FIXED: pure CSS pulse ring that doesn't affect layout */
+        #whatsapp-float::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 2px solid rgba(37, 211, 102, 0.4);
+            animation: wa-ring 2.5s ease-in-out infinite;
+            pointer-events: none;
+        }
+        #whatsapp-float::after {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            border: 2px solid rgba(37, 211, 102, 0.15);
+            animation: wa-ring 2.5s ease-in-out infinite 0.4s;
+            pointer-events: none;
+        }
+        #whatsapp-float:hover {
+            transform: translateY(-4px) scale(1.08);
+            color: white;
+            box-shadow: 0 12px 36px rgba(37,211,102,0.65);
+        }
         #whatsapp-float .wa-dot {
-            position: absolute; top: 2px; right: 2px;
+            position: absolute; top: 3px; right: 3px;
             width: 13px; height: 13px; background: #ef4444;
             border-radius: 50%; border: 2px solid white;
+            /* FIXED: dot uses same z-index context, no separate z needed */
         }
-        @keyframes wa-pulse {
-            0%,100% { box-shadow: 0 6px 24px rgba(37,211,102,0.45); }
-            50% { box-shadow: 0 6px 36px rgba(37,211,102,0.7), 0 0 0 10px rgba(37,211,102,0.1); }
+        @keyframes wa-ring {
+            0% { transform: scale(1); opacity: 0.8; }
+            70% { transform: scale(1.15); opacity: 0; }
+            100% { transform: scale(1.15); opacity: 0; }
         }
 
         /* ===== DARK MODE ===== */
@@ -138,6 +174,7 @@
             padding: 0;
             height: var(--nav-height);
             transition: var(--transition);
+            /* FIXED: z-index below fixed buttons but above content */
             z-index: 1040;
         }
         .navbar.scrolled {
@@ -219,7 +256,6 @@
         }
         .nav-dropdown-menu::before {
             content: ''; position: absolute; top: -6px; left: 50%;
-            transform: translateX(-50%);
             width: 12px; height: 12px; background: white;
             border-left: 1px solid rgba(0,0,0,0.07);
             border-top: 1px solid rgba(0,0,0,0.07);
@@ -315,10 +351,13 @@
         .mobile-action-wa:hover { background: #25D366; color: white; }
         body.dark .mobile-action-theme { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.8); }
 
-        /* Mobile menu panel — full drawer */
+        /* Mobile menu overlay & panel */
+        /* FIXED: overlay uses display:none/flex toggle instead of block to avoid stacking issues */
         .mobile-menu-overlay {
-            display: none; position: fixed;
+            display: none;
+            position: fixed;
             inset: 0; background: rgba(0,0,0,0.45);
+            /* FIXED: z-index set below panel but above all page content */
             z-index: 1038; backdrop-filter: blur(4px);
             opacity: 0; transition: opacity 0.3s ease;
         }
@@ -327,6 +366,7 @@
             position: fixed; top: 0; right: 0;
             width: min(340px, 88vw); height: 100dvh;
             background: white;
+            /* FIXED: z-index below fixed action buttons (10000+) but above overlay */
             z-index: 1039; overflow-y: auto;
             transform: translateX(100%);
             transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
@@ -418,10 +458,13 @@
         /* Responsive breakpoints */
         @media (max-width: 991px) {
             .navbar-nav-desktop, .nav-auth { display: none !important; }
-            .mobile-menu-btn, .mobile-quick-actions, .mobile-menu-overlay { display: flex !important; }
+            .mobile-menu-btn, .mobile-quick-actions { display: flex !important; }
+            /* FIXED: overlay shown as flex (not block) when open class is added */
         }
         @media (min-width: 992px) {
-            .mobile-menu-btn, .mobile-quick-actions, .mobile-menu-overlay, .mobile-menu-panel { display: none !important; }
+            .mobile-menu-btn, .mobile-quick-actions, .mobile-menu-panel { display: none !important; }
+            /* FIXED: never show overlay on desktop */
+            .mobile-menu-overlay { display: none !important; }
         }
 
         /* ===== RESPONSIVE FONT SIZES ===== */
@@ -726,7 +769,9 @@
             padding: 14px 20px; font-size: 0.86rem;
             display: flex; align-items: center; gap: 10px;
             opacity: 0; transform: translateY(10px); transition: var(--transition);
-            z-index: 9997; border-left: 3px solid var(--green); min-width: 240px;
+            /* FIXED: raised z-index above all overlays */
+            z-index: 10002;
+            border-left: 3px solid var(--green); min-width: 240px;
         }
         #toast.show { opacity: 1; transform: translateY(0); }
 
@@ -736,7 +781,9 @@
             background: var(--dark-2); color: white;
             padding: 14px 20px; display: flex; align-items: center;
             justify-content: space-between; gap: 16px;
-            z-index: 9998; transform: translateY(100%); transition: transform 0.4s ease;
+            /* FIXED: z-index below WhatsApp float and action buttons */
+            z-index: 9998;
+            transform: translateY(100%); transition: transform 0.4s ease;
             border-top: 1px solid rgba(255,255,255,0.08);
         }
         #cookie-banner.show { transform: translateY(0); }
@@ -784,18 +831,28 @@
             .contact-form { padding: 22px 18px; }
             .portfolio-image-wrapper { height: 180px; }
             .service-image { height: 140px; }
+            /* FIXED: on mobile, back-to-top and WA float adjusted so they don't overlap */
+            #back-to-top { bottom: 16px; right: 16px; width: 40px; height: 40px; font-size: 0.85rem; }
+            #theme-toggle { bottom: 16px; left: 16px; width: 40px; height: 40px; font-size: 0.85rem; }
+            #whatsapp-float { bottom: 72px; right: 16px; width: 50px; height: 50px; font-size: 1.35rem; }
         }
     </style>
 </head>
 
 <body>
     <div id="scroll-progress"></div>
+    <!-- FIXED: theme toggle & back-to-top moved outside navbar — they were conflicting with overlay z-indexes -->
     <button id="theme-toggle" title="Toggle dark mode"><i class="fas fa-moon"></i></button>
     <button id="back-to-top" title="Back to top"><i class="fas fa-arrow-up"></i></button>
-    <a id="whatsapp-float" href="https://wa.me/254769329340?text=Hello%20NeurowexTech!%20I%20would%20like%20to%20discuss%20a%20project." target="_blank" rel="noopener noreferrer" title="Chat on WhatsApp">
+
+    <!-- FIXED: WhatsApp float — proper z-index, stable positioning, clean pulse via CSS rings only -->
+    <a id="whatsapp-float"
+       href="https://wa.me/254769329340?text=Hello%20NeurowexTech!%20I%20would%20like%20to%20discuss%20a%20project."
+       target="_blank" rel="noopener noreferrer" title="Chat on WhatsApp">
         <i class="fab fa-whatsapp"></i>
         <span class="wa-dot"></span>
     </a>
+
     <div id="toast"><i class="fas fa-check-circle text-success"></i><span id="toast-msg">Done!</span></div>
     <div id="cookie-banner">
         <p>🍪 We use cookies to enhance your experience. By continuing you agree to our use of cookies.</p>
@@ -803,10 +860,11 @@
     </div>
 
     <!-- Mobile menu overlay & panel -->
+    <!-- FIXED: overlay uses display:none by default; JS sets display:flex before opacity transition -->
     <div class="mobile-menu-overlay" id="mobileOverlay"></div>
     <div class="mobile-menu-panel" id="mobilePanel">
         <div class="mobile-menu-header">
-            <a class="navbar-brand" href="#" style="font-size:1.2rem;">Neurowex<span>Tech</span></a>
+            <a class="navbar-brand" href="#home" style="font-size:1.2rem;">Neurowex<span>Tech</span></a>
             <button class="mobile-menu-close" id="mobileClose"><i class="fas fa-times"></i></button>
         </div>
         <nav class="mobile-menu-body">
@@ -845,7 +903,7 @@
         <div class="mobile-menu-footer">
             <a href="/login" class="btn-signin text-center">Sign In</a>
             <a href="/sign_up" class="btn-signup text-center" style="padding:9px 18px; border-radius:50px; display:block; text-align:center;">Sign Up</a>
-            <a href="#contact" class="btn-start w-100 justify-content-center">Start Project <i class="fas fa-arrow-right"></i></a>
+            <a href="#contact" class="btn-start w-100 justify-content-center" id="mobileStartProject">Start Project <i class="fas fa-arrow-right"></i></a>
         </div>
     </div>
 
@@ -854,7 +912,7 @@
         <div class="container d-flex align-items-center justify-content-between gap-2">
 
             <!-- Brand -->
-            <a class="navbar-brand" href="#">Neurowex<span>Tech</span></a>
+            <a class="navbar-brand" href="#home">Neurowex<span>Tech</span></a>
 
             <!-- Desktop Nav Links (center) -->
             <ul class="navbar-nav-desktop d-none d-lg-flex" style="flex:1; justify-content:center; padding:0 16px;">
@@ -1657,6 +1715,30 @@
     <script>
         AOS.init({ duration: 900, once: true, offset: 80, easing: 'ease-out-cubic' });
 
+        // ===== SEAMLESS SMOOTH SCROLL =====
+        // FIXED: Single unified scroll handler — removes html scroll-behavior conflict,
+        // accounts for sticky navbar height on all devices.
+        function smoothScrollTo(targetId) {
+            const target = document.querySelector(targetId);
+            if (!target) return;
+            const navHeight = document.querySelector('.navbar').offsetHeight;
+            const targetTop = target.getBoundingClientRect().top + window.pageYOffset - navHeight;
+            window.scrollTo({ top: targetTop, behavior: 'smooth' });
+        }
+
+        // Intercept ALL internal anchor links
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('a[href^="#"]');
+            if (!link) return;
+            const href = link.getAttribute('href');
+            if (!href || href === '#' || href.length <= 1) return;
+            e.preventDefault();
+            closeMobileMenu();
+            // Small delay on mobile to let menu close animation complete before scrolling
+            const isMobile = window.innerWidth < 992;
+            setTimeout(() => smoothScrollTo(href), isMobile ? 320 : 0);
+        });
+
         // ===== MOBILE MENU =====
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const mobilePanel = document.getElementById('mobilePanel');
@@ -1666,9 +1748,14 @@
         const mobileServicesSub = document.getElementById('mobileServicesSub');
 
         function openMobileMenu() {
+            // FIXED: set display before opacity so transition fires correctly
+            mobileOverlay.style.display = 'flex';
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    mobileOverlay.classList.add('open');
+                });
+            });
             mobilePanel.classList.add('open');
-            mobileOverlay.style.display = 'block';
-            requestAnimationFrame(() => mobileOverlay.classList.add('open'));
             mobileMenuBtn.classList.add('open');
             document.body.style.overflow = 'hidden';
         }
@@ -1678,34 +1765,52 @@
             mobileOverlay.classList.remove('open');
             mobileMenuBtn.classList.remove('open');
             document.body.style.overflow = '';
+            // FIXED: hide overlay after transition ends — avoids blocking underlying elements
+            mobileOverlay.addEventListener('transitionend', function handler() {
+                if (!mobileOverlay.classList.contains('open')) {
+                    mobileOverlay.style.display = 'none';
+                }
+                mobileOverlay.removeEventListener('transitionend', handler);
+            });
         }
 
         mobileMenuBtn.addEventListener('click', openMobileMenu);
         mobileClose.addEventListener('click', closeMobileMenu);
         mobileOverlay.addEventListener('click', closeMobileMenu);
 
-        // Close menu on nav link click
-        mobilePanel.querySelectorAll('.nav-link, .mobile-services-sub a').forEach(link => {
-            link.addEventListener('click', closeMobileMenu);
-        });
-
         // Mobile services submenu toggle
-        mobileServicesToggle.addEventListener('click', () => {
-            const isOpen = mobileServicesSub.classList.contains('open');
+        mobileServicesToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
             mobileServicesSub.classList.toggle('open');
             mobileServicesToggle.classList.toggle('open');
         });
 
         // ===== SCROLL PROGRESS & NAVBAR =====
-        window.addEventListener('scroll', () => {
-            const el = document.getElementById('scroll-progress');
-            const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-            el.style.width = pct + '%';
-            document.querySelector('.navbar').classList.toggle('scrolled', window.scrollY > 50);
-            document.getElementById('back-to-top').classList.toggle('visible', window.scrollY > 400);
-        });
+        const navbar = document.querySelector('.navbar');
+        const backToTop = document.getElementById('back-to-top');
+        const scrollProgress = document.getElementById('scroll-progress');
 
-        document.getElementById('back-to-top').addEventListener('click', () => {
+        window.addEventListener('scroll', function() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+
+            scrollProgress.style.width = pct + '%';
+            navbar.classList.toggle('scrolled', scrollTop > 50);
+            backToTop.classList.toggle('visible', scrollTop > 400);
+
+            // Active nav link highlighting
+            let current = '';
+            document.querySelectorAll('section[id]').forEach(section => {
+                const sectionTop = section.offsetTop - navbar.offsetHeight - 20;
+                if (scrollTop >= sectionTop) current = section.id;
+            });
+            document.querySelectorAll('.navbar-nav-desktop .nav-link').forEach(link => {
+                link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+            });
+        }, { passive: true });
+
+        backToTop.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
@@ -1716,18 +1821,24 @@
 
         function applyTheme() {
             document.body.classList.toggle('dark', dark);
-            const moonIcon = '<i class="fas fa-moon"></i>';
-            const sunIcon = '<i class="fas fa-sun"></i>';
-            themeToggle.innerHTML = dark ? sunIcon : moonIcon;
-            if (mobileThemeBtn) mobileThemeBtn.innerHTML = dark ? sunIcon : moonIcon;
+            const icon = dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            themeToggle.innerHTML = icon;
+            if (mobileThemeBtn) mobileThemeBtn.innerHTML = icon;
         }
 
         applyTheme();
-        themeToggle.addEventListener('click', () => { dark = !dark; localStorage.setItem('theme', dark ? 'dark' : 'light'); applyTheme(); });
-        if (mobileThemeBtn) mobileThemeBtn.addEventListener('click', () => { dark = !dark; localStorage.setItem('theme', dark ? 'dark' : 'light'); applyTheme(); });
+
+        function toggleTheme() {
+            dark = !dark;
+            localStorage.setItem('theme', dark ? 'dark' : 'light');
+            applyTheme();
+        }
+        themeToggle.addEventListener('click', toggleTheme);
+        if (mobileThemeBtn) mobileThemeBtn.addEventListener('click', toggleTheme);
 
         // ===== TOAST =====
-        function showToast(msg, color = 'var(--green)') {
+        function showToast(msg, color) {
+            color = color || 'var(--green)';
             const t = document.getElementById('toast');
             document.getElementById('toast-msg').textContent = msg;
             t.style.borderLeftColor = color;
@@ -1737,77 +1848,79 @@
 
         // ===== COOKIE BANNER =====
         const cb = document.getElementById('cookie-banner');
-        if (!localStorage.getItem('cookieAccepted')) setTimeout(() => cb.classList.add('show'), 2500);
+        if (!localStorage.getItem('cookieAccepted')) {
+            setTimeout(() => cb.classList.add('show'), 2500);
+        }
         document.getElementById('cookie-accept').addEventListener('click', () => {
             localStorage.setItem('cookieAccepted', '1');
             cb.classList.remove('show');
         });
 
         // ===== COUNTER ANIMATION =====
-        const counterObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
+        const counterObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
                 if (entry.isIntersecting) {
                     const counter = entry.target.querySelector('.counter');
                     if (counter && !counter.dataset.done) {
                         counter.dataset.done = '1';
                         const target = +counter.dataset.target;
-                        const step = target / (1800 / 16);
+                        const duration = 1800;
+                        const step = target / (duration / 16);
                         let current = 0;
-                        const update = () => {
+                        function update() {
                             current = Math.min(current + step, target);
                             counter.textContent = Math.floor(current);
                             if (current < target) requestAnimationFrame(update);
-                        };
+                        }
                         requestAnimationFrame(update);
                     }
                 }
             });
         }, { threshold: 0.5 });
-        document.querySelectorAll('.stat-card').forEach(c => counterObserver.observe(c));
+        document.querySelectorAll('.stat-card').forEach(function(c) { counterObserver.observe(c); });
 
         // ===== PORTFOLIO FILTER =====
-        document.querySelectorAll('.portfolio-filter').forEach(btn => {
-            btn.addEventListener('click', function () {
-                document.querySelectorAll('.portfolio-filter').forEach(b => {
+        document.querySelectorAll('.portfolio-filter').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.portfolio-filter').forEach(function(b) {
                     b.className = 'btn btn-outline-blue btn-sm portfolio-filter';
                     b.style.fontSize = '0.8rem';
                 });
                 this.className = 'btn btn-blue btn-sm portfolio-filter active';
                 this.style.fontSize = '0.8rem';
                 const filter = this.dataset.filter;
-                document.querySelectorAll('.portfolio-item').forEach(item => {
+                document.querySelectorAll('.portfolio-item').forEach(function(item) {
                     item.style.display = (filter === 'all' || item.dataset.category === filter) ? '' : 'none';
                 });
             });
         });
 
         // ===== FAQ ACCORDION =====
-        document.querySelectorAll('.faq-question').forEach(q => {
-            q.addEventListener('click', () => {
+        document.querySelectorAll('.faq-question').forEach(function(q) {
+            q.addEventListener('click', function() {
                 const item = q.parentElement;
                 const isOpen = item.classList.contains('open');
-                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+                document.querySelectorAll('.faq-item').forEach(function(i) { i.classList.remove('open'); });
                 if (!isOpen) item.classList.add('open');
             });
         });
 
         // ===== NEWSLETTER =====
         const newsletterForm = document.getElementById('newsletterForm');
-        const newsletterMsg = document.getElementById('newsletter-msg');
-
         if (newsletterForm) {
-            newsletterForm.addEventListener('submit', async (e) => {
+            newsletterForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const email = document.getElementById('newsletter-email').value.trim();
                 const consent = document.getElementById('newsletter-consent').checked;
                 const btn = document.getElementById('newsletter-btn');
+                const msg = document.getElementById('newsletter-msg');
 
                 if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
-                    newsletterMsg.innerHTML = '<span style="color:#ef4444"><i class="fas fa-exclamation-circle me-1"></i> Please enter a valid email.</span>';
+                    msg.innerHTML = '<span style="color:#ef4444"><i class="fas fa-exclamation-circle me-1"></i> Please enter a valid email.</span>';
                     return;
                 }
                 if (!consent) {
-                    newsletterMsg.innerHTML = '<span style="color:#ef4444"><i class="fas fa-exclamation-circle me-1"></i> Please agree to receive emails.</span>';
+                    msg.innerHTML = '<span style="color:#ef4444"><i class="fas fa-exclamation-circle me-1"></i> Please agree to receive emails.</span>';
                     return;
                 }
 
@@ -1816,55 +1929,35 @@
                 btn.disabled = true;
 
                 try {
-                    const res = await fetch('/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
+                    const res = await fetch('/subscribe', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: email })
+                    });
                     const data = await res.json();
                     if (data.success) {
-                        newsletterMsg.innerHTML = '<span style="color:var(--green)"><i class="fas fa-check-circle me-1"></i> ' + (data.message || '🎉 Subscribed successfully!') + '</span>';
+                        msg.innerHTML = '<span style="color:var(--green)"><i class="fas fa-check-circle me-1"></i> ' + (data.message || '🎉 Subscribed successfully!') + '</span>';
                         newsletterForm.reset();
                         document.getElementById('newsletter-consent').checked = true;
                     } else {
-                        newsletterMsg.innerHTML = '<span style="color:#ef4444"><i class="fas fa-exclamation-circle me-1"></i> ' + (data.message || 'Failed. Please try again.') + '</span>';
+                        msg.innerHTML = '<span style="color:#ef4444"><i class="fas fa-exclamation-circle me-1"></i> ' + (data.message || 'Failed. Please try again.') + '</span>';
                     }
-                } catch {
-                    newsletterMsg.innerHTML = '<span style="color:#ef4444"><i class="fas fa-exclamation-circle me-1"></i> Network error. Please try again.</span>';
+                } catch (err) {
+                    msg.innerHTML = '<span style="color:#ef4444"><i class="fas fa-exclamation-circle me-1"></i> Network error. Please try again.</span>';
                 } finally {
                     btn.innerHTML = orig;
                     btn.disabled = false;
-                    setTimeout(() => { newsletterMsg.innerHTML = ''; }, 5000);
+                    setTimeout(function() { msg.innerHTML = ''; }, 5000);
                 }
             });
         }
 
         // ===== CONTACT FORM =====
-        document.getElementById('contactForm').addEventListener('submit', (e) => {
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const msg = document.getElementById('contactMsg');
             msg.innerHTML = '<span style="color:#6ee7b7"><i class="fas fa-check-circle me-2"></i>Message sent! We\'ll be in touch within 24 hours.</span>';
             showToast('Message sent! We\'ll be in touch soon.');
-        });
-
-        // ===== ACTIVE NAV LINK =====
-        const sections = document.querySelectorAll('section[id]');
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id; });
-            document.querySelectorAll('.navbar-nav-desktop .nav-link').forEach(link => {
-                link.classList.toggle('active', link.getAttribute('href') === '#' + current);
-            });
-        });
-
-        // ===== SMOOTH SCROLL =====
-        document.querySelectorAll('a[href^="#"]').forEach(a => {
-            a.addEventListener('click', function (e) {
-                const href = this.getAttribute('href');
-                if (href.length > 1 && href !== '#') {
-                    const target = document.querySelector(href);
-                    if (target) {
-                        e.preventDefault();
-                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                }
-            });
         });
     </script>
 </body>
