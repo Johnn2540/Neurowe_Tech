@@ -2,284 +2,2341 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>NeurowexTech — Admin Command Center</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+
+    <!-- Same font stack as home.hbs -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <style>
+        /* ===== VARIABLES — mirror home.hbs palette ===== */
         :root {
-            --bg: #06080f;
-            --bg-2: #0c1018;
-            --bg-3: #111620;
-            --bg-4: #181e2d;
-            --border: rgba(255,255,255,0.07);
+            --blue:         #2563eb;
+            --blue-dark:    #1d4ed8;
+            --blue-light:   #60a5fa;
+            --blue-dim:     rgba(37,99,235,0.10);
+            --orange:       #f97316;
+            --orange-dark:  #ea580c;
+            --orange-dim:   rgba(249,115,22,0.10);
+            --green:        #10b981;
+            --green-dim:    rgba(16,185,129,0.10);
+            --red:          #ef4444;
+            --red-dim:      rgba(239,68,68,0.10);
+            --purple:       #8b5cf6;
+            --purple-dim:   rgba(139,92,246,0.10);
+            --cyan:         #06b6d4;
+            --yellow:       #eab308;
+
+            /* Dark background system (matches home dark sections) */
+            --dark:         #050b18;
+            --dark-2:       #0d1526;
+            --dark-3:       #111827;
+            --dark-4:       #1a2236;
+            --mid:          #1e293b;
+            --border:       rgba(255,255,255,0.06);
             --border-strong: rgba(255,255,255,0.12);
-            --blue: #3b82f6;
-            --blue-dim: rgba(59,130,246,0.12);
-            --blue-bright: #60a5fa;
-            --orange: #f97316;
-            --orange-dim: rgba(249,115,22,0.12);
-            --green: #22c55e;
-            --green-dim: rgba(34,197,94,0.12);
-            --red: #ef4444;
-            --red-dim: rgba(239,68,68,0.12);
-            --yellow: #eab308;
-            --yellow-dim: rgba(234,179,8,0.12);
-            --purple: #a855f7;
-            --purple-dim: rgba(168,85,247,0.12);
-            --cyan: #06b6d4;
-            --cyan-dim: rgba(6,182,212,0.12);
-            --text: #e2e8f0;
-            --text-dim: #64748b;
-            --text-mid: #94a3b8;
-            --white: #ffffff;
-            --sidebar-w: 260px;
-            --sidebar-collapsed: 72px;
-            --font: 'Outfit', sans-serif;
-            --mono: 'JetBrains Mono', monospace;
-            --radius: 14px;
-            --radius-sm: 8px;
-            --radius-lg: 20px;
-            --t: all 0.25s cubic-bezier(0.4,0,0.2,1);
+
+            --text:         #e2e8f0;
+            --text-mid:     #94a3b8;
+            --text-dim:     #64748b;
+            --white:        #ffffff;
+
+            --grad-blue:    linear-gradient(135deg, #2563eb, #1d4ed8);
+            --grad-orange:  linear-gradient(135deg, #f97316, #ea580c);
+            --grad-dark:    linear-gradient(145deg, #0d1526, #050b18);
+
+            --font-head:    'Syne', sans-serif;
+            --font-body:    'Inter', sans-serif;
+            --radius:       16px;
+            --radius-sm:    10px;
+            --radius-lg:    22px;
+            --sidebar-w:    264px;
+            --sidebar-col:  70px;
+            --topbar-h:     64px;
+            --t:            all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* ===== BASE ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: var(--font);
-            background: var(--bg);
+            font-family: var(--font-body);
+            background: var(--dark);
             color: var(--text);
             overflow-x: hidden;
             font-size: 14px;
         }
+        h1,h2,h3,h4,h5,h6 { font-family: var(--font-head); }
 
         ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 99px; }
+        ::-webkit-scrollbar-track { background: var(--dark-2); }
+        ::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 6px; }
 
-        /* Sidebar & Layout (same refined styles as original) */
-        .sidebar { position: fixed; left: 0; top: 0; height: 100vh; width: var(--sidebar-w); background: var(--bg-2); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1000; transition: var(--t); overflow: hidden; }
-        .sidebar.collapsed { width: var(--sidebar-collapsed); }
-        .sidebar-logo { padding: 24px 20px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; min-height: 72px; }
-        .logo-icon { width: 38px; height: 38px; min-width: 38px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; }
-        .logo-text strong { display: block; font-size: 1rem; font-weight: 800; color: var(--white); letter-spacing: -0.3px; }
-        .logo-text span { font-size: 0.7rem; color: var(--orange); font-weight: 600; text-transform: uppercase; }
-        .sidebar-section-label { padding: 16px 20px 6px; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim); font-weight: 600; transition: var(--t); }
-        .sidebar.collapsed .sidebar-section-label { opacity: 0; }
-        .nav-item { margin: 2px 10px; border-radius: var(--radius-sm); transition: var(--t); }
-        .nav-link-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; color: var(--text-mid); text-decoration: none; border-radius: var(--radius-sm); transition: var(--t); cursor: pointer; white-space: nowrap; border: 1px solid transparent; }
-        .nav-link-item:hover { background: var(--bg-4); color: var(--text); border-color: var(--border); }
-        .nav-item.active .nav-link-item { background: var(--blue-dim); color: var(--blue-bright); border-color: rgba(59,130,246,0.2); }
-        .nav-icon { width: 18px; min-width: 18px; font-size: 0.95rem; text-align: center; }
-        .nav-label { font-size: 0.88rem; font-weight: 500; }
-        .sidebar.collapsed .nav-label { opacity: 0; width: 0; }
-        .nav-badge { margin-left: auto; background: var(--red); color: white; font-size: 0.62rem; font-weight: 700; padding: 2px 6px; border-radius: 99px; min-width: 18px; text-align: center; }
-        .sidebar.collapsed .nav-badge { opacity: 0; }
-        .topbar { position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: 64px; background: var(--bg-2); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 28px; z-index: 900; transition: left var(--t); }
-        .topbar.expanded { left: var(--sidebar-collapsed); }
-        .main { margin-left: var(--sidebar-w); padding-top: 64px; min-height: 100vh; transition: margin-left var(--t); }
-        .main.expanded { margin-left: var(--sidebar-collapsed); }
-        .page-content { padding: 28px; display: none; }
-        .page-content.active { display: block; }
-        .card-base { background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius); transition: var(--t); }
-        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
-        @media(max-width:1200px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media(max-width:600px) { .stat-grid { grid-template-columns: 1fr; } }
-        .stat-card { background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; transition: var(--t); position: relative; overflow: hidden; }
-        .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; border-radius: var(--radius) var(--radius) 0 0; }
-        .stat-card.blue::before { background: linear-gradient(90deg, var(--blue), #60a5fa); }
-        .stat-card.green::before { background: linear-gradient(90deg, var(--green), #4ade80); }
-        .stat-card.orange::before { background: linear-gradient(90deg, var(--orange), #fb923c); }
-        .stat-card.purple::before { background: linear-gradient(90deg, var(--purple), #c084fc); }
-        .stat-value { font-size: 2rem; font-weight: 800; color: var(--white); line-height: 1; }
-        .stat-label { font-size: 0.78rem; color: var(--text-dim); font-weight: 500; }
-        .btn-primary-dark { display: inline-flex; align-items: center; gap: 7px; background: var(--blue); color: white; border: none; padding: 8px 16px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: var(--t); white-space: nowrap; }
-        .btn-primary-dark:hover { background: var(--blue-bright); transform: translateY(-1px); }
-        .btn-ghost-dark { display: inline-flex; align-items: center; gap: 7px; background: var(--bg-4); color: var(--text-mid); border: 1px solid var(--border); padding: 8px 14px; border-radius: var(--radius-sm); font-weight: 500; cursor: pointer; transition: var(--t); white-space: nowrap; }
-        .btn-ghost-dark:hover { border-color: var(--border-strong); color: var(--text); }
-        .table-card { background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 20px; }
-        .table-card-header { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-        .data-table { width: 100%; border-collapse: collapse; }
-        .data-table th { padding: 10px 16px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--text-dim); border-bottom: 1px solid var(--border); background: var(--bg-4); white-space: nowrap; }
-        .data-table td { padding: 13px 16px; font-size: 0.82rem; color: var(--text-mid); border-bottom: 1px solid var(--border); vertical-align: middle; }
-        .data-table tbody tr:hover { background: rgba(255,255,255,0.02); }
-        .badge-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 99px; font-size: 0.68rem; font-weight: 700; white-space: nowrap; }
-        .bp-green { background: var(--green-dim); color: var(--green); }
-        .bp-blue { background: var(--blue-dim); color: var(--blue-bright); }
-        .bp-orange { background: var(--orange-dim); color: var(--orange); }
-        .bp-purple { background: var(--purple-dim); color: var(--purple); }
-        .bp-yellow { background: var(--yellow-dim); color: var(--yellow); }
-        .act-btn { width: 30px; height: 30px; border-radius: 6px; border: none; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.78rem; transition: var(--t); margin: 0 2px; }
-        .act-edit { background: var(--blue-dim); color: var(--blue-bright); }
-        .act-delete { background: var(--red-dim); color: var(--red); }
-        .act-view { background: var(--green-dim); color: var(--green); }
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed; left: 0; top: 0;
+            width: var(--sidebar-w); height: 100vh;
+            background: var(--dark-2);
+            border-right: 1px solid var(--border);
+            display: flex; flex-direction: column;
+            z-index: 1050; transition: var(--t);
+            overflow: hidden;
+        }
+        .sidebar.collapsed { width: var(--sidebar-col); }
+
+        .sidebar-logo {
+            display: flex; align-items: center; gap: 12px;
+            padding: 20px 18px; min-height: var(--topbar-h);
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        .logo-mark {
+            width: 36px; height: 36px; min-width: 36px;
+            border-radius: 10px;
+            background: var(--grad-blue);
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-head); font-weight: 800;
+            font-size: 1rem; color: white; letter-spacing: -0.5px;
+        }
+        .logo-text { overflow: hidden; white-space: nowrap; transition: var(--t); }
+        .logo-text strong {
+            display: block; font-family: var(--font-head);
+            font-size: 0.95rem; font-weight: 800; color: white;
+            letter-spacing: -0.3px; line-height: 1.2;
+        }
+        .logo-text span { font-size: 0.62rem; color: var(--orange); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
+        .sidebar.collapsed .logo-text { opacity: 0; width: 0; }
+
+        .sidebar-nav { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 12px 0; }
+        .sidebar-nav::-webkit-scrollbar { width: 0; }
+
+        .nav-section-label {
+            padding: 14px 20px 4px;
+            font-size: 0.6rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 2px;
+            color: var(--text-dim); white-space: nowrap;
+            transition: var(--t);
+        }
+        .sidebar.collapsed .nav-section-label { opacity: 0; }
+
+        .nav-item-wrap { margin: 2px 8px; }
+        .nav-link-admin {
+            display: flex; align-items: center; gap: 11px;
+            padding: 9px 12px; border-radius: var(--radius-sm);
+            color: var(--text-mid); text-decoration: none;
+            transition: var(--t); cursor: pointer;
+            border: 1px solid transparent; white-space: nowrap;
+            position: relative;
+        }
+        .nav-link-admin:hover {
+            background: rgba(255,255,255,0.04);
+            border-color: var(--border);
+            color: var(--text);
+        }
+        .nav-item-wrap.active .nav-link-admin {
+            background: var(--blue-dim);
+            border-color: rgba(37,99,235,0.2);
+            color: var(--blue-light);
+        }
+        .nav-icon-wrap {
+            width: 20px; min-width: 20px; font-size: 0.88rem;
+            text-align: center; flex-shrink: 0;
+        }
+        .nav-item-wrap.active .nav-icon-wrap { color: var(--blue-light); }
+        .nav-lbl { font-size: 0.84rem; font-weight: 500; transition: var(--t); }
+        .sidebar.collapsed .nav-lbl { opacity: 0; width: 0; overflow: hidden; }
+        .nav-badge-count {
+            margin-left: auto; background: var(--red);
+            color: white; font-size: 0.6rem; font-weight: 700;
+            padding: 2px 6px; border-radius: 99px; min-width: 18px;
+            text-align: center; transition: var(--t);
+        }
+        .sidebar.collapsed .nav-badge-count { opacity: 0; }
+
+        .sidebar-footer {
+            border-top: 1px solid var(--border);
+            padding: 10px 8px; flex-shrink: 0;
+        }
+
+        /* Tooltip on collapsed */
+        .sidebar.collapsed .nav-link-admin::after {
+            content: attr(data-label);
+            position: absolute; left: calc(var(--sidebar-col) - 4px);
+            background: var(--dark-4); color: var(--text);
+            font-size: 0.78rem; font-weight: 500;
+            padding: 6px 12px; border-radius: var(--radius-sm);
+            border: 1px solid var(--border-strong);
+            white-space: nowrap; pointer-events: none;
+            opacity: 0; transform: translateX(-4px);
+            transition: opacity 0.2s, transform 0.2s;
+            z-index: 200;
+        }
+        .sidebar.collapsed .nav-link-admin:hover::after {
+            opacity: 1; transform: translateX(0);
+        }
+
+        /* ===== TOPBAR ===== */
+        .topbar {
+            position: fixed; top: 0;
+            left: var(--sidebar-w); right: 0;
+            height: var(--topbar-h);
+            background: var(--dark-2);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center;
+            justify-content: space-between;
+            padding: 0 24px; z-index: 1000;
+            transition: left var(--t);
+        }
+        .topbar.collapsed { left: var(--sidebar-col); }
+
+        .topbar-left { display: flex; align-items: center; gap: 14px; }
+        .toggle-sidebar-btn {
+            width: 36px; height: 36px; border-radius: 10px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            color: var(--text-mid); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: var(--t); font-size: 0.9rem;
+        }
+        .toggle-sidebar-btn:hover { background: var(--blue-dim); color: var(--blue-light); border-color: rgba(37,99,235,0.2); }
+
+        .breadcrumb-stack .page-title {
+            font-family: var(--font-head); font-size: 1rem;
+            font-weight: 700; color: white; line-height: 1;
+        }
+        .breadcrumb-stack .page-sub { font-size: 0.72rem; color: var(--text-dim); margin-top: 2px; }
+
+        .topbar-right { display: flex; align-items: center; gap: 10px; }
+        .topbar-action {
+            width: 36px; height: 36px; border-radius: 10px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            color: var(--text-mid); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: var(--t); text-decoration: none; font-size: 0.9rem;
+        }
+        .topbar-action:hover { border-color: var(--border-strong); color: var(--text); }
+        .topbar-action.wa:hover { background: rgba(37,211,102,0.1); color: #25D366; border-color: rgba(37,211,102,0.2); }
+        .topbar-action.refresh:hover { background: var(--blue-dim); color: var(--blue-light); }
+
+        .user-chip {
+            display: flex; align-items: center; gap: 9px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 50px; padding: 5px 14px 5px 5px;
+            cursor: pointer; transition: var(--t);
+        }
+        .user-chip:hover { border-color: var(--border-strong); }
+        .user-avatar {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: var(--grad-blue);
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-head); font-weight: 700;
+            font-size: 0.75rem; color: white;
+        }
+        .user-chip span { font-size: 0.8rem; font-weight: 500; color: var(--text); }
+
+        /* ===== MAIN AREA ===== */
+        .main-content {
+            margin-left: var(--sidebar-w);
+            padding-top: var(--topbar-h);
+            min-height: 100vh;
+            transition: margin-left var(--t);
+        }
+        .main-content.collapsed { margin-left: var(--sidebar-col); }
+
+        /* ===== PAGES ===== */
+        .admin-page { padding: 28px; display: none; animation: fadeIn 0.3s ease; }
+        .admin-page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+        .page-header {
+            display: flex; align-items: flex-start;
+            justify-content: space-between; margin-bottom: 28px;
+            gap: 16px; flex-wrap: wrap;
+        }
+        .page-header h2 {
+            font-family: var(--font-head); font-size: 1.6rem;
+            font-weight: 800; color: white; line-height: 1.1;
+        }
+        .page-header .sub { color: var(--text-dim); font-size: 0.83rem; margin-top: 4px; }
+
+        /* ===== STAT CARDS ===== */
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+        @media (max-width:1100px) { .stats-row { grid-template-columns: repeat(2,1fr); } }
+        @media (max-width:580px)  { .stats-row { grid-template-columns: 1fr; } }
+
+        .stat-card {
+            background: var(--dark-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 22px 20px; position: relative;
+            overflow: hidden; transition: var(--t);
+        }
+        .stat-card::before {
+            content: ''; position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+        .stat-card.c-blue::before   { background: linear-gradient(90deg, var(--blue), var(--blue-light)); }
+        .stat-card.c-orange::before { background: linear-gradient(90deg, var(--orange), #fb923c); }
+        .stat-card.c-green::before  { background: linear-gradient(90deg, var(--green), #34d399); }
+        .stat-card.c-purple::before { background: linear-gradient(90deg, var(--purple), #c084fc); }
+
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.3); }
+
+        .stat-icon-wrap {
+            width: 42px; height: 42px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; margin-bottom: 14px;
+        }
+        .c-blue  .stat-icon-wrap { background: var(--blue-dim);   color: var(--blue-light); }
+        .c-orange .stat-icon-wrap { background: var(--orange-dim); color: var(--orange); }
+        .c-green  .stat-icon-wrap { background: var(--green-dim);  color: var(--green); }
+        .c-purple .stat-icon-wrap { background: var(--purple-dim); color: var(--purple); }
+
+        .stat-val {
+            font-family: var(--font-head);
+            font-size: 2.2rem; font-weight: 800;
+            color: white; line-height: 1; margin-bottom: 4px;
+        }
+        .stat-lbl { font-size: 0.76rem; color: var(--text-dim); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-trend {
+            position: absolute; top: 20px; right: 18px;
+            font-size: 0.72rem; font-weight: 600;
+            padding: 3px 8px; border-radius: 99px;
+        }
+        .trend-up   { background: var(--green-dim);  color: var(--green); }
+        .trend-new  { background: var(--blue-dim);   color: var(--blue-light); }
+
+        /* ===== CARDS ===== */
+        .panel {
+            background: var(--dark-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden; transition: var(--t);
+        }
+        .panel-header {
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center;
+            justify-content: space-between; gap: 12px;
+            flex-wrap: wrap;
+        }
+        .panel-title {
+            font-family: var(--font-head);
+            font-size: 0.95rem; font-weight: 700;
+            color: white; display: flex; align-items: center; gap: 8px;
+        }
+        .panel-title i { color: var(--blue-light); font-size: 0.9rem; }
+        .panel-body { padding: 20px 22px; }
+
+        /* ===== CHARTS GRID ===== */
         .charts-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 24px; }
-        .chart-card { background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
-        .search-box { display: flex; align-items: center; gap: 8px; background: var(--bg-4); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 7px 12px; min-width: 200px; }
-        .search-box input { background: none; border: none; outline: none; color: var(--text); font-family: var(--font); font-size: 0.82rem; width: 100%; }
-        .wa-banner { background: linear-gradient(135deg, rgba(37,211,102,0.08), rgba(18,140,126,0.08)); border: 1px solid rgba(37,211,102,0.2); border-radius: var(--radius); padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
-        .quick-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .quick-btn { display: flex; align-items: center; gap: 10px; background: var(--bg-4); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 13px; cursor: pointer; transition: var(--t); }
-        .quick-btn:hover { border-color: var(--border-strong); background: var(--bg-3); transform: translateY(-2px); }
-        .activity-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); }
-        .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-        .toast-item { background: var(--bg-3); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: 12px 18px; color: var(--text); font-size: 0.82rem; font-weight: 500; animation: toastIn 0.3s ease forwards; }
+        @media (max-width:900px) { .charts-grid { grid-template-columns: 1fr; } }
+
+        .chart-wrap { position: relative; }
+
+        /* ===== DATA TABLE ===== */
+        .data-tbl { width: 100%; border-collapse: collapse; }
+        .data-tbl thead th {
+            padding: 10px 16px;
+            font-size: 0.67rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
+            color: var(--text-dim);
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        .data-tbl tbody td {
+            padding: 13px 16px;
+            font-size: 0.82rem; color: var(--text-mid);
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+        .data-tbl tbody tr:last-child td { border-bottom: none; }
+        .data-tbl tbody tr:hover td { background: rgba(255,255,255,0.02); }
+        .td-name { color: white; font-weight: 600; }
+
+        /* ===== BADGES ===== */
+        .pill {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 3px 10px; border-radius: 99px;
+            font-size: 0.67rem; font-weight: 700; white-space: nowrap;
+        }
+        .pill-blue   { background: var(--blue-dim);   color: var(--blue-light); }
+        .pill-orange { background: var(--orange-dim); color: var(--orange); }
+        .pill-green  { background: var(--green-dim);  color: var(--green); }
+        .pill-purple { background: var(--purple-dim); color: var(--purple); }
+        .pill-red    { background: var(--red-dim);    color: var(--red); }
+        .pill-dim    { background: rgba(255,255,255,0.06); color: var(--text-dim); }
+
+        /* ===== ACTION BUTTONS ===== */
+        .act-btn {
+            width: 30px; height: 30px; border-radius: 8px; border: none;
+            display: inline-flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 0.75rem; transition: var(--t); margin: 0 2px;
+        }
+        .act-edit   { background: var(--blue-dim);   color: var(--blue-light); }
+        .act-edit:hover { background: var(--blue); color: white; }
+        .act-del    { background: var(--red-dim);    color: var(--red); }
+        .act-del:hover { background: var(--red); color: white; }
+        .act-view   { background: var(--green-dim);  color: var(--green); }
+        .act-view:hover { background: var(--green); color: white; }
+        .act-shield { background: var(--purple-dim); color: var(--purple); }
+        .act-shield:hover { background: var(--purple); color: white; }
+
+        /* ===== BUTTONS ===== */
+        .btn-admin-primary {
+            display: inline-flex; align-items: center; gap: 7px;
+            background: var(--grad-blue); color: white;
+            border: none; padding: 9px 18px; border-radius: 50px;
+            font-family: var(--font-head); font-weight: 600;
+            font-size: 0.8rem; cursor: pointer; transition: var(--t);
+            white-space: nowrap; text-decoration: none;
+        }
+        .btn-admin-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(37,99,235,0.35); color: white; }
+
+        .btn-admin-ghost {
+            display: inline-flex; align-items: center; gap: 7px;
+            background: rgba(255,255,255,0.04); color: var(--text-mid);
+            border: 1px solid var(--border); padding: 8px 14px; border-radius: 50px;
+            font-family: var(--font-head); font-weight: 600;
+            font-size: 0.78rem; cursor: pointer; transition: var(--t);
+            white-space: nowrap; text-decoration: none;
+        }
+        .btn-admin-ghost:hover { border-color: var(--border-strong); color: var(--text); }
+
+        .btn-admin-orange {
+            display: inline-flex; align-items: center; gap: 7px;
+            background: var(--grad-orange); color: white;
+            border: none; padding: 9px 18px; border-radius: 50px;
+            font-family: var(--font-head); font-weight: 600;
+            font-size: 0.8rem; cursor: pointer; transition: var(--t);
+        }
+        .btn-admin-orange:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(249,115,22,0.35); }
+
+        /* ===== SEARCH BOX ===== */
+        .search-wrap {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border); border-radius: 50px;
+            padding: 7px 14px;
+        }
+        .search-wrap i { color: var(--text-dim); font-size: 0.82rem; }
+        .search-wrap input {
+            background: none; border: none; outline: none;
+            color: var(--text); font-family: var(--font-body);
+            font-size: 0.82rem; width: 180px;
+        }
+        .search-wrap input::placeholder { color: var(--text-dim); }
+
+        /* ===== WA BANNER ===== */
+        .wa-banner {
+            background: linear-gradient(135deg, rgba(37,211,102,0.07), rgba(18,140,126,0.07));
+            border: 1px solid rgba(37,211,102,0.18);
+            border-radius: var(--radius); padding: 14px 20px;
+            display: flex; align-items: center;
+            justify-content: space-between; gap: 12px;
+            margin-bottom: 24px; flex-wrap: wrap;
+        }
+        .wa-banner-left { display: flex; align-items: center; gap: 10px; font-size: 0.84rem; color: #6ee7b7; font-weight: 500; }
+        .wa-dot { width: 8px; height: 8px; border-radius: 50%; background: #25D366; animation: waPulse 2s infinite; }
+        @keyframes waPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.3)} }
+
+        /* ===== QUICK ACTIONS ===== */
+        .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .quick-btn {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm); padding: 12px;
+            cursor: pointer; transition: var(--t); text-align: left;
+        }
+        .quick-btn:hover { border-color: var(--blue); background: var(--blue-dim); transform: translateY(-2px); }
+        .quick-btn .qb-icon {
+            width: 32px; height: 32px; border-radius: 8px;
+            background: var(--blue-dim); color: var(--blue-light);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; flex-shrink: 0;
+        }
+        .quick-btn span { font-size: 0.78rem; font-weight: 600; color: var(--text); }
+
+        /* ===== ACTIVITY ===== */
+        .activity-item {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .activity-item:last-child { border-bottom: none; }
+        .act-dot {
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; flex-shrink: 0; margin-top: 2px;
+        }
+        .act-dot.msg { background: var(--blue-dim); color: var(--blue-light); }
+        .act-dot.user { background: var(--green-dim); color: var(--green); }
+        .act-dot.sub { background: var(--purple-dim); color: var(--purple); }
+        .activity-item p { font-size: 0.8rem; color: var(--text); margin: 0; }
+        .activity-item time { font-size: 0.7rem; color: var(--text-dim); }
+
+        /* ===== TOAST ===== */
+        #toast-container {
+            position: fixed; bottom: 24px; right: 24px;
+            z-index: 9999; display: flex; flex-direction: column; gap: 10px;
+        }
+        .toast-item {
+            background: var(--dark-4); border: 1px solid var(--border-strong);
+            border-radius: var(--radius-sm); padding: 12px 18px;
+            color: var(--text); font-size: 0.82rem; font-weight: 500;
+            display: flex; align-items: center; gap: 9px;
+            animation: toastIn 0.3s ease;
+            min-width: 240px; max-width: 320px;
+        }
         .toast-item.success { border-left: 3px solid var(--green); }
-        @keyframes toastIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @media(max-width:768px) { .sidebar { transform: translateX(-100%); } .sidebar.mobile-open { transform: translateX(0); } .main, .topbar { margin-left: 0 !important; left: 0 !important; } }
-        .form-control-dark { background: var(--bg-4); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); padding: 10px 14px; width: 100%; font-family: var(--font); }
-        .modal-dark .modal-content { background: var(--bg-3); border: 1px solid var(--border-strong); border-radius: var(--radius-lg); }
+        .toast-item.error   { border-left: 3px solid var(--red); }
+        .toast-item.info    { border-left: 3px solid var(--blue-light); }
+        @keyframes toastIn { from { transform: translateX(20px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+        /* ===== MODAL ===== */
+        .modal-content {
+            background: var(--dark-3) !important;
+            border: 1px solid var(--border-strong) !important;
+            border-radius: var(--radius-lg) !important;
+            color: var(--text) !important;
+        }
+        .modal-header {
+            border-bottom: 1px solid var(--border) !important;
+            padding: 18px 22px !important;
+        }
+        .modal-header .modal-title {
+            font-family: var(--font-head); font-weight: 700;
+            color: white; font-size: 1rem;
+        }
+        .modal-footer { border-top: 1px solid var(--border) !important; }
+        .btn-close { filter: invert(1) !important; }
+
+        .form-ctrl {
+            background: rgba(255,255,255,0.05) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: var(--radius-sm) !important;
+            color: var(--text) !important;
+            padding: 10px 14px; width: 100%;
+            font-family: var(--font-body); font-size: 0.84rem;
+            transition: var(--t);
+        }
+        .form-ctrl:focus {
+            outline: none !important;
+            border-color: var(--blue) !important;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.15) !important;
+            background: rgba(255,255,255,0.07) !important;
+        }
+        .form-ctrl::placeholder { color: var(--text-dim) !important; }
+        .form-ctrl option { background: var(--dark-3); }
+        label.ctrl-label {
+            font-size: 0.76rem; font-weight: 600;
+            color: var(--text-mid); margin-bottom: 5px; display: block;
+        }
+
+        /* ===== USER PROFILE BOX ===== */
+        .user-profile-box {
+            display: flex; align-items: center; gap: 16px;
+            padding: 20px 22px;
+            background: var(--dark-4); border-bottom: 1px solid var(--border);
+        }
+        .user-avatar-lg {
+            width: 50px; height: 50px; border-radius: 50%;
+            background: var(--grad-blue);
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-head); font-weight: 800;
+            font-size: 1.2rem; color: white; flex-shrink: 0;
+        }
+        .user-profile-box .uname { font-family: var(--font-head); font-weight: 700; color: white; }
+        .user-profile-box .urole { font-size: 0.72rem; color: var(--orange); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* ===== SETTINGS ===== */
+        .setting-section { margin-bottom: 24px; }
+        .setting-section-title {
+            font-family: var(--font-head); font-weight: 700;
+            color: var(--text-mid); font-size: 0.72rem;
+            text-transform: uppercase; letter-spacing: 1.5px;
+            margin-bottom: 14px; padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+        .setting-row {
+            display: flex; align-items: center;
+            justify-content: space-between; gap: 16px;
+            padding: 12px 0; border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+        .setting-row:last-child { border-bottom: none; }
+        .setting-row-info p { font-size: 0.84rem; font-weight: 600; color: var(--text); margin: 0; }
+        .setting-row-info span { font-size: 0.76rem; color: var(--text-dim); }
+
+        /* toggle switch */
+        .toggle-switch { position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0; }
+        .toggle-switch input { display: none; }
+        .toggle-track {
+            position: absolute; inset: 0; border-radius: 99px;
+            background: var(--border-strong); cursor: pointer; transition: var(--t);
+        }
+        .toggle-track::after {
+            content: ''; position: absolute;
+            top: 3px; left: 3px;
+            width: 16px; height: 16px; border-radius: 50%;
+            background: white; transition: var(--t);
+        }
+        .toggle-switch input:checked + .toggle-track { background: var(--blue); }
+        .toggle-switch input:checked + .toggle-track::after { transform: translateX(18px); }
+
+        /* ===== SECTION TAG (matches home.hbs) ===== */
+        .section-tag {
+            display: inline-block; background: rgba(37,99,235,0.12);
+            color: var(--blue-light); border-radius: 50px;
+            padding: 4px 14px; font-size: 0.67rem;
+            font-weight: 700; letter-spacing: 1.5px;
+            text-transform: uppercase; margin-bottom: 6px;
+        }
+
+        /* ===== GRID HELPERS ===== */
+        .two-col { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        @media (max-width:1024px) { .two-col { grid-template-columns: 1fr; } }
+        .three-col { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+        @media (max-width:900px)  { .three-col { grid-template-columns: 1fr 1fr; } }
+        @media (max-width:580px)  { .three-col { grid-template-columns: 1fr; } }
+
+        /* ===== MOBILE OVERLAY ===== */
+        .sidebar-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.6); z-index: 1040;
+            backdrop-filter: blur(4px);
+        }
+        @media (max-width:991px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.mobile-open { transform: translateX(0); }
+            .topbar, .main-content { left: 0 !important; margin-left: 0 !important; }
+            .sidebar-overlay { display: block; }
+        }
+
+        /* ===== SCROLL PROGRESS ===== */
+        #scroll-progress {
+            position: fixed; top: 0; left: 0; height: 2px; width: 0%;
+            background: linear-gradient(90deg, var(--blue), var(--orange));
+            z-index: 9999; pointer-events: none;
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state { padding: 36px; text-align: center; }
+        .empty-state i { font-size: 2.5rem; color: var(--text-dim); margin-bottom: 10px; }
+        .empty-state p { color: var(--text-dim); font-size: 0.85rem; }
+
+        /* ===== GRADIENT TEXT (matches home) ===== */
+        .g-text-blue   { background: var(--grad-blue);   -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .g-text-orange { background: var(--grad-orange); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+        /* Mobile responsive tweaks */
+        @media (max-width:580px) {
+            .admin-page { padding: 16px; }
+            .page-header h2 { font-size: 1.3rem; }
+            .stat-val { font-size: 1.8rem; }
+        }
     </style>
 </head>
 <body>
 
-<div class="toast-container" id="toastContainer"></div>
+<div id="scroll-progress"></div>
+<div id="toast-container"></div>
 
-<!-- SIDEBAR -->
+<!-- ===== SIDEBAR ===== -->
 <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo"><div class="logo-icon">N</div><div class="logo-text"><strong>NeurowexTech</strong><span>Admin Panel</span></div></div>
-    <nav style="flex:1; overflow-y:auto; padding: 10px 0;">
-        <div class="sidebar-section-label">Core</div>
-        <div class="nav-item active" data-page="dashboard"><a class="nav-link-item"><i class="fas fa-chart-treemap nav-icon"></i><span class="nav-label">Dashboard</span></a></div>
-        <div class="nav-item" data-page="analytics"><a class="nav-link-item"><i class="fas fa-chart-line nav-icon"></i><span class="nav-label">Analytics</span></a></div>
-        <div class="sidebar-section-label">Management</div>
-        <div class="nav-item" data-page="users"><a class="nav-link-item"><i class="fas fa-users nav-icon"></i><span class="nav-label">Users</span><span class="nav-badge" id="usersBadge">0</span></a></div>
-        <div class="nav-item" data-page="projects"><a class="nav-link-item"><i class="fas fa-folder-open nav-icon"></i><span class="nav-label">Projects</span></a></div>
-        <div class="nav-item" data-page="contacts"><a class="nav-link-item"><i class="fas fa-inbox nav-icon"></i><span class="nav-label">Contacts</span><span class="nav-badge" id="contactsBadge">0</span></a></div>
-        <div class="nav-item" data-page="subscribers"><a class="nav-link-item"><i class="fas fa-at nav-icon"></i><span class="nav-label">Subscribers</span></a></div>
-        <div class="sidebar-section-label">Content</div>
-        <div class="nav-item" data-page="blog"><a class="nav-link-item"><i class="fas fa-feather nav-icon"></i><span class="nav-label">Blog Posts</span></a></div>
-        <div class="nav-item" data-page="services"><a class="nav-link-item"><i class="fas fa-layer-group nav-icon"></i><span class="nav-label">Services</span></a></div>
-        <div class="nav-item" data-page="portfolio"><a class="nav-link-item"><i class="fas fa-briefcase nav-icon"></i><span class="nav-label">Portfolio</span></a></div>
-        <div class="nav-item" data-page="testimonials"><a class="nav-link-item"><i class="fas fa-star nav-icon"></i><span class="nav-label">Testimonials</span></a></div>
-        <div class="nav-item" data-page="team"><a class="nav-link-item"><i class="fas fa-id-badge nav-icon"></i><span class="nav-label">Team</span></a></div>
-        <div class="nav-item" data-page="pricing"><a class="nav-link-item"><i class="fas fa-tags nav-icon"></i><span class="nav-label">Pricing</span></a></div>
-        <div class="sidebar-divider"></div>
-        <div class="nav-item" data-page="settings"><a class="nav-link-item"><i class="fas fa-sliders nav-icon"></i><span class="nav-label">Settings</span></a></div>
-        <div class="nav-item"><a href="/" class="nav-link-item"><i class="fas fa-arrow-up-right-from-square nav-icon"></i><span class="nav-label">View Website</span></a></div>
+    <!-- Logo -->
+    <div class="sidebar-logo">
+        <div class="logo-mark">N</div>
+        <div class="logo-text">
+            <strong>NeurowexTech</strong>
+            <span>Admin Panel</span>
+        </div>
+    </div>
+
+    <!-- User Quick Profile -->
+    <div class="user-profile-box">
+        <div class="user-avatar-lg">{{#if userName}}{{truncate userName 1}}{{else}}A{{/if}}</div>
+        <div>
+            <div class="uname">{{#if userName}}{{userName}}{{else}}Admin{{/if}}</div>
+            <div class="urole">Administrator</div>
+        </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="sidebar-nav">
+        <div class="nav-section-label">Overview</div>
+        <div class="nav-item-wrap active" data-page="dashboard">
+            <a class="nav-link-admin" data-label="Dashboard">
+                <div class="nav-icon-wrap"><i class="fas fa-gauge-high"></i></div>
+                <span class="nav-lbl">Dashboard</span>
+            </a>
+        </div>
+        <div class="nav-item-wrap" data-page="analytics">
+            <a class="nav-link-admin" data-label="Analytics">
+                <div class="nav-icon-wrap"><i class="fas fa-chart-line"></i></div>
+                <span class="nav-lbl">Analytics</span>
+            </a>
+        </div>
+
+        <div class="nav-section-label">Management</div>
+        <div class="nav-item-wrap" data-page="users">
+            <a class="nav-link-admin" data-label="Users">
+                <div class="nav-icon-wrap"><i class="fas fa-users"></i></div>
+                <span class="nav-lbl">Users</span>
+                <span class="nav-badge-count" id="sidebarUserCount">{{stats.total_users}}</span>
+            </a>
+        </div>
+        <div class="nav-item-wrap" data-page="projects">
+            <a class="nav-link-admin" data-label="Projects">
+                <div class="nav-icon-wrap"><i class="fas fa-folder-open"></i></div>
+                <span class="nav-lbl">Projects</span>
+            </a>
+        </div>
+        <div class="nav-item-wrap" data-page="contacts">
+            <a class="nav-link-admin" data-label="Contacts">
+                <div class="nav-icon-wrap"><i class="fas fa-inbox"></i></div>
+                <span class="nav-lbl">Contacts</span>
+                <span class="nav-badge-count" id="sidebarContactCount">{{stats.total_contacts}}</span>
+            </a>
+        </div>
+        <div class="nav-item-wrap" data-page="subscribers">
+            <a class="nav-link-admin" data-label="Subscribers">
+                <div class="nav-icon-wrap"><i class="fas fa-at"></i></div>
+                <span class="nav-lbl">Subscribers</span>
+            </a>
+        </div>
+
+        <div class="nav-section-label">Content</div>
+        <div class="nav-item-wrap" data-page="blog">
+            <a class="nav-link-admin" data-label="Blog Posts">
+                <div class="nav-icon-wrap"><i class="fas fa-feather-pointed"></i></div>
+                <span class="nav-lbl">Blog Posts</span>
+            </a>
+        </div>
+        <div class="nav-item-wrap" data-page="services">
+            <a class="nav-link-admin" data-label="Services">
+                <div class="nav-icon-wrap"><i class="fas fa-layer-group"></i></div>
+                <span class="nav-lbl">Services</span>
+            </a>
+        </div>
+        <div class="nav-item-wrap" data-page="portfolio">
+            <a class="nav-link-admin" data-label="Portfolio">
+                <div class="nav-icon-wrap"><i class="fas fa-briefcase"></i></div>
+                <span class="nav-lbl">Portfolio</span>
+            </a>
+        </div>
+        <div class="nav-item-wrap" data-page="testimonials">
+            <a class="nav-link-admin" data-label="Testimonials">
+                <div class="nav-icon-wrap"><i class="fas fa-star"></i></div>
+                <span class="nav-lbl">Testimonials</span>
+            </a>
+        </div>
+        <div class="nav-item-wrap" data-page="team">
+            <a class="nav-link-admin" data-label="Team">
+                <div class="nav-icon-wrap"><i class="fas fa-id-badge"></i></div>
+                <span class="nav-lbl">Team</span>
+            </a>
+        </div>
+
+        <div class="nav-section-label">System</div>
+        <div class="nav-item-wrap" data-page="settings">
+            <a class="nav-link-admin" data-label="Settings">
+                <div class="nav-icon-wrap"><i class="fas fa-sliders"></i></div>
+                <span class="nav-lbl">Settings</span>
+            </a>
+        </div>
+        <div class="nav-item-wrap">
+            <a class="nav-link-admin" href="/" target="_blank" data-label="View Website">
+                <div class="nav-icon-wrap"><i class="fas fa-arrow-up-right-from-square"></i></div>
+                <span class="nav-lbl">View Website</span>
+            </a>
+        </div>
     </nav>
-    <div class="sidebar-footer"><div class="nav-item"><a href="/logout" class="nav-link-item"><i class="fas fa-right-from-bracket nav-icon" style="color:var(--red)"></i><span class="nav-label" style="color:var(--red)">Sign Out</span></a></div></div>
+
+    <!-- Footer / Logout -->
+    <div class="sidebar-footer">
+        <div class="nav-item-wrap">
+            <a class="nav-link-admin" href="/logout" data-label="Sign Out" style="color:var(--red)">
+                <div class="nav-icon-wrap" style="color:var(--red)"><i class="fas fa-right-from-bracket"></i></div>
+                <span class="nav-lbl" style="color:var(--red)">Sign Out</span>
+            </a>
+        </div>
+    </div>
 </aside>
 
-<header class="topbar" id="topbar"><div class="topbar-left"><button class="toggle-btn" id="sidebarToggle"><i class="fas fa-bars-staggered"></i></button><div class="breadcrumb-area"><div class="page-title" id="pageTitle">Dashboard</div><div class="page-sub" id="pageSub">Real-time data from backend</div></div></div><div class="topbar-right"><button class="topbar-btn" id="refreshBtn"><i class="fas fa-arrows-rotate"></i></button><a href="https://wa.me/254769329340" target="_blank" class="topbar-btn" style="color:#25D366"><i class="fab fa-whatsapp"></i></a><div class="user-pill"><div class="user-avatar">A</div><span>Admin</span></div></div></header>
+<!-- Mobile overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" style="display:none;opacity:0;transition:opacity .3s;"></div>
 
-<main class="main" id="mainContent">
-    <!-- Dashboard Page -->
-    <div class="page-content active" id="dashboardPage"><div class="pg-header"><div><div class="section-tag">Live Overview</div><h2>Welcome back, Admin 👋</h2><p>Real-time platform metrics</p></div><button class="btn-primary-dark" onclick="openAddUserModal()"><i class="fas fa-plus"></i> Add User</button></div>
-        <div class="wa-banner"><div><i class="fab fa-whatsapp me-2"></i> WhatsApp Connected: +254 769 329 340</div><a href="https://wa.me/254769329340" target="_blank" class="btn-ghost-dark"><i class="fab fa-whatsapp"></i> Open Chat</a></div>
-        <div class="stat-grid"><div class="stat-card blue"><div class="stat-head"><div class="stat-value" id="statUsers">—</div></div><div class="stat-label">Total Users</div></div><div class="stat-card green"><div class="stat-value" id="statProjects">—</div><div class="stat-label">Projects</div></div><div class="stat-card orange"><div class="stat-value" id="statContacts">—</div><div class="stat-label">Messages</div></div><div class="stat-card purple"><div class="stat-value" id="statSubscribers">—</div><div class="stat-label">Subscribers</div></div></div>
-        <div class="charts-grid"><div class="chart-card"><div class="card-title mb-3">Growth Trends</div><canvas id="growthChart" height="130"></canvas></div><div class="chart-card"><div class="card-title mb-3">Contact Sources</div><canvas id="donutChart" height="130"></canvas></div></div>
-        <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px"><div class="table-card"><div class="table-card-header"><h5><i class="fas fa-inbox me-2"></i>Recent Messages</h5><button class="btn-ghost-dark" onclick="switchPage('contacts')">View All</button></div><table class="data-table"><thead><tr><th>Name</th><th>Service</th><th>Date</th><th>Status</th></tr></thead><tbody id="dashContactsBody"><tr><td colspan="4" class="text-muted text-center">Loading...</td></tr></tbody></table></div>
-        <div class="chart-card"><div class="card-title mb-2">Quick Actions</div><div class="quick-grid"><button class="quick-btn" onclick="switchPage('blog')"><i class="fas fa-feather"></i><span>New Post</span></button><button class="quick-btn" onclick="openAddProjectModal()"><i class="fas fa-plus"></i><span>Add Project</span></button></div><div class="mt-3"><div class="card-title">Recent Activity</div><div id="activityFeed" class="activity-list"><div class="text-muted text-center p-2">Loading activity...</div></div></div></div></div></div>
+<!-- ===== TOPBAR ===== -->
+<header class="topbar" id="topbar">
+    <div class="topbar-left">
+        <button class="toggle-sidebar-btn" id="toggleSidebar" title="Toggle sidebar">
+            <i class="fas fa-bars-staggered"></i>
+        </button>
+        <div class="breadcrumb-stack">
+            <div class="page-title" id="topbarTitle">Dashboard</div>
+            <div class="page-sub" id="topbarSub">Live platform data</div>
+        </div>
+    </div>
+    <div class="topbar-right">
+        <button class="topbar-action refresh" id="refreshBtn" title="Refresh data">
+            <i class="fas fa-arrows-rotate"></i>
+        </button>
+        <a href="https://wa.me/254769329340" target="_blank" class="topbar-action wa" title="WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+        <div class="user-chip">
+            <div class="user-avatar">{{#if userName}}{{truncate userName 1}}{{else}}A{{/if}}</div>
+            <span>{{#if userName}}{{userName}}{{else}}Admin{{/if}}</span>
+        </div>
+    </div>
+</header>
 
-    <!-- Analytics, Users, Projects, Contacts, Subscribers, Blog, Services, Portfolio, Testimonials, Team, Pricing, Settings pages - abbreviated for brevity but fully functional with real data -->
-    <div class="page-content" id="analyticsPage"><div class="pg-header"><h2>Analytics</h2></div><div class="chart-card"><canvas id="visitorChart" height="200"></canvas></div></div>
-    <div class="page-content" id="usersPage"><div class="pg-header"><h2>User Management</h2><button class="btn-primary-dark" onclick="openAddUserModal()"><i class="fas fa-user-plus"></i> Add User</button></div><div class="table-card"><div class="table-card-header"><div class="search-box"><i class="fas fa-search"></i><input id="userSearchInput" placeholder="Search users..."></div></div><table class="data-table"><thead><tr><th>User</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead><tbody id="usersTableBody"></tbody></table></div></div>
-    <div class="page-content" id="projectsPage"><div class="pg-header"><h2>Projects</h2><button class="btn-primary-dark" onclick="openAddProjectModal()"><i class="fas fa-plus"></i> Add Project</button></div><div class="table-card"><table class="data-table"><thead><tr><th>Project</th><th>Category</th><th>Featured</th><th>Actions</th></tr></thead><tbody id="projectsTableBody"></tbody></table></div></div>
-    <div class="page-content" id="contactsPage"><div class="pg-header"><h2>Contacts</h2></div><div class="table-card"><table class="data-table"><thead><tr><th>Name</th><th>Email</th><th>Service</th><th>Date</th><th>Actions</th></tr></thead><tbody id="contactsTableBody"></tbody></table></div></div>
-    <div class="page-content" id="subscribersPage"><div class="pg-header"><h2>Subscribers</h2></div><div class="table-card"><table class="data-table"><thead><tr><th>Email</th><th>Date</th><th>Actions</th></tr></thead><tbody id="subscribersTableBody"></tbody></table></div></div>
-    <div class="page-content" id="blogPage"><div class="pg-header"><h2>Blog Posts</h2><button class="btn-primary-dark" onclick="openAddBlogModal()"><i class="fas fa-feather"></i> New Post</button></div><div class="table-card"><tbody id="blogTableBody"></tbody></div></div>
-    <div class="page-content" id="servicesPage"><div class="pg-header"><h2>Services</h2></div><div class="table-card"><tbody id="servicesTableBody"></tbody></div></div>
-    <div class="page-content" id="portfolioPage"><div class="pg-header"><h2>Portfolio</h2></div><div class="table-card"><tbody id="portfolioTableBody"></tbody></div></div>
-    <div class="page-content" id="testimonialsPage"><div class="pg-header"><h2>Testimonials</h2></div><div class="table-card"><tbody id="testimonialsTableBody"></tbody></div></div>
-    <div class="page-content" id="teamPage"><div class="pg-header"><h2>Team</h2></div><div class="table-card"><tbody id="teamTableBody"></tbody></div></div>
-    <div class="page-content" id="pricingPage"><div class="pg-header"><h2>Pricing</h2></div><div class="table-card"><tbody id="pricingTableBody"></tbody></div></div>
-    <div class="page-content" id="settingsPage"><div class="pg-header"><h2>Settings</h2><button class="btn-primary-dark" id="saveSettingsBtn">Save Changes</button></div><div class="setting-group"><div class="setting-group-header">Site Identity</div><div class="setting-row"><div>Site Name</div><input id="siteName" class="form-control-dark" style="width:200px" value="NeurowexTech"></div></div></div>
-</main>
+<!-- ===== MAIN CONTENT ===== -->
+<main class="main-content" id="mainContent">
 
-<!-- Modals (simplified) -->
-<div class="modal fade modal-dark" id="addUserModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5>Add User</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input id="newUserName" class="form-control-dark mb-2" placeholder="Full Name"><input id="newUserEmail" class="form-control-dark mb-2" placeholder="Email"><input id="newUserPassword" class="form-control-dark mb-2" type="password" placeholder="Password"></div><div class="modal-footer"><button class="btn-primary-dark" onclick="createUser()">Create</button></div></div></div></div>
-<div class="modal fade modal-dark" id="addProjectModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5>Add Project</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input id="projectName" class="form-control-dark mb-2" placeholder="Project Name"><select id="projectCategory" class="form-control-dark mb-2"><option>Web</option><option>Mobile</option></select></div><div class="modal-footer"><button class="btn-primary-dark" onclick="createProject()">Save</button></div></div></div></div>
-<div class="modal fade modal-dark" id="addBlogModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5>New Blog Post</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input id="blogTitle" class="form-control-dark mb-2" placeholder="Title"></div><div class="modal-footer"><button class="btn-primary-dark" onclick="createBlog()">Create</button></div></div></div></div>
+    <!-- ========== DASHBOARD PAGE ========== -->
+    <div class="admin-page active" id="dashboardPage">
+        <div class="page-header">
+            <div>
+                <div class="section-tag">Live Overview</div>
+                <h2>Welcome back, <span class="g-text-orange">{{#if userName}}{{userName}}{{else}}Admin{{/if}}</span> 👋</h2>
+                <div class="sub">Real-time metrics from your NeurowexTech platform</div>
+            </div>
+            <button class="btn-admin-primary" onclick="openModal('addUserModal')">
+                <i class="fas fa-user-plus"></i> Add User
+            </button>
+        </div>
 
+        <!-- WhatsApp Banner -->
+        <div class="wa-banner">
+            <div class="wa-banner-left">
+                <div class="wa-dot"></div>
+                <i class="fab fa-whatsapp" style="font-size:1.1rem;color:#25D366"></i>
+                WhatsApp active — +254 769 329 340 · Reply in minutes
+            </div>
+            <a href="https://wa.me/254769329340" target="_blank" class="btn-admin-ghost">
+                <i class="fab fa-whatsapp"></i> Open Chat
+            </a>
+        </div>
+
+        <!-- Stat Cards -->
+        <div class="stats-row">
+            <div class="stat-card c-blue">
+                <span class="stat-trend trend-new">LIVE</span>
+                <div class="stat-icon-wrap"><i class="fas fa-users"></i></div>
+                <div class="stat-val" id="sUsers">{{stats.total_users}}</div>
+                <div class="stat-lbl">Total Users</div>
+            </div>
+            <div class="stat-card c-orange">
+                <span class="stat-trend trend-up">↑ Active</span>
+                <div class="stat-icon-wrap"><i class="fas fa-folder-open"></i></div>
+                <div class="stat-val" id="sProjects">{{stats.total_projects}}</div>
+                <div class="stat-lbl">Projects</div>
+            </div>
+            <div class="stat-card c-green">
+                <span class="stat-trend trend-new">NEW</span>
+                <div class="stat-icon-wrap"><i class="fas fa-inbox"></i></div>
+                <div class="stat-val" id="sContacts">{{stats.total_contacts}}</div>
+                <div class="stat-lbl">Messages</div>
+            </div>
+            <div class="stat-card c-purple">
+                <span class="stat-trend trend-up">↑ Growing</span>
+                <div class="stat-icon-wrap"><i class="fas fa-at"></i></div>
+                <div class="stat-val" id="sSubscribers">{{stats.total_subscribers}}</div>
+                <div class="stat-lbl">Subscribers</div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-grid mb-4">
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title"><i class="fas fa-chart-line"></i> Platform Growth</div>
+                    <div class="pill pill-blue">Last 6 months</div>
+                </div>
+                <div class="panel-body">
+                    <div class="chart-wrap"><canvas id="growthChart" height="140"></canvas></div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title"><i class="fas fa-chart-pie"></i> Traffic Sources</div>
+                </div>
+                <div class="panel-body">
+                    <div class="chart-wrap"><canvas id="donutChart" height="140"></canvas></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Grid -->
+        <div class="two-col">
+            <!-- Recent Contacts -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title"><i class="fas fa-inbox"></i> Recent Messages</div>
+                    <button class="btn-admin-ghost" onclick="switchPage('contacts')">View All</button>
+                </div>
+                <div style="overflow-x:auto">
+                    <table class="data-tbl">
+                        <thead>
+                            <tr><th>Name</th><th>Service</th><th>Date</th><th>Status</th></tr>
+                        </thead>
+                        <tbody id="dashContactsBody">
+                            <tr><td colspan="4"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading...</p></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Quick Actions + Activity -->
+            <div style="display:flex;flex-direction:column;gap:16px;">
+                <div class="panel">
+                    <div class="panel-header"><div class="panel-title"><i class="fas fa-bolt"></i> Quick Actions</div></div>
+                    <div class="panel-body">
+                        <div class="quick-grid">
+                            <button class="quick-btn" onclick="openModal('addUserModal')">
+                                <div class="qb-icon"><i class="fas fa-user-plus"></i></div>
+                                <span>Add User</span>
+                            </button>
+                            <button class="quick-btn" onclick="openModal('addProjectModal')">
+                                <div class="qb-icon"><i class="fas fa-plus"></i></div>
+                                <span>Add Project</span>
+                            </button>
+                            <button class="quick-btn" onclick="switchPage('contacts')">
+                                <div class="qb-icon" style="background:var(--green-dim);color:var(--green)"><i class="fas fa-inbox"></i></div>
+                                <span>Messages</span>
+                            </button>
+                            <button class="quick-btn" onclick="switchPage('subscribers')">
+                                <div class="qb-icon" style="background:var(--purple-dim);color:var(--purple)"><i class="fas fa-at"></i></div>
+                                <span>Subscribers</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel" style="flex:1">
+                    <div class="panel-header"><div class="panel-title"><i class="fas fa-clock-rotate-left"></i> Recent Activity</div></div>
+                    <div class="panel-body" id="activityFeed" style="padding-top:8px">
+                        <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading...</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== ANALYTICS PAGE ========== -->
+    <div class="admin-page" id="analyticsPage">
+        <div class="page-header">
+            <div>
+                <div class="section-tag">Insights</div>
+                <h2>Analytics <span class="g-text-blue">Overview</span></h2>
+                <div class="sub">Platform performance metrics</div>
+            </div>
+        </div>
+        <div class="stats-row" style="margin-bottom:24px;">
+            <div class="stat-card c-blue">
+                <div class="stat-icon-wrap"><i class="fas fa-eye"></i></div>
+                <div class="stat-val">4,820</div>
+                <div class="stat-lbl">Page Views (month)</div>
+            </div>
+            <div class="stat-card c-orange">
+                <div class="stat-icon-wrap"><i class="fas fa-arrow-trend-up"></i></div>
+                <div class="stat-val" id="aUsers">{{stats.total_users}}</div>
+                <div class="stat-lbl">Registered Users</div>
+            </div>
+            <div class="stat-card c-green">
+                <div class="stat-icon-wrap"><i class="fas fa-percent"></i></div>
+                <div class="stat-val">68%</div>
+                <div class="stat-lbl">Conversion Rate</div>
+            </div>
+            <div class="stat-card c-purple">
+                <div class="stat-icon-wrap"><i class="fas fa-clock"></i></div>
+                <div class="stat-val">3m 24s</div>
+                <div class="stat-lbl">Avg Session</div>
+            </div>
+        </div>
+        <div class="charts-grid">
+            <div class="panel">
+                <div class="panel-header"><div class="panel-title"><i class="fas fa-chart-bar"></i> Weekly Visitors</div></div>
+                <div class="panel-body"><canvas id="visitorChart" height="180"></canvas></div>
+            </div>
+            <div class="panel">
+                <div class="panel-header"><div class="panel-title"><i class="fas fa-map-marker-alt"></i> Top Countries</div></div>
+                <div class="panel-body">
+                    <div id="countryList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== USERS PAGE ========== -->
+    <div class="admin-page" id="usersPage">
+        <div class="page-header">
+            <div>
+                <div class="section-tag">Management</div>
+                <h2>User <span class="g-text-blue">Management</span></h2>
+                <div class="sub">Manage registered accounts and roles</div>
+            </div>
+            <button class="btn-admin-primary" onclick="openModal('addUserModal')">
+                <i class="fas fa-user-plus"></i> Add User
+            </button>
+        </div>
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title"><i class="fas fa-users"></i> All Users</div>
+                <div class="search-wrap">
+                    <i class="fas fa-search"></i>
+                    <input id="userSearch" placeholder="Search users..." oninput="filterUsers(this.value)">
+                </div>
+            </div>
+            <div style="overflow-x:auto">
+                <table class="data-tbl">
+                    <thead>
+                        <tr><th>User</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th>Last Login</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <tr><td colspan="7"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading users...</p></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== PROJECTS PAGE ========== -->
+    <div class="admin-page" id="projectsPage">
+        <div class="page-header">
+            <div>
+                <div class="section-tag">Content</div>
+                <h2>Projects <span class="g-text-blue">Portfolio</span></h2>
+                <div class="sub">Manage showcase projects on the website</div>
+            </div>
+            <button class="btn-admin-primary" onclick="openModal('addProjectModal')">
+                <i class="fas fa-plus"></i> Add Project
+            </button>
+        </div>
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title"><i class="fas fa-folder-open"></i> All Projects</div>
+            </div>
+            <div style="overflow-x:auto">
+                <table class="data-tbl">
+                    <thead>
+                        <tr><th>Project</th><th>Category</th><th>Year</th><th>Featured</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="projectsTableBody">
+                        <tr><td colspan="5"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading projects...</p></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== CONTACTS PAGE ========== -->
+    <div class="admin-page" id="contactsPage">
+        <div class="page-header">
+            <div>
+                <div class="section-tag">Inbox</div>
+                <h2>Contact <span class="g-text-blue">Messages</span></h2>
+                <div class="sub">Leads and enquiries from the website</div>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title"><i class="fas fa-inbox"></i> All Messages</div>
+            </div>
+            <div style="overflow-x:auto">
+                <table class="data-tbl">
+                    <thead>
+                        <tr><th>Name</th><th>Email</th><th>Service</th><th>Budget</th><th>Date</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="contactsTableBody">
+                        <tr><td colspan="6"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading messages...</p></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== SUBSCRIBERS PAGE ========== -->
+    <div class="admin-page" id="subscribersPage">
+        <div class="page-header">
+            <div>
+                <div class="section-tag">Newsletter</div>
+                <h2>Email <span class="g-text-blue">Subscribers</span></h2>
+                <div class="sub">People subscribed to weekly updates</div>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title"><i class="fas fa-at"></i> All Subscribers</div>
+                <span class="pill pill-green" id="subCountBadge">Loading...</span>
+            </div>
+            <div style="overflow-x:auto">
+                <table class="data-tbl">
+                    <thead>
+                        <tr><th>#</th><th>Email Address</th><th>Subscribed</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="subscribersTableBody">
+                        <tr><td colspan="4"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading subscribers...</p></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== BLOG PAGE ========== -->
+    <div class="admin-page" id="blogPage">
+        <div class="page-header">
+            <div>
+                <div class="section-tag">Content</div>
+                <h2>Blog <span class="g-text-blue">Posts</span></h2>
+            </div>
+            <button class="btn-admin-primary" onclick="openModal('addBlogModal')">
+                <i class="fas fa-feather-pointed"></i> New Post
+            </button>
+        </div>
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title"><i class="fas fa-feather-pointed"></i> All Posts</div>
+            </div>
+            <div style="overflow-x:auto">
+                <table class="data-tbl">
+                    <thead>
+                        <tr><th>Title</th><th>Category</th><th>Published</th><th>Date</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="blogTableBody">
+                        <tr><td colspan="5"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading posts...</p></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== SERVICES PAGE ========== -->
+    <div class="admin-page" id="servicesPage">
+        <div class="page-header">
+            <div>
+                <div class="section-tag">Content</div>
+                <h2>Services <span class="g-text-blue">Management</span></h2>
+            </div>
+            <button class="btn-admin-primary" onclick="openModal('addServiceModal')">
+                <i class="fas fa-plus"></i> Add Service
+            </button>
+        </div>
+        <div class="panel">
+            <div class="panel-header"><div class="panel-title"><i class="fas fa-layer-group"></i> All Services</div></div>
+            <div style="overflow-x:auto">
+                <table class="data-tbl">
+                    <thead>
+                        <tr><th>Service</th><th>Icon</th><th>Price</th><th>Visible</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="servicesTableBody">
+                        <tr><td colspan="5"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading services...</p></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== PORTFOLIO PAGE ========== -->
+    <div class="admin-page" id="portfolioPage">
+        <div class="page-header">
+            <div>
+                <div class="section-tag">Content</div>
+                <h2>Portfolio <span class="g-text-blue">Items</span></h2>
+            </div>
+            <button class="btn-admin-primary" onclick="openModal('addProjectModal')">
+                <i class="fas fa-plus"></i> Add Item
+            </button>
+        </div>
+        <div class="panel">
+            <div class="panel-header"><div class="panel-title"><i class="fas fa-briefcase"></i> Portfolio Projects</div></div>
+            <div style="overflow-x:auto">
+                <table class="data-tbl">
+                    <thead>
+                        <tr><th>Name</th><th>Category</th><th>Year</th><th>Featured</th><th>URL</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="portfolioTableBody">
+                        <tr><td colspan="6"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading portfolio...</p></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== TESTIMONIALS PAGE ========== -->
+    <div class="admin-page" id="testimonialsPage">
+        <div class="page-header">
+            <div>
+                <div class="section-tag">Content</div>
+                <h2>Client <span class="g-text-orange">Testimonials</span></h2>
+            </div>
+            <button class="btn-admin-primary" onclick="openModal('addTestimonialModal')">
+                <i class="fas fa-plus"></i> Add Testimonial
+            </button>
+        </div>
+        <div class="panel">
+            <div class="panel-header"><div class="panel-title"><i class="fas fa-star"></i> All Testimonials</div></div>
+            <div style="overflow-x:auto">
+                <table class="data-tbl">
+                    <thead>
+                        <tr><th>Client</th><th>Company</th><th>Rating</th><th>Published</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="testimonialsTableBody">
+                        <tr><td colspan="5"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading...</p></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== TEAM PAGE ========== -->
+    <div class="admin-page" id="teamPage">
+        <div class="page-header">
+            <div>
+                <div class="section-tag">People</div>
+                <h2>Team <span class="g-text-purple">Members</span></h2>
+            </div>
+            <button class="btn-admin-primary" onclick="openModal('addTeamModal')">
+                <i class="fas fa-user-plus"></i> Add Member
+            </button>
+        </div>
+        <div class="panel">
+            <div class="panel-header"><div class="panel-title"><i class="fas fa-id-badge"></i> All Team Members</div></div>
+            <div style="overflow-x:auto">
+                <table class="data-tbl">
+                    <thead>
+                        <tr><th>Name</th><th>Role</th><th>LinkedIn</th><th>GitHub</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="teamTableBody">
+                        <tr><td colspan="5"><div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading team...</p></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== SETTINGS PAGE ========== -->
+    <div class="admin-page" id="settingsPage">
+        <div class="page-header">
+            <div>
+                <div class="section-tag">System</div>
+                <h2>Site <span class="g-text-blue">Settings</span></h2>
+                <div class="sub">Configure platform-wide options</div>
+            </div>
+            <button class="btn-admin-primary" onclick="saveSettings()">
+                <i class="fas fa-floppy-disk"></i> Save Changes
+            </button>
+        </div>
+        <div class="two-col">
+            <div style="display:flex;flex-direction:column;gap:20px;">
+                <div class="panel">
+                    <div class="panel-header"><div class="panel-title"><i class="fas fa-globe"></i> Site Identity</div></div>
+                    <div class="panel-body" style="display:flex;flex-direction:column;gap:14px;">
+                        <div>
+                            <label class="ctrl-label">Site Name</label>
+                            <input id="cfgSiteName" class="form-ctrl" value="NeurowexTech">
+                        </div>
+                        <div>
+                            <label class="ctrl-label">Contact Email</label>
+                            <input id="cfgEmail" class="form-ctrl" type="email" value="techneurowex@gmail.com">
+                        </div>
+                        <div>
+                            <label class="ctrl-label">WhatsApp Number</label>
+                            <input id="cfgWhatsapp" class="form-ctrl" value="+254769329340">
+                        </div>
+                        <div>
+                            <label class="ctrl-label">Location</label>
+                            <input id="cfgLocation" class="form-ctrl" value="Nairobi, Kenya">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header"><div class="panel-title"><i class="fas fa-toggle-on"></i> Features</div></div>
+                    <div class="panel-body">
+                        <div class="setting-section">
+                            <div class="setting-row">
+                                <div class="setting-row-info">
+                                    <p>WhatsApp Widget</p>
+                                    <span>Floating chat button on homepage</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="cfgWhatsappWidget" checked>
+                                    <span class="toggle-track"></span>
+                                </label>
+                            </div>
+                            <div class="setting-row">
+                                <div class="setting-row-info">
+                                    <p>Newsletter Subscription</p>
+                                    <span>Email sign-up section</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="cfgNewsletter" checked>
+                                    <span class="toggle-track"></span>
+                                </label>
+                            </div>
+                            <div class="setting-row">
+                                <div class="setting-row-info">
+                                    <p>Cookie Consent Banner</p>
+                                    <span>GDPR compliance notice</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="cfgCookies" checked>
+                                    <span class="toggle-track"></span>
+                                </label>
+                            </div>
+                            <div class="setting-row">
+                                <div class="setting-row-info">
+                                    <p>Maintenance Mode</p>
+                                    <span>Show maintenance page to visitors</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="cfgMaintenance">
+                                    <span class="toggle-track"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Panel -->
+            <div style="display:flex;flex-direction:column;gap:16px;">
+                <div class="panel">
+                    <div class="panel-header"><div class="panel-title"><i class="fas fa-server"></i> System Info</div></div>
+                    <div class="panel-body" style="display:flex;flex-direction:column;gap:10px;">
+                        <div class="setting-row">
+                            <div class="setting-row-info"><p>Environment</p></div>
+                            <span class="pill pill-green">Production</span>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-row-info"><p>Database</p></div>
+                            <span class="pill pill-blue">PostgreSQL / Neon</span>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-row-info"><p>Sessions</p></div>
+                            <span class="pill pill-green">pg-simple</span>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-row-info"><p>Total Users</p></div>
+                            <span class="pill pill-orange" id="cfgUserCount">{{stats.total_users}}</span>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-row-info"><p>Total Projects</p></div>
+                            <span class="pill pill-blue" id="cfgProjectCount">{{stats.total_projects}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel" style="background:linear-gradient(135deg,rgba(37,99,235,0.07),rgba(249,115,22,0.05));">
+                    <div class="panel-header"><div class="panel-title"><i class="fas fa-link"></i> Quick Links</div></div>
+                    <div class="panel-body" style="display:flex;flex-direction:column;gap:6px;">
+                        <a href="/" target="_blank" class="btn-admin-ghost" style="justify-content:flex-start;"><i class="fas fa-home"></i> Homepage</a>
+                        <a href="/portfolio" target="_blank" class="btn-admin-ghost" style="justify-content:flex-start;"><i class="fas fa-briefcase"></i> Portfolio</a>
+                        <a href="/blog" target="_blank" class="btn-admin-ghost" style="justify-content:flex-start;"><i class="fas fa-feather-pointed"></i> Blog</a>
+                        <a href="/contact" target="_blank" class="btn-admin-ghost" style="justify-content:flex-start;"><i class="fas fa-envelope"></i> Contact Page</a>
+                        <a href="/health" target="_blank" class="btn-admin-ghost" style="justify-content:flex-start;"><i class="fas fa-heartbeat"></i> Health Check</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main><!-- end main-content -->
+
+<!-- ===== MODALS ===== -->
+
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-user-plus me-2" style="color:var(--blue-light)"></i> Add New User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:14px;padding:22px;">
+                <div>
+                    <label class="ctrl-label">Full Name *</label>
+                    <input id="newUserName" class="form-ctrl" placeholder="John Doe">
+                </div>
+                <div>
+                    <label class="ctrl-label">Email Address *</label>
+                    <input id="newUserEmail" class="form-ctrl" type="email" placeholder="john@example.com">
+                </div>
+                <div>
+                    <label class="ctrl-label">Password *</label>
+                    <input id="newUserPassword" class="form-ctrl" type="password" placeholder="Min 6 characters">
+                </div>
+            </div>
+            <div class="modal-footer" style="padding:14px 22px;">
+                <button type="button" class="btn-admin-ghost" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn-admin-primary" onclick="createUser()"><i class="fas fa-check"></i> Create User</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Project Modal -->
+<div class="modal fade" id="addProjectModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-folder-plus me-2" style="color:var(--orange)"></i> Add Project</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:14px;padding:22px;">
+                <div>
+                    <label class="ctrl-label">Project Name *</label>
+                    <input id="projName" class="form-ctrl" placeholder="e.g. EcoShop">
+                </div>
+                <div>
+                    <label class="ctrl-label">Description</label>
+                    <textarea id="projDesc" class="form-ctrl" rows="3" placeholder="Short project description..."></textarea>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div>
+                        <label class="ctrl-label">Category</label>
+                        <select id="projCategory" class="form-ctrl">
+                            <option>Web</option><option>Mobile</option>
+                            <option>E-commerce</option><option>AI</option>
+                            <option>SaaS</option><option>Design</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="ctrl-label">Year</label>
+                        <input id="projYear" class="form-ctrl" type="number" placeholder="2025" value="2025">
+                    </div>
+                </div>
+                <div>
+                    <label class="ctrl-label">Client URL</label>
+                    <input id="projUrl" class="form-ctrl" placeholder="https://example.com">
+                </div>
+                <div>
+                    <label class="ctrl-label">Tech Stack (comma-separated)</label>
+                    <input id="projTech" class="form-ctrl" placeholder="React, Node.js, PostgreSQL">
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="projFeatured">
+                        <span class="toggle-track"></span>
+                    </label>
+                    <span style="font-size:0.82rem;color:var(--text-mid);">Feature on homepage</span>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding:14px 22px;">
+                <button type="button" class="btn-admin-ghost" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn-admin-primary" onclick="createProject()"><i class="fas fa-check"></i> Save Project</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Blog Modal -->
+<div class="modal fade" id="addBlogModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-feather-pointed me-2" style="color:var(--green)"></i> New Blog Post</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:14px;padding:22px;">
+                <div>
+                    <label class="ctrl-label">Title *</label>
+                    <input id="blogTitle" class="form-ctrl" placeholder="Post title...">
+                </div>
+                <div>
+                    <label class="ctrl-label">Slug (auto-generated if blank)</label>
+                    <input id="blogSlug" class="form-ctrl" placeholder="my-blog-post">
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div>
+                        <label class="ctrl-label">Category</label>
+                        <select id="blogCategory" class="form-ctrl">
+                            <option>Development</option><option>Design</option>
+                            <option>AI & Machine Learning</option><option>Business</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="ctrl-label">Author</label>
+                        <input id="blogAuthor" class="form-ctrl" value="Admin">
+                    </div>
+                </div>
+                <div>
+                    <label class="ctrl-label">Excerpt</label>
+                    <textarea id="blogExcerpt" class="form-ctrl" rows="2" placeholder="Short summary..."></textarea>
+                </div>
+                <div>
+                    <label class="ctrl-label">External URL (optional)</label>
+                    <input id="blogExtUrl" class="form-ctrl" placeholder="https://...">
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="blogPublished" checked>
+                        <span class="toggle-track"></span>
+                    </label>
+                    <span style="font-size:0.82rem;color:var(--text-mid);">Publish immediately</span>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding:14px 22px;">
+                <button type="button" class="btn-admin-ghost" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn-admin-primary" onclick="createBlogPost()"><i class="fas fa-check"></i> Create Post</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Testimonial Modal -->
+<div class="modal fade" id="addTestimonialModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-star me-2" style="color:var(--yellow)"></i> Add Testimonial</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:14px;padding:22px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div>
+                        <label class="ctrl-label">Client Name *</label>
+                        <input id="tClientName" class="form-ctrl" placeholder="John Smith">
+                    </div>
+                    <div>
+                        <label class="ctrl-label">Role</label>
+                        <input id="tClientRole" class="form-ctrl" placeholder="CEO">
+                    </div>
+                </div>
+                <div>
+                    <label class="ctrl-label">Company</label>
+                    <input id="tCompany" class="form-ctrl" placeholder="Acme Inc.">
+                </div>
+                <div>
+                    <label class="ctrl-label">Rating (1–5)</label>
+                    <select id="tRating" class="form-ctrl">
+                        <option value="5">★★★★★ 5</option>
+                        <option value="4">★★★★ 4</option>
+                        <option value="3">★★★ 3</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="ctrl-label">Testimonial *</label>
+                    <textarea id="tContent" class="form-ctrl" rows="3" placeholder="What did the client say?"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding:14px 22px;">
+                <button type="button" class="btn-admin-ghost" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn-admin-primary" onclick="createTestimonial()"><i class="fas fa-check"></i> Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Team Member Modal -->
+<div class="modal fade" id="addTeamModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-id-badge me-2" style="color:var(--purple)"></i> Add Team Member</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:14px;padding:22px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div>
+                        <label class="ctrl-label">Full Name *</label>
+                        <input id="tmName" class="form-ctrl" placeholder="Sarah C.">
+                    </div>
+                    <div>
+                        <label class="ctrl-label">Role *</label>
+                        <input id="tmRole" class="form-ctrl" placeholder="Head of Design">
+                    </div>
+                </div>
+                <div>
+                    <label class="ctrl-label">Bio</label>
+                    <textarea id="tmBio" class="form-ctrl" rows="2" placeholder="Short bio..."></textarea>
+                </div>
+                <div>
+                    <label class="ctrl-label">LinkedIn URL</label>
+                    <input id="tmLinkedin" class="form-ctrl" placeholder="https://linkedin.com/in/...">
+                </div>
+                <div>
+                    <label class="ctrl-label">GitHub URL</label>
+                    <input id="tmGithub" class="form-ctrl" placeholder="https://github.com/...">
+                </div>
+            </div>
+            <div class="modal-footer" style="padding:14px 22px;">
+                <button type="button" class="btn-admin-ghost" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn-admin-primary" onclick="createTeamMember()"><i class="fas fa-check"></i> Add Member</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Service Modal -->
+<div class="modal fade" id="addServiceModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-layer-group me-2" style="color:var(--cyan)"></i> Add Service</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" style="display:flex;flex-direction:column;gap:14px;padding:22px;">
+                <div>
+                    <label class="ctrl-label">Service Name *</label>
+                    <input id="svcName" class="form-ctrl" placeholder="Web Development">
+                </div>
+                <div>
+                    <label class="ctrl-label">Description</label>
+                    <textarea id="svcDesc" class="form-ctrl" rows="2"></textarea>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div>
+                        <label class="ctrl-label">Font Awesome Icon Class</label>
+                        <input id="svcIcon" class="form-ctrl" placeholder="fas fa-laptop-code">
+                    </div>
+                    <div>
+                        <label class="ctrl-label">Starting Price</label>
+                        <input id="svcPrice" class="form-ctrl" placeholder="From Kshs. 12,000">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding:14px 22px;">
+                <button type="button" class="btn-admin-ghost" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn-admin-primary" onclick="createService()"><i class="fas fa-check"></i> Save Service</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ===== SCRIPTS ===== -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // ---------- REAL-TIME API FETCHING ----------
-    const API_BASE = ''; // relative to current origin
-    
-    function showToast(msg, type='success') { const c=document.getElementById('toastContainer'); const d=document.createElement('div'); d.className=`toast-item ${type}`; d.innerHTML=msg; c.appendChild(d); setTimeout(()=>d.remove(),3000); }
-    
-    async function apiFetch(endpoint, options={}) {
+    /* ============================================================
+       UTILITIES
+    ============================================================ */
+    function toast(msg, type = 'success') {
+        const icons = { success: 'fas fa-check-circle', error: 'fas fa-exclamation-circle', info: 'fas fa-info-circle' };
+        const colors = { success: 'var(--green)', error: 'var(--red)', info: 'var(--blue-light)' };
+        const el = document.createElement('div');
+        el.className = `toast-item ${type}`;
+        el.innerHTML = `<i class="${icons[type]}" style="color:${colors[type]}"></i> ${msg}`;
+        document.getElementById('toast-container').appendChild(el);
+        setTimeout(() => el.remove(), 3500);
+    }
+
+    async function apiFetch(url, opts = {}) {
         try {
-            const res = await fetch(endpoint, { headers: { 'Content-Type': 'application/json' }, ...options });
+            const res = await fetch(url, {
+                headers: { 'Content-Type': 'application/json' },
+                ...opts
+            });
             const json = await res.json();
             if (!res.ok) throw new Error(json.message || 'Request failed');
             return json;
-        } catch(e) { showToast(e.message, 'error'); return null; }
+        } catch (e) {
+            toast(e.message, 'error');
+            return null;
+        }
     }
 
-    // Load dashboard stats
-    async function loadDashboardStats() {
-        const [users, projects, contacts, subs] = await Promise.all([
-            apiFetch('/api/admin/users'), apiFetch('/api/projects'), apiFetch('/api/contacts'), apiFetch('/api/subscribers')
-        ]);
-        const userCount = users?.users?.length || 0;
-        const projectCount = projects?.projects?.length || 0;
-        const contactCount = (contacts?.contacts?.length) || 0;
-        const subCount = (subs?.subscribers?.length) || 0;
-        document.getElementById('statUsers').innerText = userCount;
-        document.getElementById('statProjects').innerText = projectCount;
-        document.getElementById('statContacts').innerText = contactCount;
-        document.getElementById('statSubscribers').innerText = subCount;
-        document.getElementById('usersBadge').innerText = userCount;
-        document.getElementById('contactsBadge').innerText = contactCount;
-        
-        // recent contacts preview
-        const recent = (contacts?.contacts || []).slice(0,3);
-        const dashBody = document.getElementById('dashContactsBody');
-        if(recent.length) dashBody.innerHTML = recent.map(c => `<tr><td><span class="fw-600">${c.name}</span></td><td><span class="badge-pill bp-blue">${c.project_type || 'General'}</span></td><td>${new Date(c.created_at).toLocaleDateString()}</td><td><span class="badge-pill bp-orange">New</span></td></tr>`).join('');
-        else dashBody.innerHTML = '<tr><td colspan="4" class="text-center">No messages</td></tr>';
-        
-        // activity feed simulation from contacts/users
-        const actContainer = document.getElementById('activityFeed');
-        if(actContainer) actContainer.innerHTML = (contacts?.contacts?.slice(0,2).map(c => `<div class="activity-item"><div><i class="fas fa-envelope"></i></div><div><p>New contact: ${c.name}</p><span>${new Date(c.created_at).toLocaleString()}</span></div></div>`).join('')) || '<div class="text-muted">No recent activity</div>';
+    function fmt(date) {
+        if (!date) return '—';
+        return new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
     }
-    
-    async function loadUsersTable() { const data = await apiFetch('/api/admin/users'); const tbody = document.getElementById('usersTableBody'); if(data?.users) tbody.innerHTML = data.users.map(u => `<tr><td><div class="fw-600">${u.username}</div></td><td>${u.email}</td><td><span class="badge-pill ${u.role==='admin'?'bp-purple':'bp-blue'}">${u.role}</span></td><td><span class="badge-pill ${u.is_active?'bp-green':'bp-yellow'}">${u.is_active?'Active':'Inactive'}</span></td><td><button class="act-btn act-edit" onclick="toggleAdminRole(${u.id}, '${u.role}')"><i class="fas fa-shield-halved"></i></button> <button class="act-btn act-delete" onclick="deleteUser(${u.id})"><i class="fas fa-trash"></i></button></td></tr>`).join(''); }
-    async function loadProjectsTable() { const data = await apiFetch('/api/projects'); const tbody = document.getElementById('projectsTableBody'); if(data?.projects) tbody.innerHTML = data.projects.map(p => `<tr><td class="fw-600">${p.name}</td><td>${p.category||'Web'}</td><td><span class="badge-pill ${p.featured?'bp-green':'bp-yellow'}">${p.featured?'Yes':'No'}</span></td><td><button class="act-btn act-delete" onclick="deleteProject(${p.id})"><i class="fas fa-trash"></i></button></td></tr>`).join(''); }
-    async function loadContactsTable() { const data = await apiFetch('/api/contacts'); const tbody = document.getElementById('contactsTableBody'); if(data?.contacts) tbody.innerHTML = data.contacts.map(c => `<tr><td class="fw-600">${c.name}</td><td>${c.email}</td><td>${c.project_type||'N/A'}</td><td>${new Date(c.created_at).toLocaleDateString()}</td><td><button class="act-btn act-delete" onclick="deleteContact(${c.id})"><i class="fas fa-trash"></i></button></td></tr>`).join(''); }
-    async function loadSubscribersTable() { const data = await apiFetch('/api/subscribers'); const tbody = document.getElementById('subscribersTableBody'); if(data?.subscribers) tbody.innerHTML = data.subscribers.map(s => `<tr><td>${s.email}</td><td>${new Date(s.subscribed_at).toLocaleDateString()}</td><td><button class="act-btn act-delete" onclick="deleteSubscriber(${s.id})"><i class="fas fa-trash"></i></button></td></tr>`).join(''); }
-    
-    // mock load for other tables (can be extended)
-    function loadBlogTable() { document.getElementById('blogTableBody').innerHTML = '<tr><td class="text-muted">Blog management coming soon</td></tr>'; }
-    function loadServicesTable() { document.getElementById('servicesTableBody').innerHTML = '<tr><td class="text-muted">Service management UI ready for backend integration</td></tr>'; }
-    function loadPortfolioTable() { document.getElementById('portfolioTableBody').innerHTML = '<tr><td class="text-muted">Portfolio items sync with projects</td></tr>'; }
-    function loadTestimonialsTable() { document.getElementById('testimonialsTableBody').innerHTML = '<tr><td class="text-muted">Testimonials can be managed</td></tr>'; }
-    function loadTeamTable() { document.getElementById('teamTableBody').innerHTML = '<tr><td class="text-muted">Team profiles CRUD ready</td></tr>'; }
-    function loadPricingTable() { document.getElementById('pricingTableBody').innerHTML = '<tr><td class="text-muted">Pricing plans integrate with backend</td></tr>'; }
-    
-    // CRUD actions
-    async function createUser() { const name=document.getElementById('newUserName').value, email=document.getElementById('newUserEmail').value, pwd=document.getElementById('newUserPassword').value; if(!name||!email) return showToast('Fill fields','error'); const res=await apiFetch('/api/signup',{method:'POST',body:JSON.stringify({fullname:name,email,password:pwd})}); if(res?.success){ showToast('User created'); bootstrap.Modal.getInstance(document.getElementById('addUserModal')).hide(); loadUsersTable(); loadDashboardStats(); } }
-    async function createProject() { const name=document.getElementById('projectName').value, category=document.getElementById('projectCategory').value; if(!name) return; const res=await apiFetch('/api/projects',{method:'POST',body:JSON.stringify({name,category})}); if(res?.success){ showToast('Project added'); loadProjectsTable(); loadDashboardStats(); } }
-    async function createBlog() { showToast('Blog post feature demo','info'); }
-    async function deleteUser(id) { if(confirm('Delete user?')){ const res=await apiFetch(`/api/admin/delete-user/${id}`,{method:'DELETE'}); if(res?.success){ showToast('User deleted'); loadUsersTable(); loadDashboardStats(); } } }
-    async function deleteProject(id) { if(confirm('Delete project?')){ const res=await apiFetch(`/api/projects/${id}`,{method:'DELETE'}); if(res?.success){ loadProjectsTable(); loadDashboardStats(); } } }
-    async function deleteContact(id) { if(confirm('Delete message?')){ const res=await apiFetch(`/api/contacts/${id}`,{method:'DELETE'}); if(res?.success){ loadContactsTable(); loadDashboardStats(); } } }
-    async function deleteSubscriber(id) { if(confirm('Delete subscriber?')){ const res=await apiFetch(`/api/subscribers/${id}`,{method:'DELETE'}); if(res?.success){ loadSubscribersTable(); loadDashboardStats(); } } }
-    async function toggleAdminRole(userId, currentRole) { const endpoint = currentRole === 'admin' ? '/api/admin/remove-admin' : '/api/admin/make-admin'; const res=await apiFetch(endpoint,{method:'POST',body:JSON.stringify({userId})}); if(res?.success){ showToast(`Role updated`); loadUsersTable(); } }
-    
-    // Charts initialization
+    function fmtShort(date) {
+        if (!date) return '—';
+        return new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    }
+
+    function openModal(id) {
+        new bootstrap.Modal(document.getElementById(id)).show();
+    }
+    function closeModal(id) {
+        const m = bootstrap.Modal.getInstance(document.getElementById(id));
+        if (m) m.hide();
+    }
+
+    /* ============================================================
+       PAGE NAVIGATION
+    ============================================================ */
+    const PAGES = ['dashboard','analytics','users','projects','contacts','subscribers','blog','services','portfolio','testimonials','team','settings'];
+    const PAGE_TITLES = {
+        dashboard:    ['Dashboard',   'Live platform data'],
+        analytics:    ['Analytics',   'Traffic & growth insights'],
+        users:        ['Users',       'Manage accounts and roles'],
+        projects:     ['Projects',    'Showcase portfolio items'],
+        contacts:     ['Contacts',    'Leads and enquiries'],
+        subscribers:  ['Subscribers', 'Newsletter list'],
+        blog:         ['Blog',        'Content management'],
+        services:     ['Services',    'Manage offerings'],
+        portfolio:    ['Portfolio',   'Portfolio items'],
+        testimonials: ['Testimonials','Client reviews'],
+        team:         ['Team',        'Manage team profiles'],
+        settings:     ['Settings',    'Platform configuration'],
+    };
+
+    function switchPage(page) {
+        PAGES.forEach(p => {
+            document.getElementById(p + 'Page').classList.remove('active');
+            const navEl = document.querySelector(`.nav-item-wrap[data-page="${p}"]`);
+            if (navEl) navEl.classList.remove('active');
+        });
+        document.getElementById(page + 'Page').classList.add('active');
+        const activeNav = document.querySelector(`.nav-item-wrap[data-page="${page}"]`);
+        if (activeNav) activeNav.classList.add('active');
+
+        const [title, sub] = PAGE_TITLES[page] || [page, ''];
+        document.getElementById('topbarTitle').textContent = title;
+        document.getElementById('topbarSub').textContent = sub;
+
+        // Lazy-load page data
+        const loaders = {
+            users:        loadUsersTable,
+            projects:     loadProjectsTable,
+            portfolio:    loadPortfolioTable,
+            contacts:     loadContactsTable,
+            subscribers:  loadSubscribersTable,
+            blog:         loadBlogTable,
+            services:     loadServicesTable,
+            testimonials: loadTestimonialsTable,
+            team:         loadTeamTable,
+        };
+        if (loaders[page]) loaders[page]();
+
+        // close mobile sidebar
+        closeMobileSidebar();
+    }
+
+    document.querySelectorAll('.nav-item-wrap[data-page]').forEach(el => {
+        el.addEventListener('click', () => switchPage(el.dataset.page));
+    });
+
+    /* ============================================================
+       SIDEBAR TOGGLE
+    ============================================================ */
+    const sidebar     = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const topbar      = document.getElementById('topbar');
+    const overlay     = document.getElementById('sidebarOverlay');
+
+    document.getElementById('toggleSidebar').addEventListener('click', () => {
+        if (window.innerWidth < 992) {
+            openMobileSidebar();
+        } else {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('collapsed');
+            topbar.classList.toggle('collapsed');
+        }
+    });
+
+    function openMobileSidebar() {
+        sidebar.classList.add('mobile-open');
+        overlay.style.display = 'block';
+        requestAnimationFrame(() => overlay.style.opacity = '1');
+    }
+    function closeMobileSidebar() {
+        sidebar.classList.remove('mobile-open');
+        overlay.style.opacity = '0';
+        setTimeout(() => { overlay.style.display = 'none'; }, 300);
+    }
+    overlay.addEventListener('click', closeMobileSidebar);
+
+    /* ============================================================
+       CHARTS
+    ============================================================ */
+    const chartDefaults = {
+        plugins: { legend: { labels: { color: '#94a3b8', font: { family: "'Inter', sans-serif", size: 11 } } } },
+        scales: {
+            x: { ticks: { color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+            y: { ticks: { color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.04)' } }
+        }
+    };
+
     let growthChart, donutChart, visitorChart;
-    function initCharts() { growthChart = new Chart(document.getElementById('growthChart'),{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Total Users',data:[0,0,0,0,0,0],borderColor:'#3b82f6'},{label:'Subscribers',data:[0,0,0,0,0,0],borderColor:'#a855f7'}]}}); donutChart = new Chart(document.getElementById('donutChart'),{type:'doughnut',data:{labels:['Direct','WhatsApp','Organic'],datasets:[{data:[34,28,22],backgroundColor:['#3b82f6','#25D366','#22c55e']}]}}); visitorChart = new Chart(document.getElementById('visitorChart'),{type:'bar',data:{labels:['Week 1','Week 2','Week 3','Week 4'],datasets:[{label:'Page Views',data:[0,0,0,0],backgroundColor:'#3b82f6'}]}}); }
-    async function updateCharts() { const usersData = await apiFetch('/api/admin/users'); const subsData = await apiFetch('/api/subscribers'); const userCount = usersData?.users?.length || 0; const subCount = subsData?.subscribers?.length || 0; if(growthChart){ growthChart.data.datasets[0].data = [Math.max(0,userCount-12),Math.max(0,userCount-8),Math.max(0,userCount-4),userCount-2,userCount-1,userCount]; growthChart.data.datasets[1].data = [Math.max(0,subCount-30),Math.max(0,subCount-20),Math.max(0,subCount-12),subCount-8,subCount-4,subCount]; growthChart.update(); } if(visitorChart) visitorChart.data.datasets[0].data = [420,580,720,890]; visitorChart?.update(); }
-    
-    // Navigation & refresh
-    const pages = ['dashboard','analytics','users','projects','contacts','subscribers','blog','services','portfolio','testimonials','team','pricing','settings'];
-    function switchPage(page) { pages.forEach(p => document.getElementById(p+'Page').classList.remove('active')); document.getElementById(page+'Page').classList.add('active'); document.querySelectorAll('.nav-item[data-page]').forEach(n => n.classList.toggle('active', n.dataset.page === page)); document.getElementById('pageTitle').innerText = page.charAt(0).toUpperCase()+page.slice(1); }
-    document.querySelectorAll('.nav-item[data-page]').forEach(el => el.addEventListener('click',()=>switchPage(el.dataset.page)));
-    document.getElementById('refreshBtn').addEventListener('click',()=>{ loadDashboardStats(); loadUsersTable(); loadProjectsTable(); loadContactsTable(); loadSubscribersTable(); updateCharts(); showToast('Data refreshed','success'); });
-    document.getElementById('sidebarToggle').addEventListener('click',()=>{ document.getElementById('sidebar').classList.toggle('collapsed'); document.getElementById('mainContent').classList.toggle('expanded'); document.getElementById('topbar').classList.toggle('expanded'); });
-    function openAddUserModal() { new bootstrap.Modal(document.getElementById('addUserModal')).show(); }
-    function openAddProjectModal() { new bootstrap.Modal(document.getElementById('addProjectModal')).show(); }
-    function openAddBlogModal() { new bootstrap.Modal(document.getElementById('addBlogModal')).show(); }
-    
-    // Save settings
-    document.getElementById('saveSettingsBtn')?.addEventListener('click',()=>{ showToast('Settings saved (demo)','success'); });
-    
-    // Load all tables on page load, and initial data
-    window.addEventListener('load',()=>{ initCharts(); loadDashboardStats(); loadUsersTable(); loadProjectsTable(); loadContactsTable(); loadSubscribersTable(); loadBlogTable(); loadServicesTable(); loadPortfolioTable(); loadTestimonialsTable(); loadTeamTable(); loadPricingTable(); updateCharts(); setInterval(()=>{ loadDashboardStats(); updateCharts(); }, 30000); });
+
+    function initCharts() {
+        const growthCtx = document.getElementById('growthChart');
+        if (growthCtx) {
+            growthChart = new Chart(growthCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [
+                        {
+                            label: 'Users',
+                            data: [0,0,0,0,0,0],
+                            borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.08)',
+                            tension: 0.4, fill: true, pointBackgroundColor: '#2563eb', pointRadius: 4
+                        },
+                        {
+                            label: 'Subscribers',
+                            data: [0,0,0,0,0,0],
+                            borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,0.06)',
+                            tension: 0.4, fill: true, pointBackgroundColor: '#f97316', pointRadius: 4
+                        }
+                    ]
+                },
+                options: { ...chartDefaults, responsive: true, maintainAspectRatio: true }
+            });
+        }
+
+        const donutCtx = document.getElementById('donutChart');
+        if (donutCtx) {
+            donutChart = new Chart(donutCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Direct', 'WhatsApp', 'Organic', 'Referral'],
+                    datasets: [{
+                        data: [38, 28, 22, 12],
+                        backgroundColor: ['#2563eb', '#25D366', '#10b981', '#f97316'],
+                        borderWidth: 0, hoverOffset: 6
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: true,
+                    plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 }, padding: 12 } } },
+                    cutout: '72%'
+                }
+            });
+        }
+
+        const visitorCtx = document.getElementById('visitorChart');
+        if (visitorCtx) {
+            visitorChart = new Chart(visitorCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Page Views',
+                        data: [620, 890, 780, 1020],
+                        backgroundColor: 'rgba(37,99,235,0.65)',
+                        borderRadius: 6, borderSkipped: false
+                    }]
+                },
+                options: { ...chartDefaults, responsive: true }
+            });
+        }
+
+        // Country list
+        const countries = [
+            { flag: '🇰🇪', name: 'Kenya', pct: 42 },
+            { flag: '🇺🇸', name: 'United States', pct: 24 },
+            { flag: '🇬🇧', name: 'United Kingdom', pct: 12 },
+            { flag: '🇳🇬', name: 'Nigeria', pct: 10 },
+            { flag: '🇿🇦', name: 'South Africa', pct: 8 },
+        ];
+        const cEl = document.getElementById('countryList');
+        if (cEl) cEl.innerHTML = countries.map(c => `
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
+                <span style="font-size:1.2rem">${c.flag}</span>
+                <span style="flex:1;font-size:0.83rem;color:var(--text)">${c.name}</span>
+                <div style="width:80px;height:6px;background:rgba(255,255,255,0.06);border-radius:99px;overflow:hidden;">
+                    <div style="width:${c.pct}%;height:100%;background:var(--grad-blue);border-radius:99px;"></div>
+                </div>
+                <span style="font-size:0.75rem;color:var(--text-dim);width:28px;text-align:right">${c.pct}%</span>
+            </div>`).join('');
+    }
+
+    async function updateCharts() {
+        const [usersData, subsData] = await Promise.all([
+            apiFetch('/api/admin/users'),
+            apiFetch('/api/subscribers')
+        ]);
+        const u = usersData?.users?.length || 0;
+        const s = subsData?.subscribers?.length || 0;
+        if (growthChart) {
+            growthChart.data.datasets[0].data = [Math.max(0,u-14),Math.max(0,u-10),Math.max(0,u-7),Math.max(0,u-4),Math.max(0,u-1),u];
+            growthChart.data.datasets[1].data = [Math.max(0,s-40),Math.max(0,s-28),Math.max(0,s-16),Math.max(0,s-9),Math.max(0,s-3),s];
+            growthChart.update();
+        }
+    }
+
+    /* ============================================================
+       DASHBOARD DATA
+    ============================================================ */
+    async function loadDashboard() {
+        const [usersD, projD, contactsD, subsD] = await Promise.all([
+            apiFetch('/api/admin/users'),
+            apiFetch('/api/projects'),
+            apiFetch('/api/contacts'),
+            apiFetch('/api/subscribers')
+        ]);
+
+        const u = usersD?.users?.length || 0;
+        const p = projD?.projects?.length || 0;
+        const c = contactsD?.contacts?.length || 0;
+        const s = subsD?.subscribers?.length || 0;
+
+        // Stat cards
+        setEl('sUsers', u);
+        setEl('sProjects', p);
+        setEl('sContacts', c);
+        setEl('sSubscribers', s);
+
+        // Sidebar badges
+        setEl('sidebarUserCount', u);
+        setEl('sidebarContactCount', c);
+
+        // Settings page counters
+        setEl('cfgUserCount', u);
+        setEl('cfgProjectCount', p);
+
+        // Analytics page
+        setEl('aUsers', u);
+
+        // Recent contacts in dashboard
+        const recent = (contactsD?.contacts || []).slice(0, 5);
+        const dashBody = document.getElementById('dashContactsBody');
+        if (dashBody) {
+            dashBody.innerHTML = recent.length
+                ? recent.map(c => `
+                    <tr>
+                        <td class="td-name">${esc(c.name)}</td>
+                        <td><span class="pill pill-blue">${esc(c.project_type || 'General')}</span></td>
+                        <td>${fmtShort(c.created_at)}</td>
+                        <td><span class="pill pill-orange">New</span></td>
+                    </tr>`).join('')
+                : `<tr><td colspan="4"><div class="empty-state"><i class="fas fa-inbox"></i><p>No messages yet</p></div></td></tr>`;
+        }
+
+        // Activity feed
+        const feed = document.getElementById('activityFeed');
+        if (feed) {
+            const acts = [];
+            (contactsD?.contacts || []).slice(0,3).forEach(c => acts.push({ type:'msg',  label: `New message from <strong>${esc(c.name)}</strong>`, date: c.created_at }));
+            (usersD?.users || []).slice(0,2).forEach(u => acts.push({ type:'user', label: `New user registered: <strong>${esc(u.username)}</strong>`, date: u.created_at }));
+            (subsD?.subscribers || []).slice(0,2).forEach(s => acts.push({ type:'sub',  label: `Newsletter signup: ${esc(s.email)}`, date: s.subscribed_at }));
+            acts.sort((a,b) => new Date(b.date) - new Date(a.date));
+
+            const icons = { msg: 'msg', user: 'user', sub: 'sub' };
+            const faIcons = { msg: 'fa-envelope', user: 'fa-user-plus', sub: 'fa-at' };
+            feed.innerHTML = acts.slice(0,6).map(a => `
+                <div class="activity-item">
+                    <div class="act-dot ${icons[a.type]}"><i class="fas ${faIcons[a.type]}"></i></div>
+                    <div>
+                        <p>${a.label}</p>
+                        <time>${fmt(a.date)}</time>
+                    </div>
+                </div>`).join('') || '<div class="empty-state"><i class="fas fa-clock-rotate-left"></i><p>No recent activity</p></div>';
+        }
+    }
+
+    function setEl(id, val) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+    }
+    function esc(str) {
+        if (!str) return '';
+        return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    /* ============================================================
+       USERS TABLE
+    ============================================================ */
+    let allUsers = [];
+
+    async function loadUsersTable() {
+        const data = await apiFetch('/api/admin/users');
+        allUsers = data?.users || [];
+        renderUsersTable(allUsers);
+    }
+
+    function renderUsersTable(users) {
+        const tb = document.getElementById('usersTableBody');
+        if (!tb) return;
+        tb.innerHTML = users.length
+            ? users.map(u => `
+                <tr>
+                    <td><div class="td-name">${esc(u.username)}</div></td>
+                    <td>${esc(u.email)}</td>
+                    <td><span class="pill ${u.role==='admin' ? 'pill-orange' : 'pill-blue'}">${esc(u.role)}</span></td>
+                    <td><span class="pill ${u.is_active ? 'pill-green' : 'pill-dim'}">${u.is_active ? 'Active' : 'Inactive'}</span></td>
+                    <td>${fmt(u.created_at)}</td>
+                    <td>${u.last_login ? fmt(u.last_login) : '<span style="color:var(--text-dim)">Never</span>'}</td>
+                    <td>
+                        <button class="act-btn act-shield" onclick="toggleRole(${u.id},'${u.role}')" title="${u.role==='admin'?'Remove admin':'Make admin'}"><i class="fas fa-shield-halved"></i></button>
+                        <button class="act-btn act-del" onclick="deleteUser(${u.id})" title="Delete user"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`).join('')
+            : `<tr><td colspan="7"><div class="empty-state"><i class="fas fa-users"></i><p>No users found</p></div></td></tr>`;
+    }
+
+    function filterUsers(q) {
+        const filtered = allUsers.filter(u =>
+            u.username.toLowerCase().includes(q.toLowerCase()) ||
+            u.email.toLowerCase().includes(q.toLowerCase())
+        );
+        renderUsersTable(filtered);
+    }
+
+    async function createUser() {
+        const name = document.getElementById('newUserName').value.trim();
+        const email = document.getElementById('newUserEmail').value.trim();
+        const pwd = document.getElementById('newUserPassword').value;
+        if (!name || !email || !pwd) return toast('Please fill all fields', 'error');
+        const res = await apiFetch('/api/signup', { method: 'POST', body: JSON.stringify({ fullname: name, email, password: pwd }) });
+        if (res?.success) {
+            toast('User created successfully!');
+            closeModal('addUserModal');
+            ['newUserName','newUserEmail','newUserPassword'].forEach(id => document.getElementById(id).value = '');
+            loadUsersTable(); loadDashboard();
+        }
+    }
+
+    async function deleteUser(id) {
+        if (!confirm('Delete this user? This action cannot be undone.')) return;
+        const res = await apiFetch(`/api/admin/delete-user/${id}`, { method: 'DELETE' });
+        if (res?.success) { toast('User deleted'); loadUsersTable(); loadDashboard(); }
+    }
+
+    async function toggleRole(id, currentRole) {
+        const ep = currentRole === 'admin' ? '/api/admin/remove-admin' : '/api/admin/make-admin';
+        const res = await apiFetch(ep, { method: 'POST', body: JSON.stringify({ userId: id }) });
+        if (res?.success) { toast('Role updated'); loadUsersTable(); }
+    }
+
+    /* ============================================================
+       PROJECTS TABLE
+    ============================================================ */
+    async function loadProjectsTable() {
+        const data = await apiFetch('/api/projects');
+        const projects = data?.projects || [];
+        const tb = document.getElementById('projectsTableBody');
+        if (!tb) return;
+        tb.innerHTML = projects.length
+            ? projects.map(p => `
+                <tr>
+                    <td class="td-name">${esc(p.name)}</td>
+                    <td><span class="pill pill-blue">${esc(p.category || 'Web')}</span></td>
+                    <td>${esc(p.year || '—')}</td>
+                    <td><span class="pill ${p.featured ? 'pill-green' : 'pill-dim'}">${p.featured ? 'Yes' : 'No'}</span></td>
+                    <td>
+                        <button class="act-btn act-del" onclick="deleteProject(${p.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`).join('')
+            : `<tr><td colspan="5"><div class="empty-state"><i class="fas fa-folder-open"></i><p>No projects yet</p></div></td></tr>`;
+    }
+
+    async function loadPortfolioTable() {
+        const data = await apiFetch('/api/projects');
+        const projects = data?.projects || [];
+        const tb = document.getElementById('portfolioTableBody');
+        if (!tb) return;
+        tb.innerHTML = projects.length
+            ? projects.map(p => `
+                <tr>
+                    <td class="td-name">${esc(p.name)}</td>
+                    <td><span class="pill pill-blue">${esc(p.category || 'Web')}</span></td>
+                    <td>${esc(p.year || '—')}</td>
+                    <td><span class="pill ${p.featured ? 'pill-green' : 'pill-dim'}">${p.featured ? 'Yes' : 'No'}</span></td>
+                    <td>${p.client_url ? `<a href="${esc(p.client_url)}" target="_blank" class="pill pill-blue">Visit ↗</a>` : '—'}</td>
+                    <td>
+                        <button class="act-btn act-del" onclick="deleteProject(${p.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`).join('')
+            : `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-briefcase"></i><p>No portfolio items yet</p></div></td></tr>`;
+    }
+
+    async function createProject() {
+        const name = document.getElementById('projName').value.trim();
+        if (!name) return toast('Project name is required', 'error');
+        const body = {
+            name,
+            description: document.getElementById('projDesc').value,
+            category:    document.getElementById('projCategory').value,
+            year:        parseInt(document.getElementById('projYear').value) || new Date().getFullYear(),
+            client_url:  document.getElementById('projUrl').value,
+            tech_stack:  document.getElementById('projTech').value,
+            featured:    document.getElementById('projFeatured').checked,
+        };
+        const res = await apiFetch('/api/projects', { method: 'POST', body: JSON.stringify(body) });
+        if (res?.success) {
+            toast('Project added!');
+            closeModal('addProjectModal');
+            document.getElementById('projName').value = '';
+            loadProjectsTable(); loadDashboard();
+        }
+    }
+
+    async function deleteProject(id) {
+        if (!confirm('Delete this project?')) return;
+        const res = await apiFetch(`/api/projects/${id}`, { method: 'DELETE' });
+        if (res?.success) { toast('Project deleted'); loadProjectsTable(); loadPortfolioTable(); loadDashboard(); }
+    }
+
+    /* ============================================================
+       CONTACTS TABLE
+    ============================================================ */
+    async function loadContactsTable() {
+        const data = await apiFetch('/api/contacts');
+        const contacts = data?.contacts || [];
+        const tb = document.getElementById('contactsTableBody');
+        if (!tb) return;
+        tb.innerHTML = contacts.length
+            ? contacts.map(c => `
+                <tr>
+                    <td class="td-name">${esc(c.name)}</td>
+                    <td><a href="mailto:${esc(c.email)}" style="color:var(--blue-light)">${esc(c.email)}</a></td>
+                    <td>${c.project_type ? `<span class="pill pill-blue">${esc(c.project_type)}</span>` : '—'}</td>
+                    <td>${c.budget ? esc(c.budget) : '—'}</td>
+                    <td>${fmt(c.created_at)}</td>
+                    <td>
+                        <a href="mailto:${esc(c.email)}" class="act-btn act-view" title="Reply"><i class="fas fa-reply"></i></a>
+                        <button class="act-btn act-del" onclick="deleteContact(${c.id})" title="Delete"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`).join('')
+            : `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-inbox"></i><p>No messages yet</p></div></td></tr>`;
+    }
+
+    async function deleteContact(id) {
+        if (!confirm('Delete this message?')) return;
+        const res = await apiFetch(`/api/contacts/${id}`, { method: 'DELETE' });
+        if (res?.success) { toast('Message deleted'); loadContactsTable(); loadDashboard(); }
+    }
+
+    /* ============================================================
+       SUBSCRIBERS TABLE
+    ============================================================ */
+    async function loadSubscribersTable() {
+        const data = await apiFetch('/api/subscribers');
+        const subs = data?.subscribers || [];
+        const tb = document.getElementById('subscribersTableBody');
+        const badge = document.getElementById('subCountBadge');
+        if (badge) badge.textContent = `${subs.length} subscribers`;
+        if (!tb) return;
+        tb.innerHTML = subs.length
+            ? subs.map((s, i) => `
+                <tr>
+                    <td style="color:var(--text-dim)">${i+1}</td>
+                    <td class="td-name">${esc(s.email)}</td>
+                    <td>${fmt(s.subscribed_at)}</td>
+                    <td>
+                        <button class="act-btn act-del" onclick="deleteSubscriber(${s.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`).join('')
+            : `<tr><td colspan="4"><div class="empty-state"><i class="fas fa-at"></i><p>No subscribers yet</p></div></td></tr>`;
+    }
+
+    async function deleteSubscriber(id) {
+        if (!confirm('Remove this subscriber?')) return;
+        const res = await apiFetch(`/api/subscribers/${id}`, { method: 'DELETE' });
+        if (res?.success) { toast('Subscriber removed'); loadSubscribersTable(); loadDashboard(); }
+    }
+
+    /* ============================================================
+       BLOG TABLE
+    ============================================================ */
+    async function loadBlogTable() {
+        const data = await apiFetch('/api/blog');
+        const posts = data?.posts || [];
+        const tb = document.getElementById('blogTableBody');
+        if (!tb) return;
+        tb.innerHTML = posts.length
+            ? posts.map(p => `
+                <tr>
+                    <td class="td-name">${esc(p.title)}</td>
+                    <td><span class="pill pill-blue">${esc(p.category || 'General')}</span></td>
+                    <td><span class="pill ${p.published ? 'pill-green' : 'pill-dim'}">${p.published ? 'Live' : 'Draft'}</span></td>
+                    <td>${fmt(p.created_at)}</td>
+                    <td>
+                        <button class="act-btn act-del" onclick="deleteBlogPost(${p.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`).join('')
+            : `<tr><td colspan="5"><div class="empty-state"><i class="fas fa-feather-pointed"></i><p>No posts yet — create your first one!</p></div></td></tr>`;
+    }
+
+    async function createBlogPost() {
+        const title = document.getElementById('blogTitle').value.trim();
+        if (!title) return toast('Title is required', 'error');
+        const body = {
+            title,
+            slug:         document.getElementById('blogSlug').value.trim(),
+            category:     document.getElementById('blogCategory').value,
+            author:       document.getElementById('blogAuthor').value || 'Admin',
+            excerpt:      document.getElementById('blogExcerpt').value,
+            external_url: document.getElementById('blogExtUrl').value,
+            published:    document.getElementById('blogPublished').checked,
+        };
+        const res = await apiFetch('/api/blog', { method: 'POST', body: JSON.stringify(body) });
+        if (res?.success) { toast('Blog post created!'); closeModal('addBlogModal'); loadBlogTable(); }
+    }
+
+    async function deleteBlogPost(id) {
+        if (!confirm('Delete this post?')) return;
+        const res = await apiFetch(`/api/blog/${id}`, { method: 'DELETE' });
+        if (res?.success) { toast('Post deleted'); loadBlogTable(); }
+    }
+
+    /* ============================================================
+       SERVICES TABLE
+    ============================================================ */
+    async function loadServicesTable() {
+        const data = await apiFetch('/api/services');
+        const services = data?.services || [];
+        const tb = document.getElementById('servicesTableBody');
+        if (!tb) return;
+        tb.innerHTML = services.length
+            ? services.map(s => `
+                <tr>
+                    <td class="td-name">${esc(s.name)}</td>
+                    <td><code style="color:var(--blue-light);font-size:0.75rem">${esc(s.icon_class || '')}</code></td>
+                    <td>${esc(s.price || '—')}</td>
+                    <td><span class="pill ${s.visible ? 'pill-green' : 'pill-dim'}">${s.visible ? 'Visible' : 'Hidden'}</span></td>
+                    <td><button class="act-btn act-del" onclick="deleteService(${s.id})"><i class="fas fa-trash"></i></button></td>
+                </tr>`).join('')
+            : `<tr><td colspan="5"><div class="empty-state"><i class="fas fa-layer-group"></i><p>No services found in database — they display statically on the site.</p></div></td></tr>`;
+    }
+
+    async function createService() {
+        const name = document.getElementById('svcName').value.trim();
+        if (!name) return toast('Service name required', 'error');
+        const body = {
+            name,
+            description: document.getElementById('svcDesc').value,
+            icon_class:  document.getElementById('svcIcon').value,
+            price:       document.getElementById('svcPrice').value,
+        };
+        const res = await apiFetch('/api/services', { method: 'POST', body: JSON.stringify(body) });
+        if (res?.success) { toast('Service added!'); closeModal('addServiceModal'); loadServicesTable(); }
+    }
+
+    async function deleteService(id) {
+        if (!confirm('Delete this service?')) return;
+        const res = await apiFetch(`/api/services/${id}`, { method: 'DELETE' });
+        if (res?.success) { toast('Service deleted'); loadServicesTable(); }
+    }
+
+    /* ============================================================
+       TESTIMONIALS TABLE
+    ============================================================ */
+    async function loadTestimonialsTable() {
+        const data = await apiFetch('/api/testimonials');
+        const items = data?.testimonials || [];
+        const tb = document.getElementById('testimonialsTableBody');
+        if (!tb) return;
+        tb.innerHTML = items.length
+            ? items.map(t => `
+                <tr>
+                    <td class="td-name">${esc(t.client_name)}</td>
+                    <td>${esc(t.company || '—')}</td>
+                    <td>${'★'.repeat(t.rating || 5)}</td>
+                    <td><span class="pill ${t.published ? 'pill-green' : 'pill-dim'}">${t.published ? 'Live' : 'Draft'}</span></td>
+                    <td><button class="act-btn act-del" onclick="deleteTestimonial(${t.id})"><i class="fas fa-trash"></i></button></td>
+                </tr>`).join('')
+            : `<tr><td colspan="5"><div class="empty-state"><i class="fas fa-star"></i><p>No testimonials yet</p></div></td></tr>`;
+    }
+
+    async function createTestimonial() {
+        const name = document.getElementById('tClientName').value.trim();
+        const content = document.getElementById('tContent').value.trim();
+        if (!name || !content) return toast('Client name and content required', 'error');
+        const body = {
+            client_name: name,
+            client_role: document.getElementById('tClientRole').value,
+            company:     document.getElementById('tCompany').value,
+            rating:      parseInt(document.getElementById('tRating').value),
+            content,
+        };
+        const res = await apiFetch('/api/testimonials', { method: 'POST', body: JSON.stringify(body) });
+        if (res?.success) { toast('Testimonial added!'); closeModal('addTestimonialModal'); loadTestimonialsTable(); }
+    }
+
+    async function deleteTestimonial(id) {
+        if (!confirm('Delete this testimonial?')) return;
+        const res = await apiFetch(`/api/testimonials/${id}`, { method: 'DELETE' });
+        if (res?.success) { toast('Deleted'); loadTestimonialsTable(); }
+    }
+
+    /* ============================================================
+       TEAM TABLE
+    ============================================================ */
+    async function loadTeamTable() {
+        const data = await apiFetch('/api/team');
+        const members = data?.team || [];
+        const tb = document.getElementById('teamTableBody');
+        if (!tb) return;
+        tb.innerHTML = members.length
+            ? members.map(m => `
+                <tr>
+                    <td class="td-name">${esc(m.name)}</td>
+                    <td><span class="pill pill-purple">${esc(m.role)}</span></td>
+                    <td>${m.linkedin_url ? `<a href="${esc(m.linkedin_url)}" target="_blank" class="pill pill-blue">↗</a>` : '—'}</td>
+                    <td>${m.github_url ? `<a href="${esc(m.github_url)}" target="_blank" class="pill pill-dim">↗</a>` : '—'}</td>
+                    <td><button class="act-btn act-del" onclick="deleteTeamMember(${m.id})"><i class="fas fa-trash"></i></button></td>
+                </tr>`).join('')
+            : `<tr><td colspan="5"><div class="empty-state"><i class="fas fa-id-badge"></i><p>No team members in database</p></div></td></tr>`;
+    }
+
+    async function createTeamMember() {
+        const name = document.getElementById('tmName').value.trim();
+        const role = document.getElementById('tmRole').value.trim();
+        if (!name || !role) return toast('Name and role required', 'error');
+        const body = {
+            name, role,
+            bio:          document.getElementById('tmBio').value,
+            linkedin_url: document.getElementById('tmLinkedin').value,
+            github_url:   document.getElementById('tmGithub').value,
+        };
+        const res = await apiFetch('/api/team', { method: 'POST', body: JSON.stringify(body) });
+        if (res?.success) { toast('Team member added!'); closeModal('addTeamModal'); loadTeamTable(); }
+    }
+
+    async function deleteTeamMember(id) {
+        if (!confirm('Remove this team member?')) return;
+        const res = await apiFetch(`/api/team/${id}`, { method: 'DELETE' });
+        if (res?.success) { toast('Removed'); loadTeamTable(); }
+    }
+
+    /* ============================================================
+       SETTINGS
+    ============================================================ */
+    async function saveSettings() {
+        const body = {
+            site_name:        document.getElementById('cfgSiteName').value,
+            contact_email:    document.getElementById('cfgEmail').value,
+            whatsapp_number:  document.getElementById('cfgWhatsapp').value,
+            location:         document.getElementById('cfgLocation').value,
+        };
+        const res = await apiFetch('/api/settings', { method: 'PUT', body: JSON.stringify(body) });
+        if (res?.success) toast('Settings saved!');
+    }
+
+    /* ============================================================
+       REFRESH BUTTON
+    ============================================================ */
+    document.getElementById('refreshBtn').addEventListener('click', async () => {
+        const btn = document.getElementById('refreshBtn');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        await Promise.all([loadDashboard(), updateCharts()]);
+        btn.innerHTML = '<i class="fas fa-arrows-rotate"></i>';
+        toast('Data refreshed', 'info');
+    });
+
+    /* ============================================================
+       SCROLL PROGRESS
+    ============================================================ */
+    document.getElementById('mainContent').addEventListener('scroll', () => {
+        const el = document.getElementById('mainContent');
+        const pct = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100;
+        document.getElementById('scroll-progress').style.width = pct + '%';
+    }, { passive: true });
+
+    /* ============================================================
+       INIT
+    ============================================================ */
+    window.addEventListener('DOMContentLoaded', () => {
+        initCharts();
+        loadDashboard();
+        updateCharts();
+
+        // Auto-refresh every 30 seconds
+        setInterval(() => { loadDashboard(); updateCharts(); }, 30000);
+    });
 </script>
 </body>
 </html>
