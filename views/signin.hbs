@@ -15,14 +15,21 @@
     <style>
         :root {
             --blue: #2563eb;
+            --blue-dark: #1d4ed8;
             --orange: #f97316;
+            --orange-dark: #ea580c;
             --dark: #050b18;
+            --dark-2: #0d1526;
+            --dark-3: #111827;
             --light: #f8fafc;
             --light-2: #e2e8f0;
             --text: #334155;
+            --text-light: #94a3b8;
             --red: #ef4444;
             --green: #10b981;
+            --gray: #6c757d;
             --grad-blue: linear-gradient(135deg, #2563eb, #1d4ed8);
+            --grad-google: #4285f4;
             --font-head: 'Syne', sans-serif;
             --font-body: 'Inter', sans-serif;
             --radius: 20px;
@@ -91,8 +98,10 @@
         .signin-header h1 { font-family: var(--font-head); font-size: 1.8rem; margin-bottom: 8px; }
         .signin-header p { opacity: 0.85; font-size: 0.9rem; }
         .signin-body { padding: 40px 30px; }
+        
         .form-group { margin-bottom: 25px; }
         .form-group label { font-weight: 600; margin-bottom: 8px; display: block; color: var(--text); font-size: 0.85rem; }
+        
         .input-group-custom { position: relative; }
         .input-group-custom i {
             position: absolute;
@@ -119,6 +128,7 @@
         .form-control-custom.error {
             border-color: var(--red);
         }
+        
         .password-toggle {
             position: absolute;
             right: 15px;
@@ -132,9 +142,11 @@
         .password-toggle:hover {
             color: var(--blue);
         }
+        
         .forgot-password { text-align: right; margin-top: 8px; }
         .forgot-password a { color: #94a3b8; font-size: 0.75rem; text-decoration: none; transition: var(--transition); }
         .forgot-password a:hover { color: var(--blue); text-decoration: underline; }
+        
         .btn-signin-submit {
             background: var(--grad-blue);
             color: white;
@@ -152,9 +164,58 @@
             box-shadow: 0 10px 25px rgba(37,99,235,0.3);
         }
         .btn-signin-submit:disabled { opacity: 0.7; cursor: not-allowed; }
+        
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 25px 0;
+        }
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--light-2);
+        }
+        .divider span {
+            padding: 0 15px;
+            color: #94a3b8;
+            font-size: 0.8rem;
+        }
+        
+        /* Google Sign In Button */
+        .btn-google {
+            background: white;
+            color: #333;
+            border: 1px solid var(--light-2);
+            width: 100%;
+            padding: 12px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .btn-google:hover {
+            background: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: #ddd;
+        }
+        .btn-google:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
         .signup-link { text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--light-2); }
         .signup-link a { color: var(--blue); text-decoration: none; font-weight: 600; }
         .signup-link a:hover { text-decoration: underline; }
+        
         .alert {
             padding: 12px 15px;
             border-radius: var(--radius-sm);
@@ -163,6 +224,8 @@
         }
         .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
         .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .alert-info { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+        
         .checkbox-group { display: flex; align-items: center; justify-content: space-between; margin: 20px 0; }
         .checkbox-group .remember { display: flex; align-items: center; gap: 8px; }
         .checkbox-group .remember input { width: 16px; height: 16px; cursor: pointer; }
@@ -178,6 +241,21 @@
             background: var(--dark-3);
             border-color: rgba(255,255,255,0.1);
             color: white;
+        }
+        body.dark .btn-google {
+            background: var(--dark-3);
+            color: white;
+            border-color: rgba(255,255,255,0.1);
+        }
+        body.dark .btn-google:hover {
+            background: var(--dark-2);
+        }
+        body.dark .divider::before,
+        body.dark .divider::after {
+            border-bottom-color: rgba(255,255,255,0.1);
+        }
+        body.dark .divider span {
+            color: var(--text-light);
         }
         
         @media (max-width: 576px) {
@@ -205,6 +283,7 @@
         <div class="signin-body">
             <div id="alert-message"></div>
             
+            <!-- Regular Sign In Form -->
             <form id="signinForm">
                 <div class="form-group">
                     <label>Email Address</label>
@@ -240,6 +319,16 @@
                 </button>
             </form>
             
+            <!-- Divider -->
+            <div class="divider">
+                <span>or continue with</span>
+            </div>
+            
+            <!-- Google Sign In Button -->
+            <button class="btn-google" id="googleSignInBtn">
+                <i class="fab fa-google"></i> Sign in with Google
+            </button>
+            
             <div class="signup-link">
                 Don't have an account? <a href="/sign_up">Sign Up</a>
             </div>
@@ -247,22 +336,34 @@
     </div>
 </div>
 
+<!-- Google Sign-In Script -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
 <script>
+    // ============================================
+    // GOOGLE CLIENT ID - Replace with your actual Client ID
+    // ============================================
+    const GOOGLE_CLIENT_ID = '613535038420-hjomuhe6tpuk06b42j2n01pd1cu746rk.apps.googleusercontent.com';
+    
+    // Check if client ID is configured
+    const isGoogleConfigured = GOOGLE_CLIENT_ID && GOOGLE_CLIENT_ID !== '' && !GOOGLE_CLIENT_ID.includes('your-client-id');
+    
+    // ============================================
+    // FORM ELEMENTS
+    // ============================================
     const signinForm = document.getElementById('signinForm');
     const alertMessage = document.getElementById('alert-message');
     const submitBtn = document.getElementById('submitBtn');
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('password');
+    const googleSignInBtn = document.getElementById('googleSignInBtn');
 
     // ============================================
     // SHOW/HIDE PASSWORD TOGGLE
     // ============================================
     togglePassword.addEventListener('click', function() {
-        // Toggle password visibility
         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordInput.setAttribute('type', type);
-        
-        // Toggle eye icon
         this.innerHTML = type === 'password' ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
     });
 
@@ -279,7 +380,7 @@
     // SHOW ALERT FUNCTION
     // ============================================
     function showAlert(message, type) {
-        alertMessage.innerHTML = `<div class="alert alert-${type === 'error' ? 'error' : 'success'}">${type === 'error' ? '⚠️ ' : '✅ '}${message}</div>`;
+        alertMessage.innerHTML = `<div class="alert alert-${type}">${type === 'error' ? '⚠️ ' : type === 'success' ? '✅ ' : 'ℹ️ '}${message}</div>`;
         alertMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         setTimeout(() => { 
             if (alertMessage.firstChild) alertMessage.firstChild.remove(); 
@@ -287,7 +388,7 @@
     }
 
     // ============================================
-    // FORM SUBMISSION
+    // REGULAR SIGN IN (Email/Password)
     // ============================================
     signinForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -331,7 +432,6 @@
             const data = await response.json();
             
             if (data.success) {
-                // Save remember me preference
                 if (rememberMe) {
                     localStorage.setItem('rememberedEmail', email);
                 } else {
@@ -340,7 +440,6 @@
                 
                 showAlert(data.message, 'success');
                 
-                // Redirect based on role
                 setTimeout(() => {
                     window.location.href = data.redirect;
                 }, 1000);
@@ -356,6 +455,79 @@
             submitBtn.disabled = false;
         }
     });
+
+    // ============================================
+    // GOOGLE SIGN IN HANDLER
+    // ============================================
+    if (isGoogleConfigured && typeof google !== 'undefined' && google.accounts) {
+        // Initialize Google Identity Services
+        google.accounts.id.initialize({
+            client_id: GOOGLE_CLIENT_ID,
+            callback: handleGoogleCredentialResponse,
+            auto_select: false,
+            cancel_on_tap_outside: true,
+        });
+        
+        // Add click handler to show Google prompt
+        googleSignInBtn.addEventListener('click', () => {
+            google.accounts.id.prompt();
+        });
+    } else {
+        console.warn('Google Sign-In is not configured. Please set a valid GOOGLE_CLIENT_ID');
+        googleSignInBtn.style.opacity = '0.6';
+        googleSignInBtn.style.cursor = 'not-allowed';
+        googleSignInBtn.addEventListener('click', () => {
+            showAlert('Google Sign-In is not configured. Please use email/password to sign in.', 'error');
+        });
+    }
+    
+    // Handle Google credential response
+    async function handleGoogleCredentialResponse(response) {
+        const idToken = response.credential;
+        
+        if (!idToken) {
+            showAlert('Google sign-in failed. Please try again.', 'error');
+            return;
+        }
+        
+        // Show loading state on Google button
+        const originalText = googleSignInBtn.innerHTML;
+        googleSignInBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Signing in...';
+        googleSignInBtn.disabled = true;
+        
+        try {
+            const apiResponse = await fetch('/api/auth/google', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ idToken: idToken })
+            });
+            
+            const data = await apiResponse.json();
+            
+            if (data.success) {
+                showAlert(data.message || 'Google sign-in successful!', 'success');
+                
+                // Save user info if needed
+                if (data.user) {
+                    localStorage.setItem('userName', data.user.name);
+                    localStorage.setItem('userEmail', data.user.email);
+                }
+                
+                setTimeout(() => {
+                    window.location.href = data.redirect;
+                }, 1000);
+            } else {
+                showAlert(data.message || 'Google sign-in failed. Please try again.', 'error');
+                googleSignInBtn.innerHTML = originalText;
+                googleSignInBtn.disabled = false;
+            }
+        } catch (err) {
+            console.error('Google sign-in error:', err);
+            showAlert('Network error. Please try again.', 'error');
+            googleSignInBtn.innerHTML = originalText;
+            googleSignInBtn.disabled = false;
+        }
+    }
 
     // ============================================
     // ENTER KEY SUBMIT
@@ -379,7 +551,7 @@
     });
 
     // ============================================
-    // DARK MODE (optional)
+    // DARK MODE
     // ============================================
     let dark = localStorage.getItem('theme') === 'dark';
     function applyTheme() {

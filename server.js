@@ -7,9 +7,13 @@ const bcrypt = require('bcrypt');
 const fs = require('fs');
 const { Pool } = require('pg');
 const db = require('./db/postgres');
+const { OAuth2Client } = require('google-auth-library');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// ========== GOOGLE OAUTH CONFIGURATION ==========
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // ========== SESSION CONFIGURATION (FIXED FOR RENDER) ==========
 const pool = new Pool({
@@ -58,7 +62,7 @@ function isAdmin(req, res, next) {
     if (req.session.userId && req.session.userRole === 'admin') {
         return next();
     }
-    res.status(403).render('error', { 
+    res.status(403).render('error', {
         title: 'Access Denied',
         message: 'You do not have permission to access this page.'
     });
@@ -74,7 +78,7 @@ if (fs.existsSync(partialsPath)) {
 }
 
 // ========== HANDLEBARS HELPERS ==========
-hbs.registerHelper('formatDate', function(date) {
+hbs.registerHelper('formatDate', function (date) {
     if (!date) return '';
     return new Date(date).toLocaleDateString('en-US', {
         year: 'numeric',
@@ -83,7 +87,7 @@ hbs.registerHelper('formatDate', function(date) {
     });
 });
 
-hbs.registerHelper('shortDate', function(date) {
+hbs.registerHelper('shortDate', function (date) {
     if (!date) return '';
     return new Date(date).toLocaleDateString('en-US', {
         year: 'numeric',
@@ -92,27 +96,27 @@ hbs.registerHelper('shortDate', function(date) {
     });
 });
 
-hbs.registerHelper('eq', function(a, b) {
+hbs.registerHelper('eq', function (a, b) {
     return a === b;
 });
 
-hbs.registerHelper('neq', function(a, b) {
+hbs.registerHelper('neq', function (a, b) {
     return a !== b;
 });
 
-hbs.registerHelper('inc', function(value) {
+hbs.registerHelper('inc', function (value) {
     return parseInt(value) + 1;
 });
 
-hbs.registerHelper('dec', function(value) {
+hbs.registerHelper('dec', function (value) {
     return parseInt(value) - 1;
 });
 
-hbs.registerHelper('math', function(lvalue, operator, rvalue) {
+hbs.registerHelper('math', function (lvalue, operator, rvalue) {
     lvalue = parseFloat(lvalue);
     rvalue = parseFloat(rvalue);
     if (isNaN(lvalue) || isNaN(rvalue)) return 0;
-    
+
     switch (operator) {
         case '+': return lvalue + rvalue;
         case '-': return lvalue - rvalue;
@@ -122,38 +126,38 @@ hbs.registerHelper('math', function(lvalue, operator, rvalue) {
     }
 });
 
-hbs.registerHelper('truncate', function(text, length) {
+hbs.registerHelper('truncate', function (text, length) {
     if (!text) return '';
     if (text.length <= length) return text;
     return text.substring(0, length) + '...';
 });
 
-hbs.registerHelper('truncateWords', function(text, wordCount) {
+hbs.registerHelper('truncateWords', function (text, wordCount) {
     if (!text) return '';
     const words = text.split(' ');
     if (words.length <= wordCount) return text;
     return words.slice(0, wordCount).join(' ') + '...';
 });
 
-hbs.registerHelper('contains', function(array, value, options) {
+hbs.registerHelper('contains', function (array, value, options) {
     if (!array || !Array.isArray(array)) return options.inverse(this);
     return array.indexOf(value) !== -1 ? options.fn(this) : options.inverse(this);
 });
 
-hbs.registerHelper('default', function(value, defaultValue) {
+hbs.registerHelper('default', function (value, defaultValue) {
     return value || defaultValue;
 });
 
-hbs.registerHelper('join', function(array, separator) {
+hbs.registerHelper('join', function (array, separator) {
     if (!array || !Array.isArray(array)) return '';
     return array.join(separator || ', ');
 });
 
-hbs.registerHelper('lowercase', function(str) {
+hbs.registerHelper('lowercase', function (str) {
     return str ? str.toLowerCase() : '';
 });
 
-hbs.registerHelper('uppercase', function(str) {
+hbs.registerHelper('uppercase', function (str) {
     return str ? str.toUpperCase() : '';
 });
 
@@ -172,7 +176,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// Make user data available to all templates
+// Make user data and Google Client ID available to all templates
 app.use((req, res, next) => {
     res.locals.currentYear = new Date().getFullYear();
     res.locals.companyName = 'Neurowex Tech';
@@ -180,6 +184,7 @@ app.use((req, res, next) => {
     res.locals.isAuthenticated = !!req.session.userId;
     res.locals.userRole = req.session.userRole || null;
     res.locals.userName = req.session.userName || null;
+    res.locals.googleClientId = process.env.GOOGLE_CLIENT_ID || '';
     next();
 });
 
@@ -198,14 +203,15 @@ app.get('/sign_up', (req, res) => {
         return res.redirect(req.session.userRole === 'admin' ? '/admin_dashboard' : '/user_dashboard');
     }
     res.render('signup', {
-        title: 'Sign Up - Neurowex Tech'
+        title: 'Sign Up - Neurowex Tech',
+        googleClientId: process.env.GOOGLE_CLIENT_ID || ''
     });
 });
 
 app.post('/api/signup', async (req, res) => {
     try {
         const { fullname, email, password } = req.body;
-        
+
         if (!fullname || fullname.length < 2) {
             return res.status(400).json({ success: false, message: 'Please enter your full name' });
         }
@@ -215,22 +221,22 @@ app.post('/api/signup', async (req, res) => {
         if (!password || password.length < 6) {
             return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
         }
-        
+
         const existingUser = await db.query('SELECT * FROM users WHERE email = $1', [email.toLowerCase()]);
         if (existingUser.rows.length > 0) {
             return res.status(400).json({ success: false, message: 'Email already registered' });
         }
-        
+
         const hashedPassword = await bcrypt.hash(password, 10);
-        
+
         const result = await db.query(
             `INSERT INTO users (username, email, password_hash, role, is_active) 
              VALUES ($1, $2, $3, 'user', true) RETURNING id, username, email, role`,
             [fullname, email.toLowerCase(), hashedPassword]
         );
-        
-        res.json({ 
-            success: true, 
+
+        res.json({
+            success: true,
             message: 'Account created successfully! Please sign in.',
             user: result.rows[0]
         });
@@ -245,35 +251,111 @@ app.get('/login', (req, res) => {
         return res.redirect(req.session.userRole === 'admin' ? '/admin_dashboard' : '/user_dashboard');
     }
     res.render('signin', {
-        title: 'Sign In - Neurowex Tech'
+        title: 'Sign In - Neurowex Tech',
+        googleClientId: process.env.GOOGLE_CLIENT_ID || ''
     });
 });
 
 app.post('/api/login', async (req, res) => {
     try {
         const { email, password, rememberMe } = req.body;
-        
+
         if (!email || !password) {
             return res.status(400).json({ success: false, message: 'Please enter email and password' });
         }
-        
+
         const result = await db.query('SELECT * FROM users WHERE email = $1', [email.toLowerCase()]);
-        
+
         if (result.rows.length === 0) {
             return res.status(401).json({ success: false, message: 'Invalid email or password' });
         }
-        
+
         const user = result.rows[0];
-        
+
         if (!user.is_active) {
             return res.status(401).json({ success: false, message: 'Your account has been deactivated.' });
         }
-        
+
         const isValid = await bcrypt.compare(password, user.password_hash);
         if (!isValid) {
             return res.status(401).json({ success: false, message: 'Invalid email or password' });
         }
+
+        req.session.userId = user.id;
+        req.session.userEmail = user.email;
+        req.session.userName = user.username;
+        req.session.userRole = user.role;
+
+        req.session.save((err) => {
+            if (err) {
+                console.error('Session save error:', err);
+                return res.status(500).json({ success: false, message: 'Session error' });
+            }
+
+            db.query('UPDATE users SET last_login = NOW() WHERE id = $1', [user.id]);
+
+            if (rememberMe) {
+                req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 30;
+            }
+
+            const redirectUrl = user.role === 'admin' ? '/admin_dashboard' : '/user_dashboard';
+
+            res.json({
+                success: true,
+                message: 'Login successful!',
+                role: user.role,
+                redirect: redirectUrl
+            });
+        });
+    } catch (err) {
+        console.error('Login error:', err);
+        res.status(500).json({ success: false, message: 'Server error. Please try again.' });
+    }
+});
+
+// ========== GOOGLE AUTH ROUTE ==========
+app.post('/api/auth/google', async (req, res) => {
+    try {
+        const { idToken } = req.body;
         
+        if (!idToken) {
+            return res.status(400).json({ success: false, message: 'No ID token provided' });
+        }
+        
+        // Verify Google token
+        const ticket = await googleClient.verifyIdToken({
+            idToken: idToken,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        
+        const payload = ticket.getPayload();
+        const { email, name, picture, sub: googleId } = payload;
+        
+        if (!email) {
+            return res.status(400).json({ success: false, message: 'No email from Google' });
+        }
+        
+        // Check if user exists
+        let user = await db.query('SELECT * FROM users WHERE email = $1', [email.toLowerCase()]);
+        
+        if (user.rows.length === 0) {
+            // Create new user
+            const result = await db.query(
+                `INSERT INTO users (username, email, google_id, role, is_active, created_at) 
+                 VALUES ($1, $2, $3, 'user', true, NOW()) 
+                 RETURNING id, username, email, role`,
+                [name, email.toLowerCase(), googleId]
+            );
+            user = result.rows[0];
+        } else {
+            user = user.rows[0];
+            // Update google_id if not set
+            if (!user.google_id) {
+                await db.query('UPDATE users SET google_id = $1 WHERE id = $2', [googleId, user.id]);
+            }
+        }
+        
+        // Create session
         req.session.userId = user.id;
         req.session.userEmail = user.email;
         req.session.userName = user.username;
@@ -285,24 +367,17 @@ app.post('/api/login', async (req, res) => {
                 return res.status(500).json({ success: false, message: 'Session error' });
             }
             
-            db.query('UPDATE users SET last_login = NOW() WHERE id = $1', [user.id]);
-            
-            if (rememberMe) {
-                req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 30;
-            }
-            
-            const redirectUrl = user.role === 'admin' ? '/admin_dashboard' : '/user_dashboard';
-            
-            res.json({ 
-                success: true, 
-                message: 'Login successful!',
-                role: user.role,
-                redirect: redirectUrl
+            res.json({
+                success: true,
+                message: 'Google sign-in successful!',
+                redirect: user.role === 'admin' ? '/admin_dashboard' : '/user_dashboard',
+                user: { name: user.username, email: user.email, role: user.role }
             });
         });
+        
     } catch (err) {
-        console.error('Login error:', err);
-        res.status(500).json({ success: false, message: 'Server error. Please try again.' });
+        console.error('Google auth error:', err);
+        res.status(500).json({ success: false, message: 'Authentication failed: ' + err.message });
     }
 });
 
@@ -328,31 +403,31 @@ app.get('/reset-password', (req, res) => {
 app.post('/api/forgot-password', async (req, res) => {
     try {
         const { email } = req.body;
-        
+
         if (!email) {
             return res.status(400).json({ success: false, message: 'Please enter your email address' });
         }
-        
+
         const user = await db.query('SELECT * FROM users WHERE email = $1', [email.toLowerCase()]);
-        
+
         if (user.rows.length === 0) {
             return res.json({ success: true, message: 'If an account exists, you will receive a reset link.' });
         }
-        
+
         const crypto = require('crypto');
         const resetToken = crypto.randomBytes(32).toString('hex');
         const expiresAt = new Date(Date.now() + 3600000);
-        
+
         await db.query(
             'INSERT INTO password_resets (email, token, expires_at) VALUES ($1, $2, $3) ON CONFLICT (email) DO UPDATE SET token = $2, expires_at = $3',
             [email, resetToken, expiresAt]
         );
-        
+
         const resetLink = `${req.protocol}://${req.get('host')}/reset-password?token=${resetToken}`;
         console.log(`Reset link: ${resetLink}`);
-        
-        res.json({ 
-            success: true, 
+
+        res.json({
+            success: true,
             message: 'Password reset link has been sent.',
             demoToken: resetToken
         });
@@ -365,26 +440,26 @@ app.post('/api/forgot-password', async (req, res) => {
 app.post('/api/reset-password', async (req, res) => {
     try {
         const { token, newPassword } = req.body;
-        
+
         if (!token || !newPassword || newPassword.length < 6) {
             return res.status(400).json({ success: false, message: 'Invalid request' });
         }
-        
+
         const resetRecord = await db.query(
             'SELECT * FROM password_resets WHERE token = $1 AND expires_at > NOW()',
             [token]
         );
-        
+
         if (resetRecord.rows.length === 0) {
             return res.status(400).json({ success: false, message: 'Invalid or expired reset link' });
         }
-        
+
         const email = resetRecord.rows[0].email;
         const hashedPassword = await bcrypt.hash(newPassword, 10);
-        
+
         await db.query('UPDATE users SET password_hash = $1 WHERE email = $2', [hashedPassword, email]);
         await db.query('DELETE FROM password_resets WHERE token = $1', [token]);
-        
+
         res.json({ success: true, message: 'Password reset successful! Please login.' });
     } catch (err) {
         console.error('Reset password error:', err);
@@ -411,9 +486,9 @@ app.get('/user_dashboard', isAuthenticated, async (req, res) => {
 app.get('/admin_dashboard', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const users = await db.query(
-            'SELECT id, username, email, role, is_active, created_at, last_login FROM users ORDER BY created_at DESC'
+            'SELECT id, username, email, role, is_active, created_at, last_login, google_id FROM users ORDER BY created_at DESC'
         );
-        
+
         const stats = await db.query(`
             SELECT 
                 (SELECT COUNT(*) FROM users) as total_users,
@@ -423,7 +498,7 @@ app.get('/admin_dashboard', isAuthenticated, isAdmin, async (req, res) => {
                 (SELECT COUNT(*) FROM subscribers) as total_subscribers,
                 (SELECT COUNT(*) FROM projects) as total_projects
         `);
-        
+
         res.render('admin_dashboard', {
             title: 'Admin Dashboard - Neurowex Tech',
             users: users.rows,
@@ -486,12 +561,18 @@ app.post('/api/user/change-password', isAuthenticated, async (req, res) => {
     try {
         const { currentPassword, newPassword } = req.body;
         const user = await db.query('SELECT password_hash FROM users WHERE id = $1', [req.session.userId]);
-        const isValid = await bcrypt.compare(currentPassword, user.rows[0].password_hash);
         
+        // If user signed up with Google and has no password_hash, they can't change password
+        if (!user.rows[0].password_hash) {
+            return res.status(400).json({ success: false, message: 'Google Sign-In users cannot change password. Use Google to sign in.' });
+        }
+        
+        const isValid = await bcrypt.compare(currentPassword, user.rows[0].password_hash);
+
         if (!isValid) {
             return res.status(401).json({ success: false, message: 'Current password is incorrect' });
         }
-        
+
         const hashedPassword = await bcrypt.hash(newPassword, 10);
         await db.query('UPDATE users SET password_hash = $1 WHERE id = $2', [hashedPassword, req.session.userId]);
         res.json({ success: true, message: 'Password changed successfully' });
@@ -505,7 +586,7 @@ app.post('/api/user/change-password', isAuthenticated, async (req, res) => {
 app.get('/api/admin/users', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const users = await db.query(
-            'SELECT id, username, email, role, is_active, created_at, last_login FROM users ORDER BY created_at DESC'
+            'SELECT id, username, email, role, is_active, created_at, last_login, google_id FROM users ORDER BY created_at DESC'
         );
         res.json({ success: true, users: users.rows });
     } catch (err) {
@@ -580,12 +661,13 @@ app.get('/api/projects', isAuthenticated, isAdmin, async (req, res) => {
 });
 
 // ========== PUBLIC ROUTES ==========
+// [The rest of your public routes remain the same...]
 
 app.get('/', async (req, res) => {
     try {
         const featuredProjects = await db.getAllProjects(true);
         const recentBlogs = await db.getBlogPosts(true);
-        
+
         res.render('home', {
             title: 'Neurowex Tech - Web & Mobile Apps That Actually Ship',
             description: 'Custom web and mobile app development for startups and businesses.',
@@ -642,7 +724,7 @@ app.get('/services', (req, res) => {
         { name: 'E-commerce Platforms', icon: '🛒', description: 'Custom online stores', price: 'From $10k' },
         { name: 'MVP Package', icon: '🚀', description: 'Launch in 6 weeks', price: '$5k flat' }
     ];
-    
+
     res.render('services', {
         title: 'Our Services - Neurowex Tech',
         services
@@ -658,12 +740,12 @@ app.get('/contact', (req, res) => {
 app.post('/contact', async (req, res) => {
     try {
         const { name, email, phone, project_type, budget, message } = req.body;
-        
+
         const errors = [];
         if (!name || name.trim().length < 2) errors.push('Please enter your full name');
         if (!email || !/^\S+@\S+\.\S+$/.test(email)) errors.push('Please enter a valid email address');
         if (!message || message.trim().length < 10) errors.push('Please provide more details about your project');
-        
+
         if (errors.length > 0) {
             return res.render('contact', {
                 title: 'Contact Us',
@@ -671,9 +753,9 @@ app.post('/contact', async (req, res) => {
                 formData: req.body
             });
         }
-        
+
         await db.saveContact({ name, email, phone, project_type, budget, message });
-        
+
         res.render('contact', {
             title: 'Contact Us',
             success: 'Thank you! We\'ll respond within 24 hours.',
@@ -721,11 +803,11 @@ app.get('/blog/:slug', async (req, res) => {
 app.post('/subscribe', async (req, res) => {
     try {
         const { email } = req.body;
-        
+
         if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
             return res.status(400).json({ success: false, message: 'Please enter a valid email address' });
         }
-        
+
         await db.addSubscriber(email);
         res.json({ success: true, message: 'Subscribed successfully!' });
     } catch (err) {
@@ -770,33 +852,33 @@ app.get('/test-auth', (req, res) => {
 });
 
 app.get('/health', (req, res) => {
-    res.status(200).json({ 
-        status: 'OK', 
+    res.status(200).json({
+        status: 'OK',
         timestamp: new Date().toISOString(),
         uptime: process.uptime(),
         environment: process.env.NODE_ENV || 'development'
     });
 });
 
-
 // ========== ADDITIONAL ADMIN API ROUTES FOR DASHBOARD ==========
+// [Your existing admin API routes remain here...]
 
 // Create a new project (POST)
 app.post('/api/projects', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const { name, description, category, year, featured, client_url, tech_stack } = req.body;
-        
+
         if (!name) {
             return res.status(400).json({ success: false, message: 'Project name is required' });
         }
-        
+
         const result = await db.query(
             `INSERT INTO projects (name, description, category, year, featured, client_url, tech_stack, created_at) 
              VALUES ($1, $2, $3, $4, $5, $6, $7, NOW()) 
              RETURNING *`,
             [name, description || '', category || 'Web', year || new Date().getFullYear(), featured || false, client_url || '', tech_stack || '']
         );
-        
+
         res.json({ success: true, message: 'Project created successfully', project: result.rows[0] });
     } catch (err) {
         console.error('Create project error:', err);
@@ -809,11 +891,11 @@ app.delete('/api/projects/:id', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const id = req.params.id;
         const result = await db.query('DELETE FROM projects WHERE id = $1 RETURNING *', [id]);
-        
+
         if (result.rows.length === 0) {
             return res.status(404).json({ success: false, message: 'Project not found' });
         }
-        
+
         res.json({ success: true, message: 'Project deleted successfully' });
     } catch (err) {
         console.error('Delete project error:', err);
@@ -826,7 +908,7 @@ app.put('/api/projects/:id', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const id = req.params.id;
         const { name, description, category, year, featured, client_url, tech_stack } = req.body;
-        
+
         const result = await db.query(
             `UPDATE projects 
              SET name = COALESCE($1, name),
@@ -840,11 +922,11 @@ app.put('/api/projects/:id', isAuthenticated, isAdmin, async (req, res) => {
              RETURNING *`,
             [name, description, category, year, featured, client_url, tech_stack, id]
         );
-        
+
         if (result.rows.length === 0) {
             return res.status(404).json({ success: false, message: 'Project not found' });
         }
-        
+
         res.json({ success: true, message: 'Project updated successfully', project: result.rows[0] });
     } catch (err) {
         console.error('Update project error:', err);
@@ -857,11 +939,11 @@ app.delete('/api/contacts/:id', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const id = req.params.id;
         const result = await db.query('DELETE FROM contacts WHERE id = $1 RETURNING *', [id]);
-        
+
         if (result.rows.length === 0) {
             return res.status(404).json({ success: false, message: 'Contact not found' });
         }
-        
+
         res.json({ success: true, message: 'Contact deleted successfully' });
     } catch (err) {
         console.error('Delete contact error:', err);
@@ -874,11 +956,11 @@ app.delete('/api/subscribers/:id', isAuthenticated, isAdmin, async (req, res) =>
     try {
         const id = req.params.id;
         const result = await db.query('DELETE FROM subscribers WHERE id = $1 RETURNING *', [id]);
-        
+
         if (result.rows.length === 0) {
             return res.status(404).json({ success: false, message: 'Subscriber not found' });
         }
-        
+
         res.json({ success: true, message: 'Subscriber deleted successfully' });
     } catch (err) {
         console.error('Delete subscriber error:', err);
@@ -897,254 +979,13 @@ app.get('/api/projects/public', async (req, res) => {
     }
 });
 
-// Get featured projects (public)
-app.get('/api/projects/featured', async (req, res) => {
-    try {
-        const projects = await db.query('SELECT * FROM projects WHERE featured = true LIMIT 6');
-        res.json({ success: true, projects: projects.rows || [] });
-    } catch (err) {
-        console.error('Featured projects error:', err);
-        res.json({ success: true, projects: [] });
-    }
-});
-
-// Create a new blog post
-app.post('/api/blog', isAuthenticated, isAdmin, async (req, res) => {
-    try {
-        const { title, slug, content, excerpt, category, author, external_url, published } = req.body;
-        
-        if (!title) {
-            return res.status(400).json({ success: false, message: 'Title is required' });
-        }
-        
-        const blogSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-        
-        const result = await db.query(
-            `INSERT INTO blog_posts (title, slug, content, excerpt, category, author, external_url, published, published_at, created_at) 
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW()) 
-             RETURNING *`,
-            [title, blogSlug, content || '', excerpt || '', category || 'General', author || 'Admin', external_url || '', published || false, published ? new Date() : null]
-        );
-        
-        res.json({ success: true, message: 'Blog post created', post: result.rows[0] });
-    } catch (err) {
-        console.error('Create blog error:', err);
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// Get all blog posts (admin)
-app.get('/api/blog', isAuthenticated, isAdmin, async (req, res) => {
-    try {
-        const posts = await db.query('SELECT * FROM blog_posts ORDER BY created_at DESC');
-        res.json({ success: true, posts: posts.rows || [] });
-    } catch (err) {
-        console.error('Get blogs error:', err);
-        res.json({ success: true, posts: [] });
-    }
-});
-
-// Delete a blog post
-app.delete('/api/blog/:id', isAuthenticated, isAdmin, async (req, res) => {
-    try {
-        const id = req.params.id;
-        const result = await db.query('DELETE FROM blog_posts WHERE id = $1 RETURNING *', [id]);
-        
-        if (result.rows.length === 0) {
-            return res.status(404).json({ success: false, message: 'Blog post not found' });
-        }
-        
-        res.json({ success: true, message: 'Blog post deleted successfully' });
-    } catch (err) {
-        console.error('Delete blog error:', err);
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// Get all services (admin)
-app.get('/api/services', isAuthenticated, isAdmin, async (req, res) => {
-    try {
-        const services = await db.getAllServices();
-        res.json({ success: true, services: services || [] });
-    } catch (err) {
-        console.error('Get services error:', err);
-        res.json({ success: true, services: [] });
-    }
-});
-
-// Create a new service
-app.post('/api/services', isAuthenticated, isAdmin, async (req, res) => {
-    try {
-        const { name, description, icon_class, price, display_order, visible } = req.body;
-        
-        if (!name) {
-            return res.status(400).json({ success: false, message: 'Service name is required' });
-        }
-        
-        const result = await db.query(
-            `INSERT INTO services (name, description, icon_class, price, display_order, visible, created_at) 
-             VALUES ($1, $2, $3, $4, $5, $6, NOW()) 
-             RETURNING *`,
-            [name, description || '', icon_class || 'fas fa-cog', price || '', display_order || 0, visible !== false]
-        );
-        
-        res.json({ success: true, message: 'Service created', service: result.rows[0] });
-    } catch (err) {
-        console.error('Create service error:', err);
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// Get all testimonials (admin)
-app.get('/api/testimonials', isAuthenticated, isAdmin, async (req, res) => {
-    try {
-        const testimonials = await db.getTestimonials();
-        res.json({ success: true, testimonials: testimonials || [] });
-    } catch (err) {
-        console.error('Get testimonials error:', err);
-        res.json({ success: true, testimonials: [] });
-    }
-});
-
-// Create a new testimonial
-app.post('/api/testimonials', isAuthenticated, isAdmin, async (req, res) => {
-    try {
-        const { client_name, client_role, company, rating, content, published, display_order } = req.body;
-        
-        if (!client_name || !content) {
-            return res.status(400).json({ success: false, message: 'Client name and content are required' });
-        }
-        
-        const result = await db.query(
-            `INSERT INTO testimonials (client_name, client_role, company, rating, content, published, display_order, created_at) 
-             VALUES ($1, $2, $3, $4, $5, $6, $7, NOW()) 
-             RETURNING *`,
-            [client_name, client_role || '', company || '', rating || 5, content, published !== false, display_order || 0]
-        );
-        
-        res.json({ success: true, message: 'Testimonial created', testimonial: result.rows[0] });
-    } catch (err) {
-        console.error('Create testimonial error:', err);
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// Get all team members (admin)
-app.get('/api/team', isAuthenticated, isAdmin, async (req, res) => {
-    try {
-        const team = await db.getTeamMembers();
-        res.json({ success: true, team: team || [] });
-    } catch (err) {
-        console.error('Get team error:', err);
-        res.json({ success: true, team: [] });
-    }
-});
-
-// Create a new team member
-app.post('/api/team', isAuthenticated, isAdmin, async (req, res) => {
-    try {
-        const { name, role, bio, avatar_url, linkedin_url, github_url, twitter_url, display_order } = req.body;
-        
-        if (!name || !role) {
-            return res.status(400).json({ success: false, message: 'Name and role are required' });
-        }
-        
-        const result = await db.query(
-            `INSERT INTO team_members (name, role, bio, avatar_url, linkedin_url, github_url, twitter_url, display_order, created_at) 
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW()) 
-             RETURNING *`,
-            [name, role, bio || '', avatar_url || '', linkedin_url || '', github_url || '', twitter_url || '', display_order || 0]
-        );
-        
-        res.json({ success: true, message: 'Team member added', member: result.rows[0] });
-    } catch (err) {
-        console.error('Create team error:', err);
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
-// Get all pricing plans (admin)
-app.get('/api/pricing', isAuthenticated, isAdmin, async (req, res) => {
-    try {
-        // Check if pricing table exists, if not return sample data
-        let pricing = [];
-        try {
-            const result = await db.query('SELECT * FROM pricing_plans ORDER BY price ASC');
-            pricing = result.rows;
-        } catch (err) {
-            // Return default pricing if table doesn't exist
-            pricing = [
-                { id: 1, name: 'Basic', price: '12,249', features: 'Landing Page,5 Pages,1 Month Support', popular: false },
-                { id: 2, name: 'Professional', price: '17,999', features: 'Full Website,15 Pages,6 Mo Support,Analytics', popular: true },
-                { id: 3, name: 'Business', price: '24,999', features: 'Custom App,Unlimited Pages,12 Mo Support,AI', popular: false },
-                { id: 4, name: 'Enterprise', price: 'Custom', features: 'Dedicated Team,SLA,Security Audit', popular: false }
-            ];
-        }
-        res.json({ success: true, pricing: pricing });
-    } catch (err) {
-        console.error('Get pricing error:', err);
-        res.json({ success: true, pricing: [] });
-    }
-});
-
-// System settings - get
-app.get('/api/settings', isAuthenticated, isAdmin, async (req, res) => {
-    try {
-        // Get settings from database or return defaults
-        let settings = {};
-        try {
-            const result = await db.query('SELECT * FROM system_settings LIMIT 1');
-            if (result.rows.length > 0) settings = result.rows[0];
-        } catch (err) {
-            // Return default settings if table doesn't exist
-            settings = {
-                site_name: 'NeurowexTech',
-                contact_email: 'hello@neurowextech.com',
-                whatsapp_number: '+254769329340',
-                location: 'Nairobi, Kenya',
-                google_analytics_enabled: true,
-                whatsapp_widget_enabled: true,
-                newsletter_enabled: true
-            };
-        }
-        res.json({ success: true, settings: settings });
-    } catch (err) {
-        console.error('Get settings error:', err);
-        res.json({ success: true, settings: {} });
-    }
-});
-
-// System settings - update
-app.put('/api/settings', isAuthenticated, isAdmin, async (req, res) => {
-    try {
-        const { site_name, contact_email, whatsapp_number, location } = req.body;
-        
-        // Update or insert settings
-        await db.query(`
-            INSERT INTO system_settings (site_name, contact_email, whatsapp_number, location, updated_at) 
-            VALUES ($1, $2, $3, $4, NOW())
-            ON CONFLICT (id) DO UPDATE SET 
-                site_name = EXCLUDED.site_name,
-                contact_email = EXCLUDED.contact_email,
-                whatsapp_number = EXCLUDED.whatsapp_number,
-                location = EXCLUDED.location,
-                updated_at = NOW()
-        `, [site_name, contact_email, whatsapp_number, location]);
-        
-        res.json({ success: true, message: 'Settings saved successfully' });
-    } catch (err) {
-        console.error('Update settings error:', err);
-        res.status(500).json({ success: false, message: err.message });
-    }
-});
-
 // Dashboard stats summary
 app.get('/api/dashboard/stats', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const stats = await db.getStats();
         const userCount = await db.query('SELECT COUNT(*) FROM users');
         const adminCount = await db.query('SELECT COUNT(*) FROM users WHERE role = $1', ['admin']);
-        
+
         res.json({
             success: true,
             stats: {
@@ -1163,7 +1004,7 @@ app.get('/api/dashboard/stats', isAuthenticated, isAdmin, async (req, res) => {
 
 // ========== ERROR HANDLERS ==========
 app.use((req, res) => {
-    res.status(404).render('404', { 
+    res.status(404).render('404', {
         title: 'Page Not Found',
         message: 'The page you are looking for does not exist or has been moved.'
     });
@@ -1192,6 +1033,8 @@ app.listen(PORT, () => {
     ║     📍 Signup: http://localhost:${PORT}/sign_up        ║
     ║                                                       ║
     ║     🌍 Environment: ${process.env.NODE_ENV || 'development'}    ║
+    ║                                                       ║
+    ║     🔐 Google Sign-In: ${process.env.GOOGLE_CLIENT_ID ? '✅ Configured' : '❌ Not Configured'}
     ║                                                       ║
     ║     Press Ctrl+C to stop the server                   ║
     ║                                                       ║
