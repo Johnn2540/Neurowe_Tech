@@ -18,7 +18,11 @@ const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 // ========== SESSION CONFIGURATION (FIXED FOR RENDER) ==========
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
+    ssl: process.env.NODE_ENV === 'production' 
+        ? { rejectUnauthorized: false } 
+        : false,  // Disable SSL for local development if not needed
+    connectionTimeoutMillis: 30000,  // Increase timeout
+    keepAlive: true
 });
 
 // Create sessions table if not exists
@@ -1017,6 +1021,15 @@ app.use((err, req, res, next) => {
         title: 'Server Error',
         message: isDev ? err.message : 'Something went wrong. Please try again later.',
         stack: isDev ? err.stack : null
+    });
+});
+
+// Debug route - remove after testing
+app.get('/debug/env', (req, res) => {
+    res.json({
+        googleClientId: process.env.GOOGLE_CLIENT_ID ? '✅ Set' : '❌ Missing',
+        nodeEnv: process.env.NODE_ENV,
+        hasSessionSecret: !!process.env.SESSION_SECRET
     });
 });
 

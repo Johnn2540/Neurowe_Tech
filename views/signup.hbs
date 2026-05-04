@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Sign Up - NeurowexTech</title>
+    <title>Sign In - NeurowexTech</title>
 
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -23,9 +23,6 @@
             --light-2: #e2e8f0;
             --text: #334155;
             --text-light: #94a3b8;
-            --green: #10b981;
-            --red: #ef4444;
-            --yellow: #f59e0b;
             --grad-blue: linear-gradient(135deg, #2563eb, #1d4ed8);
             --font-head: 'Syne', sans-serif;
             --font-body: 'Inter', sans-serif;
@@ -66,19 +63,19 @@
             transform: translateY(-2px);
         }
 
-        .signup-wrapper {
+        .signin-wrapper {
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 80px 20px;
         }
-        .signup-card {
+        .signin-card {
             background: white;
             border-radius: var(--radius);
             box-shadow: 0 25px 50px rgba(0,0,0,0.2);
             overflow: hidden;
-            max-width: 540px;
+            max-width: 480px;
             width: 100%;
             animation: fadeInUp 0.6s ease;
         }
@@ -86,18 +83,19 @@
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .signup-header {
+        .signin-header {
             background: var(--grad-blue);
             padding: 40px 30px;
             text-align: center;
             color: white;
         }
-        .signup-header h1 { font-family: var(--font-head); font-size: 1.8rem; margin-bottom: 8px; }
-        .signup-header p { opacity: 0.85; font-size: 0.9rem; }
-        .signup-body { padding: 40px 30px; }
-        .form-group { margin-bottom: 22px; }
+        .signin-header h1 { font-family: var(--font-head); font-size: 1.8rem; margin-bottom: 8px; }
+        .signin-header p { opacity: 0.85; font-size: 0.9rem; }
+        .signin-body { padding: 40px 30px; }
+        
+        .form-group { margin-bottom: 25px; }
         .form-group label { font-weight: 600; margin-bottom: 8px; display: block; color: var(--text); font-size: 0.85rem; }
-        .form-group label .required { color: var(--red); }
+        
         .input-group-custom { position: relative; }
         .input-group-custom i {
             position: absolute;
@@ -122,8 +120,9 @@
             box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
         }
         .form-control-custom.error {
-            border-color: var(--red);
+            border-color: #ef4444;
         }
+        
         .password-toggle {
             position: absolute;
             right: 15px;
@@ -137,29 +136,8 @@
         .password-toggle:hover {
             color: var(--blue);
         }
-        .password-strength {
-            margin-top: 8px;
-        }
-        .strength-bar {
-            height: 4px;
-            border-radius: 2px;
-            margin-top: 8px;
-            transition: all 0.3s;
-            background: var(--light-2);
-            width: 0%;
-        }
-        .strength-text {
-            display: block;
-            margin-top: 5px;
-            font-size: 0.7rem;
-        }
-        .error-message {
-            color: var(--red);
-            font-size: 0.7rem;
-            margin-top: 5px;
-            display: block;
-        }
-        .btn-signup-submit {
+        
+        .btn-signin-submit {
             background: var(--grad-blue);
             color: white;
             border: none;
@@ -171,13 +149,11 @@
             transition: var(--transition);
             margin-top: 10px;
         }
-        .btn-signup-submit:hover {
+        .btn-signin-submit:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(37,99,235,0.3);
         }
-        .btn-signup-submit:disabled { opacity: 0.7; cursor: not-allowed; }
         
-        /* Divider */
         .divider {
             display: flex;
             align-items: center;
@@ -196,7 +172,6 @@
             font-size: 0.8rem;
         }
         
-        /* Google Sign Up Button */
         .btn-google {
             background: white;
             color: #333;
@@ -217,16 +192,15 @@
             background: #f8f9fa;
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            border-color: #ddd;
         }
         .btn-google:disabled {
-            opacity: 0.7;
+            opacity: 0.6;
             cursor: not-allowed;
         }
         
-        .login-link { text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--light-2); }
-        .login-link a { color: var(--blue); text-decoration: none; font-weight: 600; }
-        .login-link a:hover { text-decoration: underline; }
+        .signup-link { text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--light-2); }
+        .signup-link a { color: var(--blue); text-decoration: none; font-weight: 600; }
+        .signup-link a:hover { text-decoration: underline; }
         
         .alert {
             padding: 12px 15px;
@@ -241,8 +215,7 @@
         .checkbox-group { display: flex; align-items: center; gap: 10px; margin: 20px 0; }
         .checkbox-group input { width: 18px; height: 18px; cursor: pointer; }
         
-        /* Dark mode */
-        body.dark .signup-card {
+        body.dark .signin-card {
             background: var(--dark-2);
         }
         body.dark .form-group label {
@@ -258,21 +231,11 @@
             color: white;
             border-color: rgba(255,255,255,0.1);
         }
-        body.dark .btn-google:hover {
-            background: var(--dark-2);
-        }
-        body.dark .divider::before,
-        body.dark .divider::after {
-            border-bottom-color: rgba(255,255,255,0.1);
-        }
-        body.dark .divider span {
-            color: var(--text-light);
-        }
         
         @media (max-width: 576px) {
-            .signup-header { padding: 30px 20px; }
-            .signup-body { padding: 30px 20px; }
-            .signup-header h1 { font-size: 1.5rem; }
+            .signin-header { padding: 30px 20px; }
+            .signin-body { padding: 30px 20px; }
+            .signin-header h1 { font-size: 1.5rem; }
             .back-home { top: 20px; left: 20px; }
             .back-home a { padding: 6px 14px; font-size: 0.8rem; }
         }
@@ -284,424 +247,201 @@
     <a href="/"><i class="fas fa-arrow-left"></i> Back to Home</a>
 </div>
 
-<div class="signup-wrapper">
-    <div class="signup-card">
-        <div class="signup-header">
-            <h1>Create Account</h1>
-            <p>Join NeurowexTech and start building amazing products</p>
+<div class="signin-wrapper">
+    <div class="signin-card">
+        <div class="signin-header">
+            <h1>Welcome Back</h1>
+            <p>Sign in to your NeurowexTech account</p>
         </div>
-        <div class="signup-body">
+        <div class="signin-body">
             <div id="alert-message"></div>
             
-            <!-- Regular Sign Up Form -->
-            <form id="signupForm">
+            <form id="signinForm">
                 <div class="form-group">
-                    <label>Full Name <span class="required">*</span></label>
-                    <div class="input-group-custom">
-                        <i class="fas fa-user"></i>
-                        <input type="text" class="form-control-custom" id="fullname" name="fullname" placeholder="John Doe" required>
-                    </div>
-                    <span class="error-message" id="fullnameError"></span>
-                </div>
-                
-                <div class="form-group">
-                    <label>Email Address <span class="required">*</span></label>
+                    <label>Email Address</label>
                     <div class="input-group-custom">
                         <i class="fas fa-envelope"></i>
-                        <input type="email" class="form-control-custom" id="email" name="email" placeholder="hello@neurowextech.com" required>
+                        <input type="email" class="form-control-custom" id="email" placeholder="hello@neurowextech.com" required>
                     </div>
-                    <span class="error-message" id="emailError"></span>
                 </div>
                 
                 <div class="form-group">
-                    <label>Password <span class="required">*</span></label>
+                    <label>Password</label>
                     <div class="input-group-custom">
                         <i class="fas fa-lock"></i>
-                        <input type="password" class="form-control-custom" id="password" name="password" placeholder="••••••••" required>
+                        <input type="password" class="form-control-custom" id="password" placeholder="••••••••" required>
                         <span class="password-toggle" id="togglePassword">
                             <i class="fas fa-eye-slash"></i>
                         </span>
                     </div>
-                    <div class="password-strength">
-                        <div class="strength-bar" id="strengthBar"></div>
-                        <span class="strength-text" id="strengthText"></span>
+                    <div class="forgot-password" style="text-align: right; margin-top: 8px;">
+                        <a href="/forgot-password" style="color:#94a3b8; font-size:0.75rem;">Forgot password?</a>
                     </div>
-                    <span class="error-message" id="passwordError"></span>
-                </div>
-                
-                <div class="form-group">
-                    <label>Confirm Password <span class="required">*</span></label>
-                    <div class="input-group-custom">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" class="form-control-custom" id="confirmPassword" name="confirmPassword" placeholder="••••••••" required>
-                        <span class="password-toggle" id="toggleConfirmPassword">
-                            <i class="fas fa-eye-slash"></i>
-                        </span>
-                    </div>
-                    <span class="error-message" id="confirmError"></span>
                 </div>
                 
                 <div class="checkbox-group">
-                    <input type="checkbox" id="termsCheckbox" required>
-                    <label for="termsCheckbox">I agree to the <a href="/terms-of-service">Terms of Service</a> and <a href="/privacy-policy">Privacy Policy</a></label>
+                    <input type="checkbox" id="rememberCheckbox">
+                    <label for="rememberCheckbox">Remember me</label>
                 </div>
                 
-                <button type="submit" class="btn-signup-submit" id="submitBtn">
-                    <i class="fas fa-user-plus me-2"></i> Create Account
+                <button type="submit" class="btn-signin-submit" id="submitBtn">
+                    <i class="fas fa-sign-in-alt me-2"></i> Sign In
                 </button>
             </form>
             
-            <!-- Divider -->
             <div class="divider">
-                <span>or sign up with</span>
+                <span>or continue with</span>
             </div>
             
-            <!-- Google Sign Up Button -->
-            <button class="btn-google" id="googleSignUpBtn">
-                <i class="fab fa-google"></i> Sign up with Google
+            <button class="btn-google" id="googleSignInBtn">
+                <i class="fab fa-google"></i> Sign in with Google
             </button>
             
-            <div class="login-link">
-                Already have an account? <a href="/login">Sign In</a>
+            <div class="signup-link">
+                Don't have an account? <a href="/sign_up">Sign Up</a>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Google Sign-In Script -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
-
 <script>
-    // ============================================
-    // GOOGLE CLIENT ID
-    // ============================================
-    const GOOGLE_CLIENT_ID = '613535038420-hjomuhe6tpuk06b42j2n01pd1cu746rk.apps.googleusercontent.com';
+    // Get Google Client ID from server-side variable
+    const GOOGLE_CLIENT_ID = '{{googleClientId}}';
     
-    // Check if client ID is configured
-    const isGoogleConfigured = GOOGLE_CLIENT_ID && GOOGLE_CLIENT_ID !== '' && !GOOGLE_CLIENT_ID.includes('your-client-id');
+    console.log('Google Client ID from server:', GOOGLE_CLIENT_ID ? '✅ Present' : '❌ Missing');
     
-    // ============================================
-    // DOM ELEMENTS
-    // ============================================
-    const signupForm = document.getElementById('signupForm');
+    const signinForm = document.getElementById('signinForm');
     const alertMessage = document.getElementById('alert-message');
     const submitBtn = document.getElementById('submitBtn');
-    const googleSignUpBtn = document.getElementById('googleSignUpBtn');
-    
-    // Input fields
-    const fullnameInput = document.getElementById('fullname');
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const confirmInput = document.getElementById('confirmPassword');
-    const termsCheckbox = document.getElementById('termsCheckbox');
-    
-    // Password toggle buttons
     const togglePassword = document.getElementById('togglePassword');
-    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
-    
-    // Strength meter elements
-    const strengthBar = document.getElementById('strengthBar');
-    const strengthText = document.getElementById('strengthText');
+    const passwordInput = document.getElementById('password');
+    const googleSignInBtn = document.getElementById('googleSignInBtn');
 
-    // ============================================
-    // PASSWORD STRENGTH METER
-    // ============================================
-    function checkPasswordStrength(password) {
-        let strength = 0;
-        if (password.length >= 8) strength++;
-        if (password.match(/[a-z]/)) strength++;
-        if (password.match(/[A-Z]/)) strength++;
-        if (password.match(/[0-9]/)) strength++;
-        if (password.match(/[^a-zA-Z0-9]/)) strength++;
-        return strength;
-    }
-    
-    function updateStrengthMeter() {
-        const password = passwordInput.value;
-        const strength = checkPasswordStrength(password);
-        
-        let width = '0%';
-        let color = '#e2e8f0';
-        let message = '';
-        
-        if (password.length === 0) {
-            width = '0%';
-            message = '';
-        } else if (strength <= 2) {
-            width = '25%';
-            color = '#ef4444';
-            message = 'Weak password';
-        } else if (strength === 3) {
-            width = '50%';
-            color = '#f59e0b';
-            message = 'Fair password';
-        } else if (strength === 4) {
-            width = '75%';
-            color = '#10b981';
-            message = 'Good password';
-        } else if (strength === 5) {
-            width = '100%';
-            color = '#10b981';
-            message = 'Strong password!';
-        }
-        
-        strengthBar.style.width = width;
-        strengthBar.style.backgroundColor = color;
-        strengthText.textContent = message;
-        strengthText.style.color = color;
-    }
-    
-    passwordInput.addEventListener('input', updateStrengthMeter);
-
-    // ============================================
-    // SHOW/HIDE PASSWORD TOGGLE
-    // ============================================
+    // Password visibility toggle
     togglePassword.addEventListener('click', function() {
         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordInput.setAttribute('type', type);
         this.innerHTML = type === 'password' ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
     });
-    
-    toggleConfirmPassword.addEventListener('click', function() {
-        const type = confirmInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        confirmInput.setAttribute('type', type);
-        this.innerHTML = type === 'password' ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
-    });
 
-    // ============================================
-    // REAL-TIME VALIDATION
-    // ============================================
-    function validateFullname() {
-        const value = fullnameInput.value.trim();
-        const errorSpan = document.getElementById('fullnameError');
-        if (value.length < 2) {
-            errorSpan.textContent = 'Full name must be at least 2 characters';
-            fullnameInput.classList.add('error');
-            return false;
-        }
-        errorSpan.textContent = '';
-        fullnameInput.classList.remove('error');
-        return true;
+    // Remember me
+    const rememberedEmail = localStorage.getItem('rememberedEmail');
+    if (rememberedEmail) {
+        document.getElementById('email').value = rememberedEmail;
+        document.getElementById('rememberCheckbox').checked = true;
     }
-    
-    function validateEmail() {
-        const value = emailInput.value.trim();
-        const errorSpan = document.getElementById('emailError');
-        const emailRegex = /^\S+@\S+\.\S+$/;
-        if (!value) {
-            errorSpan.textContent = 'Email is required';
-            emailInput.classList.add('error');
-            return false;
-        }
-        if (!emailRegex.test(value)) {
-            errorSpan.textContent = 'Please enter a valid email address';
-            emailInput.classList.add('error');
-            return false;
-        }
-        errorSpan.textContent = '';
-        emailInput.classList.remove('error');
-        return true;
-    }
-    
-    function validatePassword() {
-        const value = passwordInput.value;
-        const errorSpan = document.getElementById('passwordError');
-        if (value.length < 6) {
-            errorSpan.textContent = 'Password must be at least 6 characters';
-            passwordInput.classList.add('error');
-            return false;
-        }
-        errorSpan.textContent = '';
-        passwordInput.classList.remove('error');
-        return true;
-    }
-    
-    function validateConfirmPassword() {
-        const password = passwordInput.value;
-        const confirm = confirmInput.value;
-        const errorSpan = document.getElementById('confirmError');
-        if (password !== confirm) {
-            errorSpan.textContent = 'Passwords do not match';
-            confirmInput.classList.add('error');
-            return false;
-        }
-        errorSpan.textContent = '';
-        confirmInput.classList.remove('error');
-        return true;
-    }
-    
-    // Add real-time validation listeners
-    fullnameInput.addEventListener('input', validateFullname);
-    emailInput.addEventListener('input', validateEmail);
-    passwordInput.addEventListener('input', validatePassword);
-    confirmInput.addEventListener('input', validateConfirmPassword);
 
-    // ============================================
-    // SHOW ALERT FUNCTION
-    // ============================================
     function showAlert(message, type) {
         alertMessage.innerHTML = `<div class="alert alert-${type}">${type === 'error' ? '⚠️ ' : type === 'success' ? '✅ ' : 'ℹ️ '}${message}</div>`;
-        alertMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        setTimeout(() => { 
-            if (alertMessage.firstChild) alertMessage.firstChild.remove(); 
-        }, 5000);
+        setTimeout(() => { if (alertMessage.firstChild) alertMessage.firstChild.remove(); }, 5000);
     }
 
-    // ============================================
-    // REGULAR SIGN UP (Email/Password)
-    // ============================================
-    signupForm.addEventListener('submit', async (e) => {
+    // Regular sign in
+    signinForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // Validate all fields
-        const isFullnameValid = validateFullname();
-        const isEmailValid = validateEmail();
-        const isPasswordValid = validatePassword();
-        const isConfirmValid = validateConfirmPassword();
-        const termsChecked = termsCheckbox.checked;
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const rememberMe = document.getElementById('rememberCheckbox').checked;
         
-        if (!isFullnameValid || !isEmailValid || !isPasswordValid || !isConfirmValid) {
-            showAlert('Please fix the errors above', 'error');
+        if (!email || !password) {
+            showAlert('Please enter email and password', 'error');
             return;
         }
         
-        if (!termsChecked) {
-            showAlert('Please agree to the Terms of Service and Privacy Policy', 'error');
-            return;
-        }
-        
-        // Get values
-        const fullname = fullnameInput.value.trim();
-        const email = emailInput.value.trim();
-        const password = passwordInput.value;
-        
-        // Show loading state
         const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Creating account...';
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Signing in...';
         submitBtn.disabled = true;
         
         try {
-            const response = await fetch('/api/signup', {
+            const response = await fetch('/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ fullname, email, password })
+                body: JSON.stringify({ email, password, rememberMe })
             });
             
             const data = await response.json();
             
             if (data.success) {
+                if (rememberMe) localStorage.setItem('rememberedEmail', email);
+                else localStorage.removeItem('rememberedEmail');
+                
                 showAlert(data.message, 'success');
-                signupForm.reset();
-                strengthBar.style.width = '0%';
-                strengthText.textContent = '';
-                setTimeout(() => {
-                    window.location.href = '/login';
-                }, 1500);
+                setTimeout(() => window.location.href = data.redirect, 1000);
             } else {
                 showAlert(data.message, 'error');
                 submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
             }
         } catch (err) {
-            console.error('Signup error:', err);
             showAlert('Network error. Please try again.', 'error');
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
         }
     });
 
-    // ============================================
-    // GOOGLE SIGN UP HANDLER
-    // ============================================
-    if (isGoogleConfigured && typeof google !== 'undefined' && google.accounts) {
+    // Google Sign In - Check if client ID is available
+    if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_ID !== '' && GOOGLE_CLIENT_ID !== 'undefined') {
+        console.log('Initializing Google Sign-In with ID:', GOOGLE_CLIENT_ID.substring(0, 20) + '...');
+        
         // Initialize Google Identity Services
         google.accounts.id.initialize({
             client_id: GOOGLE_CLIENT_ID,
-            callback: handleGoogleCredentialResponse,
+            callback: async (response) => {
+                console.log('Google callback received');
+                googleSignInBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Signing in...';
+                googleSignInBtn.disabled = true;
+                
+                try {
+                    const apiResponse = await fetch('/api/auth/google', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ idToken: response.credential })
+                    });
+                    
+                    const data = await apiResponse.json();
+                    
+                    if (data.success) {
+                        showAlert(data.message, 'success');
+                        setTimeout(() => window.location.href = data.redirect, 1000);
+                    } else {
+                        showAlert(data.message || 'Google sign-in failed', 'error');
+                        googleSignInBtn.innerHTML = '<i class="fab fa-google"></i> Sign in with Google';
+                        googleSignInBtn.disabled = false;
+                    }
+                } catch (err) {
+                    console.error('Google auth error:', err);
+                    showAlert('Network error. Please try again.', 'error');
+                    googleSignInBtn.innerHTML = '<i class="fab fa-google"></i> Sign in with Google';
+                    googleSignInBtn.disabled = false;
+                }
+            },
             auto_select: false,
             cancel_on_tap_outside: true,
         });
         
-        googleSignUpBtn.addEventListener('click', () => {
+        // Render the Google button
+        googleSignInBtn.addEventListener('click', () => {
+            console.log('Google button clicked, prompting sign-in...');
             google.accounts.id.prompt();
         });
+        
+        googleSignInBtn.disabled = false;
     } else {
-        console.warn('Google Sign-Up is not configured. Please set a valid GOOGLE_CLIENT_ID');
-        googleSignUpBtn.style.opacity = '0.6';
-        googleSignUpBtn.style.cursor = 'not-allowed';
-        googleSignUpBtn.addEventListener('click', () => {
-            showAlert('Google Sign-Up is not configured. Please use email/password to sign up.', 'error');
+        console.warn('Google Client ID is missing or invalid');
+        googleSignInBtn.disabled = true;
+        googleSignInBtn.title = 'Google Sign-In not configured';
+        
+        // Optional: Show a tooltip or style differently
+        googleSignInBtn.style.opacity = '0.6';
+        googleSignInBtn.style.cursor = 'not-allowed';
+        
+        // Add click handler to show error message
+        googleSignInBtn.addEventListener('click', () => {
+            showAlert('Google Sign-In is not configured. Please contact the administrator.', 'error');
         });
     }
-    
-    // Handle Google credential response
-    async function handleGoogleCredentialResponse(response) {
-        const idToken = response.credential;
-        
-        if (!idToken) {
-            showAlert('Google sign-up failed. Please try again.', 'error');
-            return;
-        }
-        
-        const originalText = googleSignUpBtn.innerHTML;
-        googleSignUpBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Signing up...';
-        googleSignUpBtn.disabled = true;
-        
-        try {
-            const apiResponse = await fetch('/api/auth/google', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ idToken: idToken })
-            });
-            
-            const data = await apiResponse.json();
-            
-            if (data.success) {
-                showAlert(data.message || 'Google sign-up successful! Redirecting...', 'success');
-                
-                setTimeout(() => {
-                    window.location.href = data.redirect;
-                }, 1500);
-            } else {
-                showAlert(data.message || 'Google sign-up failed. Please try again.', 'error');
-                googleSignUpBtn.innerHTML = originalText;
-                googleSignUpBtn.disabled = false;
-            }
-        } catch (err) {
-            console.error('Google sign-up error:', err);
-            showAlert('Network error. Please try again.', 'error');
-            googleSignUpBtn.innerHTML = originalText;
-            googleSignUpBtn.disabled = false;
-        }
-    }
-
-    // ============================================
-    // ENTER KEY SUBMIT
-    // ============================================
-    confirmInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            signupForm.dispatchEvent(new Event('submit'));
-        }
-    });
-
-    // ============================================
-    // REMOVE ERROR STYLES ON INPUT
-    // ============================================
-    [fullnameInput, emailInput, passwordInput, confirmInput].forEach(input => {
-        input.addEventListener('input', function() {
-            this.classList.remove('error');
-        });
-    });
-
-    // ============================================
-    // DARK MODE
-    // ============================================
-    let dark = localStorage.getItem('theme') === 'dark';
-    function applyTheme() {
-        document.body.classList.toggle('dark', dark);
-    }
-    applyTheme();
 </script>
 </body>
 </html>
