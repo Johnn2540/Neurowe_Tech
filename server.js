@@ -132,6 +132,27 @@ app.use((req, res, next) => {
     next();
 });
 
+// Star rating helper
+hbs.registerHelper('starRating', function(rating) {
+    const fullStars = Math.floor(rating);
+    const halfStar = rating % 1 >= 0.5;
+    let stars = '';
+    for (let i = 0; i < fullStars; i++) stars += '★';
+    if (halfStar) stars += '½';
+    for (let i = stars.length; i < 5; i++) stars += '☆';
+    return stars;
+});
+
+// Lowercase helper
+hbs.registerHelper('lowercase', function(str) {
+    return str ? str.toLowerCase() : '';
+});
+
+// Equal helper
+hbs.registerHelper('eq', function(a, b) {
+    return a === b;
+});
+
 // Make user data and Google Client ID available to all templates
 app.use((req, res, next) => {
     res.locals.currentYear   = new Date().getFullYear();
@@ -827,6 +848,486 @@ app.get('/health', (req, res) => {
 app.get('/debug/env', (req, res) => {
     res.json({ googleClientId: process.env.GOOGLE_CLIENT_ID ? '✅ Set' : '❌ Missing', nodeEnv: process.env.NODE_ENV, hasSessionSecret: !!process.env.SESSION_SECRET });
 });
+
+// ========== LEARNING PLATFORM ROUTES ==========
+
+// Main Learn page - Fetches from database
+app.get('/learn', async (req, res) => {
+    try {
+        // Fetch courses from database
+        const coursesResult = await db.query(`
+            SELECT c.*, 
+                   u.username as instructor_name,
+                   COUNT(DISTINCT cl.id) as total_lessons,
+                   COUNT(DISTINCT cm.id) as total_modules,
+                   COALESCE(SUM(e.enrolled_count), 0) as enrolled_count
+            FROM courses c
+            LEFT JOIN users u ON c.instructor_id = u.id
+            LEFT JOIN course_modules cm ON c.id = cm.course_id
+            LEFT JOIN course_lessons cl ON cm.id = cl.module_id
+            LEFT JOIN (
+                SELECT course_id, COUNT(*) as enrolled_count 
+                FROM enrollments 
+                GROUP BY course_id
+            ) e ON c.id = e.course_id
+            WHERE c.published = true
+            GROUP BY c.id, u.username
+            ORDER BY c.featured DESC, c.created_at DESC
+        `);
+        
+        // Get course categories with counts
+        const categoriesResult = await db.query(`
+            SELECT 
+                c.category,
+                COUNT(*) as course_count
+            FROM courses c
+            WHERE c.published = true
+            GROUP BY c.category
+            ORDER BY c.category
+        `);
+        
+        // Get instructors with course counts
+        const instructorsResult = await db.query(`
+            SELECT 
+                u.id,
+                u.username,
+                COUNT(c.id) as course_count,
+                COALESCE(AVG(c.rating), 0) as avg_rating,
+                SUM(c.total_lessons) as total_lessons
+            FROM users u
+            JOIN courses c ON u.id = c.instructor_id
+            WHERE c.published = true
+            GROUP BY u.id
+            ORDER BY course_count DESC
+        `);
+        
+        // Get statistics
+        const statsResult = await db.query(`
+            SELECT 
+                (SELECT COUNT(*) FROM courses WHERE published = true) as total_courses,
+                (SELECT COUNT(DISTINCT category) FROM courses WHERE published = true) as total_categories,
+                (SELECT COUNT(*) FROM enrollments) as total_enrollments,
+                (SELECT COUNT(DISTINCT instructor_id) FROM courses WHERE published = true) as total_instructors
+        `);
+        
+        // Get popular topics
+        const topicsResult = await db.query(`
+            SELECT 
+                category as name,
+                COUNT(*) as count
+            FROM courses
+            WHERE published = true
+            GROUP BY category
+            ORDER BY count DESC
+            LIMIT 8
+        `);
+        
+        const courses = coursesResult.rows;
+        const categories = categoriesResult.rows;
+        const instructors = instructorsResult.rows;
+        const stats = statsResult.rows[0];
+        const topics = topicsResult.rows;
+        
+        res.render('learn', {
+            title: 'NeurowexTech Learn - Practical Skills, Real Results',
+            description: 'Browse hands-on courses from NeurowexTech instructors. Learn practical skills in graphic design, web development, and technology.',
+            courses: courses,
+            categories: categories,
+            instructors: instructors,
+            stats: stats,
+            topics: topics,
+            activePage: 'learn',
+            user: req.session.userId ? { name: req.session.userName, role: req.session.userRole } : null
+        });
+        
+    } catch (err) {
+        console.error('Learn page error:', err);
+        res.render('learn', {
+            title: 'NeurowexTech Learn',
+            courses: [],
+            categories: [],
+            instructors: [],
+            stats: { total_courses: 0, total_categories: 0, total_enrollments: 0, total_instructors: 0 },
+            topics: [],
+            activePage: 'learn'
+        });
+    }
+});
+
+// Individual course page - Fetches from database
+app.get('/learn/course/:id', async (req, res) => {
+    try {
+        const courseId = req.params.id;
+        
+        // Fetch course details
+        const courseResult = await db.query(`
+            SELECT c.*, 
+                   u.id as instructor_id,
+                   u.username as instructor_name,
+                   u.email as instructor_email
+            FROM courses c
+            JOIN users u ON c.instructor_id = u.id
+            WHERE c.id = $1 AND c.published = true
+        `, [courseId]);
+        
+        if (courseResult.rows.length === 0) {
+            return res.status(404).render('404', { 
+                title: 'Course Not Found',
+                message: 'The course you are looking for does not exist.'
+            });
+        }
+        
+        const course = courseResult.rows[0];
+        
+        // Fetch course modules and lessons
+        const modulesResult = await db.query(`
+            SELECT cm.*, 
+                   json_agg(
+                       json_build_object(
+                           'id', cl.id,
+                           'title', cl.title,
+                           'duration', cl.duration,
+                           'lesson_order', cl.lesson_order,
+                           'is_free', cl.is_free,
+                           'video_url', cl.video_url
+                       ) ORDER BY cl.lesson_order
+                   ) as lessons
+            FROM course_modules cm
+            LEFT JOIN course_lessons cl ON cm.id = cl.module_id
+            WHERE cm.course_id = $1
+            GROUP BY cm.id
+            ORDER BY cm.module_order
+        `, [courseId]);
+        
+        const modules = modulesResult.rows;
+        
+        // Get total lessons count
+        const totalLessons = modules.reduce((sum, module) => sum + (module.lessons ? module.lessons.filter(l => l.id).length : 0), 0);
+        
+        // Check if user is enrolled
+        let isEnrolled = false;
+        let enrollmentProgress = 0;
+        if (req.session.userId) {
+            const enrollmentResult = await db.query(`
+                SELECT * FROM enrollments 
+                WHERE user_id = $1 AND course_id = $2
+            `, [req.session.userId, courseId]);
+            
+            if (enrollmentResult.rows.length > 0) {
+                isEnrolled = true;
+                enrollmentProgress = enrollmentResult.rows[0].progress || 0;
+            }
+        }
+        
+        // Get related courses (same category, excluding current)
+        const relatedResult = await db.query(`
+            SELECT id, title, category, level, rating, image_url
+            FROM courses
+            WHERE category = $1 AND id != $2 AND published = true
+            LIMIT 3
+        `, [course.category, courseId]);
+        
+        const relatedCourses = relatedResult.rows;
+        
+        res.render('course-detail', {
+            title: `${course.title} - NeurowexTech Learn`,
+            course: course,
+            modules: modules,
+            totalLessons: totalLessons,
+            isEnrolled: isEnrolled,
+            enrollmentProgress: enrollmentProgress,
+            relatedCourses: relatedCourses,
+            activePage: 'learn',
+            user: req.session.userId ? { name: req.session.userName, role: req.session.userRole } : null
+        });
+        
+    } catch (err) {
+        console.error('Course detail error:', err);
+        res.status(500).render('error', { 
+            title: 'Error',
+            message: 'Unable to load course details. Please try again later.'
+        });
+    }
+});
+
+// Enroll in a course
+app.post('/api/enroll', isAuthenticated, async (req, res) => {
+    try {
+        const { courseId } = req.body;
+        const userId = req.session.userId;
+        
+        // Check if course exists
+        const courseResult = await db.query('SELECT id FROM courses WHERE id = $1', [courseId]);
+        if (courseResult.rows.length === 0) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Course not found' 
+            });
+        }
+        
+        // Check if already enrolled
+        const existingEnrollment = await db.query(
+            'SELECT * FROM enrollments WHERE user_id = $1 AND course_id = $2',
+            [userId, courseId]
+        );
+        
+        if (existingEnrollment.rows.length > 0) {
+            return res.json({ 
+                success: false, 
+                message: 'You are already enrolled in this course' 
+            });
+        }
+        
+        // Create enrollment record
+        await db.query(
+            `INSERT INTO enrollments (user_id, course_id, enrolled_at, progress, status) 
+             VALUES ($1, $2, NOW(), 0, 'active')`,
+            [userId, courseId]
+        );
+        
+        // Update course enrollment count
+        await db.query(
+            'UPDATE courses SET enrolled_count = enrolled_count + 1 WHERE id = $1',
+            [courseId]
+        );
+        
+        res.json({ 
+            success: true, 
+            message: 'Successfully enrolled in course!',
+            redirect: `/learn/course/${courseId}`
+        });
+        
+    } catch (err) {
+        console.error('Enrollment error:', err);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Enrollment failed. Please try again.' 
+        });
+    }
+});
+
+// Course dashboard (for enrolled students)
+app.get('/learn/course/:id/dashboard', isAuthenticated, async (req, res) => {
+    try {
+        const courseId = req.params.id;
+        const userId = req.session.userId;
+        
+        // Verify enrollment
+        const enrollmentResult = await db.query(`
+            SELECT e.*, c.title, c.instructor_id
+            FROM enrollments e
+            JOIN courses c ON e.course_id = c.id
+            WHERE e.user_id = $1 AND e.course_id = $2
+        `, [userId, courseId]);
+        
+        if (enrollmentResult.rows.length === 0) {
+            return res.redirect(`/learn/course/${courseId}`);
+        }
+        
+        const enrollment = enrollmentResult.rows[0];
+        
+        // Fetch course modules and lessons with user progress
+        const modulesResult = await db.query(`
+            SELECT cm.*, 
+                   json_agg(
+                       json_build_object(
+                           'id', cl.id,
+                           'title', cl.title,
+                           'duration', cl.duration,
+                           'lesson_order', cl.lesson_order,
+                           'video_url', cl.video_url,
+                           'completed', COALESCE(ulp.completed, false)
+                       ) ORDER BY cl.lesson_order
+                   ) as lessons
+            FROM course_modules cm
+            LEFT JOIN course_lessons cl ON cm.id = cl.module_id
+            LEFT JOIN user_lesson_progress ulp ON cl.id = ulp.lesson_id AND ulp.user_id = $1
+            WHERE cm.course_id = $2
+            GROUP BY cm.id
+            ORDER BY cm.module_order
+        `, [userId, courseId]);
+        
+        const modules = modulesResult.rows;
+        
+        // Calculate overall progress
+        let totalLessons = 0;
+        let completedLessons = 0;
+        modules.forEach(module => {
+            if (module.lessons && module.lessons.length > 0) {
+                module.lessons.forEach(lesson => {
+                    if (lesson.id) {
+                        totalLessons++;
+                        if (lesson.completed) completedLessons++;
+                    }
+                });
+            }
+        });
+        
+        const progress = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+        
+        // Update progress in enrollments table
+        if (progress !== enrollment.progress) {
+            await db.query(
+                'UPDATE enrollments SET progress = $1 WHERE id = $2',
+                [progress, enrollment.id]
+            );
+        }
+        
+        res.render('course-dashboard', {
+            title: `${enrollment.title} - Course Dashboard`,
+            courseId: courseId,
+            courseTitle: enrollment.title,
+            modules: modules,
+            progress: progress,
+            completedLessons: completedLessons,
+            totalLessons: totalLessons,
+            activePage: 'learn',
+            user: { name: req.session.userName, role: req.session.userRole }
+        });
+        
+    } catch (err) {
+        console.error('Course dashboard error:', err);
+        res.status(500).render('error', { 
+            title: 'Error',
+            message: 'Unable to load course dashboard. Please try again later.'
+        });
+    }
+});
+
+// Mark lesson as complete
+app.post('/api/lesson/complete', isAuthenticated, async (req, res) => {
+    try {
+        const { lessonId, courseId } = req.body;
+        const userId = req.session.userId;
+        
+        // Check if user is enrolled in the course
+        const enrollmentCheck = await db.query(
+            'SELECT id FROM enrollments WHERE user_id = $1 AND course_id = $2',
+            [userId, courseId]
+        );
+        
+        if (enrollmentCheck.rows.length === 0) {
+            return res.status(403).json({ 
+                success: false, 
+                message: 'You are not enrolled in this course' 
+            });
+        }
+        
+        // Mark lesson as complete
+        await db.query(`
+            INSERT INTO user_lesson_progress (user_id, lesson_id, completed, completed_at)
+            VALUES ($1, $2, true, NOW())
+            ON CONFLICT (user_id, lesson_id) 
+            DO UPDATE SET completed = true, completed_at = NOW()
+        `, [userId, lessonId]);
+        
+        res.json({ success: true, message: 'Lesson marked as complete' });
+        
+    } catch (err) {
+        console.error('Lesson complete error:', err);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Failed to update progress' 
+        });
+    }
+});
+
+// Search courses API
+app.get('/api/courses/search', async (req, res) => {
+    try {
+        const { q, category, level, price } = req.query;
+        
+        let query = `
+            SELECT c.*, u.username as instructor_name
+            FROM courses c
+            JOIN users u ON c.instructor_id = u.id
+            WHERE c.published = true
+        `;
+        const params = [];
+        let paramIndex = 1;
+        
+        if (q) {
+            query += ` AND (c.title ILIKE $${paramIndex} OR c.description ILIKE $${paramIndex})`;
+            params.push(`%${q}%`);
+            paramIndex++;
+        }
+        
+        if (category && category !== 'all') {
+            query += ` AND c.category = $${paramIndex}`;
+            params.push(category);
+            paramIndex++;
+        }
+        
+        if (level && level !== 'all') {
+            query += ` AND c.level = $${paramIndex}`;
+            params.push(level);
+            paramIndex++;
+        }
+        
+        if (price === 'free') {
+            query += ` AND c.price = 0`;
+        } else if (price === 'paid') {
+            query += ` AND c.price > 0`;
+        }
+        
+        query += ` ORDER BY c.featured DESC, c.created_at DESC`;
+        
+        const result = await db.query(query, params);
+        
+        res.json({ 
+            success: true, 
+            courses: result.rows,
+            total: result.rows.length
+        });
+        
+    } catch (err) {
+        console.error('Search error:', err);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Search failed' 
+        });
+    }
+});
+
+// My Learning page - Show enrolled courses
+app.get('/my-learning', isAuthenticated, async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        
+        const enrollmentsResult = await db.query(`
+            SELECT e.*, c.title, c.category, c.level, c.image_url, c.instructor_id,
+                   u.username as instructor_name,
+                   COUNT(DISTINCT cl.id) as total_lessons,
+                   COUNT(DISTINCT CASE WHEN ulp.completed = true THEN cl.id END) as completed_lessons
+            FROM enrollments e
+            JOIN courses c ON e.course_id = c.id
+            JOIN users u ON c.instructor_id = u.id
+            LEFT JOIN course_modules cm ON c.id = cm.course_id
+            LEFT JOIN course_lessons cl ON cm.id = cl.module_id
+            LEFT JOIN user_lesson_progress ulp ON cl.id = ulp.lesson_id AND ulp.user_id = $1
+            WHERE e.user_id = $1
+            GROUP BY e.id, c.id, u.username
+            ORDER BY e.enrolled_at DESC
+        `, [userId]);
+        
+        const enrollments = enrollmentsResult.rows;
+        
+        res.render('my-learning', {
+            title: 'My Learning - NeurowexTech',
+            enrollments: enrollments,
+            activePage: 'my-learning',
+            user: { name: req.session.userName, role: req.session.userRole }
+        });
+        
+    } catch (err) {
+        console.error('My learning error:', err);
+        res.status(500).render('error', { 
+            title: 'Error',
+            message: 'Unable to load your learning dashboard'
+        });
+    }
+});
+
 
 // ========== ERROR HANDLERS ==========
 

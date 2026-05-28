@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>NeurowexTech Learn - Practical Skills, Real Results</title>
+    <title>{{title}}</title>
     
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -13,6 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
+        /* Your existing styles here (same as before) */
         :root {
             --primary: #2563eb;
             --primary-dark: #1d4ed8;
@@ -687,7 +688,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="/learn">Explore</a></li>
+                <li class="nav-item"><a class="nav-link" href="/learn" class="active">Explore</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Masterclasses</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Blog</a></li>
                 <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
@@ -701,8 +702,22 @@
                 <button id="theme-toggle-learn" class="btn" title="Toggle dark mode">
                     <i class="fas fa-moon"></i>
                 </button>
-                <a href="/login" class="btn-outline-primary-custom">Log in</a>
-                <a href="/sign_up" class="btn-primary-custom">Sign up</a>
+                {{#if isAuthenticated}}
+                    <div class="dropdown">
+                        <button class="btn btn-primary-custom dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i> {{userName}}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/my-learning"><i class="fas fa-book-open me-2"></i> My Learning</a></li>
+                            <li><a class="dropdown-item" href="/user_dashboard"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt me-2"></i> Sign Out</a></li>
+                        </ul>
+                    </div>
+                {{else}}
+                    <a href="/login" class="btn-outline-primary-custom">Log in</a>
+                    <a href="/sign_up" class="btn-primary-custom">Sign up</a>
+                {{/if}}
             </div>
         </div>
     </div>
@@ -717,19 +732,19 @@
                 <p>Browse hands-on courses from NeurowexTech instructors. Filter by category, level, price, and choose a course that fits your next move.</p>
                 <div class="stats-grid">
                     <div class="stat-card-learn">
-                        <div class="stat-number">4</div>
+                        <div class="stat-number">{{stats.total_courses}}</div>
                         <div class="stat-label">Courses</div>
                     </div>
                     <div class="stat-card-learn">
-                        <div class="stat-number">3</div>
+                        <div class="stat-number">{{stats.total_categories}}</div>
                         <div class="stat-label">Categories</div>
                     </div>
                     <div class="stat-card-learn">
-                        <div class="stat-number">452</div>
+                        <div class="stat-number">{{stats.total_enrollments}}</div>
                         <div class="stat-label">Enrollments</div>
                     </div>
                     <div class="stat-card-learn">
-                        <div class="stat-number">2</div>
+                        <div class="stat-number">{{stats.total_instructors}}</div>
                         <div class="stat-label">Instructors</div>
                     </div>
                 </div>
@@ -742,7 +757,7 @@
                         <span class="badge bg-warning">Free</span>
                     </div>
                     <h5 class="mb-2">Start learning today</h5>
-                    <p class="small text-muted">Join 452+ students already learning practical skills</p>
+                    <p class="small text-muted">Join {{stats.total_enrollments}}+ students already learning practical skills</p>
                     <div class="progress mb-2" style="height: 6px;">
                         <div class="progress-bar bg-primary" style="width: 78%"></div>
                     </div>
@@ -757,21 +772,23 @@
 </section>
 
 <!-- Featured Course Banner -->
+{{#if featuredCourse}}
 <section class="py-4 bg-white border-bottom" style="background: white !important;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-8">
                 <span class="badge bg-warning mb-2">⭐ Featured Course</span>
-                <h3 class="mb-2">Adobe Photoshop Masterclass</h3>
-                <p class="text-muted mb-0">Comprehensive Adobe Photoshop Learning Resources. Prepared by NeurowexTech. Master the interface, layers, masking, coloring, and practical graphic design for social media.</p>
+                <h3 class="mb-2">{{featuredCourse.title}}</h3>
+                <p class="text-muted mb-0">{{featuredCourse.description}}</p>
             </div>
             <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                <span class="badge bg-success fs-6 me-2">Free</span>
-                <a href="#" class="btn-primary-custom">View course <i class="fas fa-arrow-right"></i></a>
+                <span class="badge bg-success fs-6 me-2">{{#if (eq featuredCourse.price 0)}}Free{{else}}Kshs. {{featuredCourse.price}}{{/if}}</span>
+                <a href="/learn/course/{{featuredCourse.id}}" class="btn-primary-custom">View course <i class="fas fa-arrow-right"></i></a>
             </div>
         </div>
     </div>
 </section>
+{{/if}}
 
 <!-- Main Content -->
 <div class="container py-5">
@@ -787,21 +804,13 @@
                 <!-- Categories -->
                 <div class="filter-group">
                     <label class="filter-label">Category</label>
+                    {{#each categories}}
                     <div class="filter-option">
-                        <input type="checkbox" value="graphic-design" class="category-filter">
-                        <label>Graphic Design</label>
-                        <span class="filter-badge">2</span>
+                        <input type="checkbox" value="{{lowercase this.category}}" class="category-filter">
+                        <label>{{this.category}}</label>
+                        <span class="filter-badge">{{this.course_count}}</span>
                     </div>
-                    <div class="filter-option">
-                        <input type="checkbox" value="technology" class="category-filter">
-                        <label>Technology</label>
-                        <span class="filter-badge">1</span>
-                    </div>
-                    <div class="filter-option">
-                        <input type="checkbox" value="web-development" class="category-filter">
-                        <label>Web Development</label>
-                        <span class="filter-badge">1</span>
-                    </div>
+                    {{/each}}
                 </div>
                 
                 <!-- Level -->
@@ -810,17 +819,17 @@
                     <div class="filter-option">
                         <input type="checkbox" value="beginner" class="level-filter">
                         <label>Beginner</label>
-                        <span class="filter-badge">3</span>
+                        <span class="filter-badge">{{beginnerCount}}</span>
                     </div>
                     <div class="filter-option">
                         <input type="checkbox" value="intermediate" class="level-filter">
                         <label>Intermediate</label>
-                        <span class="filter-badge">1</span>
+                        <span class="filter-badge">{{intermediateCount}}</span>
                     </div>
                     <div class="filter-option">
                         <input type="checkbox" value="advanced" class="level-filter">
                         <label>Advanced</label>
-                        <span class="filter-badge">0</span>
+                        <span class="filter-badge">{{advancedCount}}</span>
                     </div>
                 </div>
                 
@@ -830,12 +839,12 @@
                     <div class="filter-option">
                         <input type="checkbox" value="free" class="price-filter">
                         <label>Free courses</label>
-                        <span class="filter-badge">4</span>
+                        <span class="filter-badge">{{freeCoursesCount}}</span>
                     </div>
                     <div class="filter-option">
                         <input type="checkbox" value="paid" class="price-filter">
                         <label>Paid courses</label>
-                        <span class="filter-badge">0</span>
+                        <span class="filter-badge">{{paidCoursesCount}}</span>
                     </div>
                 </div>
             </div>
@@ -852,129 +861,41 @@
             </div>
             
             <div class="row g-4" id="coursesContainer">
-                <!-- Course 1 - Adobe Photoshop Masterclass -->
-                <div class="col-md-6 col-xl-6 course-item" data-category="graphic-design" data-level="intermediate" data-price="free" data-popular="true" data-new="false">
+                {{#each courses}}
+                <div class="col-md-6 col-xl-6 course-item" data-category="{{lowercase this.category}}" data-level="{{this.level}}" data-price="{{#if (eq this.price 0)}}free{{else}}paid{{/if}}" data-popular="{{this.popular}}" data-new="{{this.new}}">
                     <div class="course-card">
                         <div class="course-image">
-                            <img src="https://placehold.co/600x400/2563eb/white?text=Photoshop+Masterclass" alt="Adobe Photoshop Masterclass">
+                            <img src="{{this.image_url}}" alt="{{this.title}}" onerror="this.src='https://placehold.co/600x400/2563eb/white?text={{this.title}}'">
+                            {{#if (eq this.price 0)}}
                             <span class="course-badge free">Free</span>
+                            {{/if}}
+                            {{#if this.bestseller}}
                             <span class="course-badge bestseller">Bestseller</span>
+                            {{/if}}
                         </div>
                         <div class="course-content">
-                            <div class="course-category">Graphic Design</div>
-                            <h3 class="course-title"><a href="#">Adobe Photoshop Masterclass</a></h3>
-                            <p class="course-description">Comprehensive Adobe Photoshop Learning Resources. Master the interface, layers, masking, coloring, and practical graphic design for social media.</p>
+                            <div class="course-category">{{this.category}}</div>
+                            <h3 class="course-title"><a href="/learn/course/{{this.id}}">{{this.title}}</a></h3>
+                            <p class="course-description">{{this.description}}</p>
                             <div class="course-instructor">
-                                <div class="instructor-avatar">NW</div>
-                                <span class="instructor-name">NeurowexTech Admin</span>
+                                <div class="instructor-avatar">{{this.instructor_initial}}</div>
+                                <span class="instructor-name">{{this.instructor_name}}</span>
                             </div>
                             <div class="course-rating">
-                                <div class="stars">★★★★½</div>
-                                <span class="rating-count">(309 enrolled)</span>
+                                <div class="stars">{{{starRating this.rating}}}</div>
+                                <span class="rating-count">({{this.enrolled_count}} enrolled)</span>
                             </div>
                             <div class="course-meta">
-                                <span><i class="far fa-clock"></i> 5 modules</span>
-                                <span><i class="far fa-file-alt"></i> 29 lessons</span>
-                                <span><i class="far fa-hourglass"></i> 4 Hours</span>
+                                <span><i class="far fa-clock"></i> {{this.total_modules}} modules</span>
+                                <span><i class="far fa-file-alt"></i> {{this.total_lessons}} lessons</span>
+                                <span><i class="far fa-hourglass"></i> {{this.total_duration}}</span>
                             </div>
-                            <div class="course-price">Free</div>
-                            <a href="#" class="btn-view-course">View course <i class="fas fa-arrow-right"></i></a>
+                            <div class="course-price">{{#if (eq this.price 0)}}Free{{else}}Kshs. {{this.price}}{{/if}}</div>
+                            <a href="/learn/course/{{this.id}}" class="btn-view-course">View course <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Course 2 - Complete Canva Mastery -->
-                <div class="col-md-6 col-xl-6 course-item" data-category="graphic-design" data-level="beginner" data-price="free" data-popular="true" data-new="false">
-                    <div class="course-card">
-                        <div class="course-image">
-                            <img src="https://placehold.co/600x400/f97316/white?text=Canva+Mastery" alt="Complete Canva Mastery">
-                            <span class="course-badge free">Free</span>
-                            <span class="course-badge bestseller">Bestseller</span>
-                        </div>
-                        <div class="course-content">
-                            <div class="course-category">Graphic Design</div>
-                            <h3 class="course-title"><a href="#">Complete Canva Mastery - Design Like a Pro</a></h3>
-                            <p class="course-description">Master Canva from absolute beginner to professional designer. Create stunning social media graphics, presentations, flyers, logos, videos, and brand kits.</p>
-                            <div class="course-instructor">
-                                <div class="instructor-avatar">SK</div>
-                                <span class="instructor-name">Stephen Kingori</span>
-                            </div>
-                            <div class="course-rating">
-                                <div class="stars">★★★★½</div>
-                                <span class="rating-count">(62 enrolled)</span>
-                            </div>
-                            <div class="course-meta">
-                                <span><i class="far fa-clock"></i> 4 modules</span>
-                                <span><i class="far fa-file-alt"></i> 24 lessons</span>
-                                <span><i class="far fa-calendar"></i> 3 Weeks</span>
-                            </div>
-                            <div class="course-price">Free</div>
-                            <a href="#" class="btn-view-course">View course <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Course 3 - Web Development Boot Camp -->
-                <div class="col-md-6 col-xl-6 course-item" data-category="web-development" data-level="beginner" data-price="free" data-popular="true" data-new="true">
-                    <div class="course-card">
-                        <div class="course-image">
-                            <img src="https://placehold.co/600x400/10b981/white?text=Web+Dev+Bootcamp" alt="Web Development Boot Camp">
-                            <span class="course-badge free">Free</span>
-                            <span class="course-badge bestseller">Bestseller</span>
-                        </div>
-                        <div class="course-content">
-                            <div class="course-category">Web Development</div>
-                            <h3 class="course-title"><a href="#">Web Development Boot Camp - Build Real Websites in 3 Weeks</a></h3>
-                            <p class="course-description">Your gateway to a career in tech. Master HTML5, CSS3, JavaScript, and deployment. Build real, responsive websites from scratch.</p>
-                            <div class="course-instructor">
-                                <div class="instructor-avatar">SK</div>
-                                <span class="instructor-name">Stephen Kingori</span>
-                            </div>
-                            <div class="course-rating">
-                                <div class="stars">★★★★½</div>
-                                <span class="rating-count">(50 enrolled)</span>
-                            </div>
-                            <div class="course-meta">
-                                <span><i class="far fa-clock"></i> 4 modules</span>
-                                <span><i class="far fa-file-alt"></i> 24 lessons</span>
-                                <span><i class="far fa-calendar"></i> 3 Weeks</span>
-                            </div>
-                            <div class="course-price">Free</div>
-                            <a href="#" class="btn-view-course">View course <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Course 4 - JavaScript Fundamentals -->
-                <div class="col-md-6 col-xl-6 course-item" data-category="technology" data-level="beginner" data-price="free" data-popular="true" data-new="false">
-                    <div class="course-card">
-                        <div class="course-image">
-                            <img src="https://placehold.co/600x400/8b5cf6/white?text=JavaScript+Fundamentals" alt="JavaScript Fundamentals">
-                            <span class="course-badge free">Free</span>
-                            <span class="course-badge bestseller">Bestseller</span>
-                        </div>
-                        <div class="course-content">
-                            <div class="course-category">Technology</div>
-                            <h3 class="course-title"><a href="#">JavaScript Fundamentals - Master the Logic Behind Modern Web Apps</a></h3>
-                            <p class="course-description">Master JavaScript from absolute zero to building real dynamic web applications. Learn variables, conditionals, loops, arrays, objects, functions, ES6, DOM manipulation, and APIs.</p>
-                            <div class="course-instructor">
-                                <div class="instructor-avatar">SK</div>
-                                <span class="instructor-name">Stephen Kingori</span>
-                            </div>
-                            <div class="course-rating">
-                                <div class="stars">★★★★½</div>
-                                <span class="rating-count">(31 enrolled)</span>
-                            </div>
-                            <div class="course-meta">
-                                <span><i class="far fa-clock"></i> 9 modules</span>
-                                <span><i class="far fa-file-alt"></i> 27 lessons</span>
-                                <span><i class="far fa-calendar"></i> 4 Weeks</span>
-                            </div>
-                            <div class="course-price">Free</div>
-                            <a href="#" class="btn-view-course">View course <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </div>
-                </div>
+                {{/each}}
             </div>
             
             <!-- No results message -->
@@ -995,34 +916,15 @@
             <p class="text-muted">Jump straight into the skills learners are browsing.</p>
         </div>
         <div class="row g-3 justify-content-center">
+            {{#each topics}}
             <div class="col-6 col-md-3">
-                <div class="topic-card">
-                    <div class="topic-icon"><i class="fas fa-palette"></i></div>
-                    <h4>Graphic Design</h4>
-                    <span class="topic-count">2 courses</span>
+                <div class="topic-card" data-category="{{lowercase this.name}}">
+                    <div class="topic-icon"><i class="{{this.icon}}"></i></div>
+                    <h4>{{this.name}}</h4>
+                    <span class="topic-count">{{this.count}} courses</span>
                 </div>
             </div>
-            <div class="col-6 col-md-3">
-                <div class="topic-card">
-                    <div class="topic-icon"><i class="fas fa-microchip"></i></div>
-                    <h4>Technology</h4>
-                    <span class="topic-count">1 course</span>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="topic-card">
-                    <div class="topic-icon"><i class="fas fa-code"></i></div>
-                    <h4>Web Development</h4>
-                    <span class="topic-count">1 course</span>
-                </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="topic-card">
-                    <div class="topic-icon"><i class="fas fa-chart-line"></i></div>
-                    <h4>Beginner</h4>
-                    <span class="topic-count">3 courses</span>
-                </div>
-            </div>
+            {{/each}}
         </div>
     </div>
 </section>
@@ -1035,34 +937,22 @@
             <p class="text-muted">Learn from instructors already publishing practical NeurowexTech courses.</p>
         </div>
         <div class="row g-4 justify-content-center">
+            {{#each instructors}}
             <div class="col-md-4">
                 <div class="instructor-card">
-                    <div class="instructor-avatar-large">NW</div>
-                    <h4>NeurowexTech Admin</h4>
-                    <div class="instructor-title">Graphic Design</div>
+                    <div class="instructor-avatar-large">{{this.initials}}</div>
+                    <h4>{{this.name}}</h4>
+                    <div class="instructor-title">{{this.title}}</div>
                     <div class="instructor-rating">
-                        <i class="fas fa-star text-warning"></i> 4.8 rating
+                        <i class="fas fa-star text-warning"></i> {{this.rating}} rating
                     </div>
                     <div class="instructor-stats">
-                        <span><i class="fas fa-book"></i> 1 course</span>
-                        <span><i class="fas fa-video"></i> 29 lessons</span>
+                        <span><i class="fas fa-book"></i> {{this.courses}} courses</span>
+                        <span><i class="fas fa-video"></i> {{this.lessons}} lessons</span>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="instructor-card">
-                    <div class="instructor-avatar-large">SK</div>
-                    <h4>Stephen Kingori</h4>
-                    <div class="instructor-title">Technology / Web Development</div>
-                    <div class="instructor-rating">
-                        <i class="fas fa-star text-warning"></i> 4.8 rating
-                    </div>
-                    <div class="instructor-stats">
-                        <span><i class="fas fa-book"></i> 3 courses</span>
-                        <span><i class="fas fa-video"></i> 75 lessons</span>
-                    </div>
-                </div>
-            </div>
+            {{/each}}
         </div>
     </div>
 </section>
@@ -1217,7 +1107,8 @@
             if (currentSort === 'popular') {
                 const aPopular = a.dataset.popular === 'true';
                 const bPopular = b.dataset.popular === 'true';
-                return bPopular - aPopular;
+                if (aPopular !== bPopular) return bPopular - aPopular;
+                return parseInt(b.querySelector('.rating-count').textContent.match(/\d+/)[0]) - parseInt(a.querySelector('.rating-count').textContent.match(/\d+/)[0]);
             } else if (currentSort === 'new') {
                 const aNew = a.dataset.new === 'true';
                 const bNew = b.dataset.new === 'true';
@@ -1238,6 +1129,20 @@
     document.getElementById('sortNew').addEventListener('click', function() {
         currentSort = 'new';
         sortCourses();
+    });
+
+    // Topic card click filter
+    document.querySelectorAll('.topic-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const category = this.dataset.category;
+            if (category) {
+                document.querySelectorAll('.category-filter').forEach(cb => {
+                    cb.checked = cb.value === category;
+                });
+                filterCourses();
+                window.scrollTo({ top: document.querySelector('.filters-section').offsetTop - 100, behavior: 'smooth' });
+            }
+        });
     });
 </script>
 </body>
