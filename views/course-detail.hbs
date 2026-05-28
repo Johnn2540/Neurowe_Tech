@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>{{title}}</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --accent: #f97316;
+            --dark: #050b18;
+            --dark-2: #0d1526;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --white: #ffffff;
+            --green: #10b981;
+            --yellow: #f59e0b;
+            --grad-primary: linear-gradient(135deg, #2563eb, #1d4ed8);
+            --grad-accent: linear-gradient(135deg, #f97316, #ea580c);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --font-sans: 'Inter', sans-serif;
+            --font-heading: 'Syne', var(--font-sans);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-sans);
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        /* Dark Mode */
+        body.dark {
+            background: var(--dark);
+            color: var(--gray-200);
+        }
+        body.dark .navbar { background: rgba(5,11,24,0.98); border-bottom-color: rgba(255,255,255,0.06); }
+        body.dark .course-header { background: var(--dark-2); }
+        body.dark .course-info-card, body.dark .module-card, body.dark .instructor-card { background: var(--dark-2); border-color: rgba(255,255,255,0.08); }
+        body.dark .sidebar-card { background: var(--dark-2); border-color: rgba(255,255,255,0.08); }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(20px);
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+            z-index: 1040;
+        }
+        .navbar-brand {
+            font-family: var(--font-heading);
+            font-weight: 800;
+            font-size: 1.5rem;
+            background: var(--grad-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .navbar-brand span { color: var(--accent); background: none; }
+        .nav-link {
+            font-weight: 500;
+            color: var(--gray-600) !important;
+            transition: color 0.2s ease;
+        }
+        .nav-link:hover { color: var(--primary) !important; }
+        .btn-primary-custom {
+            background: var(--grad-primary);
+            color: white;
+            border: none;
+            padding: 6px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+        .btn-outline-custom {
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            padding: 6px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .btn-outline-custom:hover { background: var(--grad-primary); color: white; }
+
+        /* Course Header */
+        .course-header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 40px 0;
+        }
+        .course-title { font-size: 2rem; font-weight: 800; margin-bottom: 1rem; }
+        .course-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-right: 10px;
+        }
+        .badge-free { background: var(--grad-accent); color: white; }
+        .badge-paid { background: var(--grad-primary); color: white; }
+        .badge-level { background: var(--gray-200); color: var(--gray-700); }
+
+        /* Course Info Card */
+        .course-info-card, .sidebar-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            border: 1px solid var(--gray-200);
+            margin-bottom: 24px;
+        }
+        .enroll-btn {
+            background: var(--grad-primary);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 50px;
+            font-weight: 700;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .enroll-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,99,235,0.3); }
+        .enrolled-btn {
+            background: var(--green);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 50px;
+            font-weight: 700;
+            width: 100%;
+        }
+        .continue-btn {
+            background: var(--grad-accent);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 50px;
+            font-weight: 700;
+            width: 100%;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+        .progress-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) 0deg, var(--gray-200) 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+
+        /* Modules */
+        .module-card {
+            background: white;
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+        }
+        .module-header {
+            padding: 16px 20px;
+            background: var(--gray-100);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+        body.dark .module-header { background: rgba(255,255,255,0.05); }
+        .module-lessons { padding: 0 20px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .module-card.open .module-lessons { max-height: 500px; padding: 16px 20px; }
+        .lesson-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .lesson-item:last-child { border-bottom: none; }
+        .lesson-icon { width: 32px; color: var(--primary); }
+        .lesson-title { flex: 1; font-size: 0.9rem; }
+        .lesson-duration { font-size: 0.7rem; color: var(--gray-600); }
+
+        /* Instructor Card */
+        .instructor-avatar {
+            width: 80px;
+            height: 80px;
+            background: var(--grad-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            margin: 0 auto 15px;
+        }
+
+        /* Related Courses */
+        .related-course-card {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+        }
+        .related-course-card:hover {
+            transform: translateX(5px);
+            border-color: var(--primary);
+        }
+        .related-course-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        footer {
+            background: var(--dark);
+            color: rgba(255,255,255,0.7);
+            padding: 50px 0 30px;
+            margin-top: 50px;
+        }
+        @media (max-width: 768px) {
+            .course-title { font-size: 1.5rem; }
+            .course-header { padding: 24px 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">Neurowex<span>Tech</span> Learn</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/learn">Explore</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Masterclasses</a></li>
+                <li class="nav-item"><a class="nav-link" href="/about">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="/contact">Contact</a></li>
+            </ul>
+            <div class="d-flex gap-2">
+                {{#if isAuthenticated}}
+                    <div class="dropdown">
+                        <button class="btn btn-primary-custom dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i> {{userName}}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/my-learning"><i class="fas fa-book-open me-2"></i> My Learning</a></li>
+                            <li><a class="dropdown-item" href="/user_dashboard"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt me-2"></i> Sign Out</a></li>
+                        </ul>
+                    </div>
+                {{else}}
+                    <a href="/login" class="btn-outline-custom">Log in</a>
+                    <a href="/sign_up" class="btn-primary-custom">Sign up</a>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Course Header -->
+<section class="course-header" style="margin-top: 72px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="mb-3">
+                    <span class="course-badge {{#if (eq course.price 0)}}badge-free{{else}}badge-paid{{/if}}">
+                        {{#if (eq course.price 0)}}Free{{else}}Paid{{/if}}
+                    </span>
+                    <span class="course-badge badge-level">{{course.level}}</span>
+                </div>
+                <h1 class="course-title">{{course.title}}</h1>
+                <p class="text-muted mb-3">{{course.description}}</p>
+                <div class="d-flex gap-4 mb-3">
+                    <span><i class="fas fa-star text-warning"></i> {{course.rating}} rating</span>
+                    <span><i class="fas fa-users"></i> {{course.enrolled_count}} students enrolled</span>
+                    <span><i class="far fa-clock"></i> {{course.total_duration}}</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="instructor-avatar" style="width: 40px; height: 40px; font-size: 1rem;">{{instructorInitial}}</div>
+                    <span>Created by <strong>{{course.instructor_name}}</strong></span>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="sidebar-card">
+                    <div class="text-center mb-3">
+                        <div class="course-price" style="font-size: 2rem; font-weight: 800; color: var(--primary);">
+                            {{#if (eq course.price 0)}}Free{{else}}Kshs. {{course.price}}{{/if}}
+                        </div>
+                    </div>
+                    
+                    {{#if isAuthenticated}}
+                        {{#if isEnrolled}}
+                            <a href="/learn/course/{{course.id}}/dashboard" class="continue-btn mb-3">
+                                <i class="fas fa-play-circle me-2"></i> Continue Learning
+                            </a>
+                            <div class="text-center mt-2">
+                                <small class="text-muted">Your progress: {{enrollmentProgress}}% complete</small>
+                                <div class="progress mt-1" style="height: 6px;">
+                                    <div class="progress-bar bg-primary" style="width: {{enrollmentProgress}}%"></div>
+                                </div>
+                            </div>
+                        {{else}}
+                            <button class="enroll-btn" id="enrollBtn">
+                                <i class="fas fa-shopping-cart me-2"></i> Enroll Now
+                            </button>
+                        {{/if}}
+                    {{else}}
+                        <a href="/login" class="enroll-btn" style="display: block; text-align: center;">
+                            <i class="fas fa-sign-in-alt me-2"></i> Login to Enroll
+                        </a>
+                        <div class="text-center mt-2">
+                            <small class="text-muted">New here? <a href="/sign_up">Create an account</a></small>
+                        </div>
+                    {{/if}}
+                    
+                    <hr class="my-3">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Total modules</span>
+                        <strong>{{totalModules}}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Total lessons</span>
+                        <strong>{{totalLessons}}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Total duration</span>
+                        <strong>{{course.total_duration}}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Course Content -->
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- What You'll Learn -->
+            <div class="course-info-card">
+                <h4><i class="fas fa-graduation-cap me-2" style="color: var(--primary);"></i> What you'll learn</h4>
+                <div class="row mt-3">
+                    {{#each course.what_you_will_learn}}
+                    <div class="col-md-6 mb-2">
+                        <i class="fas fa-check-circle text-success me-2"></i> {{this}}
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+            
+            <!-- Course Modules -->
+            <div class="course-info-card">
+                <h4><i class="fas fa-list me-2" style="color: var(--primary);"></i> Course content</h4>
+                <div class="mt-3" id="modulesContainer">
+                    {{#each modules}}
+                    <div class="module-card">
+                        <div class="module-header" data-module="{{@index}}">
+                            <span><i class="fas fa-folder-open me-2"></i> {{this.title}}</span>
+                            <span>{{this.lessons.length}} lessons • {{this.duration}}</span>
+                        </div>
+                        <div class="module-lessons">
+                            {{#each this.lessons}}
+                            <div class="lesson-item">
+                                <div class="lesson-icon"><i class="fas fa-play-circle"></i></div>
+                                <div class="lesson-title">{{this.title}}</div>
+                                <div class="lesson-duration">{{this.duration}}</div>
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+            
+            <!-- Requirements -->
+            <div class="course-info-card">
+                <h4><i class="fas fa-clipboard-list me-2" style="color: var(--primary);"></i> Requirements</h4>
+                <ul class="mt-3">
+                    {{#each course.requirements}}
+                    <li class="mb-2">{{this}}</li>
+                    {{/each}}
+                </ul>
+            </div>
+            
+            <!-- Target Audience -->
+            <div class="course-info-card">
+                <h4><i class="fas fa-users me-2" style="color: var(--primary);"></i> Who this course is for</h4>
+                <ul class="mt-3">
+                    {{#each course.target_audience}}
+                    <li class="mb-2">{{this}}</li>
+                    {{/each}}
+                </ul>
+            </div>
+            
+            <!-- Instructor -->
+            <div class="course-info-card">
+                <h4><i class="fas fa-chalkboard-user me-2" style="color: var(--primary);"></i> Instructor</h4>
+                <div class="row align-items-center mt-3">
+                    <div class="col-md-2 text-center">
+                        <div class="instructor-avatar" style="width: 70px; height: 70px; font-size: 1.6rem;">{{instructorInitial}}</div>
+                    </div>
+                    <div class="col-md-10">
+                        <h5 class="mb-1">{{course.instructor_name}}</h5>
+                        <p class="text-muted small">{{instructorBio}}</p>
+                        <div class="d-flex gap-3">
+                            <span><i class="fas fa-star text-warning"></i> {{instructorRating}} Instructor rating</span>
+                            <span><i class="fas fa-users"></i> {{instructorStudents}} students</span>
+                            <span><i class="fas fa-book"></i> {{instructorCourses}} courses</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Features -->
+            <div class="sidebar-card">
+                <h5><i class="fas fa-check-circle me-2" style="color: var(--green);"></i> This course includes</h5>
+                <div class="mt-3">
+                    <div class="mb-2"><i class="fas fa-video me-2"></i> {{totalLessons}} on-demand videos</div>
+                    <div class="mb-2"><i class="fas fa-download me-2"></i> Downloadable resources</div>
+                    <div class="mb-2"><i class="fas fa-mobile-alt me-2"></i> Mobile access</div>
+                    <div class="mb-2"><i class="fas fa-certificate me-2"></i> Certificate of completion</div>
+                    <div><i class="fas fa-headset me-2"></i> Instructor Q&A support</div>
+                </div>
+            </div>
+            
+            <!-- Related Courses -->
+            {{#if relatedCourses.length}}
+            <div class="sidebar-card">
+                <h5><i class="fas fa-share-alt me-2"></i> You might also like</h5>
+                <div class="mt-3">
+                    {{#each relatedCourses}}
+                    <a href="/learn/course/{{this.id}}" class="related-course-card">
+                        <img src="{{this.image_url}}" alt="{{this.title}}" class="related-course-img" onerror="this.src='https://placehold.co/60x60/2563eb/white?text=C'">
+                        <div>
+                            <div class="fw-bold small">{{this.title}}</div>
+                            <div class="text-muted small">{{this.category}} • {{this.level}}</div>
+                            <div><i class="fas fa-star text-warning"></i> {{this.rating}}</div>
+                        </div>
+                    </a>
+                    {{/each}}
+                </div>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <h5>NeurowexTech</h5>
+                <p class="small">Helping you learn new skills and grow your career.</p>
+                <div class="d-flex gap-2">
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                </div>
+            </div>
+            <div class="col-md-2 mb-4">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="/about">About Us</a></li>
+                    <li><a href="/learn">Courses</a></li>
+                    <li><a href="/contact">Become an Instructor</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 mb-4">
+                <h5>Contact</h5>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-envelope me-2"></i> techneurowex@gmail.com</li>
+                    <li><i class="fas fa-phone me-2"></i> +254 769 329 340</li>
+                    <li><i class="fab fa-whatsapp me-2"></i> WhatsApp Us</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom text-center">
+            <p class="mb-0">© 2026 NeurowexTech. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Module accordion
+    document.querySelectorAll('.module-header').forEach(header => {
+        header.addEventListener('click', () => {
+            const moduleCard = header.closest('.module-card');
+            moduleCard.classList.toggle('open');
+        });
+    });
+
+    // Enroll button
+    const enrollBtn = document.getElementById('enrollBtn');
+    if (enrollBtn) {
+        enrollBtn.addEventListener('click', async () => {
+            enrollBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Processing...';
+            enrollBtn.disabled = true;
+            
+            try {
+                const response = await fetch('/api/enroll', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ courseId: {{course.id}} })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    window.location.href = data.redirect;
+                } else {
+                    alert(data.message);
+                    enrollBtn.innerHTML = '<i class="fas fa-shopping-cart me-2"></i> Enroll Now';
+                    enrollBtn.disabled = false;
+                }
+            } catch (err) {
+                alert('Error enrolling. Please try again.');
+                enrollBtn.innerHTML = '<i class="fas fa-shopping-cart me-2"></i> Enroll Now';
+                enrollBtn.disabled = false;
+            }
+        });
+    }
+
+    // Dark mode toggle
+    let dark = localStorage.getItem('theme') === 'dark';
+    function applyTheme() { document.body.classList.toggle('dark', dark); }
+    applyTheme();
+</script>
+</body>
+</html>
