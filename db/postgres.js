@@ -221,9 +221,36 @@ async function incrementBlogView(slug) {
     );
 }
 
+// ========== ADMIN BLOG POSTS ==========
+async function getAllBlogPosts() {
+    const result = await query(`
+        SELECT id, title, slug, category, author, excerpt, published, created_at
+        FROM blog_posts
+        ORDER BY created_at DESC
+    `);
+    return result.rows;
+}
+
+async function createBlogPost(postData) {
+    const { title, slug, category, author, excerpt, external_url, published } = postData;
+    const finalSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    
+    const result = await query(`
+        INSERT INTO blog_posts (title, slug, category, author, excerpt, external_url, published, created_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+        RETURNING *
+    `, [title, finalSlug, category || 'General', author || 'Admin', excerpt || '', external_url || '', published || false]);
+    
+    return result.rows[0];
+}
+
+async function deleteBlogPost(id) {
+    const result = await query('DELETE FROM blog_posts WHERE id = $1 RETURNING *', [id]);
+    return result.rows[0];
+}
+
 // ========== TEAM MEMBERS ==========
 async function getTeamMembers() {
-    // Check if team_members table exists, if not return empty array
     try {
         const result = await query(
             'SELECT * FROM team_members ORDER BY display_order, created_at'
@@ -236,6 +263,27 @@ async function getTeamMembers() {
         }
         throw err;
     }
+}
+
+// ========== ADMIN TEAM ==========
+async function getAllTeamMembers() {
+    const result = await query('SELECT * FROM team ORDER BY id ASC');
+    return result.rows;
+}
+
+async function createTeamMember(teamData) {
+    const { name, role, bio, linkedin_url, github_url } = teamData;
+    const result = await query(`
+        INSERT INTO team (name, role, bio, linkedin_url, github_url)
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING *
+    `, [name, role, bio || '', linkedin_url || '', github_url || '']);
+    return result.rows[0];
+}
+
+async function deleteTeamMember(id) {
+    const result = await query('DELETE FROM team WHERE id = $1 RETURNING *', [id]);
+    return result.rows[0];
 }
 
 // ========== STATISTICS ==========
@@ -258,17 +306,36 @@ async function getStats() {
 
 // ========== SERVICES ==========
 async function getAllServices() {
-    // You can create a services table or return static data
-    // For now, return empty array (will use static fallback)
     try {
         const result = await query('SELECT * FROM services ORDER BY display_order');
         return result.rows;
     } catch (err) {
         if (err.message.includes('relation') && err.message.includes('does not exist')) {
-            return []; // No services table yet
+            return [];
         }
         throw err;
     }
+}
+
+// ========== ADMIN SERVICES ==========
+async function getAllServicesAdmin() {
+    const result = await query('SELECT * FROM services ORDER BY id ASC');
+    return result.rows;
+}
+
+async function createService(serviceData) {
+    const { name, description, icon_class, price } = serviceData;
+    const result = await query(`
+        INSERT INTO services (name, description, icon_class, price, visible)
+        VALUES ($1, $2, $3, $4, true)
+        RETURNING *
+    `, [name, description || '', icon_class || '', price || '']);
+    return result.rows[0];
+}
+
+async function deleteService(id) {
+    const result = await query('DELETE FROM services WHERE id = $1 RETURNING *', [id]);
+    return result.rows[0];
 }
 
 // ========== TESTIMONIALS ==========
@@ -278,10 +345,53 @@ async function getTestimonials() {
         return result.rows;
     } catch (err) {
         if (err.message.includes('relation') && err.message.includes('does not exist')) {
-            return []; // No testimonials table yet
+            return [];
         }
         throw err;
     }
+}
+
+// ========== ADMIN TESTIMONIALS ==========
+async function getAllTestimonials() {
+    const result = await query('SELECT * FROM testimonials ORDER BY created_at DESC');
+    return result.rows;
+}
+
+async function createTestimonial(testimonialData) {
+    const { client_name, client_role, company, rating, content } = testimonialData;
+    const result = await query(`
+        INSERT INTO testimonials (client_name, client_role, company, rating, content, published, created_at)
+        VALUES ($1, $2, $3, $4, $5, true, NOW())
+        RETURNING *
+    `, [client_name, client_role || '', company || '', rating || 5, content]);
+    return result.rows[0];
+}
+
+async function deleteTestimonial(id) {
+    const result = await query('DELETE FROM testimonials WHERE id = $1 RETURNING *', [id]);
+    return result.rows[0];
+}
+
+// ========== ADMIN SETTINGS ==========
+async function getSettings() {
+    const result = await query('SELECT * FROM settings LIMIT 1');
+    return result.rows[0] || {};
+}
+
+async function updateSettings(settingsData) {
+    const { site_name, contact_email, whatsapp_number, location } = settingsData;
+    const result = await query(`
+        INSERT INTO settings (id, site_name, contact_email, whatsapp_number, location, updated_at)
+        VALUES (1, $1, $2, $3, $4, NOW())
+        ON CONFLICT (id) DO UPDATE SET
+            site_name = EXCLUDED.site_name,
+            contact_email = EXCLUDED.contact_email,
+            whatsapp_number = EXCLUDED.whatsapp_number,
+            location = EXCLUDED.location,
+            updated_at = NOW()
+        RETURNING *
+    `, [site_name || 'Neurowex Tech', contact_email || '', whatsapp_number || '', location || '']);
+    return result.rows[0];
 }
 
 // ========== FAQS ==========
@@ -291,10 +401,196 @@ async function getFAQs() {
         return result.rows;
     } catch (err) {
         if (err.message.includes('relation') && err.message.includes('does not exist')) {
-            return []; // No faqs table yet
+            return [];
         }
         throw err;
     }
+}
+
+// ========== LEARNING PLATFORM ==========
+
+// Courses
+async function getAllCourses(featuredOnly = false, publishedOnly = true) {
+    let sql = `
+        SELECT c.*, 
+               u.username as instructor_name,
+               COUNT(DISTINCT cm.id) as total_modules,
+               COUNT(DISTINCT cl.id) as total_lessons
+        FROM courses c
+        LEFT JOIN users u ON c.instructor_id = u.id
+        LEFT JOIN course_modules cm ON c.id = cm.course_id
+        LEFT JOIN course_lessons cl ON cm.id = cl.module_id
+    `;
+    const params = [];
+    const conditions = [];
+    
+    if (publishedOnly) {
+        conditions.push(`c.published = true`);
+    }
+    
+    if (featuredOnly) {
+        conditions.push(`c.featured = true`);
+    }
+    
+    if (conditions.length > 0) {
+        sql += ` WHERE ${conditions.join(' AND ')}`;
+    }
+    
+    sql += ` GROUP BY c.id, u.username ORDER BY c.featured DESC, c.created_at DESC`;
+    
+    const result = await query(sql, params);
+    return result.rows;
+}
+
+async function getCourseById(id) {
+    const result = await query(`
+        SELECT c.*, 
+               u.username as instructor_name,
+               u.email as instructor_email
+        FROM courses c
+        JOIN users u ON c.instructor_id = u.id
+        WHERE c.id = $1
+    `, [id]);
+    return result.rows[0];
+}
+
+async function getCourseModules(courseId) {
+    const result = await query(`
+        SELECT cm.*, 
+               json_agg(
+                   json_build_object(
+                       'id', cl.id,
+                       'title', cl.title,
+                       'duration', cl.duration,
+                       'lesson_order', cl.lesson_order,
+                       'video_url', cl.video_url,
+                       'is_free', cl.is_free
+                   ) ORDER BY cl.lesson_order
+               ) as lessons
+        FROM course_modules cm
+        LEFT JOIN course_lessons cl ON cm.id = cl.module_id
+        WHERE cm.course_id = $1
+        GROUP BY cm.id
+        ORDER BY cm.module_order
+    `, [courseId]);
+    return result.rows;
+}
+
+async function getCourseBySlug(slug) {
+    const result = await query(`
+        SELECT c.*, u.username as instructor_name
+        FROM courses c
+        JOIN users u ON c.instructor_id = u.id
+        WHERE c.slug = $1 AND c.published = true
+    `, [slug]);
+    return result.rows[0];
+}
+
+async function getEnrollment(userId, courseId) {
+    const result = await query(`
+        SELECT * FROM enrollments 
+        WHERE user_id = $1 AND course_id = $2
+    `, [userId, courseId]);
+    return result.rows[0];
+}
+
+async function createEnrollment(userId, courseId) {
+    const result = await query(`
+        INSERT INTO enrollments (user_id, course_id, enrolled_at, progress, status)
+        VALUES ($1, $2, NOW(), 0, 'active')
+        RETURNING *
+    `, [userId, courseId]);
+    return result.rows[0];
+}
+
+async function updateEnrollmentProgress(enrollmentId, progress) {
+    const result = await query(`
+        UPDATE enrollments 
+        SET progress = $1
+        WHERE id = $2
+        RETURNING *
+    `, [progress, enrollmentId]);
+    return result.rows[0];
+}
+
+async function getUserEnrollments(userId) {
+    const result = await query(`
+        SELECT e.*, c.title, c.category, c.level, c.image_url, c.instructor_id,
+               u.username as instructor_name,
+               (SELECT COUNT(*) FROM course_lessons cl 
+                JOIN course_modules cm ON cl.module_id = cm.id 
+                WHERE cm.course_id = c.id) as total_lessons,
+               (SELECT COUNT(*) FROM user_lesson_progress ulp 
+                JOIN course_lessons cl ON ulp.lesson_id = cl.id
+                JOIN course_modules cm ON cl.module_id = cm.id
+                WHERE cm.course_id = c.id AND ulp.user_id = $1 AND ulp.completed = true) as completed_lessons
+        FROM enrollments e
+        JOIN courses c ON e.course_id = c.id
+        JOIN users u ON c.instructor_id = u.id
+        WHERE e.user_id = $1
+        ORDER BY e.enrolled_at DESC
+    `, [userId]);
+    return result.rows;
+}
+
+async function markLessonComplete(userId, lessonId) {
+    const result = await query(`
+        INSERT INTO user_lesson_progress (user_id, lesson_id, completed, completed_at)
+        VALUES ($1, $2, true, NOW())
+        ON CONFLICT (user_id, lesson_id) 
+        DO UPDATE SET completed = true, completed_at = NOW()
+        RETURNING *
+    `, [userId, lessonId]);
+    return result.rows[0];
+}
+
+async function getLessonProgress(userId, lessonId) {
+    const result = await query(`
+        SELECT * FROM user_lesson_progress 
+        WHERE user_id = $1 AND lesson_id = $2
+    `, [userId, lessonId]);
+    return result.rows[0];
+}
+
+async function getUserCourseProgress(userId, courseId) {
+    const result = await query(`
+        SELECT 
+            COUNT(DISTINCT cl.id) as total_lessons,
+            COUNT(DISTINCT CASE WHEN ulp.completed = true THEN cl.id END) as completed_lessons
+        FROM courses c
+        JOIN course_modules cm ON c.id = cm.course_id
+        JOIN course_lessons cl ON cm.id = cl.module_id
+        LEFT JOIN user_lesson_progress ulp ON cl.id = ulp.lesson_id AND ulp.user_id = $1
+        WHERE c.id = $2
+        GROUP BY c.id
+    `, [userId, courseId]);
+    
+    if (result.rows.length === 0) {
+        return { total_lessons: 0, completed_lessons: 0 };
+    }
+    return result.rows[0];
+}
+
+async function getCourseCategories() {
+    const result = await query(`
+        SELECT category, COUNT(*) as course_count
+        FROM courses
+        WHERE published = true
+        GROUP BY category
+        ORDER BY category
+    `);
+    return result.rows;
+}
+
+async function getCourseStats() {
+    const result = await query(`
+        SELECT 
+            (SELECT COUNT(*) FROM courses WHERE published = true) as total_courses,
+            (SELECT COUNT(DISTINCT category) FROM courses WHERE published = true) as total_categories,
+            (SELECT COUNT(*) FROM enrollments) as total_enrollments,
+            (SELECT COUNT(DISTINCT instructor_id) FROM courses WHERE published = true) as total_instructors
+    `);
+    return result.rows[0];
 }
 
 // ========== EXPORT ALL FUNCTIONS ==========
@@ -320,24 +616,63 @@ module.exports = {
     getAllSubscribers,
     getSubscriberCount,
     
-    // Blog
+    // Blog (public)
     getBlogPosts,
     getBlogPostBySlug,
     getRecentBlogPosts,
     incrementBlogView,
     
-    // Team
+    // Blog (admin)
+    getAllBlogPosts,
+    createBlogPost,
+    deleteBlogPost,
+    
+    // Team (public)
     getTeamMembers,
+    
+    // Team (admin)
+    getAllTeamMembers,
+    createTeamMember,
+    deleteTeamMember,
+    
+    // Services (public)
+    getAllServices,
+    
+    // Services (admin)
+    getAllServicesAdmin,
+    createService,
+    deleteService,
+    
+    // Testimonials (public)
+    getTestimonials,
+    
+    // Testimonials (admin)
+    getAllTestimonials,
+    createTestimonial,
+    deleteTestimonial,
+    
+    // Settings (admin)
+    getSettings,
+    updateSettings,
     
     // Stats
     getStats,
     
-    // Services
-    getAllServices,
-    
-    // Testimonials
-    getTestimonials,
-    
     // FAQs
-    getFAQs
+    getFAQs,
+    
+    // Learning Platform
+    getAllCourses,
+    getCourseById,
+    getCourseBySlug,
+    getCourseModules,
+    getEnrollment,
+    createEnrollment,
+    updateEnrollmentProgress,
+    getUserEnrollments,
+    markLessonComplete,
+    getLessonProgress,
+    getUserCourseProgress,
+    getCourseCategories,
+    getCourseStats,
 };
