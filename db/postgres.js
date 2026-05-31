@@ -12,66 +12,50 @@ if (!connectionString) {
     process.exit(1);
 }
 
-// Create connection pool with more detailed error handling
+// Create connection pool optimized for Vercel serverless
 const pool = new Pool({
     connectionString: connectionString,
     ssl: { 
         rejectUnauthorized: false 
     },
-    max: 20,
+    max: 1,                    // Vercel serverless: only 1 connection per instance
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 10000,
+    allowExitOnIdle: true,     // Allow process to exit when idle
 });
 
-// Test the connection with better error logging
+// Test the connection (skip detailed logging on Vercel)
 async function testConnection() {
+    // Skip heavy logging on Vercel to avoid timeouts
+    if (process.env.VERCEL === '1') {
+        console.log('✅ Vercel environment - database connection ready');
+        return true;
+    }
+    
     try {
         console.log('⏳ Testing database connection...');
         const client = await pool.connect();
         console.log('✅ PostgreSQL Connected Successfully to Neon');
         
-        // Test query to verify tables exist
-        const result = await client.query(`
-            SELECT table_name 
-            FROM information_schema.tables 
-            WHERE table_schema = 'public'
-            ORDER BY table_name
-        `);
-        console.log(`📊 Tables found: ${result.rows.map(r => r.table_name).join(', ')}`);
-        
-        // Count projects
-        const projectsCount = await client.query('SELECT COUNT(*) FROM projects');
-        console.log(`📊 Projects table has ${projectsCount.rows[0].count} rows`);
+        // Lightweight test query
+        const result = await client.query('SELECT NOW()');
+        console.log(`📅 Database time: ${result.rows[0].now}`);
         
         client.release();
         return true;
     } catch (err) {
         console.error('❌ PostgreSQL Connection Error:', err.message);
-        console.error('📋 Error details:', err.stack);
-        
-        // Common troubleshooting tips
-        if (err.message.includes('password authentication failed')) {
-            console.error('\n🔧 FIX: Wrong password in DATABASE_URL');
-            console.error('   Get a fresh connection string from Neon dashboard');
-        } else if (err.message.includes('does not exist')) {
-            console.error('\n🔧 FIX: Database name is incorrect');
-            console.error('   Check your DATABASE_URL includes the correct database name');
-        } else if (err.message.includes('timeout')) {
-            console.error('\n🔧 FIX: Connection timeout - check your internet');
-            console.error('   Try reconnecting or check if Neon is down');
-        } else if (err.message.includes('getaddrinfo')) {
-            console.error('\n🔧 FIX: Cannot resolve hostname - check your internet');
-            console.error('   Make sure you can reach neon.tech');
-        } else if (err.message.includes('relation') && err.message.includes('does not exist')) {
-            console.error('\n🔧 FIX: Tables not created. Run the schema.sql in Neon SQL Editor');
-        }
-        
         return false;
     }
 }
 
-// Run the connection test
-testConnection();
+// Run the connection test (non-blocking on Vercel)
+if (process.env.VERCEL !== '1') {
+    testConnection();
+} else {
+    // Just log that we're ready on Vercel
+    console.log('🚀 Vercel serverless mode - database pool ready');
+}
 
 // Helper function for queries with logging
 async function query(text, params) {
@@ -79,12 +63,9 @@ async function query(text, params) {
     try {
         const res = await pool.query(text, params);
         const duration = Date.now() - start;
-        if (process.env.NODE_ENV !== 'production') {
-            console.log('📝 Executed query:', { 
-                text: text.substring(0, 50), 
-                duration, 
-                rows: res.rowCount 
-            });
+        // Only log slow queries in production
+        if (duration > 1000) {
+            console.log(`⚠️ Slow query (${duration}ms):`, text.substring(0, 50));
         }
         return res;
     } catch (err) {
