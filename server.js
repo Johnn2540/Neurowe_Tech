@@ -12,6 +12,13 @@ const { OAuth2Client } = require('google-auth-library');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ========== VERCEL COMPATIBILITY ==========
+// Skip directory creation on Vercel
+const isVercel = process.env.VERCEL === '1';
+if (isVercel) {
+    console.log('✅ Running on Vercel - serverless mode enabled');
+}
+
 // ========== GOOGLE OAUTH CONFIGURATION ==========
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -1342,9 +1349,14 @@ app.use((err, req, res, next) => {
 });
 
 // ========== START SERVER ==========
+// For Vercel serverless deployment
+module.exports = app;
 
-app.listen(PORT, () => {
-    console.log(`
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`
     ╔═══════════════════════════════════════════════════════╗
     ║                                                       ║
     ║     🚀 Neurowex Tech Server Running Successfully      ║
@@ -1361,5 +1373,6 @@ app.listen(PORT, () => {
     ║     Press Ctrl+C to stop the server                   ║
     ║                                                       ║
     ╚═══════════════════════════════════════════════════════╝
-    `);
-});
+        `);
+    });
+}
