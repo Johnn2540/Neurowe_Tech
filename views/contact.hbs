@@ -1,62 +1,1062 @@
-<section class="page-header">
-    <div class="container">
-        <h1>Start Your Project</h1>
-        <p>Tell us about your idea. We'll respond within 24 hours.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us | NeuroWex Tech</title>
+  <meta name="description" content="Get in touch with NeurowexTech. We respond within 24 hours." />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<style>
+:root {
+  --blue:      #1a4fd6;
+  --blue-d:    #1340b0;
+  --blue-l:    #4a7aee;
+  --blue-pale: rgba(26,79,214,.08);
+  --orange:    #e8620a;
+  --orange-l:  #f28840;
+  --orange-pale:rgba(232,98,10,.08);
+  --ink:       #0c1220;
+  --ink-2:     #141c30;
+  --slate:     #5a6880;
+  --slate-l:   #7a8ea8;
+  --mist:      #e2e8f5;
+  --ghost:     #f5f7fd;
+  --emerald:   #059669;
+  --teal:      #0d9488;
+  --rose:      #e11d48;
+  --g-blue:    linear-gradient(135deg,#1a4fd6,#1340b0);
+  --g-orange:  linear-gradient(135deg,#e8620a,#c94f05);
+  --g-hero:    linear-gradient(168deg,#030610 0%,#07102a 50%,#0b1535 100%);
+  --nav-h:     68px;
+  --r-sm:      10px; --r-md:14px; --r-lg:18px; --r-xl:24px; --r-pill:999px;
+  --ease:      cubic-bezier(.4,0,.2,1);
+  --t:         .24s var(--ease);
+  --sh-sm:     0 2px 8px rgba(8,12,24,.06),0 6px 20px rgba(8,12,24,.06);
+  --sh-md:     0 4px 16px rgba(8,12,24,.08),0 14px 40px rgba(8,12,24,.09);
+  --sh-blue:   0 8px 28px rgba(26,79,214,.26);
+  --sh-orange: 0 8px 28px rgba(232,98,10,.24);
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--ghost);color:var(--ink);overflow-x:hidden;line-height:1.65}
+h1,h2,h3,h4{font-family:'Fraunces',serif;line-height:1.1;letter-spacing:-.02em}
+a{text-decoration:none;color:inherit}
+button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--ink)}::-webkit-scrollbar-thumb{background:var(--blue);border-radius:4px}
+
+/* ── SCROLL BAR ── */
+#scroll-progress{position:fixed;top:0;left:0;height:2px;width:0%;background:linear-gradient(90deg,var(--blue),var(--orange));z-index:9999;transition:width .08s linear}
+
+/* ── NAVBAR ── */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1040;height:var(--nav-h);background:rgba(255,255,255,.96);backdrop-filter:blur(24px) saturate(2);border-bottom:1px solid rgba(8,12,24,.06);transition:var(--t)}
+.navbar.scrolled{box-shadow:0 2px 24px rgba(8,12,24,.07)}
+.nav-inner{max-width:1320px;margin:0 auto;padding:0 24px;height:100%;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.nav-brand{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:7px;flex-shrink:0;letter-spacing:-.04em}
+.brand-mark{width:30px;height:30px;background:var(--g-blue);border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:.85rem;color:#fff;flex-shrink:0}
+.nav-brand em{font-style:italic;color:var(--orange)}
+.nav-links{display:none;align-items:center;gap:2px;list-style:none;flex:1;justify-content:center}
+.nl-a{font-size:.82rem;font-weight:600;color:var(--slate);padding:7px 12px;border-radius:var(--r-sm);transition:var(--t);display:inline-flex;align-items:center;gap:5px}
+.nl-a:hover,.nl-a.active{color:var(--blue);background:var(--blue-pale)}
+.nl-item{position:relative}
+.nl-a .chev{font-size:.52rem;transition:transform .22s}
+.nl-item:hover .chev{transform:rotate(180deg)}
+/* mega */
+.mega-drop{position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(8px);min-width:540px;background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);box-shadow:0 24px 64px rgba(8,12,24,.14);padding:22px;opacity:0;visibility:hidden;pointer-events:none;transition:all .2s var(--ease)}
+.nl-item:hover .mega-drop{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+.mega-drop::before{content:'';position:absolute;top:-5px;left:50%;width:10px;height:10px;background:#fff;border-left:1px solid var(--mist);border-top:1px solid var(--mist);transform:translateX(-50%) rotate(45deg)}
+.mega-grid{display:grid;grid-template-columns:1fr 1fr 1fr}
+.mega-col-label{font-size:.61rem;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:var(--blue);padding:0 8px 8px;display:block}
+.mega-link{display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:var(--r-sm);font-size:.79rem;font-weight:500;color:var(--slate);transition:all .14s}
+.mega-link i{width:15px;color:var(--blue);font-size:.74rem;flex-shrink:0}
+.mega-link:hover{background:var(--blue-pale);color:var(--blue);transform:translateX(2px)}
+.nav-cta{display:none;align-items:center;gap:8px;flex-shrink:0}
+.btn-nav-signin{font-size:.79rem;font-weight:600;color:var(--slate);padding:7px 15px;border:1.5px solid var(--mist);border-radius:var(--r-pill);background:#fff;cursor:pointer;transition:var(--t)}
+.btn-nav-signin:hover{color:var(--blue);border-color:var(--blue)}
+.btn-nav-orange{font-size:.79rem;font-weight:700;color:var(--orange);padding:7px 15px;border:1.5px solid rgba(232,98,10,.28);border-radius:var(--r-pill);background:var(--orange-pale);cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:var(--t)}
+.btn-nav-orange:hover{background:var(--g-orange);color:#fff;border-color:transparent}
+.btn-nav-start{font-size:.79rem;font-weight:700;color:#fff;padding:8px 19px;border:none;border-radius:var(--r-pill);background:var(--g-blue);cursor:pointer;box-shadow:var(--sh-blue);display:inline-flex;align-items:center;gap:5px;transition:var(--t)}
+.btn-nav-start:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(26,79,214,.36)}
+/* hamburger */
+.ham-btn{display:flex;flex-direction:column;gap:5px;align-items:center;justify-content:center;width:44px;height:44px;background:none;border:none;cursor:pointer;border-radius:var(--r-sm);transition:var(--t);flex-shrink:0}
+.ham-btn:hover{background:var(--blue-pale)}
+.ham-line{display:block;width:20px;height:1.5px;background:var(--ink);border-radius:2px;transition:all .24s var(--ease);transform-origin:center}
+.ham-btn.open .ham-line:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.ham-btn.open .ham-line:nth-child(2){opacity:0;transform:scaleX(0)}
+.ham-btn.open .ham-line:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+.mob-quick{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.mob-quick-btn{width:38px;height:38px;border-radius:var(--r-sm);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:var(--t);background:var(--blue-pale);color:var(--blue)}
+.mob-quick-wa{width:38px;height:38px;border-radius:var(--r-sm);background:rgba(37,211,102,.1);color:#25D366;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:var(--t)}
+/* mobile panel */
+.mob-overlay{position:fixed;inset:0;background:rgba(8,12,24,.55);backdrop-filter:blur(6px);z-index:1038;opacity:0;visibility:hidden;transition:opacity .28s,visibility .28s}
+.mob-overlay.open{opacity:1;visibility:visible}
+.mob-panel{position:fixed;top:0;right:0;width:min(340px,88vw);height:100dvh;background:#fff;z-index:1039;overflow-y:auto;transform:translateX(100%);transition:transform .3s var(--ease);box-shadow:-12px 0 48px rgba(8,12,24,.18);display:flex;flex-direction:column}
+.mob-panel.open{transform:translateX(0)}
+.mob-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--mist);flex-shrink:0}
+.mob-close{width:36px;height:36px;border:none;background:var(--mist);cursor:pointer;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;transition:var(--t);font-size:.82rem;flex-shrink:0}
+.mob-close:hover{background:#ef4444;color:#fff}
+.mob-body{padding:8px 0;flex:1}
+.mob-link{display:flex;align-items:center;gap:11px;padding:12px 22px;font-size:.88rem;font-weight:600;color:var(--ink);transition:var(--t);min-height:48px}
+.mob-link i{width:18px;color:var(--blue);font-size:.8rem;flex-shrink:0}
+.mob-link:hover,.mob-link.cur{background:var(--blue-pale);color:var(--blue);padding-left:28px}
+.mob-sub-toggle{display:flex;align-items:center;justify-content:space-between;padding:12px 22px;font-size:.88rem;font-weight:600;color:var(--ink);cursor:pointer;transition:var(--t);min-height:48px}
+.mob-sub-toggle .left{display:flex;align-items:center;gap:11px}
+.mob-sub-toggle .left i{width:18px;color:var(--blue);font-size:.8rem}
+.mob-sub-toggle:hover{background:var(--blue-pale);color:var(--blue)}
+.mob-sub-toggle .ci{font-size:.58rem;color:var(--slate);transition:transform .24s}
+.mob-sub-toggle.open .ci{transform:rotate(180deg)}
+.mob-sub{background:rgba(26,79,214,.03);border-top:1px solid var(--blue-pale);border-bottom:1px solid var(--blue-pale);max-height:0;overflow:hidden;transition:max-height .32s ease}
+.mob-sub.open{max-height:600px}
+.mob-sub a{display:flex;align-items:center;gap:8px;padding:10px 22px 10px 50px;font-size:.8rem;color:var(--slate);transition:var(--t);min-height:42px}
+.mob-sub a i{width:15px;color:var(--blue);font-size:.72rem}
+.mob-sub a:hover{color:var(--blue);background:rgba(26,79,214,.05)}
+.mob-hr{border:none;border-top:1px solid var(--mist);margin:6px 18px}
+.mob-footer{padding:14px 18px 30px;border-top:1px solid var(--mist);display:flex;flex-direction:column;gap:9px}
+
+/* ── DARK MODE ── */
+body.dark{background:#050810;color:rgba(255,255,255,.84)}
+body.dark .navbar{background:rgba(8,12,24,.97);border-bottom-color:rgba(255,255,255,.05)}
+body.dark .nl-a{color:rgba(255,255,255,.52)}
+body.dark .nl-a:hover{color:var(--blue-l);background:rgba(26,79,214,.1)}
+body.dark .mega-drop{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+body.dark .mega-drop::before{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+body.dark .mega-link{color:rgba(255,255,255,.52)}
+body.dark .ham-line{background:rgba(255,255,255,.85)}
+body.dark .mob-panel{background:var(--ink-2)}
+body.dark .mob-head{border-color:rgba(255,255,255,.07)}
+body.dark .mob-link{color:rgba(255,255,255,.82)}
+body.dark .mob-close{background:rgba(255,255,255,.07);color:rgba(255,255,255,.7)}
+body.dark .mob-hr{border-color:rgba(255,255,255,.07)}
+body.dark .mob-footer{border-color:rgba(255,255,255,.07)}
+body.dark .btn-nav-signin{color:rgba(255,255,255,.52);border-color:rgba(255,255,255,.1);background:transparent}
+body.dark #theme-toggle{background:var(--ink-2);border-color:rgba(255,255,255,.09)}
+body.dark #theme-toggle svg{stroke:rgba(255,255,255,.72)}
+body.dark .page-bg{background:#050810}
+body.dark .form-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+body.dark .f-label{color:rgba(255,255,255,.6)}
+body.dark .f-input{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:rgba(255,255,255,.85)}
+body.dark .f-input::placeholder{color:rgba(255,255,255,.26)}
+body.dark .f-input:focus{background:rgba(255,255,255,.08);border-color:var(--blue-l)}
+body.dark select.f-input option{background:var(--ink-2)}
+body.dark .svc-tag{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:rgba(255,255,255,.52)}
+body.dark .info-row{border-color:rgba(255,255,255,.06)}
+body.dark .side-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+body.dark .avail-row{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.07)}
+body.dark .slot-day{color:rgba(255,255,255,.62)}
+body.dark .slot-time{color:rgba(255,255,255,.36)}
+body.dark .faq-item{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+body.dark .faq-q{color:rgba(255,255,255,.84)}
+
+/* ── UTILS ── */
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+.g-blue{background:var(--g-blue);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* ── FIXED WIDGETS ── */
+#theme-toggle{position:fixed;bottom:22px;left:22px;z-index:10000;width:44px;height:44px;background:#fff;border:1.5px solid rgba(8,12,24,.08);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 18px rgba(8,12,24,.1);transition:var(--t)}
+#theme-toggle svg{width:16px;height:16px;stroke:var(--slate);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+#theme-toggle:hover{background:var(--blue);border-color:var(--blue);transform:rotate(20deg) scale(1.07)}
+#theme-toggle:hover svg{stroke:#fff}
+#back-to-top{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(16px);z-index:10000;width:48px;height:48px;background:var(--g-blue);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s,transform .4s cubic-bezier(.34,1.56,.64,1);box-shadow:var(--sh-blue)}
+#back-to-top.visible{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+#back-to-top svg{width:18px;height:18px;stroke:#fff;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+/* WhatsApp */
+#wa-float{position:fixed;bottom:86px;right:20px;z-index:10001;text-decoration:none;display:block}
+.wa-ring{position:absolute;inset:0;border-radius:999px;border:2px solid #25D366;opacity:0;animation:wa-r 2.8s ease-out infinite;pointer-events:none}
+.wa-ring:nth-child(2){animation-delay:1.2s}
+@keyframes wa-r{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.95);opacity:0}}
+.wa-pill{display:flex;align-items:center;gap:9px;background:linear-gradient(135deg,#128C7E,#075E54);border-radius:999px;padding:8px 17px 8px 8px;box-shadow:0 6px 26px rgba(18,140,126,.42);transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .28s;white-space:nowrap}
+#wa-float:hover .wa-pill{transform:translateY(-3px) scale(1.02);box-shadow:0 14px 38px rgba(18,140,126,.54)}
+.wa-ico{width:36px;height:36px;flex-shrink:0;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.15rem;color:#fff;position:relative}
+.wa-dot{position:absolute;top:1px;right:1px;width:9px;height:9px;background:#a8ff78;border:2px solid #128C7E;border-radius:50%;animation:dp 2.4s ease-in-out infinite}
+@keyframes dp{0%,100%{transform:scale(1)}50%{transform:scale(1.45);opacity:.5}}
+.wa-text{display:flex;flex-direction:column;gap:1px}
+.wa-label{font-size:.64rem;color:rgba(255,255,255,.55);font-weight:600}
+.wa-cta{font-size:.88rem;color:#fff;font-weight:800;font-family:'Fraunces',serif}
+.wa-arr{color:rgba(255,255,255,.6);font-size:.68rem;margin-left:2px;transition:transform .2s}
+#wa-float:hover .wa-arr{transform:translateX(3px)}
+@media(max-width:767px){
+  #wa-float{bottom:74px;right:14px}
+  .wa-text,.wa-arr{display:none}
+  .wa-pill{padding:0;width:52px;height:52px;border-radius:50%;justify-content:center}
+  .wa-ico{width:52px;height:52px;font-size:1.4rem}
+  #theme-toggle{bottom:14px;left:14px;width:40px;height:40px}
+  #back-to-top{bottom:12px;width:46px;height:46px}
+}
+/* Toast */
+#toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--ink-2);color:#fff;border-radius:var(--r-md);padding:11px 17px;font-size:.82rem;display:flex;align-items:center;gap:8px;z-index:10002;opacity:0;transition:var(--t);border-left:3px solid var(--emerald);min-width:210px;max-width:calc(100vw - 40px)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* Cookie */
+#cookie-bar{position:fixed;bottom:0;left:0;right:0;background:var(--ink-2);color:rgba(255,255,255,.8);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:9998;transform:translateY(100%);transition:transform .38s;border-top:1px solid rgba(255,255,255,.06);flex-wrap:wrap}
+#cookie-bar.show{transform:translateY(0)}
+#cookie-bar p{font-size:.77rem;margin:0;flex:1;min-width:180px}
+#cookie-accept{background:var(--blue);color:#fff;border:none;padding:7px 18px;border-radius:var(--r-pill);font-size:.79rem;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;transition:var(--t)}
+#cookie-accept:hover{background:var(--blue-d)}
+
+/* ════════════════════════════════
+   HERO HEADER
+════════════════════════════════ */
+.page-hero{background:var(--g-hero);padding-top:var(--nav-h);position:relative;overflow:hidden}
+.page-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(26,79,214,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(26,79,214,.04) 1px,transparent 1px);background-size:44px 44px}
+.orb{position:absolute;border-radius:50%;pointer-events:none}
+.orb-1{width:480px;height:480px;background:radial-gradient(circle,rgba(26,79,214,.18) 0%,transparent 68%);top:-140px;right:-80px}
+.orb-2{width:320px;height:320px;background:radial-gradient(circle,rgba(232,98,10,.1) 0%,transparent 70%);bottom:-60px;left:-20px}
+.page-hero-inner{position:relative;z-index:1;padding:64px 0 56px;max-width:600px}
+.breadcrumb{display:inline-flex;align-items:center;gap:7px;font-size:.72rem;color:rgba(255,255,255,.36);font-weight:600;margin-bottom:18px}
+.breadcrumb a{color:rgba(255,255,255,.36);transition:color .2s}
+.breadcrumb a:hover{color:rgba(255,255,255,.65)}
+.breadcrumb .sep{opacity:.3}
+.page-hero-inner h1{font-size:clamp(2rem,5.5vw,3.4rem);font-weight:700;color:#fff;margin-bottom:12px}
+.page-hero-inner h1 em{font-style:italic;color:var(--orange-l)}
+.page-hero-inner p{font-size:clamp(.88rem,2.5vw,1rem);color:rgba(255,255,255,.5);line-height:1.78;max-width:460px;margin-bottom:26px}
+.hero-pills{display:flex;flex-wrap:wrap;gap:9px}
+.hero-pill{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-pill);padding:6px 14px;font-size:.75rem;font-weight:600;color:rgba(255,255,255,.72);backdrop-filter:blur(6px)}
+.hero-pill i{font-size:.74rem}
+
+/* ════════════════════════════════
+   MAIN CONTENT
+════════════════════════════════ */
+.contact-section{padding:72px 0 88px}
+.contact-grid{display:grid;grid-template-columns:1fr;gap:36px}
+
+/* ─── FORM CARD ─── */
+.form-card{background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);box-shadow:var(--sh-md);overflow:hidden}
+.form-top{padding:28px 32px 22px;border-bottom:1px solid var(--mist);position:relative}
+.form-top::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--orange))}
+.form-top h2{font-size:1.35rem;font-weight:700;margin-bottom:4px}
+.form-top p{font-size:.81rem;color:var(--slate);line-height:1.6}
+.form-body{padding:28px 32px 32px}
+
+/* fields */
+.f-label{font-size:.77rem;font-weight:700;color:var(--slate);display:block;margin-bottom:6px}
+.f-label .req{color:var(--rose)}
+.field-wrap{position:relative}
+.field-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--slate-l);font-size:.8rem;pointer-events:none;transition:color .2s}
+.field-wrap:focus-within .field-icon{color:var(--blue)}
+.f-input{width:100%;background:var(--ghost);border:1.5px solid var(--mist);border-radius:var(--r-md);color:var(--ink);padding:11px 14px;font-size:15px;font-family:'Plus Jakarta Sans',sans-serif;transition:var(--t);outline:none;-webkit-appearance:none}
+.f-input.has-icon{padding-left:38px}
+.f-input:focus{background:#fff;border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,79,214,.08)}
+.f-input.error{border-color:var(--rose);box-shadow:0 0 0 3px rgba(225,29,72,.08)}
+.f-input::placeholder{color:var(--slate-l)}
+.f-error{font-size:.7rem;color:var(--rose);margin-top:4px;display:none;align-items:center;gap:4px}
+.f-input.error ~ .f-error{display:flex}
+.row2{display:grid;grid-template-columns:1fr;gap:16px}
+.fg{display:flex;flex-direction:column;gap:0}
+.mt14{margin-top:14px}
+.mt20{margin-top:20px}
+
+/* service tags */
+.svc-wrap{display:flex;flex-wrap:wrap;gap:7px}
+.svc-chk{display:none}
+.svc-tag{display:inline-flex;align-items:center;gap:5px;background:#fff;border:1.5px solid var(--mist);color:var(--slate);border-radius:var(--r-pill);padding:6px 13px;font-size:.76rem;font-weight:600;transition:var(--t);cursor:pointer;user-select:none}
+.svc-tag i{font-size:.7rem}
+.svc-tag:hover{border-color:var(--blue);color:var(--blue)}
+.svc-chk:checked + .svc-tag{background:var(--g-blue);border-color:transparent;color:#fff;box-shadow:var(--sh-blue)}
+
+/* char count */
+.textarea-wrap{position:relative}
+.char-ct{position:absolute;bottom:9px;right:11px;font-size:.63rem;color:var(--slate-l);pointer-events:none}
+
+/* NDA row */
+.nda-row{display:flex;align-items:flex-start;gap:9px;background:var(--blue-pale);border:1px solid rgba(26,79,214,.14);border-radius:var(--r-md);padding:13px 14px;margin-top:20px;cursor:pointer}
+.nda-row input[type="checkbox"]{width:16px;height:16px;flex-shrink:0;margin-top:1px;accent-color:var(--blue);cursor:pointer}
+.nda-row label{font-size:.78rem;color:var(--slate);line-height:1.58;cursor:pointer}
+.nda-row label strong{color:var(--ink)}
+
+/* divider */
+.or-div{display:flex;align-items:center;gap:12px;margin:20px 0;font-size:.73rem;color:var(--slate-l);font-weight:600}
+.or-div::before,.or-div::after{content:'';flex:1;height:1px;background:var(--mist)}
+body.dark .or-div::before,body.dark .or-div::after{background:rgba(255,255,255,.07)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:.87rem;border-radius:var(--r-pill);transition:var(--t);cursor:pointer;border:none;letter-spacing:.01em;white-space:nowrap}
+.btn-primary{background:var(--g-blue);color:#fff;padding:12px 26px;box-shadow:var(--sh-blue)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(26,79,214,.36)}
+.btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn-orange{background:var(--g-orange);color:#fff;padding:12px 24px;box-shadow:var(--sh-orange)}
+.btn-orange:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(232,98,10,.36)}
+.btn-outline{background:transparent;color:var(--blue);padding:10px 22px;border:1.5px solid var(--blue)}
+.btn-outline:hover{background:var(--g-blue);color:#fff;transform:translateY(-2px)}
+.btn-wa-full{display:flex;align-items:center;justify-content:center;gap:9px;background:linear-gradient(135deg,#128C7E,#075E54);color:#fff;padding:12px 22px;border-radius:var(--r-pill);font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:.87rem;box-shadow:0 6px 18px rgba(18,140,126,.3);transition:var(--t)}
+.btn-wa-full:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,140,126,.44)}
+.btn-submit{width:100%;padding:13px;font-size:.9rem;border-radius:var(--r-lg);position:relative}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{display:none;width:17px;height:17px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+.btn-submit.loading .btn-txt{display:none}
+.btn-submit.loading .spinner{display:block}
+
+/* success */
+@keyframes scale-in{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+@keyframes check-draw{to{stroke-dashoffset:0}}
+.form-success{display:none;padding:48px 32px;text-align:center;animation:scale-in .45s cubic-bezier(.34,1.56,.64,1) both}
+.success-circle{width:68px;height:68px;background:linear-gradient(135deg,var(--emerald),#10b981);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;box-shadow:0 8px 28px rgba(5,150,105,.28)}
+.success-circle svg{width:34px;height:34px}
+.check-path{stroke-dasharray:34;stroke-dashoffset:34;animation:check-draw .5s .28s ease forwards}
+.form-success h3{font-size:1.4rem;font-weight:700;margin-bottom:8px}
+.form-success p{font-size:.84rem;color:var(--slate);line-height:1.72;max-width:360px;margin:0 auto 22px}
+.success-facts{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin-bottom:22px}
+.sf{display:flex;align-items:center;gap:5px;font-size:.74rem;color:var(--slate);font-weight:600}
+.sf i{color:var(--emerald);font-size:.76rem}
+
+/* ─── SIDEBAR ─── */
+.sidebar{display:flex;flex-direction:column;gap:20px}
+.side-card{background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);padding:22px;box-shadow:var(--sh-sm)}
+.side-card-title{font-size:.64rem;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:var(--blue);margin-bottom:16px;display:flex;align-items:center;gap:7px}
+.side-card-title::before{content:'';width:11px;height:2px;background:var(--blue);border-radius:2px;flex-shrink:0}
+
+/* info rows */
+.info-row{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--mist)}
+.info-row:last-child{border-bottom:none;padding-bottom:0}
+.ir-icon{width:34px;height:34px;flex-shrink:0;background:var(--blue-pale);border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:.78rem;margin-top:1px}
+.ir-label{font-size:.62rem;color:var(--slate-l);font-weight:700;letter-spacing:.7px;text-transform:uppercase;margin-bottom:2px}
+.ir-val{font-size:.82rem;font-weight:600;color:var(--ink)}
+body.dark .ir-val{color:rgba(255,255,255,.76)}
+.ir-val a{color:inherit;transition:color .2s}
+.ir-val a:hover{color:var(--orange)}
+
+/* availability */
+.avail-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(5,150,105,.1);border:1px solid rgba(5,150,105,.2);border-radius:var(--r-pill);padding:4px 11px;font-size:.68rem;font-weight:700;color:#10b981;margin-bottom:14px}
+.avail-dot{width:6px;height:6px;border-radius:50%;background:#34d399;animation:dp 2.4s ease-in-out infinite;flex-shrink:0}
+.avail-rows{display:flex;flex-direction:column;gap:8px}
+.avail-row{display:flex;align-items:center;justify-content:space-between;background:var(--ghost);border:1px solid var(--mist);border-radius:var(--r-sm);padding:9px 13px}
+.slot-day{font-size:.78rem;font-weight:700;color:var(--ink)}
+.slot-time{font-size:.72rem;color:var(--slate)}
+.slot-badge{font-size:.62rem;font-weight:800;padding:2px 9px;border-radius:var(--r-pill);letter-spacing:.3px}
+.badge-open{background:rgba(5,150,105,.12);color:#059669;border:1px solid rgba(5,150,105,.2)}
+.badge-ltd{background:var(--orange-pale);color:var(--orange);border:1px solid rgba(232,98,10,.2)}
+
+/* why us */
+.why-item{display:flex;align-items:flex-start;gap:11px;padding:10px 0;border-bottom:1px solid var(--mist)}
+.why-item:last-child{border-bottom:none;padding-bottom:0}
+.why-icon{width:30px;height:30px;flex-shrink:0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.74rem}
+.why-icon.g{background:rgba(5,150,105,.1);color:var(--emerald)}
+.why-icon.b{background:var(--blue-pale);color:var(--blue)}
+.why-icon.o{background:var(--orange-pale);color:var(--orange)}
+.why-icon.t{background:rgba(13,148,136,.1);color:var(--teal)}
+.why-title{font-size:.82rem;font-weight:700;margin-bottom:2px}
+.why-sub{font-size:.74rem;color:var(--slate);line-height:1.55}
+
+/* socials */
+.socials{display:flex;gap:8px;flex-wrap:wrap}
+.soc{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:var(--blue-pale);color:var(--blue);font-size:.84rem;transition:var(--t)}
+.soc:hover{transform:translateY(-3px)}
+.soc.tw:hover{background:#1da1f2;color:#fff}
+.soc.li:hover{background:#0077b5;color:#fff}
+.soc.gh:hover{background:#333;color:#fff}
+.soc.ig:hover{background:linear-gradient(135deg,#fd5949,#d6249f,#285aeb);color:#fff}
+.soc.wa:hover{background:#25D366;color:#fff}
+
+/* ════════════════════════════════
+   FAQ
+════════════════════════════════ */
+.faq-section{padding:64px 0;background:#fff}
+body.dark .faq-section{background:var(--ink-2)}
+.faq-head{text-align:center;margin-bottom:40px}
+.faq-kicker{display:inline-flex;align-items:center;gap:6px;background:var(--blue-pale);color:var(--blue);border-radius:var(--r-pill);padding:4px 13px;font-size:.65rem;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;margin-bottom:10px;border:1px solid rgba(26,79,214,.12)}
+.faq-kicker::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--blue)}
+.faq-head h2{font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;margin-bottom:8px}
+.faq-head p{font-size:.87rem;color:var(--slate);max-width:420px;margin:0 auto}
+.faq-list{display:grid;grid-template-columns:1fr;gap:9px;max-width:820px;margin:0 auto}
+.faq-item{background:var(--ghost);border-radius:var(--r-lg);border:1px solid var(--mist);overflow:hidden;transition:border-color .22s}
+.faq-item:hover{border-color:var(--blue)}
+.faq-item.open{border-color:var(--blue-l)}
+.faq-q{padding:15px 18px;font-weight:700;font-size:.85rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-family:'Plus Jakarta Sans',sans-serif;min-height:52px;gap:12px}
+.faq-icon{width:20px;height:20px;flex-shrink:0;background:var(--blue-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:.62rem;transition:transform .24s,background .22s}
+.faq-item.open .faq-icon{transform:rotate(45deg);background:var(--blue);color:#fff}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;color:var(--slate);font-size:.82rem;line-height:1.76}
+.faq-item.open .faq-a{max-height:180px;padding:0 18px 14px}
+
+/* ════════════════════════════════
+   FOOTER
+════════════════════════════════ */
+@keyframes bar-shift{0%{background-position:0%}100%{background-position:200%}}
+@keyframes dot-p{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.45);opacity:.5}}
+footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-top:1px solid rgba(255,255,255,.05)}
+.footer-bar{height:2px;background:linear-gradient(90deg,#1a4fd6,#e8620a,#1a4fd6);background-size:200% 100%;animation:bar-shift 6s linear infinite}
+.footer-cta{background:linear-gradient(135deg,#0c1630,#101f40);border-bottom:1px solid rgba(255,255,255,.05);padding:30px 0}
+.footer-cta-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.footer-cta-text h4{font-family:'Fraunces',serif;font-size:clamp(.98rem,2.8vw,1.35rem);font-weight:700;color:#fff;margin-bottom:3px;line-height:1.2}
+.footer-cta-text p{font-size:.76rem;color:rgba(255,255,255,.36);margin:0}
+.footer-cta-btns{display:flex;gap:9px;flex-wrap:wrap;flex-shrink:0}
+.footer-body{padding:52px 0 36px}
+.footer-cols{display:grid;grid-template-columns:2fr 1fr 1fr 1.6fr;gap:34px 28px}
+.footer-brand-name{font-family:'Fraunces',serif;font-size:1.14rem;font-weight:700;color:#fff;letter-spacing:-.04em;display:flex;align-items:center;gap:7px;margin-bottom:9px}
+.footer-brand-name em{font-style:italic;color:#e8620a}
+.footer-bmark{width:27px;height:27px;background:var(--g-blue);border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:.8rem;color:#fff;flex-shrink:0}
+.footer-tagline{font-size:.77rem;color:rgba(255,255,255,.34);line-height:1.74;max-width:270px;margin-bottom:16px}
+.footer-socials{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.fsoc{width:32px;height:32px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);color:rgba(255,255,255,.48);font-size:.78rem;transition:all .2s;text-decoration:none}
+.fsoc:hover{transform:translateY(-2px)}
+.fsoc.tw:hover{background:#1da1f2;color:#fff}
+.fsoc.li:hover{background:#0077b5;color:#fff}
+.fsoc.gh:hover{background:#fff;color:#111}
+.fsoc.ig:hover{background:linear-gradient(135deg,#fd5949,#d6249f,#285aeb);color:#fff}
+.fsoc.yt:hover{background:#ff0000;color:#fff}
+.fsoc.wa:hover{background:#25D366;color:#fff}
+.footer-col-title{font-size:.62rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,.26);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.footer-col-title::before{content:'';width:10px;height:1.5px;background:var(--blue);border-radius:2px;flex-shrink:0}
+.footer-links{list-style:none;padding:0;margin:0}
+.footer-links li{margin-bottom:9px}
+.footer-links a{color:rgba(255,255,255,.4);text-decoration:none;font-size:.77rem;transition:color .18s,padding-left .18s;display:inline-flex;align-items:center;gap:5px}
+.footer-links a:hover{color:#fff;padding-left:3px}
+.footer-links a i{width:12px;font-size:.66rem;opacity:.5}
+.footer-links a.acad{color:#5eead4;font-weight:600}
+.fci{display:flex;align-items:flex-start;gap:9px;margin-bottom:12px}
+.fci-ic{width:28px;height:28px;flex-shrink:0;background:rgba(26,79,214,.12);border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--blue-l);font-size:.68rem;margin-top:1px}
+.fci-label{font-size:.58rem;color:rgba(255,255,255,.22);font-weight:800;letter-spacing:.7px;text-transform:uppercase}
+.fci-val{font-size:.77rem;color:rgba(255,255,255,.58)}
+.fci-val a{color:rgba(255,255,255,.58);text-decoration:none;transition:color .18s}
+.fci-val a:hover{color:var(--orange-l)}
+.footer-hours{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05);border-radius:7px;padding:6px 10px;font-size:.69rem;color:rgba(255,255,255,.36);margin-top:3px}
+.hdot{width:6px;height:6px;background:#34d399;border-radius:50%;animation:dot-p 2.4s ease-in-out infinite;flex-shrink:0}
+.footer-divider{border:none;border-top:1px solid rgba(255,255,255,.05)}
+.footer-bottom{padding:16px 0}
+.footer-bottom-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.footer-copy{font-size:.7rem;color:rgba(255,255,255,.2)}
+.footer-legal{display:flex;gap:18px;flex-wrap:wrap}
+.footer-legal a{font-size:.69rem;color:rgba(255,255,255,.24);text-decoration:none;transition:color .18s}
+.footer-legal a:hover{color:rgba(255,255,255,.6)}
+.footer-made{font-size:.69rem;color:rgba(255,255,255,.18);display:flex;align-items:center;gap:3px}
+.footer-made span{color:var(--orange-l)}
+
+/* ── RESPONSIVE ── */
+@media(min-width:600px){
+  .container{padding:0 28px}
+  .row2{grid-template-columns:1fr 1fr}
+  .faq-list{grid-template-columns:1fr 1fr}
+}
+@media(min-width:992px){
+  :root{--nav-h:72px}
+  .container{padding:0 32px}
+  .nav-inner{padding:0 32px}
+  .nav-links{display:flex}
+  .nav-cta{display:flex}
+  .ham-btn{display:none!important}
+  .mob-quick{display:none!important}
+  .contact-grid{grid-template-columns:1fr 360px;gap:40px;align-items:start}
+}
+@media(max-width:539px){
+  .footer-cols{grid-template-columns:1fr 1fr;gap:22px 14px}
+  .footer-col-brand{grid-column:1/-1}
+  .footer-col-contact{grid-column:1/-1}
+  .footer-cta-inner{flex-direction:column;align-items:flex-start}
+  .footer-cta-btns{width:100%}
+  .footer-cta-btns a{flex:1;justify-content:center}
+  .footer-bottom-inner{flex-direction:column;align-items:center;text-align:center;gap:8px}
+  .footer-legal{justify-content:center;gap:10px}
+  .form-top,.form-body{padding-left:18px;padding-right:18px}
+}
+@media(max-width:1023px){
+  .footer-cols{grid-template-columns:1fr 1fr;gap:26px 22px}
+  .footer-col-brand{grid-column:1/-1}
+}
+@media print{.navbar,#wa-float,#theme-toggle,#back-to-top,#scroll-progress,#cookie-bar{display:none!important}}
+</style>
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+
+<!-- Fixed widgets -->
+<button id="theme-toggle" title="Toggle dark mode" aria-label="Toggle dark mode">
+  <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+<button id="back-to-top" aria-label="Back to top">
+  <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- WhatsApp float -->
+<a id="wa-float" href="https://wa.me/254769329340?text=Hello%20NeurowexTech!%20I%20would%20like%20to%20discuss%20a%20project." target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+  <span class="wa-ring" aria-hidden="true"></span>
+  <span class="wa-ring" aria-hidden="true"></span>
+  <div class="wa-pill">
+    <div class="wa-ico"><i class="fab fa-whatsapp"></i><span class="wa-dot"></span></div>
+    <div class="wa-text">
+      <span class="wa-label">Online · Replies in mins</span>
+      <span class="wa-cta">Chat with us</span>
     </div>
+    <i class="fas fa-arrow-right wa-arr"></i>
+  </div>
+</a>
+
+<div id="toast" role="status" aria-live="polite">
+  <i class="fas fa-check-circle" style="color:#34d399"></i>
+  <span id="toast-msg">Done!</span>
+</div>
+<div id="cookie-bar">
+  <p>🍪 We use cookies to improve your experience.</p>
+  <button id="cookie-accept">Accept</button>
+</div>
+
+<!-- Mobile panel -->
+<div class="mob-overlay" id="mobOverlay" aria-hidden="true"></div>
+<div class="mob-panel" id="mobPanel" role="dialog" aria-modal="true" aria-label="Navigation menu">
+  <div class="mob-head">
+    <a href="/" class="nav-brand" style="font-size:1.1rem;" aria-label="NeurowexTech">
+      <span class="brand-mark">N</span>Neurowex<em>Tech</em>
+    </a>
+    <button class="mob-close" id="mobClose" aria-label="Close menu"><i class="fas fa-times"></i></button>
+  </div>
+  <nav class="mob-body" aria-label="Mobile navigation">
+    <a href="/"          class="mob-link"><i class="fas fa-home"></i> Home</a>
+    <div class="mob-sub-toggle" id="mobSvcToggle" role="button" tabindex="0" aria-expanded="false">
+      <div class="left"><i class="fas fa-th-large"></i> Services</div>
+      <i class="fas fa-chevron-down ci"></i>
+    </div>
+    <div class="mob-sub" id="mobSvcSub">
+      <a href="/contact?service=Web+Development"><i class="fas fa-laptop-code"></i> Web Development</a>
+      <a href="/contact?service=Mobile+Apps"><i class="fas fa-mobile-alt"></i> Mobile Apps</a>
+      <a href="/contact?service=E-commerce"><i class="fas fa-shopping-cart"></i> E-commerce</a>
+      <a href="/contact?service=MVP+Development"><i class="fas fa-rocket"></i> MVP Development</a>
+      <a href="/contact?service=AI+Integration"><i class="fas fa-robot"></i> AI Integration</a>
+      <a href="/contact?service=Graphic+Design"><i class="fas fa-palette"></i> Graphic Design</a>
+    </div>
+    <a href="/#process"   class="mob-link"><i class="fas fa-sitemap"></i> Process</a>
+    <a href="/#portfolio" class="mob-link"><i class="fas fa-briefcase"></i> Portfolio</a>
+    <a href="/#team"      class="mob-link"><i class="fas fa-users"></i> Team</a>
+    <a href="/#pricing"   class="mob-link"><i class="fas fa-tags"></i> Pricing</a>
+    <a href="/#blog"      class="mob-link"><i class="fas fa-rss"></i> Blog</a>
+    <a href="/#faq"       class="mob-link"><i class="fas fa-question-circle"></i> FAQ</a>
+    <a href="/contact"    class="mob-link cur"><i class="fas fa-envelope"></i> Contact</a>
+    <hr class="mob-hr">
+    <a href="/learn" class="mob-link" style="color:var(--teal)"><i class="fas fa-graduation-cap" style="color:var(--teal)"></i> Academy</a>
+  </nav>
+  <div class="mob-footer">
+    <a href="/login"   class="btn btn-outline"  style="justify-content:center;">Sign In</a>
+    <a href="/learn"   class="btn btn-orange"   style="justify-content:center;"><i class="fas fa-graduation-cap"></i> Academy</a>
+    <a href="/contact" class="btn btn-primary"  style="justify-content:center;">Start Project <i class="fas fa-arrow-right"></i></a>
+  </div>
+</div>
+
+<!-- ── NAVBAR ── -->
+<nav class="navbar" id="mainNav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand" aria-label="NeurowexTech Home">
+      <span class="brand-mark">N</span>Neurowex<em>Tech</em>
+    </a>
+    <ul class="nav-links" role="list">
+      <li class="nl-item"><a href="/"          class="nl-a">Home</a></li>
+      <li class="nl-item">
+        <a href="/#services" class="nl-a">Services <i class="fas fa-chevron-down chev"></i></a>
+        <div class="mega-drop" role="menu">
+          <div class="mega-grid">
+            <div>
+              <span class="mega-col-label">Development</span>
+              <a class="mega-link" href="/contact?service=Web+Development"><i class="fas fa-laptop-code"></i> Web Dev</a>
+              <a class="mega-link" href="/contact?service=Mobile+Apps"><i class="fas fa-mobile-alt"></i> Mobile Apps</a>
+              <a class="mega-link" href="/contact?service=E-commerce"><i class="fas fa-shopping-cart"></i> E-commerce</a>
+              <a class="mega-link" href="/contact?service=MVP+Development"><i class="fas fa-rocket"></i> MVP Dev</a>
+            </div>
+            <div>
+              <span class="mega-col-label">Cloud & Security</span>
+              <a class="mega-link" href="/contact?service=Cloud+Solutions"><i class="fas fa-cloud-upload-alt"></i> Cloud</a>
+              <a class="mega-link" href="/contact?service=Cyber+Security"><i class="fas fa-shield-alt"></i> Cyber Security</a>
+              <a class="mega-link" href="/contact?service=AI+Integration"><i class="fas fa-robot"></i> AI Integration</a>
+              <a class="mega-link" href="/#graphic"><i class="fas fa-palette"></i> Graphic Design</a>
+            </div>
+            <div>
+              <span class="mega-col-label">Data & Support</span>
+              <a class="mega-link" href="/contact?service=Analytics"><i class="fas fa-chart-line"></i> Analytics</a>
+              <a class="mega-link" href="/contact?service=IT+Consulting"><i class="fas fa-headset"></i> IT Consulting</a>
+              <a class="mega-link" href="/contact?service=Database"><i class="fas fa-database"></i> Database</a>
+              <a class="mega-link" href="/contact?service=SEO"><i class="fas fa-search"></i> SEO</a>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="nl-item"><a href="/#process"   class="nl-a">Process</a></li>
+      <li class="nl-item"><a href="/#portfolio" class="nl-a">Portfolio</a></li>
+      <li class="nl-item"><a href="/#team"      class="nl-a">Team</a></li>
+      <li class="nl-item"><a href="/#pricing"   class="nl-a">Pricing</a></li>
+      <li class="nl-item"><a href="/#blog"      class="nl-a">Blog</a></li>
+      <li class="nl-item"><a href="/#faq"       class="nl-a">FAQ</a></li>
+      <li class="nl-item"><a href="/contact"    class="nl-a active">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="/login"   class="btn-nav-signin">Sign In</a>
+      <a href="/learn"   class="btn-nav-orange"><i class="fas fa-graduation-cap"></i> Academy</a>
+      <a href="/contact" class="btn-nav-start">Start Project <i class="fas fa-arrow-right" style="font-size:.7rem"></i></a>
+    </div>
+    <div class="mob-quick" id="mobQuick">
+      <button class="mob-quick-btn" id="mobThemeBtn" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+      <a href="https://wa.me/254769329340" target="_blank" rel="noopener noreferrer" class="mob-quick-wa" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      <button class="ham-btn" id="hamBtn" aria-label="Open menu" aria-expanded="false">
+        <span class="ham-line"></span><span class="ham-line"></span><span class="ham-line"></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════
+     PAGE HERO
+════════════════════════════════ -->
+<section class="page-hero">
+  <div class="orb orb-1" aria-hidden="true"></div>
+  <div class="orb orb-2" aria-hidden="true"></div>
+  <div class="container">
+    <div class="page-hero-inner">
+      <div class="breadcrumb">
+        <a href="/">Home</a><span class="sep">›</span><span>Contact</span>
+      </div>
+      <h1>Let's Build<br><em>Something Great</em></h1>
+      <p>Tell us about your idea. We'll respond with a tailored proposal within 24 hours — no commitment required.</p>
+      <div class="hero-pills">
+        <div class="hero-pill"><i class="fas fa-clock" style="color:#34d399"></i> Replies in &lt; 24 hrs</div>
+        <div class="hero-pill"><i class="fas fa-shield-alt" style="color:var(--orange-l)"></i> NDA on request</div>
+        <div class="hero-pill"><i class="fas fa-handshake" style="color:var(--blue-l)"></i> Free consultation</div>
+      </div>
+    </div>
+  </div>
 </section>
 
+<!-- ════════════════════════════════
+     CONTACT SECTION
+════════════════════════════════ -->
 <section class="contact-section">
-    <div class="container">
-        {{#if success}}
-            <div class="alert alert-success">{{success}}</div>
-        {{/if}}
-        {{#if error}}
-            <div class="alert alert-error">{{error}}</div>
-        {{/if}}
-        
-        <form method="POST" action="/contact" class="contact-form">
-            <div class="form-group">
-                <label for="name">Full Name *</label>
-                <input type="text" id="name" name="name" required value="{{formData.name}}">
+  <div class="container">
+    <div class="contact-grid">
+
+      <!-- FORM -->
+      <div>
+        <div class="form-card">
+          <div class="form-top">
+            <h2>Send Us a Message</h2>
+            <p>Fill in the details below and we'll get back to you within one business day.</p>
+          </div>
+
+          <div class="form-body">
+            <form id="contactForm" novalidate>
+
+              <!-- Name + Email -->
+              <div class="row2">
+                <div class="fg">
+                  <label class="f-label" for="cName">Full Name <span class="req">*</span></label>
+                  <div class="field-wrap">
+                    <i class="fas fa-user field-icon"></i>
+                    <input type="text" id="cName" class="f-input has-icon" placeholder="John Mwangi" required autocomplete="name">
+                  </div>
+                  <span class="f-error"><i class="fas fa-exclamation-circle"></i> Required field.</span>
+                </div>
+                <div class="fg">
+                  <label class="f-label" for="cEmail">Email Address <span class="req">*</span></label>
+                  <div class="field-wrap">
+                    <i class="fas fa-envelope field-icon"></i>
+                    <input type="email" id="cEmail" class="f-input has-icon" placeholder="hello@company.com" required autocomplete="email">
+                  </div>
+                  <span class="f-error"><i class="fas fa-exclamation-circle"></i> Enter a valid email.</span>
+                </div>
+              </div>
+
+              <!-- Phone + Company -->
+              <div class="row2 mt14">
+                <div class="fg">
+                  <label class="f-label" for="cPhone">Phone / WhatsApp</label>
+                  <div class="field-wrap">
+                    <i class="fas fa-phone field-icon"></i>
+                    <input type="tel" id="cPhone" class="f-input has-icon" placeholder="+254 700 000 000" autocomplete="tel">
+                  </div>
+                </div>
+                <div class="fg">
+                  <label class="f-label" for="cCompany">Company</label>
+                  <div class="field-wrap">
+                    <i class="fas fa-building field-icon"></i>
+                    <input type="text" id="cCompany" class="f-input has-icon" placeholder="Acme Inc." autocomplete="organization">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Service -->
+              <div class="fg mt14">
+                <label class="f-label">Service Needed</label>
+                <div class="svc-wrap">
+                  <input type="checkbox" class="svc-chk" id="sv1" value="Web Development"><label class="svc-tag" for="sv1"><i class="fas fa-laptop-code"></i> Web Dev</label>
+                  <input type="checkbox" class="svc-chk" id="sv2" value="Mobile App"><label class="svc-tag" for="sv2"><i class="fas fa-mobile-alt"></i> Mobile App</label>
+                  <input type="checkbox" class="svc-chk" id="sv3" value="UI/UX Design"><label class="svc-tag" for="sv3"><i class="fas fa-pen-nib"></i> UI/UX</label>
+                  <input type="checkbox" class="svc-chk" id="sv4" value="AI Integration"><label class="svc-tag" for="sv4"><i class="fas fa-robot"></i> AI</label>
+                  <input type="checkbox" class="svc-chk" id="sv5" value="E-commerce"><label class="svc-tag" for="sv5"><i class="fas fa-shopping-cart"></i> E-commerce</label>
+                  <input type="checkbox" class="svc-chk" id="sv6" value="Graphic Design"><label class="svc-tag" for="sv6"><i class="fas fa-palette"></i> Graphic Design</label>
+                  <input type="checkbox" class="svc-chk" id="sv7" value="Cloud & DevOps"><label class="svc-tag" for="sv7"><i class="fas fa-cloud-upload-alt"></i> Cloud</label>
+                  <input type="checkbox" class="svc-chk" id="sv8" value="SEO / Analytics"><label class="svc-tag" for="sv8"><i class="fas fa-chart-line"></i> SEO / Analytics</label>
+                </div>
+              </div>
+
+              <!-- Budget + Timeline -->
+              <div class="row2 mt14">
+                <div class="fg">
+                  <label class="f-label" for="cBudget">Budget (Kshs)</label>
+                  <div class="field-wrap">
+                    <i class="fas fa-coins field-icon"></i>
+                    <select id="cBudget" class="f-input has-icon" style="cursor:pointer">
+                      <option value="">Select range...</option>
+                      <option>10,000 – 15,000</option>
+                      <option>15,000 – 25,000</option>
+                      <option>25,000 – 50,000</option>
+                      <option>50,000+</option>
+                      <option>Prefer not to say</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="fg">
+                  <label class="f-label" for="cTimeline">Timeline</label>
+                  <div class="field-wrap">
+                    <i class="fas fa-calendar-alt field-icon"></i>
+                    <select id="cTimeline" class="f-input has-icon" style="cursor:pointer">
+                      <option value="">Select timeline...</option>
+                      <option>ASAP</option>
+                      <option>Within 1 month</option>
+                      <option>1–3 months</option>
+                      <option>3–6 months</option>
+                      <option>Flexible</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Message -->
+              <div class="fg mt14">
+                <label class="f-label" for="cMessage">Project Description <span class="req">*</span></label>
+                <div class="textarea-wrap">
+                  <textarea id="cMessage" class="f-input" rows="5" placeholder="Tell us about your project — what it does, who it's for, and any key requirements..." required maxlength="2000"></textarea>
+                  <span class="char-ct"><span id="charNum">0</span>/2000</span>
+                </div>
+                <span class="f-error" id="msgErr"><i class="fas fa-exclamation-circle"></i> Please describe your project.</span>
+              </div>
+
+              <!-- NDA -->
+              <div class="nda-row">
+                <input type="checkbox" id="cNDA">
+                <label for="cNDA"><strong>Request an NDA</strong> — I'd like a Non-Disclosure Agreement signed before sharing sensitive project details.</label>
+              </div>
+
+              <!-- Submit -->
+              <div class="mt20">
+                <button type="submit" id="cSubmit" class="btn btn-primary btn-submit">
+                  <span class="btn-txt"><i class="fas fa-paper-plane"></i> Send Message</span>
+                  <span class="spinner"></span>
+                </button>
+              </div>
+
+              <div class="or-div">or reach us instantly</div>
+
+              <a href="https://wa.me/254769329340?text=Hello%20NeurowexTech!%20I%20would%20like%20to%20discuss%20a%20project." target="_blank" rel="noopener noreferrer" class="btn-wa-full">
+                <i class="fab fa-whatsapp" style="font-size:1.1rem"></i> Message on WhatsApp
+                <span style="font-size:.74rem;opacity:.7;font-weight:500;">+254 769 329 340</span>
+              </a>
+
+            </form>
+
+            <!-- Success -->
+            <div class="form-success" id="formSuccess">
+              <div class="success-circle">
+                <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline class="check-path" points="10,25 20,35 38,15"/>
+                </svg>
+              </div>
+              <h3>Message Sent! 🎉</h3>
+              <p>Thank you for reaching out. We'll review your project and reply within 24 hours.</p>
+              <div class="success-facts">
+                <div class="sf"><i class="fas fa-clock"></i> &lt; 24 hr response</div>
+                <div class="sf"><i class="fas fa-lock"></i> 100% confidential</div>
+                <div class="sf"><i class="fas fa-star"></i> Free consultation</div>
+              </div>
+              <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+                <a href="/" class="btn btn-outline">← Back to Home</a>
+                <a href="https://wa.me/254769329340" target="_blank" rel="noopener noreferrer" class="btn-wa-full" style="padding:11px 20px;font-size:.84rem;border-radius:var(--r-pill)"><i class="fab fa-whatsapp"></i> Chat Now</a>
+              </div>
             </div>
-            
-            <div class="form-group">
-                <label for="email">Email *</label>
-                <input type="email" id="email" name="email" required value="{{formData.email}}">
+          </div>
+        </div>
+
+        <p style="font-size:.71rem;color:var(--slate-l);margin-top:12px;text-align:center">
+          <i class="fas fa-lock" style="color:var(--emerald)"></i>
+          Your information is encrypted and never shared.
+          <a href="/privacy-policy" style="color:var(--blue)">Privacy Policy</a>
+        </p>
+      </div>
+
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+
+        <!-- Contact Info -->
+        <div class="side-card">
+          <div class="side-card-title">Contact Details</div>
+          <div class="info-row">
+            <div class="ir-icon"><i class="fas fa-envelope"></i></div>
+            <div>
+              <div class="ir-label">Email</div>
+              <div class="ir-val"><a href="mailto:techneurowex@gmail.com">techneurowex@gmail.com</a></div>
             </div>
-            
-            <div class="form-group">
-                <label for="phone">Phone (Optional)</label>
-                <input type="tel" id="phone" name="phone" value="{{formData.phone}}">
+          </div>
+          <div class="info-row">
+            <div class="ir-icon" style="background:rgba(37,211,102,.1);color:#25D366"><i class="fab fa-whatsapp"></i></div>
+            <div>
+              <div class="ir-label">WhatsApp</div>
+              <div class="ir-val"><a href="https://wa.me/254769329340" target="_blank" rel="noopener noreferrer">+254 769 329 340</a></div>
             </div>
-            
-            <div class="form-group">
-                <label for="project_type">Project Type</label>
-                <select id="project_type" name="project_type">
-                    <option value="">Select...</option>
-                    <option value="Web App">Web App</option>
-                    <option value="Mobile App">Mobile App</option>
-                    <option value="Both">Both Web & Mobile</option>
-                    <option value="E-commerce">E-commerce</option>
-                </select>
+          </div>
+          <div class="info-row">
+            <div class="ir-icon" style="background:var(--orange-pale);color:var(--orange)"><i class="fas fa-map-marker-alt"></i></div>
+            <div>
+              <div class="ir-label">Location</div>
+              <div class="ir-val">Nairobi, Kenya 🇰🇪</div>
             </div>
-            
-            <div class="form-group">
-                <label for="budget">Budget Range</label>
-                <select id="budget" name="budget">
-                    <option value="">Select...</option>
-                    <option value="$5k-$15k">$5,000 - $15,000</option>
-                    <option value="$15k-$40k">$15,000 - $40,000</option>
-                    <option value="$40k+">$40,000+</option>
-                </select>
+          </div>
+        </div>
+
+        <!-- Availability -->
+        <div class="side-card">
+          <div class="avail-badge"><span class="avail-dot"></span> Accepting projects</div>
+          <div class="side-card-title" style="margin-bottom:12px">Availability</div>
+          <div class="avail-rows">
+            <div class="avail-row">
+              <div><div class="slot-day">Mon – Wed</div><div class="slot-time">9 am – 6 pm EAT</div></div>
+              <span class="slot-badge badge-open">Open</span>
             </div>
-            
-            <div class="form-group">
-                <label for="message">Project Details *</label>
-                <textarea id="message" name="message" rows="5" required>{{formData.message}}</textarea>
+            <div class="avail-row">
+              <div><div class="slot-day">Thu – Fri</div><div class="slot-time">9 am – 5 pm EAT</div></div>
+              <span class="slot-badge badge-open">Open</span>
             </div>
-            
-            <button type="submit" class="btn-primary">Send Message →</button>
-        </form>
+            <div class="avail-row">
+              <div><div class="slot-day">Weekends</div><div class="slot-time">Emergency only</div></div>
+              <span class="slot-badge badge-ltd">Limited</span>
+            </div>
+          </div>
+          <a href="https://wa.me/254769329340?text=Hello!%20I'd%20like%20to%20book%20a%20free%20consultation." target="_blank" rel="noopener noreferrer" class="btn-wa-full" style="margin-top:16px;font-size:.83rem;padding:10px 18px;border-radius:10px">
+            <i class="fab fa-whatsapp"></i> Book Free Call
+          </a>
+        </div>
+
+        <!-- Why us -->
+        <div class="side-card">
+          <div class="side-card-title">Why NeurowexTech</div>
+          <div class="why-item">
+            <div class="why-icon g"><i class="fas fa-rocket"></i></div>
+            <div><div class="why-title">6-Week MVP Guarantee</div><div class="why-sub">Working product in 6 weeks or we refund the difference.</div></div>
+          </div>
+          <div class="why-item">
+            <div class="why-icon b"><i class="fas fa-headset"></i></div>
+            <div><div class="why-title">3 Months Free Support</div><div class="why-sub">Post-launch support included in every project.</div></div>
+          </div>
+          <div class="why-item">
+            <div class="why-icon o"><i class="fas fa-star"></i></div>
+            <div><div class="why-title">4.9/5 Client Rating</div><div class="why-sub">98% of clients recommend us to others.</div></div>
+          </div>
+          <div class="why-item">
+            <div class="why-icon t"><i class="fas fa-shield-alt"></i></div>
+            <div><div class="why-title">NDA Included</div><div class="why-sub">Full confidentiality before any discussions begin.</div></div>
+          </div>
+        </div>
+
+        <!-- Socials -->
+        <div class="side-card">
+          <div class="side-card-title">Follow Us</div>
+          <div class="socials">
+            <a href="#" class="soc tw" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="soc li" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="soc gh" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="#" class="soc ig" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://wa.me/254769329340" target="_blank" rel="noopener noreferrer" class="soc wa" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          </div>
+        </div>
+
+      </aside>
     </div>
+  </div>
 </section>
+
+<!-- ════════════════════════════════
+     FAQ
+════════════════════════════════ -->
+<section class="faq-section">
+  <div class="container">
+    <div class="faq-head">
+      <div class="faq-kicker">FAQ</div>
+      <h2>Common <span class="g-blue">Questions</span></h2>
+      <p>Everything you need to know before we start working together.</p>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item"><div class="faq-q">How quickly will you reply? <span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">Within 24 hours on business days. For urgent matters, WhatsApp us directly — we typically reply within minutes during working hours.</div></div>
+      <div class="faq-item"><div class="faq-q">Do I need a complete idea to start? <span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">Not at all. Many of our best projects started as rough concepts. Our discovery process helps clarify scope and direction together.</div></div>
+      <div class="faq-item"><div class="faq-q">What's the free consultation? <span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">A 30-minute call to understand your goals, discuss tech options, and review rough timelines — no pressure, no sales pitch.</div></div>
+      <div class="faq-item"><div class="faq-q">How does payment work? <span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">Fixed-price projects with milestone payments — typically 30% upfront, 40% at mid-point, 30% on delivery. No surprise invoices.</div></div>
+      <div class="faq-item"><div class="faq-q">Can you sign an NDA first? <span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">Absolutely. Check the NDA box in the form or mention it on WhatsApp. We'll send a signed NDA within one business day.</div></div>
+      <div class="faq-item"><div class="faq-q">Do you work with clients outside Kenya? <span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">Yes — we serve clients in 20+ countries. All communication is remote via Slack, Zoom, or WhatsApp.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     FOOTER
+════════════════════════════════ -->
+<footer>
+  <div class="footer-bar"></div>
+  <div class="footer-cta">
+    <div class="container">
+      <div class="footer-cta-inner">
+        <div class="footer-cta-text">
+          <h4>Ready to build something great? 🚀</h4>
+          <p>Free 30-min consultation — no strings attached.</p>
+        </div>
+        <div class="footer-cta-btns">
+          <a href="/contact" class="btn btn-primary" style="padding:10px 20px;font-size:.83rem;">Start a Project <i class="fas fa-arrow-right"></i></a>
+          <a href="https://wa.me/254769329340" target="_blank" rel="noopener noreferrer" class="btn-wa-full" style="padding:10px 18px;font-size:.83rem;border-radius:var(--r-pill)"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-body">
+    <div class="container">
+      <div class="footer-cols">
+        <div class="footer-col-brand">
+          <div class="footer-brand-name"><span class="footer-bmark">N</span>Neurowex<em>Tech</em></div>
+          <p class="footer-tagline">We turn bold ideas into successful digital products — fast, scalable, and built to last.</p>
+          <div class="footer-socials">
+            <a href="#" class="fsoc tw" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="fsoc li" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="fsoc gh" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="#" class="fsoc ig" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="fsoc yt" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://wa.me/254769329340" target="_blank" rel="noopener noreferrer" class="fsoc wa" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span style="background:rgba(5,150,105,.1);color:#34d399;border:1px solid rgba(5,150,105,.2);border-radius:6px;padding:3px 9px;font-size:.64rem;font-weight:700">✓ NDA Protected</span>
+            <span style="background:rgba(26,79,214,.1);color:#7ea8f8;border:1px solid rgba(26,79,214,.2);border-radius:6px;padding:3px 9px;font-size:.64rem;font-weight:700">⭐ 4.9/5 Rating</span>
+            <span style="background:rgba(232,98,10,.1);color:var(--orange-l);border:1px solid rgba(232,98,10,.2);border-radius:6px;padding:3px 9px;font-size:.64rem;font-weight:700">🚀 6-Week MVPs</span>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-links">
+            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="/#services"><i class="fas fa-th-large"></i> Services</a></li>
+            <li><a href="/#portfolio"><i class="fas fa-briefcase"></i> Portfolio</a></li>
+            <li><a href="/#team"><i class="fas fa-users"></i> Team</a></li>
+            <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+            <li><a href="/learn" class="acad"><i class="fas fa-graduation-cap"></i> Academy 🎓</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Resources</div>
+          <ul class="footer-links">
+            <li><a href="/#blog"><i class="fas fa-rss"></i> Blog</a></li>
+            <li><a href="/#faq"><i class="fas fa-question-circle"></i> FAQ</a></li>
+            <li><a href="/#pricing"><i class="fas fa-tags"></i> Pricing</a></li>
+            <li><a href="/#graphic"><i class="fas fa-palette"></i> Graphic Design</a></li>
+            <li><a href="/#process"><i class="fas fa-sitemap"></i> Our Process</a></li>
+            <li><a href="/about"><i class="fas fa-info-circle"></i> About Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col-contact">
+          <div class="footer-col-title">Contact</div>
+          <div class="fci"><div class="fci-ic"><i class="fas fa-envelope"></i></div><div><div class="fci-label">Email</div><div class="fci-val"><a href="mailto:techneurowex@gmail.com">techneurowex@gmail.com</a></div></div></div>
+          <div class="fci"><div class="fci-ic"><i class="fas fa-phone-alt"></i></div><div><div class="fci-label">Phone / WhatsApp</div><div class="fci-val"><a href="tel:+254769329340">+254 769 329 340</a></div></div></div>
+          <div class="fci"><div class="fci-ic"><i class="fas fa-map-marker-alt"></i></div><div><div class="fci-label">Location</div><div class="fci-val">Nairobi, Kenya 🇰🇪</div></div></div>
+          <div class="footer-hours"><span class="hdot"></span> Mon – Fri · 9 am – 6 pm EAT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr class="footer-divider">
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="footer-copy">© 2026 NeurowexTech. All rights reserved.</p>
+        <nav class="footer-legal" aria-label="Legal">
+          <a href="/about">About</a>
+          <a href="/privacy-policy">Privacy</a>
+          <a href="/terms-of-service">Terms</a>
+          <a href="/cookie-policy">Cookies</a>
+        </nav>
+        <p class="footer-made">Made with <span>♥</span> in Nairobi</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── theme ── */
+var dark=localStorage.getItem('nw-theme')==='dark'||(!localStorage.getItem('nw-theme')&&window.matchMedia('(prefers-color-scheme:dark)').matches);
+var MOON='<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>';
+var SUN='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+function applyTheme(){document.body.classList.toggle('dark',dark);document.getElementById('theme-toggle').innerHTML=dark?SUN:MOON;var m=document.getElementById('mobThemeBtn');if(m)m.innerHTML=dark?'<i class="fas fa-sun"></i>':'<i class="fas fa-moon"></i>'}
+applyTheme();
+function toggleTheme(){dark=!dark;localStorage.setItem('nw-theme',dark?'dark':'light');applyTheme()}
+document.getElementById('theme-toggle').addEventListener('click',toggleTheme);
+var mtb=document.getElementById('mobThemeBtn');if(mtb)mtb.addEventListener('click',toggleTheme);
+
+/* ── scroll ── */
+var navbar=document.getElementById('mainNav'),sp=document.getElementById('scroll-progress'),btt=document.getElementById('back-to-top');
+window.addEventListener('scroll',function(){
+  var s=window.pageYOffset,d=document.documentElement.scrollHeight-window.innerHeight;
+  sp.style.width=(d>0?s/d*100:0)+'%';
+  navbar.classList.toggle('scrolled',s>40);
+  btt.classList.toggle('visible',s>400);
+},{passive:true});
+btt.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
+
+/* ── mobile nav ── */
+var ov=document.getElementById('mobOverlay'),panel=document.getElementById('mobPanel'),ham=document.getElementById('hamBtn'),mc=document.getElementById('mobClose'),mst=document.getElementById('mobSvcToggle'),mss=document.getElementById('mobSvcSub');
+function openM(){ov.classList.add('open');panel.classList.add('open');ham.classList.add('open');ham.setAttribute('aria-expanded','true');document.body.style.overflow='hidden';mc.focus()}
+function closeM(){panel.classList.remove('open');ov.classList.remove('open');ham.classList.remove('open');ham.setAttribute('aria-expanded','false');document.body.style.overflow=''}
+ham.addEventListener('click',openM);mc.addEventListener('click',closeM);ov.addEventListener('click',closeM);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&panel.classList.contains('open'))closeM()});
+mst.addEventListener('click',function(){var o=mss.classList.toggle('open');mst.classList.toggle('open',o);mst.setAttribute('aria-expanded',o)});
+
+/* ── cookie ── */
+var cb=document.getElementById('cookie-bar');
+if(!localStorage.getItem('nw-cookie'))setTimeout(function(){cb.classList.add('show')},2800);
+document.getElementById('cookie-accept').addEventListener('click',function(){localStorage.setItem('nw-cookie','1');cb.classList.remove('show')});
+
+/* ── toast ── */
+function toast(msg){var t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},3600)}
+
+/* ── URL param pre-select ── */
+(function(){
+  var p=new URLSearchParams(window.location.search),svc=p.get('service');
+  if(!svc)return;
+  var v=svc.toLowerCase().replace(/\+/g,' ');
+  document.querySelectorAll('.svc-chk').forEach(function(c){if(c.value.toLowerCase()===v)c.checked=true});
+})();
+
+/* ── char count ── */
+document.getElementById('cMessage').addEventListener('input',function(){document.getElementById('charNum').textContent=this.value.length});
+
+/* ── form submit ── */
+document.getElementById('contactForm').addEventListener('submit',async function(e){
+  e.preventDefault();
+  var n=document.getElementById('cName'),em=document.getElementById('cEmail'),msg=document.getElementById('cMessage');
+  var ok=true;
+  [n,em,msg].forEach(function(f){f.classList.remove('error')});
+
+  if(!n.value.trim()){n.classList.add('error');ok=false}
+  if(!em.value.trim()||!/^\S+@\S+\.\S+$/.test(em.value)){em.classList.add('error');ok=false}
+  if(!msg.value.trim()){msg.classList.add('error');document.getElementById('msgErr').style.display='flex';ok=false}
+  else document.getElementById('msgErr').style.display='none';
+
+  if(!ok)return;
+
+  var btn=document.getElementById('cSubmit');
+  btn.classList.add('loading');btn.disabled=true;
+
+  var services=Array.from(document.querySelectorAll('.svc-chk:checked')).map(function(c){return c.value});
+  var payload={name:n.value.trim(),email:em.value.trim(),phone:document.getElementById('cPhone').value.trim(),company:document.getElementById('cCompany').value.trim(),services:services,budget:document.getElementById('cBudget').value,timeline:document.getElementById('cTimeline').value,message:msg.value.trim(),nda:document.getElementById('cNDA').checked};
+
+  try{await fetch('/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})}catch(err){}
+
+  btn.classList.remove('loading');btn.disabled=false;
+  document.getElementById('contactForm').style.display='none';
+  var s=document.getElementById('formSuccess');s.style.display='block';
+  toast("Message sent! We'll reply soon ✅");
+});
+
+/* ── FAQ ── */
+document.querySelectorAll('.faq-q').forEach(function(q){
+  q.addEventListener('click',function(){
+    var item=q.parentElement,open=item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(function(i){i.classList.remove('open')});
+    if(!open)item.classList.add('open');
+  });
+});
+</script>
+</body>
+</html>
