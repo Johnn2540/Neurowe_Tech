@@ -12,20 +12,12 @@ const { OAuth2Client } = require('google-auth-library');
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
-// ────────────────────────────────────────────────────────────
-// VERCEL COMPATIBILITY
-// ────────────────────────────────────────────────────────────
 const isVercel = process.env.VERCEL === '1';
 if (isVercel) console.log('Running on Vercel – serverless mode');
 
-// ────────────────────────────────────────────────────────────
-// GOOGLE OAUTH
-// ────────────────────────────────────────────────────────────
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-// ────────────────────────────────────────────────────────────
-// SESSION STORE (PostgreSQL)
-// ────────────────────────────────────────────────────────────
+// ── SESSION ──────────────────────────────────────────────────
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
@@ -54,21 +46,18 @@ app.use(session({
     cookie: {
         secure:   process.env.NODE_ENV === 'production',
         httpOnly: true,
-        maxAge:   1000 * 60 * 60 * 24,   // 1 day default
+        maxAge:   1000 * 60 * 60 * 24,
         sameSite: 'lax',
     },
     proxy: true,
 }));
 
-// ────────────────────────────────────────────────────────────
-// MIDDLEWARE
-// ────────────────────────────────────────────────────────────
+// ── MIDDLEWARE ───────────────────────────────────────────────
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'views/images')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Security headers
 app.use((req, res, next) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-Frame-Options', 'DENY');
@@ -77,21 +66,17 @@ app.use((req, res, next) => {
     next();
 });
 
-// Request logging (dev only)
 if (process.env.NODE_ENV !== 'production') {
     app.use((req, res, next) => { console.log(`${req.method} ${req.url}`); next(); });
 }
 
-// ────────────────────────────────────────────────────────────
-// HANDLEBARS SETUP
-// ────────────────────────────────────────────────────────────
+// ── HANDLEBARS ───────────────────────────────────────────────
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
 
 const partialsPath = path.join(__dirname, 'views/partials');
 if (fs.existsSync(partialsPath)) hbs.registerPartials(partialsPath);
 
-// ── Helpers (no duplicates) ──────────────────────────────────
 hbs.registerHelper('formatDate', date => {
     if (!date) return '';
     return new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -141,21 +126,18 @@ hbs.registerHelper('ifCond', function (v1, operator, v2, options) {
     return ops[operator] ? options.fn(this) : options.inverse(this);
 });
 
-// ── Template globals ──────────────────────────────────────────
 app.use((req, res, next) => {
-    res.locals.currentYear    = new Date().getFullYear();
-    res.locals.companyName    = 'NeurowexTech';
-    res.locals.currentPath    = req.path;
+    res.locals.currentYear     = new Date().getFullYear();
+    res.locals.companyName     = 'NeurowexTech';
+    res.locals.currentPath     = req.path;
     res.locals.isAuthenticated = !!req.session.userId;
-    res.locals.userRole       = req.session.userRole  || null;
-    res.locals.userName       = req.session.userName  || null;
-    res.locals.googleClientId = process.env.GOOGLE_CLIENT_ID || '';
+    res.locals.userRole        = req.session.userRole  || null;
+    res.locals.userName        = req.session.userName  || null;
+    res.locals.googleClientId  = process.env.GOOGLE_CLIENT_ID || '';
     next();
 });
 
-// ────────────────────────────────────────────────────────────
-// AUTH GUARDS
-// ────────────────────────────────────────────────────────────
+// ── AUTH GUARDS ──────────────────────────────────────────────
 function isAuthenticated(req, res, next) {
     if (req.session.userId) return next();
     if (req.is('application/json')) return res.status(401).json({ success: false, message: 'Please sign in to continue' });
@@ -168,25 +150,20 @@ function isAdmin(req, res, next) {
     res.status(403).render('error', { title: 'Access Denied', message: 'You do not have permission to access this page.' });
 }
 
-// ────────────────────────────────────────────────────────────
-// AUTH ROUTES
-// ────────────────────────────────────────────────────────────
-
+// ── AUTH ROUTES ──────────────────────────────────────────────
+// FIX 1: render('sign_up') not render('signup')
 app.get('/sign_up', (req, res) => {
     if (req.session.userId) return res.redirect(req.session.userRole === 'admin' ? '/admin_dashboard' : '/user_dashboard');
-    res.render('signup', { title: 'Create Account – NeurowexTech', googleClientId: process.env.GOOGLE_CLIENT_ID || '' });
+    res.render('sign_up', { title: 'Create Account – NeurowexTech', googleClientId: process.env.GOOGLE_CLIENT_ID || '' });
 });
+app.get('/signup', (req, res) => res.redirect('/sign_up'));
 
-// Alias for /signin (so /login works too)
-app.get('/signin', (req, res) => {
-    if (req.session.userId) return res.redirect(req.session.userRole === 'admin' ? '/admin_dashboard' : '/user_dashboard');
-    res.render('signin', { title: 'Sign In – NeurowexTech', googleClientId: process.env.GOOGLE_CLIENT_ID || '' });
-});
-
+// FIX 2: render('login') not render('signin')
 app.get('/login', (req, res) => {
     if (req.session.userId) return res.redirect(req.session.userRole === 'admin' ? '/admin_dashboard' : '/user_dashboard');
-    res.render('signin', { title: 'Sign In – NeurowexTech', googleClientId: process.env.GOOGLE_CLIENT_ID || '' });
+    res.render('login', { title: 'Sign In – NeurowexTech', googleClientId: process.env.GOOGLE_CLIENT_ID || '' });
 });
+app.get('/signin', (req, res) => res.redirect('/login'));
 
 app.post('/api/register', async (req, res) => {
     try {
@@ -213,7 +190,6 @@ app.post('/api/register', async (req, res) => {
              VALUES ($1, $2, $3, 'user', true, NOW()) RETURNING id, username, email, role`,
             [uname, email.toLowerCase(), hashed]
         );
-        // Redirect to login page after successful registration
         res.json({ success: true, message: 'Account created! Please sign in.', redirect: '/login', user: result.rows[0] });
     } catch (err) {
         console.error('Register error:', err);
@@ -221,7 +197,6 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
-// Legacy signup endpoint (backward compat)
 app.post('/api/signup', async (req, res) => {
     try {
         const { fullname, email, password } = req.body;
@@ -237,9 +212,9 @@ app.post('/api/signup', async (req, res) => {
             [fullname, email.toLowerCase(), hashed]
         );
         res.json({ success: true, message: 'Account created! Please sign in.', redirect: '/login', user: r.rows[0] });
-    } catch (e) { 
+    } catch (e) {
         console.error('Signup error:', e);
-        res.status(500).json({ success: false, message: e.message }); 
+        res.status(500).json({ success: false, message: e.message });
     }
 });
 
@@ -256,8 +231,6 @@ app.post('/api/login', async (req, res) => {
         const user = result.rows[0];
         if (!user.is_active)
             return res.status(401).json({ success: false, message: 'Your account has been deactivated' });
-
-        // Handle Google-only accounts (no password set)
         if (!user.password_hash)
             return res.status(401).json({ success: false, message: 'This account uses Google Sign-In. Please use the Google button.' });
 
@@ -272,17 +245,9 @@ app.post('/api/login', async (req, res) => {
         if (rememberMe) req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 30;
 
         req.session.save(err => {
-            if (err) { 
-                console.error('Session save error:', err); 
-                return res.status(500).json({ success: false, message: 'Session error' }); 
-            }
+            if (err) { console.error('Session save error:', err); return res.status(500).json({ success: false, message: 'Session error' }); }
             db.query('UPDATE users SET last_login = NOW() WHERE id = $1', [user.id]).catch(() => {});
-            res.json({
-                success:  true,
-                message:  'Signed in!',
-                role:     user.role,
-                redirect: user.role === 'admin' ? '/admin_dashboard' : '/user_dashboard'
-            });
+            res.json({ success: true, message: 'Signed in!', role: user.role, redirect: user.role === 'admin' ? '/admin_dashboard' : '/user_dashboard' });
         });
     } catch (err) {
         console.error('Login error:', err);
@@ -294,17 +259,13 @@ app.post('/api/auth/google', async (req, res) => {
     try {
         const { idToken } = req.body;
         if (!idToken) return res.status(400).json({ success: false, message: 'No ID token provided' });
-
         const ticket  = await googleClient.verifyIdToken({ idToken, audience: process.env.GOOGLE_CLIENT_ID });
         const payload = ticket.getPayload();
         const { email, name, sub: googleId } = payload;
         if (!email) return res.status(400).json({ success: false, message: 'No email from Google' });
-
         const existing = await db.query('SELECT * FROM users WHERE email = $1', [email.toLowerCase()]);
         let userRow;
-
         if (!existing.rows.length) {
-            // New user — create account
             const r = await db.query(
                 `INSERT INTO users (username, email, google_id, role, is_active, created_at)
                  VALUES ($1,$2,$3,'user',true,NOW()) RETURNING id, username, email, role`,
@@ -313,29 +274,17 @@ app.post('/api/auth/google', async (req, res) => {
             userRow = r.rows[0];
         } else {
             userRow = existing.rows[0];
-            // Link Google ID if not already linked
-            if (!userRow.google_id) {
-                await db.query('UPDATE users SET google_id = $1 WHERE id = $2', [googleId, userRow.id]);
-            }
-            // Block deactivated accounts
-            if (!userRow.is_active) {
-                return res.status(401).json({ success: false, message: 'Your account has been deactivated.' });
-            }
+            if (!userRow.google_id) await db.query('UPDATE users SET google_id = $1 WHERE id = $2', [googleId, userRow.id]);
+            if (!userRow.is_active) return res.status(401).json({ success: false, message: 'Your account has been deactivated.' });
         }
-
         req.session.userId    = userRow.id;
         req.session.userEmail = userRow.email;
         req.session.userName  = userRow.username;
         req.session.userRole  = userRow.role;
-
         req.session.save(err => {
             if (err) return res.status(500).json({ success: false, message: 'Session error' });
             db.query('UPDATE users SET last_login = NOW() WHERE id = $1', [userRow.id]).catch(() => {});
-            res.json({
-                success:  true,
-                message:  'Google sign-in successful!',
-                redirect: userRow.role === 'admin' ? '/admin_dashboard' : '/user_dashboard'
-            });
+            res.json({ success: true, message: 'Google sign-in successful!', redirect: userRow.role === 'admin' ? '/admin_dashboard' : '/user_dashboard' });
         });
     } catch (err) {
         console.error('Google auth error:', err);
@@ -344,17 +293,12 @@ app.post('/api/auth/google', async (req, res) => {
 });
 
 app.get('/logout', (req, res) => {
-    req.session.destroy(err => { 
-        if (err) console.error('Logout error:', err); 
-        res.redirect('/'); 
-    });
+    req.session.destroy(err => { if (err) console.error('Logout error:', err); res.redirect('/'); });
 });
 
-// ── Password reset ──────────────────────────────────────────
 app.get('/forgot-password', (req, res) => {
     res.render('reset-password', { title: 'Forgot Password – NeurowexTech', mode: 'forgot' });
 });
-
 app.get('/reset-password', (req, res) => {
     const { token } = req.query;
     if (!token) return res.redirect('/forgot-password');
@@ -365,27 +309,18 @@ app.post('/api/forgot-password', async (req, res) => {
     try {
         const { email } = req.body;
         if (!email) return res.status(400).json({ success: false, message: 'Please enter your email' });
-
         const user = await db.query('SELECT id FROM users WHERE email = $1', [email.toLowerCase()]);
-        // Always respond the same way to prevent email enumeration
         if (!user.rows.length)
             return res.json({ success: true, message: 'If an account exists with that email, a reset link has been sent.' });
-
         const crypto    = require('crypto');
         const token     = crypto.randomBytes(32).toString('hex');
-        const expiresAt = new Date(Date.now() + 3600000); // 1 hour
-
+        const expiresAt = new Date(Date.now() + 3600000);
         await db.query(
-            `INSERT INTO password_resets (email, token, expires_at)
-             VALUES ($1, $2, $3)
-             ON CONFLICT (email) DO UPDATE SET token = $2, expires_at = $3`,
+            `INSERT INTO password_resets (email, token, expires_at) VALUES ($1,$2,$3)
+             ON CONFLICT (email) DO UPDATE SET token=$2, expires_at=$3`,
             [email.toLowerCase(), token, expiresAt]
         );
-
-        const link = `${req.protocol}://${req.get('host')}/reset-password?token=${token}`;
-        console.log('Password reset link:', link);
-        // TODO: send email via nodemailer or Resend
-
+        console.log('Password reset link:', `${req.protocol}://${req.get('host')}/reset-password?token=${token}`);
         res.json({ success: true, message: 'If an account exists with that email, a reset link has been sent.' });
     } catch (err) {
         console.error('Forgot password error:', err);
@@ -398,18 +333,12 @@ app.post('/api/reset-password', async (req, res) => {
         const { token, newPassword } = req.body;
         if (!token || !newPassword || newPassword.length < 6)
             return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
-
-        const rec = await db.query(
-            'SELECT * FROM password_resets WHERE token = $1 AND expires_at > NOW()',
-            [token]
-        );
+        const rec = await db.query('SELECT * FROM password_resets WHERE token=$1 AND expires_at > NOW()', [token]);
         if (!rec.rows.length)
             return res.status(400).json({ success: false, message: 'This reset link is invalid or has expired.' });
-
         const hashed = await bcrypt.hash(newPassword, 10);
-        await db.query('UPDATE users SET password_hash = $1 WHERE email = $2', [hashed, rec.rows[0].email]);
-        await db.query('DELETE FROM password_resets WHERE token = $1', [token]);
-
+        await db.query('UPDATE users SET password_hash=$1 WHERE email=$2', [hashed, rec.rows[0].email]);
+        await db.query('DELETE FROM password_resets WHERE token=$1', [token]);
         res.json({ success: true, message: 'Password updated! You can now sign in.' });
     } catch (err) {
         console.error('Reset password error:', err);
@@ -417,9 +346,7 @@ app.post('/api/reset-password', async (req, res) => {
     }
 });
 
-// ────────────────────────────────────────────────────────────
-// DASHBOARD ROUTES
-// ────────────────────────────────────────────────────────────
+// ── DASHBOARDS ───────────────────────────────────────────────
 app.get('/user_dashboard', isAuthenticated, async (req, res) => {
     try {
         const user = await db.query('SELECT id, username, email, role, created_at, last_login FROM users WHERE id=$1', [req.session.userId]);
@@ -427,43 +354,41 @@ app.get('/user_dashboard', isAuthenticated, async (req, res) => {
         res.render('user_dashboard', { title: 'Dashboard – NeurowexTech', user: user.rows[0] });
     } catch (err) {
         console.error('User dashboard error:', err);
-        res.status(500).render('error', { title: 'Error' });
+        res.status(500).render('error', { title: 'Error', message: err.message });
     }
 });
 
+// FIX 3: safeCount wraps each table individually — no crash if any table is missing
 app.get('/admin_dashboard', isAuthenticated, isAdmin, async (req, res) => {
     try {
-        const stats = await db.query(`
-            SELECT
-                (SELECT COUNT(*) FROM users)                       AS total_users,
-                (SELECT COUNT(*) FROM users WHERE role='admin')    AS total_admins,
-                (SELECT COUNT(*) FROM users WHERE is_active=true)  AS active_users,
-                (SELECT COUNT(*) FROM contacts)                    AS total_contacts,
-                (SELECT COUNT(*) FROM subscribers)                 AS total_subscribers,
-                (SELECT COUNT(*) FROM projects)                    AS total_projects,
-                (SELECT COUNT(*) FROM courses WHERE published=true) AS total_courses
-        `);
-        res.render('admin_dashboard', {
-            title: 'Admin Panel – NeurowexTech',
-            stats: stats.rows[0],
-            userName: req.session.userName,
-        });
+        const safeCount = async (sql) => {
+            try { const r = await db.query(sql); return parseInt(r.rows[0].count) || 0; }
+            catch (e) { console.log('safeCount skip:', e.message); return 0; }
+        };
+        const stats = {
+            total_users:       await safeCount("SELECT COUNT(*) as count FROM users"),
+            total_admins:      await safeCount("SELECT COUNT(*) as count FROM users WHERE role='admin'"),
+            active_users:      await safeCount("SELECT COUNT(*) as count FROM users WHERE is_active=true"),
+            total_contacts:    await safeCount("SELECT COUNT(*) as count FROM contacts"),
+            total_subscribers: await safeCount("SELECT COUNT(*) as count FROM subscribers"),
+            total_projects:    await safeCount("SELECT COUNT(*) as count FROM projects"),
+            total_courses:     await safeCount("SELECT COUNT(*) as count FROM courses WHERE published=true"),
+        };
+        res.render('admin_dashboard', { title: 'Admin Panel – NeurowexTech', stats, userName: req.session.userName });
     } catch (err) {
         console.error('Admin dashboard error:', err);
-        res.status(500).render('error', { title: 'Error' });
+        res.status(500).render('error', { title: 'Error', message: err.message });
     }
 });
 
-// ────────────────────────────────────────────────────────────
-// USER API
-// ────────────────────────────────────────────────────────────
+// ── USER API ─────────────────────────────────────────────────
 app.get('/api/user/stats', isAuthenticated, async (req, res) => {
     try {
         const r = await db.query(`
             SELECT
-                (SELECT COUNT(*) FROM projects WHERE user_id=$1)                             AS total,
-                (SELECT COUNT(*) FROM projects WHERE user_id=$1 AND status='Completed')      AS completed,
-                (SELECT COUNT(*) FROM projects WHERE user_id=$1 AND status='In Progress')    AS active
+                (SELECT COUNT(*) FROM projects WHERE user_id=$1)                          AS total,
+                (SELECT COUNT(*) FROM projects WHERE user_id=$1 AND status='Completed')   AS completed,
+                (SELECT COUNT(*) FROM projects WHERE user_id=$1 AND status='In Progress') AS active
         `, [req.session.userId]);
         const row = r.rows[0];
         res.json({ success: true, totalProjects: parseInt(row.total)||0, completedProjects: parseInt(row.completed)||0, activeProjects: parseInt(row.active)||0 });
@@ -500,14 +425,14 @@ app.post('/api/user/request-project', isAuthenticated, async (req, res) => {
             `INSERT INTO projects (user_id, name, project_type, description, budget, status, created_at)
              VALUES ($1,$2,$3,$4,$5,'Planning',NOW())`,
             [req.session.userId, name, type||'Web Development', description, budget||0]
-        ).catch(() => {});  // Graceful if column doesn't exist yet
+        ).catch(() => {});
         res.json({ success: true, message: 'Project request submitted!' });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
 app.put('/api/user/profile', isAuthenticated, async (req, res) => {
     try {
-        const { name, email, bio } = req.body;
+        const { name, email } = req.body;
         if (!name || !email) return res.status(400).json({ success: false, message: 'Name and email required' });
         if (!/^\S+@\S+\.\S+$/.test(email)) return res.status(400).json({ success: false, message: 'Invalid email' });
         await db.query('UPDATE users SET username=$1, email=$2 WHERE id=$3', [name, email.toLowerCase(), req.session.userId]);
@@ -533,16 +458,13 @@ app.post('/api/user/change-password', isAuthenticated, async (req, res) => {
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
-// ────────────────────────────────────────────────────────────
-// ADMIN API – Users
-// ────────────────────────────────────────────────────────────
+// ── ADMIN API – Users ────────────────────────────────────────
 app.get('/api/admin/users', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('SELECT id, username, email, role, is_active, created_at, last_login, google_id FROM users ORDER BY created_at DESC');
         res.json({ success: true, users: r.rows });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.post('/api/admin/make-admin', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const { userId } = req.body;
@@ -551,7 +473,6 @@ app.post('/api/admin/make-admin', isAuthenticated, isAdmin, async (req, res) => 
         res.json({ success: true, message: 'User is now admin' });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.post('/api/admin/remove-admin', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const { userId } = req.body;
@@ -560,7 +481,6 @@ app.post('/api/admin/remove-admin', isAuthenticated, isAdmin, async (req, res) =
         res.json({ success: true, message: 'Admin privileges removed' });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.delete('/api/admin/delete-user/:id', isAuthenticated, isAdmin, async (req, res) => {
     try {
         if (parseInt(req.params.id) === req.session.userId) return res.status(400).json({ success: false, message: 'Cannot delete your own account' });
@@ -570,16 +490,13 @@ app.delete('/api/admin/delete-user/:id', isAuthenticated, isAdmin, async (req, r
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
-// ────────────────────────────────────────────────────────────
-// ADMIN API – Contacts
-// ────────────────────────────────────────────────────────────
+// ── ADMIN API – Contacts ─────────────────────────────────────
 app.get('/api/contacts', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM contacts ORDER BY created_at DESC');
         res.json({ success: true, contacts: r.rows });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.delete('/api/contacts/:id', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('DELETE FROM contacts WHERE id=$1 RETURNING id', [req.params.id]);
@@ -588,16 +505,13 @@ app.delete('/api/contacts/:id', isAuthenticated, isAdmin, async (req, res) => {
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
-// ────────────────────────────────────────────────────────────
-// ADMIN API – Subscribers
-// ────────────────────────────────────────────────────────────
+// ── ADMIN API – Subscribers ──────────────────────────────────
 app.get('/api/subscribers', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM subscribers ORDER BY subscribed_at DESC');
         res.json({ success: true, subscribers: r.rows });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.delete('/api/subscribers/:id', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('DELETE FROM subscribers WHERE id=$1 RETURNING id', [req.params.id]);
@@ -606,31 +520,26 @@ app.delete('/api/subscribers/:id', isAuthenticated, isAdmin, async (req, res) =>
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
-// ────────────────────────────────────────────────────────────
-// ADMIN API – Projects / Portfolio
-// NOTE: Order matters — /api/projects/public must come BEFORE /api/projects/:id
-// ────────────────────────────────────────────────────────────
+// ── ADMIN API – Projects ─────────────────────────────────────
+// IMPORTANT: /public and /featured MUST come before /:id
 app.get('/api/projects/public', async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM projects WHERE featured=true ORDER BY created_at DESC');
         res.json({ success: true, projects: r.rows });
     } catch { res.json({ success: true, projects: [] }); }
 });
-
 app.get('/api/projects/featured', async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM projects WHERE featured=true ORDER BY created_at DESC LIMIT 3');
         res.json({ success: true, projects: r.rows });
     } catch { res.json({ success: true, projects: [] }); }
 });
-
 app.get('/api/projects', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM projects ORDER BY created_at DESC');
         res.json({ success: true, projects: r.rows });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.post('/api/projects', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const { name, description, category, year, featured, client_url, tech_stack } = req.body;
@@ -643,21 +552,19 @@ app.post('/api/projects', isAuthenticated, isAdmin, async (req, res) => {
         res.json({ success: true, message: 'Project created', project: r.rows[0] });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.put('/api/projects/:id', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const { name, description, category, year, featured, client_url, tech_stack } = req.body;
         const r = await db.query(
-            `UPDATE projects SET name=COALESCE($1,name), description=COALESCE($2,description), category=COALESCE($3,category),
-             year=COALESCE($4,year), featured=COALESCE($5,featured), client_url=COALESCE($6,client_url), tech_stack=COALESCE($7,tech_stack)
-             WHERE id=$8 RETURNING *`,
+            `UPDATE projects SET name=COALESCE($1,name), description=COALESCE($2,description),
+             category=COALESCE($3,category), year=COALESCE($4,year), featured=COALESCE($5,featured),
+             client_url=COALESCE($6,client_url), tech_stack=COALESCE($7,tech_stack) WHERE id=$8 RETURNING *`,
             [name, description, category, year, featured, client_url, tech_stack, req.params.id]
         );
         if (!r.rows.length) return res.status(404).json({ success: false, message: 'Project not found' });
         res.json({ success: true, message: 'Project updated', project: r.rows[0] });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.delete('/api/projects/:id', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('DELETE FROM projects WHERE id=$1 RETURNING id', [req.params.id]);
@@ -666,16 +573,13 @@ app.delete('/api/projects/:id', isAuthenticated, isAdmin, async (req, res) => {
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
-// ────────────────────────────────────────────────────────────
-// ADMIN API – Blog
-// ────────────────────────────────────────────────────────────
+// ── ADMIN API – Blog ─────────────────────────────────────────
 app.get('/api/blog', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM blog_posts ORDER BY created_at DESC');
         res.json({ success: true, posts: r.rows });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.post('/api/blog', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const { title, slug, category, author, excerpt, external_url, published } = req.body;
@@ -689,7 +593,6 @@ app.post('/api/blog', isAuthenticated, isAdmin, async (req, res) => {
         res.json({ success: true, message: 'Post created', post: r.rows[0] });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.delete('/api/blog/:id', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('DELETE FROM blog_posts WHERE id=$1 RETURNING id', [req.params.id]);
@@ -698,16 +601,13 @@ app.delete('/api/blog/:id', isAuthenticated, isAdmin, async (req, res) => {
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
-// ────────────────────────────────────────────────────────────
-// ADMIN API – Services
-// ────────────────────────────────────────────────────────────
+// ── ADMIN API – Services ─────────────────────────────────────
 app.get('/api/services', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM services ORDER BY id ASC');
         res.json({ success: true, services: r.rows });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.post('/api/services', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const { name, description, icon_class, price } = req.body;
@@ -719,7 +619,6 @@ app.post('/api/services', isAuthenticated, isAdmin, async (req, res) => {
         res.json({ success: true, message: 'Service added', service: r.rows[0] });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.delete('/api/services/:id', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('DELETE FROM services WHERE id=$1 RETURNING id', [req.params.id]);
@@ -728,16 +627,13 @@ app.delete('/api/services/:id', isAuthenticated, isAdmin, async (req, res) => {
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
-// ────────────────────────────────────────────────────────────
-// ADMIN API – Testimonials
-// ────────────────────────────────────────────────────────────
+// ── ADMIN API – Testimonials ─────────────────────────────────
 app.get('/api/testimonials', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM testimonials ORDER BY created_at DESC');
         res.json({ success: true, testimonials: r.rows });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.post('/api/testimonials', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const { client_name, client_role, company, rating, content } = req.body;
@@ -750,7 +646,6 @@ app.post('/api/testimonials', isAuthenticated, isAdmin, async (req, res) => {
         res.json({ success: true, message: 'Testimonial added', testimonial: r.rows[0] });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.delete('/api/testimonials/:id', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('DELETE FROM testimonials WHERE id=$1 RETURNING id', [req.params.id]);
@@ -759,16 +654,13 @@ app.delete('/api/testimonials/:id', isAuthenticated, isAdmin, async (req, res) =
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
-// ────────────────────────────────────────────────────────────
-// ADMIN API – Team
-// ────────────────────────────────────────────────────────────
+// ── ADMIN API – Team ─────────────────────────────────────────
 app.get('/api/team', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM team ORDER BY id ASC');
         res.json({ success: true, team: r.rows });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.post('/api/team', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const { name, role, bio, linkedin_url, github_url } = req.body;
@@ -780,7 +672,6 @@ app.post('/api/team', isAuthenticated, isAdmin, async (req, res) => {
         res.json({ success: true, message: 'Member added', member: r.rows[0] });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.delete('/api/team/:id', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('DELETE FROM team WHERE id=$1 RETURNING id', [req.params.id]);
@@ -789,29 +680,24 @@ app.delete('/api/team/:id', isAuthenticated, isAdmin, async (req, res) => {
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
-// ────────────────────────────────────────────────────────────
-// ADMIN API – FAQs  (NEW)
-// ────────────────────────────────────────────────────────────
+// ── ADMIN API – FAQs ─────────────────────────────────────────
 app.get('/api/faqs', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM faqs ORDER BY display_order ASC, id ASC');
         res.json({ success: true, faqs: r.rows });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.post('/api/faqs', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const { question, answer, order: displayOrder, active } = req.body;
         if (!question || !answer) return res.status(400).json({ success: false, message: 'Question and answer required' });
         const r = await db.query(
-            `INSERT INTO faqs (question, answer, display_order, active, created_at)
-             VALUES ($1,$2,$3,$4,NOW()) RETURNING *`,
+            `INSERT INTO faqs (question, answer, display_order, active, created_at) VALUES ($1,$2,$3,$4,NOW()) RETURNING *`,
             [question, answer, parseInt(displayOrder)||1, active !== false]
         );
         res.json({ success: true, message: 'FAQ added', faq: r.rows[0] });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.put('/api/faqs/:id', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const { question, answer, display_order, active } = req.body;
@@ -824,7 +710,6 @@ app.put('/api/faqs/:id', isAuthenticated, isAdmin, async (req, res) => {
         res.json({ success: true, message: 'FAQ updated', faq: r.rows[0] });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.delete('/api/faqs/:id', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('DELETE FROM faqs WHERE id=$1 RETURNING id', [req.params.id]);
@@ -833,16 +718,13 @@ app.delete('/api/faqs/:id', isAuthenticated, isAdmin, async (req, res) => {
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
-// ────────────────────────────────────────────────────────────
-// ADMIN API – Pricing  (NEW)
-// ────────────────────────────────────────────────────────────
+// ── ADMIN API – Pricing ──────────────────────────────────────
 app.get('/api/pricing', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM pricing_plans ORDER BY price ASC');
         res.json({ success: true, plans: r.rows });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.post('/api/pricing', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const { name, tier, price, price_label, features, popular } = req.body;
@@ -856,7 +738,6 @@ app.post('/api/pricing', isAuthenticated, isAdmin, async (req, res) => {
         res.json({ success: true, message: 'Plan added', plan: r.rows[0] });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.delete('/api/pricing/:id', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('DELETE FROM pricing_plans WHERE id=$1 RETURNING id', [req.params.id]);
@@ -865,46 +746,39 @@ app.delete('/api/pricing/:id', isAuthenticated, isAdmin, async (req, res) => {
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
-// ────────────────────────────────────────────────────────────
-// ADMIN API – Courses (Academy admin management)  (NEW)
-// ────────────────────────────────────────────────────────────
+// ── ADMIN API – Courses ──────────────────────────────────────
 app.get('/api/learn/courses', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query(`
             SELECT c.*, u.username AS instructor_name,
                    COALESCE((SELECT COUNT(*) FROM enrollments e WHERE e.course_id=c.id),0) AS enrolled_count
-            FROM courses c
-            LEFT JOIN users u ON c.instructor_id=u.id
+            FROM courses c LEFT JOIN users u ON c.instructor_id=u.id
             ORDER BY c.created_at DESC
         `);
         res.json({ success: true, courses: r.rows });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.post('/api/learn/courses', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const { title, description, category, level, total_duration, price, instructor_name, image_url, published, bestseller } = req.body;
         if (!title) return res.status(400).json({ success: false, message: 'Course title required' });
-
-        // Try to resolve instructor by name, fall back to current user
         let instructorId = req.session.userId;
         if (instructor_name) {
             const inst = await db.query('SELECT id FROM users WHERE username ILIKE $1 LIMIT 1', [instructor_name]);
             if (inst.rows.length) instructorId = inst.rows[0].id;
         }
-
         const r = await db.query(
             `INSERT INTO courses (title, description, category, level, total_duration, price,
              instructor_id, instructor_name, image_url, published, bestseller, rating, created_at)
              VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,0,NOW()) RETURNING *`,
             [title, description||'', category||'Web Development', level||'Beginner',
-             total_duration||'', parseFloat(price)||0, instructorId, instructor_name||req.session.userName||'',
-             image_url||'', published!==false, bestseller||false]
+             total_duration||'', parseFloat(price)||0, instructorId,
+             instructor_name||req.session.userName||'', image_url||'',
+             published !== false, bestseller||false]
         );
         res.json({ success: true, message: 'Course created', course: r.rows[0] });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.put('/api/learn/courses/:id', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const { title, description, category, level, price, published, bestseller } = req.body;
@@ -918,7 +792,6 @@ app.put('/api/learn/courses/:id', isAuthenticated, isAdmin, async (req, res) => 
         res.json({ success: true, message: 'Course updated', course: r.rows[0] });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.delete('/api/learn/courses/:id', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('DELETE FROM courses WHERE id=$1 RETURNING id', [req.params.id]);
@@ -927,24 +800,20 @@ app.delete('/api/learn/courses/:id', isAuthenticated, isAdmin, async (req, res) 
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
-// ────────────────────────────────────────────────────────────
-// ADMIN API – Enrollments  (NEW)
-// ────────────────────────────────────────────────────────────
+// ── ADMIN API – Enrollments ──────────────────────────────────
 app.get('/api/learn/enrollments', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query(`
             SELECT e.id, e.enrolled_at, e.progress, e.status,
-                   u.username, u.email,
-                   c.title AS course_title
+                   u.username, u.email, c.title AS course_title
             FROM enrollments e
-            JOIN users    u ON e.user_id   = u.id
-            JOIN courses  c ON e.course_id = c.id
+            JOIN users   u ON e.user_id   = u.id
+            JOIN courses c ON e.course_id = c.id
             ORDER BY e.enrolled_at DESC
         `);
         res.json({ success: true, enrollments: r.rows });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.delete('/api/learn/enrollments/:id', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('DELETE FROM enrollments WHERE id=$1 RETURNING id', [req.params.id]);
@@ -953,62 +822,54 @@ app.delete('/api/learn/enrollments/:id', isAuthenticated, isAdmin, async (req, r
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
-// ────────────────────────────────────────────────────────────
-// ADMIN API – Settings
-// ────────────────────────────────────────────────────────────
+// ── ADMIN API – Settings ─────────────────────────────────────
 app.get('/api/settings', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM settings WHERE id=1 LIMIT 1');
         res.json({ success: true, settings: r.rows[0] || {} });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
-
 app.put('/api/settings', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const { site_name, contact_email, whatsapp_number, location, tagline } = req.body;
         await db.query(
             `INSERT INTO settings (id, site_name, contact_email, whatsapp_number, location, tagline)
              VALUES (1,$1,$2,$3,$4,$5)
-             ON CONFLICT (id) DO UPDATE SET
-               site_name=$1, contact_email=$2, whatsapp_number=$3, location=$4, tagline=$5`,
+             ON CONFLICT (id) DO UPDATE SET site_name=$1, contact_email=$2, whatsapp_number=$3, location=$4, tagline=$5`,
             [site_name||'NeurowexTech', contact_email||'', whatsapp_number||'', location||'', tagline||'']
         );
         res.json({ success: true, message: 'Settings saved' });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
-// ────────────────────────────────────────────────────────────
-// DASHBOARD STATS (combined)
-// ────────────────────────────────────────────────────────────
+// FIX 4: safeCount for dashboard stats — each table isolated
 app.get('/api/dashboard/stats', isAuthenticated, isAdmin, async (req, res) => {
-    try {
-        const r = await db.query(`
-            SELECT
-                (SELECT COUNT(*) FROM users)                        AS total_users,
-                (SELECT COUNT(*) FROM users WHERE role='admin')     AS total_admins,
-                (SELECT COUNT(*) FROM projects)                     AS total_projects,
-                (SELECT COUNT(*) FROM contacts)                     AS total_contacts,
-                (SELECT COUNT(*) FROM subscribers)                  AS total_subscribers,
-                (SELECT COUNT(*) FROM courses WHERE published=true) AS total_courses
-        `);
-        res.json({ success: true, stats: r.rows[0] });
-    } catch (err) { res.json({ success: true, stats: {} }); }
+    const safeCount = async (sql) => {
+        try { const r = await db.query(sql); return parseInt(r.rows[0].count) || 0; }
+        catch { return 0; }
+    };
+    res.json({ success: true, stats: {
+        total_users:       await safeCount("SELECT COUNT(*) as count FROM users"),
+        total_admins:      await safeCount("SELECT COUNT(*) as count FROM users WHERE role='admin'"),
+        total_projects:    await safeCount("SELECT COUNT(*) as count FROM projects"),
+        total_contacts:    await safeCount("SELECT COUNT(*) as count FROM contacts"),
+        total_subscribers: await safeCount("SELECT COUNT(*) as count FROM subscribers"),
+        total_courses:     await safeCount("SELECT COUNT(*) as count FROM courses WHERE published=true"),
+    }});
 });
 
-// ────────────────────────────────────────────────────────────
-// PUBLIC ROUTES – Home / Portfolio / Blog / Contact / Subscribe
-// ────────────────────────────────────────────────────────────
+// ── PUBLIC ROUTES ────────────────────────────────────────────
 app.get('/', async (req, res) => {
     try {
-        const [featured, blogs] = await Promise.all([
-            db.getAllProjects ? db.getAllProjects(true) : db.query('SELECT * FROM projects WHERE featured=true ORDER BY created_at DESC LIMIT 6').then(r=>r.rows),
-            db.getBlogPosts   ? db.getBlogPosts(true)  : db.query("SELECT * FROM blog_posts WHERE published=true ORDER BY created_at DESC LIMIT 3").then(r=>r.rows),
+        const [featuredR, blogsR] = await Promise.all([
+            db.query('SELECT * FROM projects WHERE featured=true ORDER BY created_at DESC LIMIT 6').catch(() => ({ rows: [] })),
+            db.query("SELECT * FROM blog_posts WHERE published=true ORDER BY created_at DESC LIMIT 3").catch(() => ({ rows: [] })),
         ]);
         res.render('home', {
             title: 'NeurowexTech – Web & Mobile Apps That Actually Ship',
             description: 'Custom web and mobile app development for startups and businesses.',
-            featuredProjects: featured || [],
-            recentBlogs: (blogs || []).slice(0, 3),
+            featuredProjects: featuredR.rows,
+            recentBlogs:      blogsR.rows,
         });
     } catch (err) {
         console.error('Home error:', err);
@@ -1018,53 +879,40 @@ app.get('/', async (req, res) => {
 
 app.get('/portfolio', async (req, res) => {
     try {
-        const projects = db.getAllProjects ? await db.getAllProjects(false)
-            : (await db.query('SELECT * FROM projects ORDER BY created_at DESC')).rows;
-        res.render('portfolio', { title: 'Portfolio – NeurowexTech', projects: projects || [] });
-    } catch (err) {
-        res.render('portfolio', { title: 'Portfolio', projects: [] });
-    }
+        const r = await db.query('SELECT * FROM projects ORDER BY created_at DESC');
+        res.render('portfolio', { title: 'Portfolio – NeurowexTech', projects: r.rows });
+    } catch { res.render('portfolio', { title: 'Portfolio', projects: [] }); }
 });
 
 app.get('/portfolio/:id', async (req, res) => {
     try {
-        const project = db.getProjectById ? await db.getProjectById(req.params.id)
-            : (await db.query('SELECT * FROM projects WHERE id=$1', [req.params.id])).rows[0];
-        if (!project) return res.status(404).render('404', { title: 'Project Not Found' });
-        res.render('portfolio-detail', { title: `${project.name} – NeurowexTech`, project });
-    } catch (err) {
-        res.status(500).render('error', { title: 'Error' });
-    }
+        const r = await db.query('SELECT * FROM projects WHERE id=$1', [req.params.id]);
+        if (!r.rows.length) return res.status(404).render('404', { title: 'Project Not Found' });
+        res.render('portfolio-detail', { title: `${r.rows[0].name} – NeurowexTech`, project: r.rows[0] });
+    } catch (err) { res.status(500).render('error', { title: 'Error', message: err.message }); }
 });
 
-app.get('/services', (req, res) => {
-    res.render('services', { title: 'Services – NeurowexTech' });
-});
-
-app.get('/contact', (req, res) => res.render('contact', { title: 'Contact – NeurowexTech' }));
+app.get('/services', (req, res) => res.render('services', { title: 'Services – NeurowexTech' }));
+app.get('/contact',  (req, res) => res.render('contact',  { title: 'Contact – NeurowexTech' }));
 
 app.post('/contact', async (req, res) => {
     try {
         const { name, email, phone, project_type, budget, message, company, services } = req.body;
         const isJson = req.is('application/json');
         const errors = [];
-        if (!name || name.trim().length < 2)          errors.push('Please enter your full name');
-        if (!email || !/^\S+@\S+\.\S+$/.test(email))  errors.push('Please enter a valid email');
-        if (!message || message.trim().length < 10)   errors.push('Please provide more project details');
+        if (!name || name.trim().length < 2)         errors.push('Please enter your full name');
+        if (!email || !/^\S+@\S+\.\S+$/.test(email)) errors.push('Please enter a valid email');
+        if (!message || message.trim().length < 10)  errors.push('Please provide more project details');
         if (errors.length) {
             if (isJson) return res.status(400).json({ success: false, message: errors.join('. ') });
             return res.render('contact', { title: 'Contact', error: errors.join('. '), formData: req.body });
         }
         const resolvedType = Array.isArray(services) && services.length ? services.join(', ') : (project_type||'');
-        if (db.saveContact) {
-            await db.saveContact({ name, email, phone: phone||'', project_type: resolvedType, budget: budget||'', message, company: company||'' });
-        } else {
-            await db.query(
-                `INSERT INTO contacts (name, email, phone, project_type, budget, message, company, created_at)
-                 VALUES ($1,$2,$3,$4,$5,$6,$7,NOW())`,
-                [name, email, phone||'', resolvedType, budget||'', message, company||'']
-            );
-        }
+        await db.query(
+            `INSERT INTO contacts (name, email, phone, project_type, budget, message, company, created_at)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,NOW())`,
+            [name, email, phone||'', resolvedType, budget||'', message, company||'']
+        );
         if (isJson) return res.json({ success: true, message: "Thank you! We'll respond within 24 hours." });
         res.render('contact', { title: 'Contact', success: "Thank you! We'll respond within 24 hours." });
     } catch (err) {
@@ -1074,24 +922,36 @@ app.post('/contact', async (req, res) => {
     }
 });
 
+// FIX 5: /blog now passes featuredPost
 app.get('/blog', async (req, res) => {
     try {
-        const posts = db.getBlogPosts ? await db.getBlogPosts(true)
-            : (await db.query("SELECT * FROM blog_posts WHERE published=true ORDER BY created_at DESC")).rows;
-        res.render('blog', { title: 'Blog – NeurowexTech', posts: posts || [] });
+        const r = await db.query("SELECT * FROM blog_posts WHERE published=true ORDER BY created_at DESC");
+        const posts = r.rows;
+        const featuredPost = posts.find(p => p.featured || p.bestseller) || posts[0] || null;
+        res.render('blog', { title: 'Blog – NeurowexTech', posts, featuredPost });
     } catch (err) {
-        res.render('blog', { title: 'Blog', posts: [] });
+        console.error('Blog error:', err);
+        res.render('blog', { title: 'Blog', posts: [], featuredPost: null });
     }
 });
 
+// FIX 6: /blog/:slug now passes relatedPosts
 app.get('/blog/:slug', async (req, res) => {
     try {
-        const post = db.getBlogPostBySlug ? await db.getBlogPostBySlug(req.params.slug)
-            : (await db.query('SELECT * FROM blog_posts WHERE slug=$1 AND published=true', [req.params.slug])).rows[0];
-        if (!post) return res.status(404).render('404', { title: 'Post Not Found' });
-        res.render('blog-post', { title: `${post.title} – NeurowexTech`, post });
+        const r = await db.query('SELECT * FROM blog_posts WHERE slug=$1 AND published=true', [req.params.slug]);
+        if (!r.rows.length) return res.status(404).render('404', { title: 'Post Not Found' });
+        const post = r.rows[0];
+        const related = await db.query(
+            'SELECT * FROM blog_posts WHERE published=true AND id!=$1 AND category=$2 ORDER BY created_at DESC LIMIT 3',
+            [post.id, post.category]
+        );
+        const relatedPosts = related.rows.length
+            ? related.rows
+            : (await db.query('SELECT * FROM blog_posts WHERE published=true AND id!=$1 ORDER BY created_at DESC LIMIT 3', [post.id])).rows;
+        res.render('blog-post', { title: `${post.title} – NeurowexTech`, post, relatedPosts });
     } catch (err) {
-        res.status(500).render('error', { title: 'Error' });
+        console.error('Blog post error:', err);
+        res.status(500).render('error', { title: 'Error', message: err.message });
     }
 });
 
@@ -1100,14 +960,10 @@ app.post('/subscribe', async (req, res) => {
         const { email } = req.body;
         if (!email || !/^\S+@\S+\.\S+$/.test(email))
             return res.status(400).json({ success: false, message: 'Please enter a valid email address' });
-        if (db.addSubscriber) {
-            await db.addSubscriber(email);
-        } else {
-            await db.query(
-                `INSERT INTO subscribers (email, subscribed_at) VALUES ($1,NOW()) ON CONFLICT (email) DO NOTHING`,
-                [email.toLowerCase()]
-            );
-        }
+        await db.query(
+            `INSERT INTO subscribers (email, subscribed_at) VALUES ($1,NOW()) ON CONFLICT (email) DO NOTHING`,
+            [email.toLowerCase()]
+        );
         res.json({ success: true, message: 'Subscribed successfully! 🎉' });
     } catch (err) {
         console.error('Subscribe error:', err);
@@ -1115,15 +971,13 @@ app.post('/subscribe', async (req, res) => {
     }
 });
 
-// Static pages
-app.get('/about',           (req, res) => res.render('about',           { title: 'About – NeurowexTech' }));
-app.get('/privacy-policy',  (req, res) => res.render('privacy-policy',  { title: 'Privacy Policy – NeurowexTech' }));
-app.get('/terms-of-service',(req, res) => res.render('terms-of-service',{ title: 'Terms of Service – NeurowexTech' }));
-app.get('/cookie-policy',   (req, res) => res.render('cookie-policy',   { title: 'Cookie Policy – NeurowexTech' }));
+app.get('/about',            (req, res) => res.render('about',            { title: 'About – NeurowexTech' }));
+app.get('/privacy-policy',   (req, res) => res.render('privacy-policy',   { title: 'Privacy Policy – NeurowexTech' }));
+app.get('/terms-of-service', (req, res) => res.render('terms-of-service', { title: 'Terms of Service – NeurowexTech' }));
+app.get('/cookie-policy',    (req, res) => res.render('cookie-policy',    { title: 'Cookie Policy – NeurowexTech' }));
 
-// ────────────────────────────────────────────────────────────
-// LEARNING PLATFORM
-// ────────────────────────────────────────────────────────────
+// ── LEARNING PLATFORM ────────────────────────────────────────
+// FIX 7: All queries wrapped in .catch(() => ({ rows: [] })) — no 500 if tables missing
 app.get('/learn', async (req, res) => {
     try {
         const [coursesR, categoriesR, instructorsR, statsR, topicsR] = await Promise.all([
@@ -1134,32 +988,30 @@ app.get('/learn', async (req, res) => {
                        COALESCE((SELECT COUNT(*) FROM course_modules cm WHERE cm.course_id=c.id),0) AS total_modules,
                        COALESCE((SELECT COUNT(*) FROM enrollments e WHERE e.course_id=c.id),0) AS enrolled_count
                 FROM courses c LEFT JOIN users u ON c.instructor_id=u.id
-                WHERE c.published=true
-                ORDER BY c.featured DESC, c.created_at DESC
-            `),
-            db.query(`SELECT category, COUNT(*) AS course_count FROM courses WHERE published=true GROUP BY category ORDER BY category`),
+                WHERE c.published=true ORDER BY c.featured DESC, c.created_at DESC
+            `).catch(() => ({ rows: [] })),
+            db.query(`SELECT category, COUNT(*) AS course_count FROM courses WHERE published=true GROUP BY category ORDER BY category`).catch(() => ({ rows: [] })),
             db.query(`
                 SELECT u.id, u.username AS name, COUNT(c.id) AS courses,
                        ROUND(COALESCE(AVG(c.rating),0),1) AS rating,
                        COALESCE(SUM(c.total_lessons),0) AS lessons
                 FROM users u JOIN courses c ON u.id=c.instructor_id
                 WHERE c.published=true GROUP BY u.id ORDER BY courses DESC LIMIT 6
-            `),
+            `).catch(() => ({ rows: [] })),
             db.query(`
-                SELECT (SELECT COUNT(*) FROM courses WHERE published=true) AS total_courses,
+                SELECT (SELECT COUNT(*) FROM courses WHERE published=true)          AS total_courses,
                        (SELECT COUNT(DISTINCT category) FROM courses WHERE published=true) AS total_categories,
-                       (SELECT COUNT(*) FROM enrollments) AS total_enrollments,
+                       (SELECT COUNT(*) FROM enrollments)                           AS total_enrollments,
                        (SELECT COUNT(DISTINCT instructor_id) FROM courses WHERE published=true) AS total_instructors
-            `),
-            db.query(`SELECT category AS name, COUNT(*) AS count FROM courses WHERE published=true GROUP BY category ORDER BY count DESC LIMIT 8`),
+            `).catch(() => ({ rows: [{ total_courses:0, total_categories:0, total_enrollments:0, total_instructors:0 }] })),
+            db.query(`SELECT category AS name, COUNT(*) AS count FROM courses WHERE published=true GROUP BY category ORDER BY count DESC LIMIT 8`).catch(() => ({ rows: [] })),
         ]);
 
-        const courses     = coursesR.rows;
-        const categories  = categoriesR.rows;
-        const stats       = statsR.rows[0] || {};
-        const topics      = topicsR.rows;
+        const courses    = coursesR.rows;
+        const categories = categoriesR.rows;
+        const stats      = statsR.rows[0] || {};
+        const topics     = topicsR.rows;
 
-        // Enrich instructors with initials
         const instructors = instructorsR.rows.map(i => ({
             ...i,
             initials: i.name ? i.name.split(' ').map(w=>w[0]).join('').toUpperCase().substring(0,2) : 'IN',
@@ -1167,7 +1019,6 @@ app.get('/learn', async (req, res) => {
             students: courses.filter(c => c.instructor_name === i.name).reduce((a,c)=>a+parseInt(c.enrolled_count||0),0),
         }));
 
-        // Count level breakdowns for learn.hbs filters
         const levelCounts = { beginner: 0, intermediate: 0, advanced: 0 };
         const priceCounts = { free: 0, paid: 0 };
         courses.forEach(c => {
@@ -1175,22 +1026,20 @@ app.get('/learn', async (req, res) => {
             if (parseFloat(c.price) === 0) priceCounts.free++; else priceCounts.paid++;
         });
 
-        // Add featured course (first bestseller or first course)
         const featuredCourse = courses.find(c => c.bestseller) || courses[0] || null;
 
         res.render('learn', {
             title: 'NeurowexTech Learn – Practical Skills, Real Results',
-            courses, categories, instructors, stats, topics,
-            featuredCourse,
-            beginnerCount: levelCounts.beginner,
+            courses, categories, instructors, stats, topics, featuredCourse,
+            beginnerCount:     levelCounts.beginner,
             intermediateCount: levelCounts.intermediate,
-            advancedCount: levelCounts.advanced,
-            freeCoursesCount: priceCounts.free,
-            paidCoursesCount: priceCounts.paid,
+            advancedCount:     levelCounts.advanced,
+            freeCoursesCount:  priceCounts.free,
+            paidCoursesCount:  priceCounts.paid,
         });
     } catch (err) {
-        console.error('Learn page error:', err);
-        res.render('learn', { title: 'NeurowexTech Learn', courses: [], categories: [], instructors: [], stats: {}, topics: [], freeCoursesCount: 0, paidCoursesCount: 0, beginnerCount: 0, intermediateCount: 0, advancedCount: 0 });
+        console.error('Learn error:', err);
+        res.render('learn', { title: 'NeurowexTech Learn', courses: [], categories: [], instructors: [], stats: {}, topics: [], freeCoursesCount:0, paidCoursesCount:0, beginnerCount:0, intermediateCount:0, advancedCount:0 });
     }
 });
 
@@ -1204,7 +1053,6 @@ app.get('/learn/course/:id', async (req, res) => {
         `, [courseId]);
         if (!cR.rows.length) return res.status(404).render('404', { title: 'Course Not Found' });
         const course = cR.rows[0];
-
         const modulesR = await db.query(`
             SELECT cm.*,
                    COALESCE(json_agg(json_build_object(
@@ -1218,23 +1066,19 @@ app.get('/learn/course/:id', async (req, res) => {
         `, [courseId]);
         const modules = modulesR.rows;
         const totalLessons = modules.reduce((s,m) => s+(m.lessons?.filter(l=>l.id)?.length||0), 0);
-
         let isEnrolled = false, enrollmentProgress = 0;
         if (req.session.userId) {
             const eR = await db.query('SELECT * FROM enrollments WHERE user_id=$1 AND course_id=$2', [req.session.userId, courseId]);
             if (eR.rows.length) { isEnrolled = true; enrollmentProgress = eR.rows[0].progress||0; }
         }
-
-        const relatedR = await db.query('SELECT id,title,category,level,rating,image_url FROM courses WHERE category=$1 AND id!=$2 AND published=true LIMIT 3', [course.category, courseId]);
-
-        res.render('course-detail', {
-            title: `${course.title} – NeurowexTech Learn`,
-            course, modules, totalLessons, isEnrolled, enrollmentProgress,
-            relatedCourses: relatedR.rows,
-        });
+        const relatedR = await db.query(
+            'SELECT id,title,category,level,rating,image_url FROM courses WHERE category=$1 AND id!=$2 AND published=true LIMIT 3',
+            [course.category, courseId]
+        );
+        res.render('course-detail', { title: `${course.title} – NeurowexTech Learn`, course, modules, totalLessons, isEnrolled, enrollmentProgress, relatedCourses: relatedR.rows });
     } catch (err) {
         console.error('Course detail error:', err);
-        res.status(500).render('error', { title: 'Error', message: 'Unable to load course details.' });
+        res.status(500).render('error', { title: 'Error', message: err.message });
     }
 });
 
@@ -1260,7 +1104,6 @@ app.get('/learn/course/:id/dashboard', isAuthenticated, async (req, res) => {
         const eR = await db.query(`SELECT e.*,c.title FROM enrollments e JOIN courses c ON e.course_id=c.id WHERE e.user_id=$1 AND e.course_id=$2`, [req.session.userId, courseId]);
         if (!eR.rows.length) return res.redirect(`/learn/course/${courseId}`);
         const enrollment = eR.rows[0];
-
         const modulesR = await db.query(`
             SELECT cm.*,
                    COALESCE(json_agg(json_build_object(
@@ -1275,16 +1118,14 @@ app.get('/learn/course/:id/dashboard', isAuthenticated, async (req, res) => {
             GROUP BY cm.id ORDER BY cm.module_order
         `, [req.session.userId, courseId]);
         const modules = modulesR.rows;
-
         let total = 0, done = 0;
         modules.forEach(m => m.lessons?.forEach(l => { if (l.id) { total++; if (l.completed) done++; } }));
         const progress = total > 0 ? Math.round((done/total)*100) : 0;
         if (progress !== enrollment.progress) await db.query('UPDATE enrollments SET progress=$1 WHERE id=$2', [progress, enrollment.id]);
-
         res.render('course-dashboard', { title: `${enrollment.title} – Dashboard`, courseId, courseTitle: enrollment.title, modules, progress, completedLessons: done, totalLessons: total });
     } catch (err) {
         console.error('Course dashboard error:', err);
-        res.status(500).render('error', { title: 'Error', message: 'Unable to load course dashboard.' });
+        res.status(500).render('error', { title: 'Error', message: err.message });
     }
 });
 
@@ -1308,9 +1149,9 @@ app.get('/api/courses/search', async (req, res) => {
         let query = `SELECT c.*, u.username AS instructor_name FROM courses c JOIN users u ON c.instructor_id=u.id WHERE c.published=true`;
         const params = [];
         let i = 1;
-        if (q)                    { query += ` AND (c.title ILIKE $${i} OR c.description ILIKE $${i})`; params.push(`%${q}%`); i++; }
-        if (category && category !== 'all') { query += ` AND c.category=$${i}`; params.push(category); i++; }
-        if (level    && level    !== 'all') { query += ` AND c.level=$${i}`;    params.push(level);    i++; }
+        if (q)                               { query += ` AND (c.title ILIKE $${i} OR c.description ILIKE $${i})`; params.push(`%${q}%`); i++; }
+        if (category && category !== 'all')  { query += ` AND c.category=$${i}`;  params.push(category); i++; }
+        if (level    && level    !== 'all')  { query += ` AND c.level=$${i}`;     params.push(level);    i++; }
         if (price === 'free') query += ` AND c.price=0`;
         else if (price === 'paid') query += ` AND c.price>0`;
         query += ` ORDER BY c.featured DESC, c.created_at DESC`;
@@ -1322,8 +1163,7 @@ app.get('/api/courses/search', async (req, res) => {
 app.get('/my-learning', isAuthenticated, async (req, res) => {
     try {
         const r = await db.query(`
-            SELECT e.*, c.title, c.category, c.level, c.image_url,
-                   u.username AS instructor_name
+            SELECT e.*, c.title, c.category, c.level, c.image_url, u.username AS instructor_name
             FROM enrollments e
             JOIN courses c ON e.course_id=c.id
             JOIN users   u ON c.instructor_id=u.id
@@ -1332,44 +1172,34 @@ app.get('/my-learning', isAuthenticated, async (req, res) => {
         res.render('my-learning', { title: 'My Learning – NeurowexTech', enrollments: r.rows });
     } catch (err) {
         console.error('My learning error:', err);
-        res.status(500).render('error', { title: 'Error', message: 'Unable to load your learning dashboard' });
+        res.status(500).render('error', { title: 'Error', message: err.message });
     }
 });
 
-// ────────────────────────────────────────────────────────────
-// UTILITY ROUTES
-// ────────────────────────────────────────────────────────────
+// ── UTILITY ──────────────────────────────────────────────────
 app.get('/health', (req, res) => {
     res.json({ status: 'OK', timestamp: new Date().toISOString(), uptime: process.uptime(), env: process.env.NODE_ENV || 'development' });
 });
-
 app.get('/test-auth', (req, res) => {
     res.json({ sessionExists: !!req.session, userId: req.session?.userId, userRole: req.session?.userRole, isAuthenticated: !!req.session?.userId });
 });
-
-// Debug – disable in production
 if (process.env.NODE_ENV !== 'production') {
     app.get('/debug/env', (req, res) => {
         res.json({ googleClientId: process.env.GOOGLE_CLIENT_ID ? '✅ Set' : '❌ Missing', nodeEnv: process.env.NODE_ENV, hasSessionSecret: !!process.env.SESSION_SECRET });
     });
 }
 
-// ────────────────────────────────────────────────────────────
-// ERROR HANDLERS
-// ────────────────────────────────────────────────────────────
+// ── ERROR HANDLERS ───────────────────────────────────────────
 app.use((req, res) => {
     res.status(404).render('404', { title: 'Page Not Found', message: 'The page you are looking for does not exist.' });
 });
-
 app.use((err, req, res, next) => {
     console.error('Global error:', err.stack);
     const isDev = process.env.NODE_ENV !== 'production';
     res.status(500).render('error', { title: 'Server Error', message: isDev ? err.message : 'Something went wrong. Please try again later.', stack: isDev ? err.stack : null });
 });
 
-// ────────────────────────────────────────────────────────────
-// START / EXPORT
-// ────────────────────────────────────────────────────────────
+// ── START / EXPORT ───────────────────────────────────────────
 module.exports = app;
 
 if (process.env.NODE_ENV !== 'production' || !isVercel) {
@@ -1377,7 +1207,7 @@ if (process.env.NODE_ENV !== 'production' || !isVercel) {
     app.listen(port, () => {
         console.log(`
 ╔═══════════════════════════════════════════════════════╗
-║   🚀 NeurowexTech Server — http://localhost:${port}      ║
+║   🚀 NeurowexTech — http://localhost:${port}             ║
 ║   🔐 Google Sign-In: ${process.env.GOOGLE_CLIENT_ID ? '✅ Configured' : '❌ Not configured  '}          ║
 ║   🌍 Environment:   ${(process.env.NODE_ENV || 'development').padEnd(12)}                 ║
 ║   Press Ctrl+C to stop                                ║
