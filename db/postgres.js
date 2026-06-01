@@ -63,7 +63,7 @@ async function query(text, params) {
     try {
         const res = await pool.query(text, params);
         const duration = Date.now() - start;
-        // Only log slow queries in production
+        // Only log slow queries
         if (duration > 1000) {
             console.log(`⚠️ Slow query (${duration}ms):`, text.substring(0, 50));
         }
@@ -113,11 +113,11 @@ async function getRecentProjects(limit = 6) {
 
 // ========== CONTACTS ==========
 async function saveContact(contactData) {
-    const { name, email, phone, project_type, budget, message } = contactData;
+    const { name, email, phone, project_type, budget, message, company } = contactData;
     const result = await query(
-        `INSERT INTO contacts (name, email, phone, project_type, budget, message, status) 
-         VALUES ($1, $2, $3, $4, $5, $6, 'new') RETURNING *`,
-        [name, email, phone, project_type, budget, message]
+        `INSERT INTO contacts (name, email, phone, project_type, budget, message, company, status, created_at) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, 'new', NOW()) RETURNING *`,
+        [name, email, phone || '', project_type || '', budget || '', message, company || '']
     );
     return result.rows[0];
 }
@@ -138,12 +138,17 @@ async function updateContactStatus(id, status) {
     return result.rows[0];
 }
 
+async function deleteContact(id) {
+    const result = await query('DELETE FROM contacts WHERE id = $1 RETURNING *', [id]);
+    return result.rows[0];
+}
+
 // ========== SUBSCRIBERS ==========
 async function addSubscriber(email) {
     try {
         const result = await query(
-            'INSERT INTO subscribers (email) VALUES ($1) RETURNING *',
-            [email]
+            'INSERT INTO subscribers (email, subscribed_at) VALUES ($1, NOW()) RETURNING *',
+            [email.toLowerCase()]
         );
         return result.rows[0];
     } catch (err) {
@@ -164,6 +169,11 @@ async function getSubscriberCount() {
     return parseInt(result.rows[0].count);
 }
 
+async function deleteSubscriber(id) {
+    const result = await query('DELETE FROM subscribers WHERE id = $1 RETURNING *', [id]);
+    return result.rows[0];
+}
+
 // ========== BLOG POSTS ==========
 async function getBlogPosts(publishedOnly = true) {
     let sql = 'SELECT * FROM blog_posts';
@@ -173,7 +183,7 @@ async function getBlogPosts(publishedOnly = true) {
         sql += ' WHERE published = true';
     }
     
-    sql += ' ORDER BY published_at DESC NULLS LAST';
+    sql += ' ORDER BY published_at DESC NULLS LAST, created_at DESC';
     
     const result = await query(sql, params);
     return result.rows;
@@ -189,7 +199,7 @@ async function getBlogPostBySlug(slug) {
 
 async function getRecentBlogPosts(limit = 3) {
     const result = await query(
-        'SELECT * FROM blog_posts WHERE published = true ORDER BY published_at DESC LIMIT $1',
+        'SELECT * FROM blog_posts WHERE published = true ORDER BY published_at DESC NULLS LAST LIMIT $1',
         [limit]
     );
     return result.rows;
@@ -197,7 +207,7 @@ async function getRecentBlogPosts(limit = 3) {
 
 async function incrementBlogView(slug) {
     await query(
-        'UPDATE blog_posts SET views = views + 1 WHERE slug = $1',
+        'UPDATE blog_posts SET views = COALESCE(views, 0) + 1 WHERE slug = $1',
         [slug]
     );
 }
@@ -230,7 +240,7 @@ async function deleteBlogPost(id) {
     return result.rows[0];
 }
 
-// ========== TEAM MEMBERS ==========
+// ========== TEAM MEMBERS (public) ==========
 async function getTeamMembers() {
     try {
         const result = await query(
@@ -255,8 +265,8 @@ async function getAllTeamMembers() {
 async function createTeamMember(teamData) {
     const { name, role, bio, linkedin_url, github_url } = teamData;
     const result = await query(`
-        INSERT INTO team (name, role, bio, linkedin_url, github_url)
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO team (name, role, bio, linkedin_url, github_url, created_at)
+        VALUES ($1, $2, $3, $4, $5, NOW())
         RETURNING *
     `, [name, role, bio || '', linkedin_url || '', github_url || '']);
     return result.rows[0];
@@ -270,9 +280,11 @@ async function deleteTeamMember(id) {
 // ========== STATISTICS ==========
 async function getStats() {
     try {
-        const projectsCount = await query('SELECT COUNT(*) FROM projects');
-        const contactsCount = await query('SELECT COUNT(*) FROM contacts');
-        const subscribersCount = await query('SELECT COUNT(*) FROM subscribers');
+        const [projectsCount, contactsCount, subscribersCount] = await Promise.all([
+            query('SELECT COUNT(*) FROM projects'),
+            query('SELECT COUNT(*) FROM contacts'),
+            query('SELECT COUNT(*) FROM subscribers')
+        ]);
         
         return {
             projects: parseInt(projectsCount.rows[0].count),
@@ -285,10 +297,32 @@ async function getStats() {
     }
 }
 
+async function getSystemStats() {
+    try {
+        const [users, contacts, subscribers, projects, courses] = await Promise.all([
+            query('SELECT COUNT(*) FROM users'),
+            query('SELECT COUNT(*) FROM contacts'),
+            query('SELECT COUNT(*) FROM subscribers'),
+            query('SELECT COUNT(*) FROM projects'),
+            query('SELECT COUNT(*) FROM courses WHERE published = true')
+        ]);
+        return {
+            users: parseInt(users.rows[0].count),
+            contacts: parseInt(contacts.rows[0].count),
+            subscribers: parseInt(subscribers.rows[0].count),
+            projects: parseInt(projects.rows[0].count),
+            courses: parseInt(courses.rows[0].count)
+        };
+    } catch (err) {
+        console.error('Error getting system stats:', err);
+        return { users: 0, contacts: 0, subscribers: 0, projects: 0, courses: 0 };
+    }
+}
+
 // ========== SERVICES ==========
 async function getAllServices() {
     try {
-        const result = await query('SELECT * FROM services ORDER BY display_order');
+        const result = await query('SELECT * FROM services ORDER BY display_order, id ASC');
         return result.rows;
     } catch (err) {
         if (err.message.includes('relation') && err.message.includes('does not exist')) {
@@ -307,10 +341,10 @@ async function getAllServicesAdmin() {
 async function createService(serviceData) {
     const { name, description, icon_class, price } = serviceData;
     const result = await query(`
-        INSERT INTO services (name, description, icon_class, price, visible)
-        VALUES ($1, $2, $3, $4, true)
+        INSERT INTO services (name, description, icon_class, price, visible, created_at)
+        VALUES ($1, $2, $3, $4, true, NOW())
         RETURNING *
-    `, [name, description || '', icon_class || '', price || '']);
+    `, [name, description || '', icon_class || 'fas fa-cog', price || '']);
     return result.rows[0];
 }
 
@@ -322,7 +356,7 @@ async function deleteService(id) {
 // ========== TESTIMONIALS ==========
 async function getTestimonials() {
     try {
-        const result = await query('SELECT * FROM testimonials WHERE published = true ORDER BY display_order');
+        const result = await query('SELECT * FROM testimonials WHERE published = true ORDER BY display_order, created_at DESC');
         return result.rows;
     } catch (err) {
         if (err.message.includes('relation') && err.message.includes('does not exist')) {
@@ -360,25 +394,26 @@ async function getSettings() {
 }
 
 async function updateSettings(settingsData) {
-    const { site_name, contact_email, whatsapp_number, location } = settingsData;
+    const { site_name, contact_email, whatsapp_number, location, tagline } = settingsData;
     const result = await query(`
-        INSERT INTO settings (id, site_name, contact_email, whatsapp_number, location, updated_at)
-        VALUES (1, $1, $2, $3, $4, NOW())
+        INSERT INTO settings (id, site_name, contact_email, whatsapp_number, location, tagline, updated_at)
+        VALUES (1, $1, $2, $3, $4, $5, NOW())
         ON CONFLICT (id) DO UPDATE SET
             site_name = EXCLUDED.site_name,
             contact_email = EXCLUDED.contact_email,
             whatsapp_number = EXCLUDED.whatsapp_number,
             location = EXCLUDED.location,
+            tagline = EXCLUDED.tagline,
             updated_at = NOW()
         RETURNING *
-    `, [site_name || 'Neurowex Tech', contact_email || '', whatsapp_number || '', location || '']);
+    `, [site_name || 'NeurowexTech', contact_email || 'techneurowex@gmail.com', whatsapp_number || '+254769329340', location || 'Nairobi, Kenya', tagline || '']);
     return result.rows[0];
 }
 
 // ========== FAQS ==========
 async function getFAQs() {
     try {
-        const result = await query('SELECT * FROM faqs WHERE published = true ORDER BY display_order');
+        const result = await query('SELECT * FROM faqs WHERE active = true ORDER BY display_order, id ASC');
         return result.rows;
     } catch (err) {
         if (err.message.includes('relation') && err.message.includes('does not exist')) {
@@ -388,19 +423,82 @@ async function getFAQs() {
     }
 }
 
+async function getAllFAQs() {
+    const result = await query('SELECT * FROM faqs ORDER BY display_order, id ASC');
+    return result.rows;
+}
+
+async function createFAQ(faqData) {
+    const { question, answer, display_order, active } = faqData;
+    const result = await query(`
+        INSERT INTO faqs (question, answer, display_order, active, created_at)
+        VALUES ($1, $2, $3, $4, NOW())
+        RETURNING *
+    `, [question, answer, display_order || 0, active !== false]);
+    return result.rows[0];
+}
+
+async function updateFAQ(id, faqData) {
+    const { question, answer, display_order, active } = faqData;
+    const result = await query(`
+        UPDATE faqs 
+        SET question = COALESCE($1, question),
+            answer = COALESCE($2, answer),
+            display_order = COALESCE($3, display_order),
+            active = COALESCE($4, active)
+        WHERE id = $5
+        RETURNING *
+    `, [question, answer, display_order, active, id]);
+    return result.rows[0];
+}
+
+async function deleteFAQ(id) {
+    const result = await query('DELETE FROM faqs WHERE id = $1 RETURNING *', [id]);
+    return result.rows[0];
+}
+
+// ========== PRICING ==========
+async function getPricingPlans() {
+    try {
+        const result = await query('SELECT * FROM pricing_plans ORDER BY price ASC');
+        return result.rows;
+    } catch (err) {
+        if (err.message.includes('relation') && err.message.includes('does not exist')) {
+            return [];
+        }
+        throw err;
+    }
+}
+
+async function createPricingPlan(planData) {
+    const { name, tier, price, price_label, features, popular } = planData;
+    const result = await query(`
+        INSERT INTO pricing_plans (name, tier, price, price_label, features, popular, created_at)
+        VALUES ($1, $2, $3, $4, $5, $6, NOW())
+        RETURNING *
+    `, [name, tier || '', price || 0, price_label || `Kshs ${price}`, features || [], popular || false]);
+    return result.rows[0];
+}
+
+async function deletePricingPlan(id) {
+    const result = await query('DELETE FROM pricing_plans WHERE id = $1 RETURNING *', [id]);
+    return result.rows[0];
+}
+
 // ========== LEARNING PLATFORM ==========
 
 // Courses
 async function getAllCourses(featuredOnly = false, publishedOnly = true) {
     let sql = `
         SELECT c.*, 
-               u.username as instructor_name,
-               COUNT(DISTINCT cm.id) as total_modules,
-               COUNT(DISTINCT cl.id) as total_lessons
+               COALESCE(u.username, '') as instructor_name,
+               COALESCE((SELECT COUNT(*) FROM course_modules cm WHERE cm.course_id = c.id), 0) as total_modules,
+               COALESCE((SELECT COUNT(*) FROM course_lessons cl 
+                         JOIN course_modules cm ON cl.module_id = cm.id 
+                         WHERE cm.course_id = c.id), 0) as total_lessons,
+               COALESCE((SELECT COUNT(*) FROM enrollments e WHERE e.course_id = c.id), 0) as enrolled_count
         FROM courses c
         LEFT JOIN users u ON c.instructor_id = u.id
-        LEFT JOIN course_modules cm ON c.id = cm.course_id
-        LEFT JOIN course_lessons cl ON cm.id = cl.module_id
     `;
     const params = [];
     const conditions = [];
@@ -417,7 +515,7 @@ async function getAllCourses(featuredOnly = false, publishedOnly = true) {
         sql += ` WHERE ${conditions.join(' AND ')}`;
     }
     
-    sql += ` GROUP BY c.id, u.username ORDER BY c.featured DESC, c.created_at DESC`;
+    sql += ` ORDER BY c.featured DESC, c.created_at DESC`;
     
     const result = await query(sql, params);
     return result.rows;
@@ -426,6 +524,7 @@ async function getAllCourses(featuredOnly = false, publishedOnly = true) {
 async function getCourseById(id) {
     const result = await query(`
         SELECT c.*, 
+               u.id as instructor_id,
                u.username as instructor_name,
                u.email as instructor_email
         FROM courses c
@@ -433,28 +532,6 @@ async function getCourseById(id) {
         WHERE c.id = $1
     `, [id]);
     return result.rows[0];
-}
-
-async function getCourseModules(courseId) {
-    const result = await query(`
-        SELECT cm.*, 
-               json_agg(
-                   json_build_object(
-                       'id', cl.id,
-                       'title', cl.title,
-                       'duration', cl.duration,
-                       'lesson_order', cl.lesson_order,
-                       'video_url', cl.video_url,
-                       'is_free', cl.is_free
-                   ) ORDER BY cl.lesson_order
-               ) as lessons
-        FROM course_modules cm
-        LEFT JOIN course_lessons cl ON cm.id = cl.module_id
-        WHERE cm.course_id = $1
-        GROUP BY cm.id
-        ORDER BY cm.module_order
-    `, [courseId]);
-    return result.rows;
 }
 
 async function getCourseBySlug(slug) {
@@ -467,6 +544,88 @@ async function getCourseBySlug(slug) {
     return result.rows[0];
 }
 
+async function getCourseModules(courseId) {
+    const result = await query(`
+        SELECT cm.*, 
+               COALESCE(json_agg(
+                   json_build_object(
+                       'id', cl.id,
+                       'title', cl.title,
+                       'duration', cl.duration,
+                       'lesson_order', cl.lesson_order,
+                       'video_url', cl.video_url,
+                       'is_free', cl.is_free
+                   ) ORDER BY cl.lesson_order
+               ) FILTER (WHERE cl.id IS NOT NULL), '[]') as lessons
+        FROM course_modules cm
+        LEFT JOIN course_lessons cl ON cm.id = cl.module_id
+        WHERE cm.course_id = $1
+        GROUP BY cm.id
+        ORDER BY cm.module_order
+    `, [courseId]);
+    return result.rows;
+}
+
+async function createCourse(courseData) {
+    const { title, slug, description, category, level, price, instructor_id, image_url, featured, published, total_duration, bestseller } = courseData;
+    const finalSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    
+    const result = await query(`
+        INSERT INTO courses (title, slug, description, category, level, price, instructor_id, image_url, featured, published, total_duration, bestseller, created_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, NOW())
+        RETURNING *
+    `, [title, finalSlug, description || '', category || 'Web Development', level || 'Beginner', price || 0, instructor_id, image_url || '', featured || false, published !== false, total_duration || '', bestseller || false]);
+    return result.rows[0];
+}
+
+async function updateCourse(id, courseData) {
+    const { title, description, category, level, price, featured, published, total_duration, image_url, bestseller } = courseData;
+    const result = await query(`
+        UPDATE courses 
+        SET title = COALESCE($1, title),
+            description = COALESCE($2, description),
+            category = COALESCE($3, category),
+            level = COALESCE($4, level),
+            price = COALESCE($5, price),
+            featured = COALESCE($6, featured),
+            published = COALESCE($7, published),
+            total_duration = COALESCE($8, total_duration),
+            image_url = COALESCE($9, image_url),
+            bestseller = COALESCE($10, bestseller)
+        WHERE id = $11
+        RETURNING *
+    `, [title, description, category, level, price, featured, published, total_duration, image_url, bestseller, id]);
+    return result.rows[0];
+}
+
+async function deleteCourse(id) {
+    const result = await query('DELETE FROM courses WHERE id = $1 RETURNING *', [id]);
+    return result.rows[0];
+}
+
+async function getCourseStats() {
+    const result = await query(`
+        SELECT 
+            (SELECT COUNT(*) FROM courses WHERE published = true) as total_courses,
+            (SELECT COUNT(DISTINCT category) FROM courses WHERE published = true) as total_categories,
+            (SELECT COUNT(*) FROM enrollments) as total_enrollments,
+            (SELECT COUNT(DISTINCT instructor_id) FROM courses WHERE published = true) as total_instructors
+    `);
+    return result.rows[0];
+}
+
+async function getCourseCategories() {
+    const result = await query(`
+        SELECT category, COUNT(*) as course_count
+        FROM courses
+        WHERE published = true
+        GROUP BY category
+        ORDER BY category
+    `);
+    return result.rows;
+}
+
+// ========== ENROLLMENTS ==========
 async function getEnrollment(userId, courseId) {
     const result = await query(`
         SELECT * FROM enrollments 
@@ -514,6 +673,23 @@ async function getUserEnrollments(userId) {
     return result.rows;
 }
 
+async function getAllEnrollments() {
+    const result = await query(`
+        SELECT e.*, u.username, u.email, c.title as course_title
+        FROM enrollments e
+        JOIN users u ON e.user_id = u.id
+        JOIN courses c ON e.course_id = c.id
+        ORDER BY e.enrolled_at DESC
+    `);
+    return result.rows;
+}
+
+async function deleteEnrollment(id) {
+    const result = await query('DELETE FROM enrollments WHERE id = $1 RETURNING *', [id]);
+    return result.rows[0];
+}
+
+// ========== LESSON PROGRESS ==========
 async function markLessonComplete(userId, lessonId) {
     const result = await query(`
         INSERT INTO user_lesson_progress (user_id, lesson_id, completed, completed_at)
@@ -552,26 +728,87 @@ async function getUserCourseProgress(userId, courseId) {
     return result.rows[0];
 }
 
-async function getCourseCategories() {
+// ========== MODULES & LESSONS ==========
+async function createModule(moduleData) {
+    const { course_id, title, module_order, duration } = moduleData;
     const result = await query(`
-        SELECT category, COUNT(*) as course_count
-        FROM courses
-        WHERE published = true
-        GROUP BY category
-        ORDER BY category
-    `);
+        INSERT INTO course_modules (course_id, title, module_order, duration, created_at)
+        VALUES ($1, $2, $3, $4, NOW())
+        RETURNING *
+    `, [course_id, title, module_order || 0, duration || '']);
+    return result.rows[0];
+}
+
+async function createLesson(lessonData) {
+    const { module_id, title, content, video_url, lesson_order, duration, is_free } = lessonData;
+    const result = await query(`
+        INSERT INTO course_lessons (module_id, title, content, video_url, lesson_order, duration, is_free, created_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+        RETURNING *
+    `, [module_id, title, content || '', video_url || '', lesson_order || 0, duration || '', is_free || false]);
+    return result.rows[0];
+}
+
+// ========== USERS ==========
+async function getUserByEmail(email) {
+    const result = await query('SELECT * FROM users WHERE email = $1', [email.toLowerCase()]);
+    return result.rows[0];
+}
+
+async function getUserById(id) {
+    const result = await query('SELECT id, username, email, role, is_active, created_at, last_login, google_id FROM users WHERE id = $1', [id]);
+    return result.rows[0];
+}
+
+async function createUser(userData) {
+    const { username, email, password_hash, role, is_active } = userData;
+    const result = await query(`
+        INSERT INTO users (username, email, password_hash, role, is_active, created_at)
+        VALUES ($1, $2, $3, $4, $5, NOW())
+        RETURNING id, username, email, role
+    `, [username, email.toLowerCase(), password_hash, role || 'user', is_active !== false]);
+    return result.rows[0];
+}
+
+async function updateUser(id, userData) {
+    const { username, email, password_hash, role, is_active, last_login } = userData;
+    const result = await query(`
+        UPDATE users 
+        SET username = COALESCE($1, username),
+            email = COALESCE($2, email),
+            password_hash = COALESCE($3, password_hash),
+            role = COALESCE($4, role),
+            is_active = COALESCE($5, is_active),
+            last_login = COALESCE($6, last_login)
+        WHERE id = $7
+        RETURNING id, username, email, role, is_active
+    `, [username, email, password_hash, role, is_active, last_login, id]);
+    return result.rows[0];
+}
+
+async function deleteUser(id) {
+    const result = await query('DELETE FROM users WHERE id = $1 RETURNING *', [id]);
+    return result.rows[0];
+}
+
+async function getAllUsers() {
+    const result = await query('SELECT id, username, email, role, is_active, created_at, last_login, google_id FROM users ORDER BY created_at DESC');
     return result.rows;
 }
 
-async function getCourseStats() {
-    const result = await query(`
-        SELECT 
-            (SELECT COUNT(*) FROM courses WHERE published = true) as total_courses,
-            (SELECT COUNT(DISTINCT category) FROM courses WHERE published = true) as total_categories,
-            (SELECT COUNT(*) FROM enrollments) as total_enrollments,
-            (SELECT COUNT(DISTINCT instructor_id) FROM courses WHERE published = true) as total_instructors
-    `);
-    return result.rows[0];
+async function countUsers(filter = {}) {
+    let sql = 'SELECT COUNT(*) FROM users WHERE 1=1';
+    const params = [];
+    if (filter.role) {
+        sql += ' AND role = $1';
+        params.push(filter.role);
+    }
+    if (filter.is_active !== undefined) {
+        sql += ` AND is_active = $${params.length + 1}`;
+        params.push(filter.is_active);
+    }
+    const result = await query(sql, params);
+    return parseInt(result.rows[0].count);
 }
 
 // ========== EXPORT ALL FUNCTIONS ==========
@@ -591,11 +828,13 @@ module.exports = {
     saveContact,
     getAllContacts,
     updateContactStatus,
+    deleteContact,
     
     // Subscribers
     addSubscriber,
     getAllSubscribers,
     getSubscriberCount,
+    deleteSubscriber,
     
     // Blog (public)
     getBlogPosts,
@@ -638,22 +877,54 @@ module.exports = {
     
     // Stats
     getStats,
+    getSystemStats,
     
     // FAQs
     getFAQs,
+    getAllFAQs,
+    createFAQ,
+    updateFAQ,
+    deleteFAQ,
     
-    // Learning Platform
+    // Pricing
+    getPricingPlans,
+    createPricingPlan,
+    deletePricingPlan,
+    
+    // Learning Platform - Courses
     getAllCourses,
     getCourseById,
     getCourseBySlug,
     getCourseModules,
+    createCourse,
+    updateCourse,
+    deleteCourse,
+    getCourseStats,
+    getCourseCategories,
+    
+    // Learning Platform - Enrollments
     getEnrollment,
     createEnrollment,
     updateEnrollmentProgress,
     getUserEnrollments,
+    getAllEnrollments,
+    deleteEnrollment,
+    
+    // Learning Platform - Lessons
     markLessonComplete,
     getLessonProgress,
     getUserCourseProgress,
-    getCourseCategories,
-    getCourseStats,
+    
+    // Learning Platform - Modules & Lessons
+    createModule,
+    createLesson,
+    
+    // Users
+    getUserByEmail,
+    getUserById,
+    createUser,
+    updateUser,
+    deleteUser,
+    getAllUsers,
+    countUsers,
 };

@@ -61,3 +61,5 @@ temp/
 *.key
 *.crt
 EOF
+.vercel
+.env*
