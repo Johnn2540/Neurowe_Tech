@@ -1191,125 +1191,83 @@ if (signinForm) {
   });
 }
 
-// ── GOOGLE SIGN IN ───────────────────────────────────
-// Get the Google Client ID from the server
-let GOOGLE_CLIENT_ID = '{{googleClientId}}';
+// ── GOOGLE SIGN IN ───────────────────────────────────────────
+const GOOGLE_CLIENT_ID = '{{googleClientId}}';
 const googleBtn = document.getElementById('googleBtn');
 
-// Debug - log what we received
-console.log('Raw GOOGLE_CLIENT_ID from server:', GOOGLE_CLIENT_ID);
-console.log('Is it the template string?', GOOGLE_CLIENT_ID === '{{googleClientId}}');
-console.log('Length:', GOOGLE_CLIENT_ID ? GOOGLE_CLIENT_ID.length : 0);
-
-// Check if we have a valid client ID (not the template string)
-// The template string will be exactly '{{googleClientId}}' if not replaced
-const hasValidClientId = GOOGLE_CLIENT_ID && 
-                         GOOGLE_CLIENT_ID !== '' && 
-                         GOOGLE_CLIENT_ID !== '{{googleClientId}}' &&
-                         GOOGLE_CLIENT_ID.includes('.apps.googleusercontent.com');
-
-if (hasValidClientId) {
-    console.log('✅ Valid Google Client ID found, initializing...');
-    
-    let retryCount = 0;
-    const maxRetries = 15;
-    
-    function initGoogleSignIn() {
-        retryCount++;
-        console.log(`Attempt ${retryCount}/${maxRetries} - Google API available?`, typeof google !== 'undefined');
-        
-        if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
-            console.log('✅ Google API loaded, initializing...');
-            
-            google.accounts.id.initialize({
-                client_id: GOOGLE_CLIENT_ID,
-                callback: async (response) => {
-                    console.log('📱 Google auth response received');
-                    
-                    if (googleBtn) {
-                        googleBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in…';
-                        googleBtn.disabled = true;
-                    }
-                    
-                    try {
-                        const res = await fetch('/api/auth/google', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ idToken: response.credential })
-                        });
-                        
-                        const data = await res.json();
-                        console.log('Server response:', data);
-                        
-                        if (data.success) {
-                            showAlert(data.message || 'Google sign-in successful!', 'success');
-                            setTimeout(() => {
-                                window.location.href = data.redirect || '/user_dashboard';
-                            }, 1000);
-                        } else {
-                            showAlert(data.message || 'Google sign-in failed. Please try again.', 'error');
-                            if (googleBtn) {
-                                googleBtn.disabled = false;
-                                googleBtn.innerHTML = googleBtnHTML();
-                            }
-                        }
-                    } catch (error) {
-                        console.error('Google auth fetch error:', error);
-                        showAlert('Authentication failed. Please try again.', 'error');
-                        if (googleBtn) {
-                            googleBtn.disabled = false;
-                            googleBtn.innerHTML = googleBtnHTML();
-                        }
-                    }
-                },
-                cancel_on_tap_outside: false
+if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_ID !== '' && GOOGLE_CLIENT_ID !== '{{googleClientId}}') {
+  const initGoogleSignIn = () => {
+    if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: async (response) => {
+          if (googleBtn) {
+            googleBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in…';
+            googleBtn.disabled = true;
+          }
+          
+          try {
+            const res = await fetch('/api/auth/google', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ idToken: response.credential })
             });
             
-            // Enable the button
-            if (googleBtn) {
+            const data = await res.json();
+            
+            if (data.success) {
+              showAlert(data.message || 'Google sign-in successful!', 'success');
+              
+              // ✅ IMPORTANT: Use the redirect URL from the server
+              const redirectUrl = data.redirect;
+              
+              console.log('Google redirecting to:', redirectUrl); // For debugging
+              
+              setTimeout(() => {
+                window.location.href = redirectUrl;
+              }, 1000);
+            } else {
+              showAlert(data.message || 'Google sign-in failed. Please try again.', 'error');
+              if (googleBtn) {
                 googleBtn.disabled = false;
-                googleBtn.style.opacity = '1';
-                googleBtn.style.cursor = 'pointer';
-                googleBtn.onclick = () => {
-                    console.log('Google button clicked, prompting...');
-                    google.accounts.id.prompt();
-                };
+                googleBtn.innerHTML = googleBtnHTML();
+              }
             }
-            
-            console.log('✅ Google Sign-In ready!');
-            
-        } else if (retryCount < maxRetries) {
-            console.log(`⏳ Waiting for Google API... (${retryCount}/${maxRetries})`);
-            setTimeout(initGoogleSignIn, 500);
-        } else {
-            console.error('❌ Google API failed to load');
+          } catch (error) {
+            console.error('Google auth error:', error);
+            showAlert('Authentication failed. Please try again.', 'error');
             if (googleBtn) {
-                googleBtn.disabled = true;
-                googleBtn.innerHTML = '❌ Google API Error';
-                googleBtn.title = 'Google API failed to load';
+              googleBtn.disabled = false;
+              googleBtn.innerHTML = googleBtnHTML();
             }
-        }
-    }
-    
-    // Start initialization
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initGoogleSignIn);
+          }
+        },
+        cancel_on_tap_outside: false
+      });
+      
+      if (googleBtn) {
+        googleBtn.disabled = false;
+        googleBtn.onclick = () => {
+          google.accounts.id.prompt();
+        };
+      }
     } else {
-        initGoogleSignIn();
+      console.warn('Google Sign-In not loaded yet, retrying...');
+      setTimeout(initGoogleSignIn, 500);
     }
-    
+  };
+  
+  window.addEventListener('load', initGoogleSignIn);
+  
 } else {
-    console.error('❌ Invalid or missing Google Client ID');
-    console.error('Expected format: xxx.apps.googleusercontent.com');
-    console.error('Got:', GOOGLE_CLIENT_ID);
-    
-    if (googleBtn) {
-        googleBtn.disabled = true;
-        googleBtn.style.opacity = '0.6';
-        googleBtn.style.cursor = 'not-allowed';
-        googleBtn.innerHTML = '⚠️ Google Sign-In Setup Required';
-        googleBtn.title = 'Google Client ID not configured. Please contact support.';
-    }
+  if (googleBtn) {
+    googleBtn.disabled = true;
+    googleBtn.style.opacity = '0.6';
+    googleBtn.title = 'Google Sign-In not configured';
+    googleBtn.addEventListener('click', () => {
+      showAlert('Google Sign-In is not configured. Please use email/password.', 'info');
+    });
+  }
 }
 
 function googleBtnHTML() {
