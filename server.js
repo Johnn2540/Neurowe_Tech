@@ -34,6 +34,27 @@ pool.query(`
     )
 `).catch(e => console.log('Session table note:', e.message));
 
+// Auto-create contacts table if missing (handles case where schema.sql wasn't run)
+pool.query(`
+    CREATE TABLE IF NOT EXISTS contacts (
+        id           SERIAL PRIMARY KEY,
+        name         VARCHAR(150) NOT NULL,
+        email        VARCHAR(255) NOT NULL,
+        phone        VARCHAR(50),
+        company      VARCHAR(150),
+        project_type VARCHAR(200),
+        budget       VARCHAR(100),
+        message      TEXT NOT NULL,
+        status       VARCHAR(20) DEFAULT 'new',
+        created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+`).catch(e => console.log('Contacts table note:', e.message));
+
+// Add status column if contacts table exists but lacks it (migration safety)
+pool.query(`
+    ALTER TABLE contacts ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'new'
+`).catch(() => {});
+
 app.use(session({
     store: new (require('connect-pg-simple')(session))({
         pool,
@@ -125,6 +146,7 @@ hbs.registerHelper('ifCond', function (v1, operator, v2, options) {
     const ops = { '==': v1 == v2, '===': v1 === v2, '!=': v1 != v2, '<': v1 < v2, '<=': v1 <= v2, '>': v1 > v2, '>=': v1 >= v2 };
     return ops[operator] ? options.fn(this) : options.inverse(this);
 });
+hbs.registerHelper('json', value => JSON.stringify(value));
 
 app.use((req, res, next) => {
     res.locals.currentYear     = new Date().getFullYear();
@@ -151,14 +173,12 @@ function isAdmin(req, res, next) {
 }
 
 // ── AUTH ROUTES ──────────────────────────────────────────────
-// FIX 1: render('sign_up') not render('signup')
 app.get('/sign_up', (req, res) => {
     if (req.session.userId) return res.redirect(req.session.userRole === 'admin' ? '/admin_dashboard' : '/user_dashboard');
     res.render('sign_up', { title: 'Create Account – NeurowexTech', googleClientId: process.env.GOOGLE_CLIENT_ID || '' });
 });
 app.get('/signup', (req, res) => res.redirect('/sign_up'));
 
-// FIX 2: render('login') not render('signin')
 app.get('/login', (req, res) => {
     if (req.session.userId) return res.redirect(req.session.userRole === 'admin' ? '/admin_dashboard' : '/user_dashboard');
     res.render('login', { title: 'Sign In – NeurowexTech', googleClientId: process.env.GOOGLE_CLIENT_ID || '' });
@@ -170,7 +190,6 @@ app.post('/api/register', async (req, res) => {
         const { firstName, lastName, username, email, password } = req.body;
         const fullname = firstName && lastName ? `${firstName} ${lastName}`.trim() : (req.body.fullname || '');
         const uname    = username || fullname;
-
         if (!fullname || fullname.length < 2)
             return res.status(400).json({ success: false, message: 'Please enter your full name' });
         if (!email || !/^\S+@\S+\.\S+$/.test(email))
@@ -179,11 +198,9 @@ app.post('/api/register', async (req, res) => {
             return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
         if (username && !/^[a-zA-Z0-9_]{3,20}$/.test(username))
             return res.status(400).json({ success: false, message: 'Username must be 3–20 chars (letters, numbers, _)' });
-
         const existing = await db.query('SELECT id FROM users WHERE email = $1', [email.toLowerCase()]);
         if (existing.rows.length > 0)
             return res.status(400).json({ success: false, message: 'Email already registered. Please sign in.' });
-
         const hashed = await bcrypt.hash(password, 10);
         const result = await db.query(
             `INSERT INTO users (username, email, password_hash, role, is_active, created_at)
@@ -223,27 +240,22 @@ app.post('/api/login', async (req, res) => {
         const { email, password, rememberMe } = req.body;
         if (!email || !password)
             return res.status(400).json({ success: false, message: 'Please enter email and password' });
-
         const result = await db.query('SELECT * FROM users WHERE email = $1', [email.toLowerCase()]);
         if (!result.rows.length)
             return res.status(401).json({ success: false, message: 'Invalid email or password' });
-
         const user = result.rows[0];
         if (!user.is_active)
             return res.status(401).json({ success: false, message: 'Your account has been deactivated' });
         if (!user.password_hash)
             return res.status(401).json({ success: false, message: 'This account uses Google Sign-In. Please use the Google button.' });
-
         const valid = await bcrypt.compare(password, user.password_hash);
         if (!valid)
             return res.status(401).json({ success: false, message: 'Invalid email or password' });
-
         req.session.userId    = user.id;
         req.session.userEmail = user.email;
         req.session.userName  = user.username;
         req.session.userRole  = user.role;
         if (rememberMe) req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 30;
-
         req.session.save(err => {
             if (err) { console.error('Session save error:', err); return res.status(500).json({ success: false, message: 'Session error' }); }
             db.query('UPDATE users SET last_login = NOW() WHERE id = $1', [user.id]).catch(() => {});
@@ -358,7 +370,6 @@ app.get('/user_dashboard', isAuthenticated, async (req, res) => {
     }
 });
 
-// FIX 3: safeCount wraps each table individually — no crash if any table is missing
 app.get('/admin_dashboard', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const safeCount = async (sql) => {
@@ -491,17 +502,45 @@ app.delete('/api/admin/delete-user/:id', isAuthenticated, isAdmin, async (req, r
 });
 
 // ── ADMIN API – Contacts ─────────────────────────────────────
+// GET all — ordered newest first, with unread count
 app.get('/api/contacts', isAuthenticated, isAdmin, async (req, res) => {
     try {
-        const r = await db.query('SELECT * FROM contacts ORDER BY created_at DESC');
-        res.json({ success: true, contacts: r.rows });
+        const r = await db.query(`
+            SELECT *, 
+                   CASE WHEN status = 'new' OR status IS NULL THEN true ELSE false END AS is_unread
+            FROM contacts 
+            ORDER BY created_at DESC
+        `);
+        const unread = r.rows.filter(c => c.is_unread).length;
+        res.json({ success: true, contacts: r.rows, unread });
+    } catch (err) {
+        console.error('GET /api/contacts error:', err.message);
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// PATCH mark as read
+app.patch('/api/contacts/:id/read', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        await db.query("UPDATE contacts SET status='read' WHERE id=$1", [req.params.id]);
+        res.json({ success: true, message: 'Marked as read' });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
+
+// PATCH mark as replied
+app.patch('/api/contacts/:id/replied', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        await db.query("UPDATE contacts SET status='replied' WHERE id=$1", [req.params.id]);
+        res.json({ success: true, message: 'Marked as replied' });
+    } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+});
+
+// DELETE
 app.delete('/api/contacts/:id', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const r = await db.query('DELETE FROM contacts WHERE id=$1 RETURNING id', [req.params.id]);
         if (!r.rows.length) return res.status(404).json({ success: false, message: 'Contact not found' });
-        res.json({ success: true, message: 'Contact deleted' });
+        res.json({ success: true, message: 'Message deleted' });
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
@@ -521,7 +560,6 @@ app.delete('/api/subscribers/:id', isAuthenticated, isAdmin, async (req, res) =>
 });
 
 // ── ADMIN API – Projects ─────────────────────────────────────
-// IMPORTANT: /public and /featured MUST come before /:id
 app.get('/api/projects/public', async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM projects WHERE featured=true ORDER BY created_at DESC');
@@ -842,7 +880,7 @@ app.put('/api/settings', isAuthenticated, isAdmin, async (req, res) => {
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
-// FIX 4: safeCount for dashboard stats — each table isolated
+// ── ADMIN API – Dashboard stats ──────────────────────────────
 app.get('/api/dashboard/stats', isAuthenticated, isAdmin, async (req, res) => {
     const safeCount = async (sql) => {
         try { const r = await db.query(sql); return parseInt(r.rows[0].count) || 0; }
@@ -855,6 +893,7 @@ app.get('/api/dashboard/stats', isAuthenticated, isAdmin, async (req, res) => {
         total_contacts:    await safeCount("SELECT COUNT(*) as count FROM contacts"),
         total_subscribers: await safeCount("SELECT COUNT(*) as count FROM subscribers"),
         total_courses:     await safeCount("SELECT COUNT(*) as count FROM courses WHERE published=true"),
+        unread_contacts:   await safeCount("SELECT COUNT(*) as count FROM contacts WHERE status='new' OR status IS NULL"),
     }});
 });
 
@@ -894,6 +933,7 @@ app.get('/portfolio/:id', async (req, res) => {
 
 app.get('/services', (req, res) => res.render('services', { title: 'Services – NeurowexTech' }));
 app.get('/contact',  (req, res) => res.render('contact',  { title: 'Contact – NeurowexTech' }));
+app.get('/become-instructor', (req, res) => res.render('become_instructor', { title: 'Become an Instructor – NeurowexTech Academy' }));
 
 app.post('/contact', async (req, res) => {
     try {
@@ -909,20 +949,20 @@ app.post('/contact', async (req, res) => {
         }
         const resolvedType = Array.isArray(services) && services.length ? services.join(', ') : (project_type||'');
         await db.query(
-            `INSERT INTO contacts (name, email, phone, project_type, budget, message, company, created_at)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,NOW())`,
-            [name, email, phone||'', resolvedType, budget||'', message, company||'']
+            `INSERT INTO contacts (name, email, phone, project_type, budget, message, company, status, created_at)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,'new',NOW())`,
+            [name.trim(), email.trim(), phone||'', resolvedType, budget||'', message.trim(), company||'']
         );
+        console.log(`[CONTACT] New message from ${name} <${email}> — ${resolvedType}`);
         if (isJson) return res.json({ success: true, message: "Thank you! We'll respond within 24 hours." });
         res.render('contact', { title: 'Contact', success: "Thank you! We'll respond within 24 hours." });
     } catch (err) {
-        console.error('Contact error:', err);
+        console.error('Contact POST error:', err.message);
         if (req.is('application/json')) return res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
         res.render('contact', { title: 'Contact', error: 'Something went wrong. Please try again.', formData: req.body });
     }
 });
 
-// FIX 5: /blog now passes featuredPost
 app.get('/blog', async (req, res) => {
     try {
         const r = await db.query("SELECT * FROM blog_posts WHERE published=true ORDER BY created_at DESC");
@@ -935,7 +975,6 @@ app.get('/blog', async (req, res) => {
     }
 });
 
-// FIX 6: /blog/:slug now passes relatedPosts
 app.get('/blog/:slug', async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM blog_posts WHERE slug=$1 AND published=true', [req.params.slug]);
@@ -977,7 +1016,6 @@ app.get('/terms-of-service', (req, res) => res.render('terms-of-service', { titl
 app.get('/cookie-policy',    (req, res) => res.render('cookie-policy',    { title: 'Cookie Policy – NeurowexTech' }));
 
 // ── LEARNING PLATFORM ────────────────────────────────────────
-// FIX 7: All queries wrapped in .catch(() => ({ rows: [] })) — no 500 if tables missing
 app.get('/learn', async (req, res) => {
     try {
         const [coursesR, categoriesR, instructorsR, statsR, topicsR] = await Promise.all([
@@ -1006,28 +1044,23 @@ app.get('/learn', async (req, res) => {
             `).catch(() => ({ rows: [{ total_courses:0, total_categories:0, total_enrollments:0, total_instructors:0 }] })),
             db.query(`SELECT category AS name, COUNT(*) AS count FROM courses WHERE published=true GROUP BY category ORDER BY count DESC LIMIT 8`).catch(() => ({ rows: [] })),
         ]);
-
         const courses    = coursesR.rows;
         const categories = categoriesR.rows;
         const stats      = statsR.rows[0] || {};
         const topics     = topicsR.rows;
-
         const instructors = instructorsR.rows.map(i => ({
             ...i,
             initials: i.name ? i.name.split(' ').map(w=>w[0]).join('').toUpperCase().substring(0,2) : 'IN',
             title:    'NeurowexTech Instructor',
             students: courses.filter(c => c.instructor_name === i.name).reduce((a,c)=>a+parseInt(c.enrolled_count||0),0),
         }));
-
         const levelCounts = { beginner: 0, intermediate: 0, advanced: 0 };
         const priceCounts = { free: 0, paid: 0 };
         courses.forEach(c => {
             if (c.level) levelCounts[c.level.toLowerCase()] = (levelCounts[c.level.toLowerCase()]||0) + 1;
             if (parseFloat(c.price) === 0) priceCounts.free++; else priceCounts.paid++;
         });
-
         const featuredCourse = courses.find(c => c.bestseller) || courses[0] || null;
-
         res.render('learn', {
             title: 'NeurowexTech Learn – Practical Skills, Real Results',
             courses, categories, instructors, stats, topics, featuredCourse,
@@ -1110,7 +1143,7 @@ app.get('/learn/course/:id/dashboard', isAuthenticated, async (req, res) => {
                        'id',cl.id,'title',cl.title,'duration',cl.duration,
                        'lesson_order',cl.lesson_order,'video_url',cl.video_url,
                        'completed',COALESCE(ulp.completed,false)
-                   ) ORDER BY cl.lesson_order) FILTER (WHERE cl.id IS NOT NULL), '[]') AS lessons
+                         ) ORDER BY cl.lesson_order) FILTER (WHERE cl.id IS NOT NULL), '[]') AS lessons
             FROM course_modules cm
             LEFT JOIN course_lessons cl ON cm.id=cl.module_id
             LEFT JOIN user_lesson_progress ulp ON cl.id=ulp.lesson_id AND ulp.user_id=$1
@@ -1147,11 +1180,10 @@ app.get('/api/courses/search', async (req, res) => {
     try {
         const { q, category, level, price } = req.query;
         let query = `SELECT c.*, u.username AS instructor_name FROM courses c JOIN users u ON c.instructor_id=u.id WHERE c.published=true`;
-        const params = [];
-        let i = 1;
-        if (q)                               { query += ` AND (c.title ILIKE $${i} OR c.description ILIKE $${i})`; params.push(`%${q}%`); i++; }
-        if (category && category !== 'all')  { query += ` AND c.category=$${i}`;  params.push(category); i++; }
-        if (level    && level    !== 'all')  { query += ` AND c.level=$${i}`;     params.push(level);    i++; }
+        const params = []; let i = 1;
+        if (q)                              { query += ` AND (c.title ILIKE $${i} OR c.description ILIKE $${i})`; params.push(`%${q}%`); i++; }
+        if (category && category !== 'all') { query += ` AND c.category=$${i}`;  params.push(category); i++; }
+        if (level    && level    !== 'all') { query += ` AND c.level=$${i}`;     params.push(level);    i++; }
         if (price === 'free') query += ` AND c.price=0`;
         else if (price === 'paid') query += ` AND c.price>0`;
         query += ` ORDER BY c.featured DESC, c.created_at DESC`;
@@ -1183,9 +1215,17 @@ app.get('/health', (req, res) => {
 app.get('/test-auth', (req, res) => {
     res.json({ sessionExists: !!req.session, userId: req.session?.userId, userRole: req.session?.userRole, isAuthenticated: !!req.session?.userId });
 });
+
 if (process.env.NODE_ENV !== 'production') {
     app.get('/debug/env', (req, res) => {
         res.json({ googleClientId: process.env.GOOGLE_CLIENT_ID ? '✅ Set' : '❌ Missing', nodeEnv: process.env.NODE_ENV, hasSessionSecret: !!process.env.SESSION_SECRET });
+    });
+    // Confirm contact inserts are reaching the DB
+    app.get('/debug/contacts', isAuthenticated, isAdmin, async (req, res) => {
+        try {
+            const r = await db.query('SELECT id, name, email, project_type, status, created_at FROM contacts ORDER BY created_at DESC LIMIT 20');
+            res.json({ count: r.rows.length, contacts: r.rows });
+        } catch (e) { res.status(500).json({ error: e.message }); }
     });
 }
 
