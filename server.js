@@ -1089,11 +1089,18 @@ app.get('/', async (req, res) => {
             db.query('SELECT * FROM projects WHERE featured=true ORDER BY created_at DESC LIMIT 6').catch(() => ({ rows: [] })),
             db.query("SELECT * FROM blog_posts WHERE published=true ORDER BY created_at DESC LIMIT 3").catch(() => ({ rows: [] })),
         ]);
+        const blogs = blogsR.rows.map(function(p) {
+            return Object.assign({}, p, {
+                created_at: p.created_at
+                    ? new Date(p.created_at).toLocaleDateString('en-KE', { year: 'numeric', month: 'short', day: 'numeric' })
+                    : '',
+            });
+        });
         res.render('home', {
             title: 'NeurowexTech – Web & Mobile Apps That Actually Ship',
             description: 'Custom web and mobile app development for startups and businesses.',
             featuredProjects: featuredR.rows,
-            recentBlogs:      blogsR.rows,
+            recentBlogs:      blogs,
         });
     } catch (err) {
         console.error('Home error:', err);
@@ -1363,77 +1370,6 @@ app.post('/api/lesson/complete', isAuthenticated, async (req, res) => {
         );
         res.json({ success: true, message: 'Lesson marked complete' });
     } catch (err) { res.status(500).json({ success: false, message: 'Failed to update progress' }); }
-});
-
-app.post('/api/enroll/free', isAuthenticated, async (req, res) => {
-    try {
-        const { courseId, courseTitle, externalUrl } = req.body;
-        if (!courseId) return res.status(400).json({ success: false, message: 'courseId required' });
-
-        // Try to find existing course by external_id
-        let result = await db.query(
-            'SELECT id FROM courses WHERE external_id = $1 LIMIT 1',
-            [String(courseId)]
-        );
-        
-        let internalCourseId = result.rows[0]?.id;
-
-        // If not found, create a new course
-        if (!internalCourseId) {
-            const adminUser = await db.query(`SELECT id FROM users WHERE role = 'admin' LIMIT 1`);
-            const instructorId = adminUser.rows[0]?.id || 1;
-            
-            const slug = courseTitle ? courseTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') : 'free-course';
-            
-            // Insert without ON CONFLICT (unique constraint handles it)
-            const newCourse = await db.query(`
-                INSERT INTO courses (title, slug, category, level, price, image_url, published, 
-                                     instructor_id, instructor_name, external_id, created_at)
-                VALUES ($1, $2, 'Design', 'Beginner', 0, $3, true, $4, $5, $6, NOW())
-                ON CONFLICT (external_id) DO UPDATE SET title = EXCLUDED.title
-                RETURNING id
-            `, [courseTitle || 'Free Course', slug, '/images/course-placeholder.jpg', instructorId, 'NeurowexTech Instructor', String(courseId)]);
-            
-            internalCourseId = newCourse.rows[0]?.id;
-        }
-
-        if (!internalCourseId) {
-            return res.json({ success: false, message: 'Could not create course record' });
-        }
-
-        // Check if already enrolled
-        const existing = await db.query(
-            'SELECT id FROM enrollments WHERE user_id = $1 AND course_id = $2',
-            [req.session.userId, internalCourseId]
-        );
-
-        if (existing.rows.length) {
-            return res.json({ success: true, alreadyEnrolled: true, message: 'Already enrolled', redirect: externalUrl });
-        }
-
-        // Record enrollment
-        await db.query(
-            `INSERT INTO enrollments (user_id, course_id, enrolled_at, progress, status)
-             VALUES ($1, $2, NOW(), 0, 'active')`,
-            [req.session.userId, internalCourseId]
-        );
-
-        // Update enrolled count
-        await db.query('UPDATE courses SET enrolled_count = COALESCE(enrolled_count, 0) + 1 WHERE id = $1', [internalCourseId]);
-
-        // Get total enrollments
-        const statsR = await db.query('SELECT COUNT(*) AS total FROM enrollments');
-
-        res.json({
-            success: true,
-            message: 'Enrolled successfully!',
-            redirect: externalUrl,
-            totalEnrollments: parseInt(statsR.rows[0].total) || 0,
-        });
-    } catch (err) {
-        console.error('Free enroll error:', err);
-        res.status(500).json({ success: false, message: 'Enrollment failed. Please try again.' });
-    }
 });
 
 app.get('/api/courses/search', async (req, res) => {
