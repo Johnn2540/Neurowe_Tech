@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{title}} | NeurowexTech Academy</title>
+  <meta name="description" content="Master Agentic AI at NeurowexTech. Build intelligent systems that think, plan and act. Learn LLMs, AI agents, automation pipelines, LangChain, OpenAI API and real-world deployment." />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<style>
+/* ── DESIGN TOKENS ── */
+:root{
+  --blue:#1a4fd6;--blue-d:#1340b0;--blue-l:#4a7aee;
+  --blue-pale:rgba(26,79,214,.08);--blue-pale2:rgba(26,79,214,.14);
+  --orange:#e8620a;--orange-d:#c94f05;--orange-l:#f28840;
+  --orange-pale:rgba(232,98,10,.08);
+  --black:#050810;--ink:#0c1220;--ink-2:#141c30;--ink-3:#1c2840;
+  --slate:#5a6880;--slate-l:#7a8ea8;
+  --mist:#e2e8f5;--ghost:#f5f7fd;
+  --emerald:#059669;--teal:#0d9488;--yellow:#f59e0b;--rose:#e11d48;
+  --cyan:#06b6d4;--violet:#7c3aed;--violet-l:#a78bfa;
+  /* AI-specific palette */
+  --ai-1:#0d9488;  /* teal */
+  --ai-2:#06b6d4;  /* cyan */
+  --ai-3:#7c3aed;  /* violet */
+  --ai-4:#059669;  /* emerald */
+  --g-blue:linear-gradient(135deg,#1a4fd6,#1340b0);
+  --g-orange:linear-gradient(135deg,#e8620a,#c94f05);
+  --g-ai:linear-gradient(135deg,#0d9488 0%,#06b6d4 50%,#7c3aed 100%);
+  --g-ai-warm:linear-gradient(135deg,#06b6d4,#7c3aed);
+  --g-hero:linear-gradient(168deg,#020a0a 0%,#041818 50%,#061024 100%);
+  --r-xs:6px;--r-sm:10px;--r-md:14px;--r-lg:18px;--r-xl:24px;--r-2xl:32px;--r-pill:999px;
+  --nav-h:68px;
+  --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);--t:.26s var(--ease);
+  --sh-sm:0 1px 4px rgba(8,12,24,.06),0 4px 12px rgba(8,12,24,.06);
+  --sh-md:0 4px 16px rgba(8,12,24,.08),0 12px 36px rgba(8,12,24,.08);
+  --sh-lg:0 12px 40px rgba(8,12,24,.12),0 4px 12px rgba(8,12,24,.06);
+  --sh-blue:0 8px 28px rgba(26,79,214,.28);
+  --sh-teal:0 8px 28px rgba(13,148,136,.3);
+  --sh-violet:0 8px 28px rgba(124,58,237,.3);
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--ghost);color:var(--ink);overflow-x:hidden;line-height:1.65}
+h1,h2,h3,h4,h5{font-family:'Fraunces',serif;line-height:1.1;letter-spacing:-.02em}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
+button,input,select,textarea{font-family:'Plus Jakarta Sans',sans-serif}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--ink)}::-webkit-scrollbar-thumb{background:var(--ai-1);border-radius:4px}
+
+#scroll-progress{position:fixed;top:0;left:0;height:2px;width:0%;background:var(--g-ai);z-index:9999;transition:width .08s linear}
+
+/* ── NAVBAR (identical to rest of site) ── */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1040;height:var(--nav-h);background:rgba(255,255,255,.95);backdrop-filter:blur(24px) saturate(2);border-bottom:1px solid rgba(8,12,24,.06);transition:var(--t)}
+.navbar.scrolled{background:rgba(255,255,255,.98);box-shadow:0 2px 24px rgba(8,12,24,.07)}
+.nav-inner{max-width:1320px;margin:0 auto;padding:0 24px;height:100%;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.nav-brand{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;color:var(--ink);flex-shrink:0;letter-spacing:-.04em;display:flex;align-items:center;gap:7px}
+.brand-mark{width:30px;height:30px;background:var(--g-blue);border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:.85rem;color:#fff;flex-shrink:0}
+.nav-brand em{font-style:italic;color:var(--orange)}
+.nav-links{display:none;align-items:center;gap:2px;list-style:none;flex:1;justify-content:center}
+.nl-item{position:relative}
+.nl-a{font-size:.82rem;font-weight:600;color:var(--slate);padding:7px 12px;border-radius:var(--r-sm);transition:var(--t);white-space:nowrap;display:flex;align-items:center;gap:5px}
+.nl-a:hover,.nl-a.active{color:var(--blue);background:var(--blue-pale)}
+.nl-a .chev{font-size:.52rem;transition:transform .22s}
+.nl-item:hover .chev{transform:rotate(180deg)}
+.mega-drop{position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(8px);min-width:540px;background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);box-shadow:0 24px 64px rgba(8,12,24,.14);padding:22px;opacity:0;visibility:hidden;pointer-events:none;transition:all .2s var(--ease)}
+.nl-item:hover .mega-drop{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+.mega-drop::before{content:'';position:absolute;top:-5px;left:50%;width:10px;height:10px;background:#fff;border-left:1px solid var(--mist);border-top:1px solid var(--mist);transform:translateX(-50%) rotate(45deg)}
+.mega-grid{display:grid;grid-template-columns:1fr 1fr 1fr}
+.mega-col-label{font-size:.61rem;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:var(--blue);padding:0 8px 8px;display:block}
+.mega-link{display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:var(--r-sm);font-size:.79rem;font-weight:500;color:var(--slate);transition:all .14s}
+.mega-link i{width:15px;color:var(--blue);font-size:.74rem;flex-shrink:0}
+.mega-link:hover{background:var(--blue-pale);color:var(--blue);transform:translateX(2px)}
+.nav-cta{display:none;align-items:center;gap:8px;flex-shrink:0}
+.user-drop{position:relative}
+.user-btn{display:inline-flex;align-items:center;gap:6px;background:var(--g-blue);color:#fff;border:none;padding:7px 16px;border-radius:var(--r-pill);font-size:.79rem;font-weight:700;cursor:pointer;transition:var(--t);font-family:'Plus Jakarta Sans',sans-serif}
+.user-btn:hover{transform:translateY(-1px);box-shadow:var(--sh-blue)}
+.user-btn .chev-u{font-size:.5rem;transition:transform .22s}
+.user-drop:hover .chev-u{transform:rotate(180deg)}
+.user-menu{position:absolute;top:calc(100% + 10px);right:0;min-width:200px;background:#fff;border-radius:var(--r-lg);border:1px solid var(--mist);box-shadow:var(--sh-md);padding:8px;opacity:0;visibility:hidden;pointer-events:none;transition:all .2s var(--ease)}
+.user-drop:hover .user-menu{opacity:1;visibility:visible;pointer-events:auto}
+.user-menu a{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:var(--r-sm);font-size:.81rem;font-weight:600;color:var(--slate);transition:var(--t)}
+.user-menu a i{width:15px;color:var(--blue);font-size:.75rem}
+.user-menu a:hover{background:var(--blue-pale);color:var(--blue)}
+.user-menu-divider{border:none;border-top:1px solid var(--mist);margin:5px 0}
+.btn-nav-signin{font-size:.79rem;font-weight:600;color:var(--slate);padding:7px 15px;border:1.5px solid var(--mist);border-radius:var(--r-pill);background:#fff;cursor:pointer;transition:var(--t)}
+.btn-nav-signin:hover{color:var(--blue);border-color:var(--blue)}
+.btn-nav-signup{font-size:.79rem;font-weight:700;color:#fff;padding:8px 19px;border:none;border-radius:var(--r-pill);background:var(--g-blue);cursor:pointer;box-shadow:var(--sh-blue);display:inline-flex;align-items:center;gap:5px;transition:var(--t)}
+.btn-nav-signup:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(26,79,214,.38)}
+.ham-btn{display:flex;flex-direction:column;gap:5px;align-items:center;justify-content:center;width:44px;height:44px;background:none;border:none;cursor:pointer;border-radius:var(--r-sm);transition:var(--t);flex-shrink:0}
+.ham-btn:hover{background:var(--blue-pale)}
+.ham-line{display:block;width:20px;height:1.5px;background:var(--ink);border-radius:2px;transition:all .24s var(--ease);transform-origin:center}
+.ham-btn.open .ham-line:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.ham-btn.open .ham-line:nth-child(2){opacity:0;transform:scaleX(0)}
+.ham-btn.open .ham-line:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+.mob-quick{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.mob-quick-btn{width:38px;height:38px;border-radius:var(--r-sm);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:var(--t);background:var(--blue-pale);color:var(--blue)}
+.mob-overlay{position:fixed;inset:0;background:rgba(8,12,24,.55);backdrop-filter:blur(6px);z-index:1038;opacity:0;visibility:hidden;transition:opacity .28s,visibility .28s}
+.mob-overlay.open{opacity:1;visibility:visible}
+.mob-panel{position:fixed;top:0;right:0;width:min(340px,88vw);height:100dvh;background:#fff;z-index:1039;overflow-y:auto;transform:translateX(100%);transition:transform .3s var(--ease);box-shadow:-12px 0 48px rgba(8,12,24,.18);display:flex;flex-direction:column}
+.mob-panel.open{transform:translateX(0)}
+.mob-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--mist);flex-shrink:0}
+.mob-close{width:36px;height:36px;border:none;background:var(--mist);cursor:pointer;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;transition:var(--t);font-size:.82rem}
+.mob-close:hover{background:#ef4444;color:#fff}
+.mob-body{padding:8px 0;flex:1}
+.mob-link{display:flex;align-items:center;gap:11px;padding:12px 22px;font-size:.88rem;font-weight:600;color:var(--ink);transition:var(--t);min-height:48px}
+.mob-link i{width:18px;color:var(--blue);font-size:.8rem;flex-shrink:0}
+.mob-link:hover,.mob-link.cur{background:var(--blue-pale);color:var(--blue);padding-left:28px}
+.mob-hr{border:none;border-top:1px solid var(--mist);margin:6px 18px}
+.mob-footer{padding:14px 18px 30px;border-top:1px solid var(--mist);display:flex;flex-direction:column;gap:9px}
+
+/* ── DARK MODE ── */
+body.dark{background:var(--black);color:rgba(255,255,255,.84)}
+body.dark .navbar{background:rgba(8,12,24,.97);border-bottom-color:rgba(255,255,255,.05)}
+body.dark .navbar.scrolled{background:rgba(8,12,24,.99)}
+body.dark .nl-a{color:rgba(255,255,255,.52)}
+body.dark .nl-a:hover{color:var(--blue-l);background:rgba(26,79,214,.1)}
+body.dark .mega-drop{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+body.dark .mega-drop::before{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+body.dark .mega-link{color:rgba(255,255,255,.52)}
+body.dark .ham-line{background:rgba(255,255,255,.85)}
+body.dark .mob-panel{background:var(--ink-2)}
+body.dark .mob-head{border-color:rgba(255,255,255,.07)}
+body.dark .mob-link{color:rgba(255,255,255,.82)}
+body.dark .mob-close{background:rgba(255,255,255,.07);color:rgba(255,255,255,.7)}
+body.dark .mob-hr{border-color:rgba(255,255,255,.07)}
+body.dark .mob-footer{border-color:rgba(255,255,255,.07)}
+body.dark .btn-nav-signin{color:rgba(255,255,255,.52);border-color:rgba(255,255,255,.1);background:transparent}
+body.dark #theme-toggle{background:var(--ink-2);border-color:rgba(255,255,255,.09)}
+body.dark #theme-toggle svg{stroke:rgba(255,255,255,.72)}
+body.dark .user-menu{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+body.dark .user-menu a{color:rgba(255,255,255,.65)}
+body.dark .user-menu-divider{border-color:rgba(255,255,255,.07)}
+
+/* ── UTILITIES ── */
+.container{max-width:1320px;margin:0 auto;padding:0 24px}
+.section-py{padding:80px 0}
+.section-py-sm{padding:56px 0}
+.g-blue{background:var(--g-blue);-webkit-background-clip:text;background-clip:text;color:transparent}
+.g-orange{background:var(--g-orange);-webkit-background-clip:text;background-clip:text;color:transparent}
+.g-ai{background:var(--g-ai);-webkit-background-clip:text;background-clip:text;color:transparent}
+.section-kicker{display:inline-flex;align-items:center;gap:7px;border-radius:var(--r-pill);padding:5px 14px;font-size:.67rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;margin-bottom:14px;border:1px solid rgba(13,148,136,.2);background:rgba(13,148,136,.08);color:var(--teal)}
+.section-kicker::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--teal);flex-shrink:0}
+.section-kicker.blue{background:var(--blue-pale);color:var(--blue);border-color:rgba(26,79,214,.15)}
+.section-kicker.blue::before{background:var(--blue)}
+.section-kicker.violet{background:rgba(124,58,237,.08);color:var(--violet);border-color:rgba(124,58,237,.2)}
+.section-kicker.violet::before{background:var(--violet)}
+.section-kicker.orange{background:var(--orange-pale);color:var(--orange);border-color:rgba(232,98,10,.15)}
+.section-kicker.orange::before{background:var(--orange)}
+.section-title{font-size:clamp(1.75rem,5vw,3rem);font-weight:700;margin-bottom:14px}
+.section-body{color:var(--slate);font-size:clamp(.9rem,2.5vw,1.04rem);line-height:1.78;max-width:540px}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:.86rem;border-radius:var(--r-pill);transition:var(--t);cursor:pointer;border:none;letter-spacing:.01em;white-space:nowrap}
+.btn-primary{background:var(--g-blue);color:#fff;padding:12px 26px;box-shadow:var(--sh-blue)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(26,79,214,.36)}
+.btn-teal{background:linear-gradient(135deg,#0d9488,#06b6d4);color:#fff;padding:12px 26px;box-shadow:var(--sh-teal)}
+.btn-teal:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(13,148,136,.4)}
+.btn-violet{background:linear-gradient(135deg,#7c3aed,#a78bfa);color:#fff;padding:12px 26px;box-shadow:var(--sh-violet)}
+.btn-violet:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(124,58,237,.4)}
+.btn-ghost{background:rgba(255,255,255,.1);color:#fff;padding:11px 22px;border:1.5px solid rgba(255,255,255,.25);backdrop-filter:blur(8px)}
+.btn-ghost:hover{background:rgba(255,255,255,.18);transform:translateY(-2px)}
+.btn-outline{background:transparent;color:var(--teal);padding:10px 22px;border:1.5px solid var(--teal)}
+.btn-outline:hover{background:linear-gradient(135deg,#0d9488,#06b6d4);color:#fff;border-color:transparent;transform:translateY(-2px)}
+.btn-sm{padding:8px 18px;font-size:.78rem}
+.btn-lg{padding:14px 32px;font-size:.95rem}
+
+/* ── ANIMATIONS ── */
+@keyframes dot-p{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.45);opacity:.5}}
+@keyframes wa-ripple{0%{transform:scale(1);opacity:.65}100%{transform:scale(2);opacity:0}}
+@keyframes bounce-up{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-8px)}}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes fade-up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes bar-shift2{0%{background-position:0%}100%{background-position:200%}}
+@keyframes spin-slow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes spin-rev{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
+@keyframes pulse-glow{0%,100%{box-shadow:0 0 0 0 rgba(13,148,136,.4)}50%{box-shadow:0 0 0 10px rgba(13,148,136,0)}}
+@keyframes node-pulse{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.12)}}
+@keyframes flow-dash{from{stroke-dashoffset:300}to{stroke-dashoffset:0}}
+@keyframes thinking{0%,100%{opacity:.3}33%{opacity:1}66%{opacity:.6}}
+
+/* ── FIXED WIDGETS ── */
+#theme-toggle{position:fixed;bottom:22px;left:22px;z-index:10000;width:44px;height:44px;background:#fff;border:1.5px solid rgba(8,12,24,.08);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 18px rgba(8,12,24,.1);transition:var(--t)}
+#theme-toggle svg{width:16px;height:16px;stroke:var(--slate);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+#theme-toggle:hover{background:var(--ai-1);border-color:var(--ai-1);transform:rotate(20deg) scale(1.07)}
+#theme-toggle:hover svg{stroke:#fff}
+#back-to-top{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(16px);z-index:10000;width:48px;height:48px;background:linear-gradient(135deg,#0d9488,#06b6d4);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s,transform .4s var(--spring);box-shadow:var(--sh-teal)}
+#back-to-top.visible{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;animation:bounce-up 2.4s ease-in-out infinite}
+#back-to-top:hover{animation-play-state:paused}
+#back-to-top svg{width:18px;height:18px;stroke:#fff;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+#wa-float{position:fixed;bottom:86px;right:20px;z-index:10001;text-decoration:none;display:block}
+.wa-ring{position:absolute;inset:0;border-radius:999px;border:2px solid #25D366;opacity:0;animation:wa-ripple 2.8s ease-out infinite;pointer-events:none}
+.wa-ring:nth-child(2){animation-delay:1.2s}
+.wa-pill{display:flex;align-items:center;gap:9px;background:linear-gradient(135deg,#128C7E,#075E54);border-radius:999px;padding:8px 17px 8px 8px;box-shadow:0 6px 26px rgba(18,140,126,.42);transition:transform .3s var(--spring),box-shadow .28s;white-space:nowrap}
+#wa-float:hover .wa-pill{transform:translateY(-3px) scale(1.02)}
+.wa-ico{width:36px;height:36px;flex-shrink:0;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.15rem;color:#fff;position:relative}
+.wa-dot{position:absolute;top:1px;right:1px;width:9px;height:9px;background:#a8ff78;border:2px solid #128C7E;border-radius:50%;animation:dot-p 2.4s ease-in-out infinite}
+.wa-text{display:flex;flex-direction:column;gap:1px}
+.wa-label{font-size:.64rem;color:rgba(255,255,255,.55);font-weight:600}
+.wa-cta{font-size:.88rem;color:#fff;font-weight:800;font-family:'Fraunces',serif}
+.wa-arr{color:rgba(255,255,255,.6);font-size:.68rem;margin-left:2px;transition:transform .2s}
+#wa-float:hover .wa-arr{transform:translateX(3px)}
+#toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--ink-2);color:#fff;border-radius:var(--r-md);padding:11px 17px;font-size:.82rem;display:flex;align-items:center;gap:8px;z-index:10002;opacity:0;transition:var(--t);border-left:3px solid var(--ai-1);min-width:210px;max-width:calc(100vw - 40px)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#cookie-bar{position:fixed;bottom:0;left:0;right:0;background:var(--ink-2);color:rgba(255,255,255,.8);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:9998;transform:translateY(100%);transition:transform .38s;border-top:1px solid rgba(255,255,255,.06);flex-wrap:wrap}
+#cookie-bar.show{transform:translateY(0)}
+#cookie-bar p{font-size:.77rem;margin:0;flex:1;min-width:180px}
+#cookie-accept{background:var(--ai-1);color:#fff;border:none;padding:7px 18px;border-radius:var(--r-pill);font-size:.79rem;cursor:pointer;font-weight:700;transition:var(--t)}
+#cookie-accept:hover{background:#0f766e}
+@media(max-width:767px){
+  #wa-float{bottom:74px;right:14px}
+  .wa-text,.wa-arr{display:none}
+  .wa-pill{padding:0;width:52px;height:52px;border-radius:50%;justify-content:center}
+  .wa-ico{width:52px;height:52px;font-size:1.4rem}
+  #theme-toggle{bottom:14px;left:14px;width:40px;height:40px}
+  #back-to-top{bottom:12px;width:46px;height:46px}
+}
+
+/* ════════════════════════════════
+   HERO — Neural-dark
+════════════════════════════════ */
+.hero-ai{background:var(--g-hero);padding-top:var(--nav-h);position:relative;overflow:hidden}
+.hero-ai::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(6,182,212,.06) 1px,transparent 1px);background-size:28px 28px}
+/* Orbital rings */
+.ai-ring{position:absolute;border-radius:50%;border:1px solid;pointer-events:none}
+.ai-ring-1{width:500px;height:500px;border-color:rgba(13,148,136,.12);top:50%;right:-120px;transform:translateY(-50%);animation:spin-slow 40s linear infinite}
+.ai-ring-2{width:360px;height:360px;border-color:rgba(6,182,212,.1);top:50%;right:-60px;transform:translateY(-50%);animation:spin-rev 28s linear infinite}
+.ai-ring-3{width:220px;height:220px;border-color:rgba(124,58,237,.1);top:50%;right:20px;transform:translateY(-50%);animation:spin-slow 18s linear infinite}
+/* Ambient orbs */
+.ai-orb-1{position:absolute;width:440px;height:440px;border-radius:50%;background:radial-gradient(circle,rgba(13,148,136,.14) 0%,transparent 68%);top:-100px;right:-60px;pointer-events:none}
+.ai-orb-2{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.1) 0%,transparent 70%);bottom:-40px;left:-20px;pointer-events:none}
+.ai-orb-3{position:absolute;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(6,182,212,.08) 0%,transparent 70%);top:35%;left:42%;pointer-events:none}
+
+.hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1fr;gap:44px;padding:64px 0 72px;align-items:center}
+.hero-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:var(--r-pill);padding:5px 13px;color:rgba(255,255,255,.72);font-size:.72rem;font-weight:700;backdrop-filter:blur(8px)}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:#34d399;animation:dot-p 2s infinite;flex-shrink:0}
+.premium-chip{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,rgba(13,148,136,.22),rgba(6,182,212,.18));border:1px solid rgba(13,148,136,.3);border-radius:var(--r-pill);padding:5px 13px;color:#5eead4;font-size:.72rem;font-weight:800}
+
+.hero-inner h1{font-size:clamp(2.2rem,6.5vw,4.4rem);font-weight:700;color:#fff;margin-bottom:14px;line-height:1.04}
+.hero-inner h1 em{font-style:italic;background:var(--g-ai);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-desc{color:rgba(255,255,255,.56);font-size:clamp(.9rem,2.4vw,1.06rem);line-height:1.78;max-width:500px;margin-bottom:28px}
+
+.outcome-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.op{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-pill);padding:5px 13px;font-size:.75rem;font-weight:600;color:rgba(255,255,255,.74)}
+.op i{font-size:.68rem;color:#34d399}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:36px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:18px;padding-top:20px;border-top:1px solid rgba(255,255,255,.07)}
+.hm-item{display:flex;align-items:center;gap:7px;font-size:.78rem;color:rgba(255,255,255,.5);font-weight:600}
+.hm-item i{color:rgba(255,255,255,.3);font-size:.72rem;width:14px}
+.hm-item strong{color:rgba(255,255,255,.82)}
+
+/* ── HERO RIGHT: Agent Flow Diagram ── */
+.agent-flow{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-xl);padding:24px 20px;backdrop-filter:blur(16px);position:relative;overflow:hidden}
+.agent-flow::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(13,148,136,.08) 0%,transparent 60%)}
+.af-title{font-size:.65rem;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:18px;display:flex;align-items:center;gap:7px}
+.af-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.07)}
+
+/* Agent nodes row */
+.agent-nodes{display:flex;flex-direction:column;gap:10px;position:relative;z-index:1}
+.agent-node{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:var(--r-lg);padding:12px 14px;transition:var(--t)}
+.agent-node:hover{background:rgba(255,255,255,.07);border-color:rgba(13,148,136,.3)}
+.an-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
+.an-icon.user{background:rgba(26,79,214,.2);border:1px solid rgba(26,79,214,.3)}
+.an-icon.agent{background:rgba(13,148,136,.2);border:1px solid rgba(13,148,136,.3)}
+.an-icon.tool{background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.3)}
+.an-icon.output{background:rgba(5,150,105,.2);border:1px solid rgba(5,150,105,.3)}
+.an-label{font-size:.76rem;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:1px}
+.an-sub{font-size:.65rem;color:rgba(255,255,255,.35)}
+.an-status{margin-left:auto;flex-shrink:0}
+.status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.status-dot.active{background:#34d399;animation:dot-p 1.8s infinite}
+.status-dot.thinking{background:#fbbf24;animation:thinking 1.4s infinite}
+.status-dot.done{background:#6ee7b7}
+.status-dot.idle{background:rgba(255,255,255,.2)}
+
+/* connector arrow */
+.af-arrow{display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.18);font-size:.7rem;margin:0 0 0 23px}
+
+/* thinking output */
+.af-output{background:rgba(13,148,136,.08);border:1px solid rgba(13,148,136,.18);border-radius:var(--r-lg);padding:12px 14px;margin-top:10px;position:relative;z-index:1}
+.af-output-label{font-size:.62rem;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:rgba(13,148,136,.8);margin-bottom:6px}
+.af-output-text{font-size:.74rem;color:rgba(255,255,255,.55);line-height:1.58}
+.af-cursor{display:inline-block;width:8px;height:12px;background:#34d399;margin-left:2px;border-radius:1px;animation:dot-p .8s infinite}
+
+/* ════════════════════════════════
+   MARQUEE
+════════════════════════════════ */
+.marquee-wrap{background:linear-gradient(90deg,#041818,#061024,#041818);padding:11px 0;overflow:hidden;white-space:nowrap;border-top:1px solid rgba(13,148,136,.2);border-bottom:1px solid rgba(13,148,136,.2)}
+.marquee-track{display:inline-flex;animation:marquee 34s linear infinite}
+.marquee-track:hover{animation-play-state:paused}
+.marquee-item{display:inline-flex;align-items:center;gap:7px;padding:0 24px;color:rgba(13,148,136,.9);font-size:.81rem;font-weight:700}
+.marquee-sep{opacity:.3;color:rgba(255,255,255,.3)}
+
+/* ════════════════════════════════
+   WHAT IS AGENTIC AI — explainer
+════════════════════════════════ */
+.explainer-grid{display:grid;grid-template-columns:1fr;gap:22px}
+@media(min-width:640px){.explainer-grid{grid-template-columns:repeat(3,1fr)}}
+
+.explainer-card{background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);padding:28px 24px;text-align:center;transition:var(--t);box-shadow:var(--sh-sm);position:relative;overflow:hidden}
+body.dark .explainer-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.explainer-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px}
+.explainer-card:nth-child(1)::before{background:linear-gradient(90deg,#0d9488,#06b6d4)}
+.explainer-card:nth-child(2)::before{background:linear-gradient(90deg,#7c3aed,#a78bfa)}
+.explainer-card:nth-child(3)::before{background:linear-gradient(90deg,#059669,#10b981)}
+.explainer-card:hover{transform:translateY(-5px);box-shadow:var(--sh-lg)}
+.ec-icon{font-size:2.2rem;margin-bottom:14px;display:block;transition:transform .3s}
+.explainer-card:hover .ec-icon{transform:scale(1.12) rotate(-5deg)}
+.ec-title{font-size:1rem;font-weight:700;font-family:'Fraunces',serif;color:var(--ink);margin-bottom:8px}
+body.dark .ec-title{color:rgba(255,255,255,.9)}
+.ec-desc{font-size:.8rem;color:var(--slate);line-height:1.66}
+body.dark .ec-desc{color:rgba(255,255,255,.48)}
+
+/* ════════════════════════════════
+   TOOLS YOU'LL USE
+════════════════════════════════ */
+.tools-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(min-width:480px){.tools-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:768px){.tools-grid{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:1024px){.tools-grid{grid-template-columns:repeat(6,1fr)}}
+
+.tool-card{background:#fff;border:1px solid var(--mist);border-radius:var(--r-xl);padding:18px 12px;text-align:center;transition:var(--t);box-shadow:var(--sh-sm);cursor:default;position:relative;overflow:hidden}
+body.dark .tool-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.tool-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg)}
+.tool-card::after{content:'';position:absolute;inset:0;background:var(--g-ai);opacity:0;transition:opacity .28s}
+.tool-card:hover::after{opacity:.04}
+.tool-emoji{font-size:1.8rem;margin-bottom:8px;display:block;transition:transform .28s;position:relative;z-index:1}
+.tool-card:hover .tool-emoji{transform:scale(1.14) rotate(-6deg)}
+.tool-name{font-size:.7rem;font-weight:700;color:var(--slate);position:relative;z-index:1}
+body.dark .tool-name{color:rgba(255,255,255,.5)}
+.tool-type{font-size:.62rem;color:var(--slate-l);font-weight:600;margin-top:2px;position:relative;z-index:1}
+body.dark .tool-type{color:rgba(255,255,255,.3)}
+
+/* ════════════════════════════════
+   CURRICULUM
+════════════════════════════════ */
+.curriculum-wrap{display:grid;grid-template-columns:1fr;gap:12px}
+
+.module-card{background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);overflow:hidden;transition:border-color .22s;box-shadow:var(--sh-sm)}
+body.dark .module-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.module-card.open{border-color:var(--ai-1)}
+.module-head{display:flex;align-items:center;gap:14px;padding:18px 22px;cursor:pointer;user-select:none}
+.module-num{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:800;color:#fff;flex-shrink:0}
+.mn-1{background:linear-gradient(135deg,#0d9488,#06b6d4)}
+.mn-2{background:linear-gradient(135deg,#7c3aed,#a78bfa)}
+.mn-3{background:linear-gradient(135deg,#059669,#10b981)}
+.mn-4{background:linear-gradient(135deg,#1a4fd6,#4a7aee)}
+.mn-5{background:linear-gradient(135deg,#e8620a,#f28840)}
+.module-info{flex:1}
+.module-title{font-size:.92rem;font-weight:700;color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:2px}
+body.dark .module-title{color:rgba(255,255,255,.88)}
+.module-subtitle{font-size:.73rem;color:var(--slate);display:flex;align-items:center;gap:8px}
+body.dark .module-subtitle{color:rgba(255,255,255,.4)}
+.module-subtitle span{display:flex;align-items:center;gap:4px}
+.module-toggle{width:22px;height:22px;flex-shrink:0;background:rgba(13,148,136,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ai-1);font-size:.58rem;transition:transform .24s,background .22s}
+.module-card.open .module-toggle{transform:rotate(180deg);background:var(--ai-1);color:#fff}
+.module-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.module-card.open .module-body{max-height:500px}
+.module-lessons{padding:0 22px 18px;display:grid;grid-template-columns:1fr;gap:6px}
+@media(min-width:640px){.module-lessons{grid-template-columns:1fr 1fr}}
+.lesson-row{display:flex;align-items:center;gap:9px;padding:8px 12px;background:var(--ghost);border-radius:var(--r-sm);font-size:.78rem;color:var(--slate)}
+body.dark .lesson-row{background:var(--ink-3);color:rgba(255,255,255,.5)}
+.lesson-row i{width:14px;color:var(--ai-1);font-size:.7rem;flex-shrink:0}
+
+/* ════════════════════════════════
+   PROJECTS
+════════════════════════════════ */
+.projects-grid{display:grid;grid-template-columns:1fr;gap:22px}
+@media(min-width:640px){.projects-grid{grid-template-columns:repeat(3,1fr)}}
+
+.project-card{background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);overflow:hidden;transition:var(--t);box-shadow:var(--sh-sm);position:relative}
+body.dark .project-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.project-card:hover{transform:translateY(-6px);box-shadow:var(--sh-lg)}
+.proj-thumb{height:150px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:2.8rem}
+.proj-thumb::before{content:'';position:absolute;inset:0}
+.pt-1::before{background:linear-gradient(135deg,#020f0f,#04302a)}
+.pt-2::before{background:linear-gradient(135deg,#0a0414,#1e0840)}
+.pt-3::before{background:linear-gradient(135deg,#030a14,#0a2244)}
+.proj-num{position:absolute;top:10px;left:12px;background:rgba(8,12,24,.72);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-pill);padding:3px 10px;font-size:.67rem;font-weight:800;color:rgba(255,255,255,.65);backdrop-filter:blur(8px)}
+.proj-tags{position:absolute;bottom:10px;left:12px;display:flex;gap:5px;flex-wrap:wrap}
+.proj-tag{background:rgba(8,12,24,.72);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-pill);padding:2px 8px;font-size:.62rem;font-weight:800;color:rgba(255,255,255,.65);backdrop-filter:blur(8px)}
+.proj-body{padding:18px 20px}
+.proj-title{font-size:1rem;font-weight:700;font-family:'Fraunces',serif;color:var(--ink);margin-bottom:6px}
+body.dark .proj-title{color:rgba(255,255,255,.9)}
+.proj-desc{font-size:.79rem;color:var(--slate);line-height:1.62}
+body.dark .proj-desc{color:rgba(255,255,255,.48)}
+
+/* ════════════════════════════════
+   WHO IT'S FOR
+════════════════════════════════ */
+.who-grid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:640px){.who-grid{grid-template-columns:1fr 1fr}}
+.who-card{display:flex;align-items:flex-start;gap:14px;background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);padding:20px;box-shadow:var(--sh-sm);transition:var(--t)}
+body.dark .who-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.who-card:hover{transform:translateY(-3px);box-shadow:var(--sh-lg)}
+.who-icon{width:42px;height:42px;flex-shrink:0;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.15rem}
+.wi-a{background:rgba(13,148,136,.1);border:1px solid rgba(13,148,136,.2)}
+.wi-b{background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.18)}
+.wi-c{background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.18)}
+.wi-d{background:rgba(232,98,10,.1);border:1px solid rgba(232,98,10,.18)}
+.who-text h5{font-size:.88rem;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;color:var(--ink);margin-bottom:4px}
+body.dark .who-text h5{color:rgba(255,255,255,.88)}
+.who-text p{font-size:.77rem;color:var(--slate);line-height:1.6}
+body.dark .who-text p{color:rgba(255,255,255,.45)}
+
+/* ════════════════════════════════
+   INSTRUCTOR
+════════════════════════════════ */
+.instructor-strip{background:linear-gradient(135deg,#020f0e,#041e1c);border-radius:var(--r-2xl);padding:44px 40px;display:grid;grid-template-columns:1fr;gap:32px;align-items:center;position:relative;overflow:hidden}
+@media(min-width:768px){.instructor-strip{grid-template-columns:auto 1fr}}
+.instructor-strip::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(13,148,136,.04) 1px,transparent 1px);background-size:32px 32px}
+.instr-avatar-wrap{position:relative;z-index:1;flex-shrink:0}
+.instr-avatar{width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg,#0d9488,#06b6d4);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:2.4rem;font-weight:700;color:#fff;border:3px solid rgba(255,255,255,.15);animation:pulse-glow 3s ease-in-out infinite}
+.instr-ring{position:absolute;inset:-8px;border-radius:50%;border:1.5px dashed rgba(13,148,136,.2);animation:spin-slow 20s linear infinite}
+.instr-content{position:relative;z-index:1}
+.instr-name{font-size:1.3rem;font-weight:700;color:#fff;margin-bottom:3px;font-family:'Fraunces',serif}
+.instr-role{font-size:.78rem;color:rgba(255,255,255,.45);margin-bottom:14px;font-weight:600}
+.instr-bio{font-size:.82rem;color:rgba(255,255,255,.55);line-height:1.72;margin-bottom:18px;max-width:540px}
+.instr-stats{display:flex;flex-wrap:wrap;gap:18px}
+.is-stat{display:flex;align-items:center;gap:7px;font-size:.76rem;color:rgba(255,255,255,.5);font-weight:600}
+.is-stat i{color:rgba(255,255,255,.3);font-size:.7rem}
+.is-stat strong{color:rgba(255,255,255,.82)}
+
+/* ════════════════════════════════
+   TESTIMONIALS
+════════════════════════════════ */
+.testimonials-grid{display:grid;grid-template-columns:1fr;gap:18px}
+@media(min-width:640px){.testimonials-grid{grid-template-columns:repeat(3,1fr)}}
+.t-card{background:#fff;border-radius:var(--r-xl);padding:26px 22px;border:1px solid var(--mist);transition:var(--t);display:flex;flex-direction:column;box-shadow:var(--sh-sm);position:relative;overflow:hidden}
+body.dark .t-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.t-card::before{content:'"';position:absolute;top:-8px;left:16px;font-family:'Fraunces',serif;font-size:7rem;color:rgba(13,148,136,.07);line-height:1;pointer-events:none}
+.t-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg)}
+.t-stars{color:var(--yellow);letter-spacing:1px;margin-bottom:10px;font-size:.9rem}
+.t-quote{font-style:italic;color:var(--slate);line-height:1.78;font-size:.83rem;flex-grow:1;margin-bottom:16px;position:relative;z-index:1}
+body.dark .t-quote{color:rgba(255,255,255,.5)}
+.t-author{display:flex;align-items:center;gap:11px}
+.t-ava{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.t-name{font-weight:700;font-size:.84rem;font-family:'Fraunces',serif;color:var(--ink)}
+body.dark .t-name{color:rgba(255,255,255,.88)}
+.t-role{font-size:.69rem;color:var(--slate)}
+.t-outcome{display:inline-flex;align-items:center;gap:4px;background:rgba(13,148,136,.08);border:1px solid rgba(13,148,136,.18);border-radius:var(--r-pill);padding:3px 9px;font-size:.65rem;font-weight:700;color:var(--teal);margin-top:8px}
+
+/* ════════════════════════════════
+   PRICING
+════════════════════════════════ */
+.pricing-wrap{display:grid;grid-template-columns:1fr;gap:20px;max-width:860px;margin:0 auto}
+@media(min-width:640px){.pricing-wrap{grid-template-columns:1fr 1fr}}
+.price-card{background:#fff;border-radius:var(--r-2xl);border:2px solid var(--mist);padding:32px 28px;transition:var(--t);box-shadow:var(--sh-sm);position:relative}
+body.dark .price-card{background:var(--ink-2);border-color:rgba(255,255,255,.08)}
+.price-card.featured{border-color:var(--ai-1);box-shadow:var(--sh-teal),var(--sh-md)}
+.price-card:hover{transform:translateY(-4px)}
+.featured-chip{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#0d9488,#06b6d4);color:#fff;padding:4px 18px;border-radius:0 0 var(--r-md) var(--r-md);font-size:.66rem;font-weight:800;letter-spacing:.5px;white-space:nowrap}
+.price-label{font-size:.7rem;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--slate);margin-bottom:10px}
+body.dark .price-label{color:rgba(255,255,255,.35)}
+.price-amount{display:flex;align-items:baseline;gap:4px;margin-bottom:6px}
+.price-val{font-family:'Fraunces',serif;font-size:2.6rem;font-weight:700;color:var(--ink);line-height:1}
+body.dark .price-val{color:#fff}
+.price-currency{font-size:.9rem;font-weight:700;color:var(--slate);margin-bottom:4px}
+body.dark .price-currency{color:rgba(255,255,255,.5)}
+.price-sub{font-size:.74rem;color:var(--slate);margin-bottom:22px}
+body.dark .price-sub{color:rgba(255,255,255,.4)}
+.price-features{display:flex;flex-direction:column;gap:9px;margin-bottom:24px}
+.pf{display:flex;align-items:flex-start;gap:9px;font-size:.8rem;color:var(--slate)}
+body.dark .pf{color:rgba(255,255,255,.55)}
+.pf i{flex-shrink:0;width:14px;margin-top:2px;font-size:.7rem}
+.pf i.ok{color:var(--ai-1)}
+.pf i.no{color:var(--slate-l);opacity:.5}
+.pf.dim{opacity:.5}
+
+/* ════════════════════════════════
+   FAQ
+════════════════════════════════ */
+.faq-grid{display:grid;grid-template-columns:1fr;gap:9px}
+@media(min-width:640px){.faq-grid{grid-template-columns:1fr 1fr}}
+.faq-item{background:#fff;border-radius:var(--r-lg);border:1px solid var(--mist);overflow:hidden;transition:border-color .22s;box-shadow:var(--sh-sm)}
+body.dark .faq-item{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.faq-item:hover{border-color:var(--ai-1)}
+.faq-item.open{border-color:var(--ai-2)}
+.faq-q{padding:15px 18px;font-weight:700;font-size:.84rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-family:'Plus Jakarta Sans',sans-serif;min-height:52px;gap:12px;color:var(--ink)}
+body.dark .faq-q{color:rgba(255,255,255,.85)}
+.faq-icon{width:20px;height:20px;flex-shrink:0;background:rgba(13,148,136,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ai-1);font-size:.62rem;transition:transform .24s,background .22s}
+.faq-item.open .faq-icon{transform:rotate(45deg);background:var(--ai-1);color:#fff}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;color:var(--slate);font-size:.81rem;line-height:1.76}
+body.dark .faq-a{color:rgba(255,255,255,.48)}
+.faq-item.open .faq-a{max-height:200px;padding:0 18px 14px}
+
+/* ════════════════════════════════
+   CTA BAND
+════════════════════════════════ */
+.cta-band{background:linear-gradient(135deg,#041818 0%,#061024 50%,#0a0820 100%);border-radius:var(--r-2xl);padding:60px 44px;text-align:center;position:relative;overflow:hidden;border:1px solid rgba(13,148,136,.15)}
+.cta-band::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(13,148,136,.04) 1px,transparent 1px);background-size:28px 28px}
+.cta-band-orb{position:absolute;border-radius:50%;pointer-events:none}
+.cta-band-orb.a{width:320px;height:320px;background:radial-gradient(circle,rgba(13,148,136,.12) 0%,transparent 70%);top:-80px;right:-60px}
+.cta-band-orb.b{width:200px;height:200px;background:radial-gradient(circle,rgba(124,58,237,.1) 0%,transparent 70%);bottom:-40px;left:-20px}
+.cta-inner{position:relative;z-index:1}
+.cta-kicker{display:inline-flex;align-items:center;gap:7px;background:rgba(13,148,136,.12);border:1px solid rgba(13,148,136,.25);border-radius:var(--r-pill);padding:5px 15px;font-size:.67rem;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:#5eead4;margin-bottom:18px}
+.cta-band h2{font-size:clamp(1.8rem,4.5vw,2.9rem);font-weight:700;color:#fff;margin-bottom:12px}
+.cta-band h2 em{font-style:italic;background:var(--g-ai);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cta-band p{color:rgba(255,255,255,.56);font-size:clamp(.9rem,2vw,1.04rem);line-height:1.76;max-width:480px;margin:0 auto 30px}
+.cta-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-cta-teal{background:linear-gradient(135deg,#0d9488,#06b6d4);color:#fff;font-weight:800;border-radius:var(--r-pill);padding:14px 30px;font-size:.9rem;font-family:'Plus Jakarta Sans',sans-serif;display:inline-flex;align-items:center;gap:7px;transition:var(--t);box-shadow:var(--sh-teal);text-decoration:none;border:none;cursor:pointer}
+.btn-cta-teal:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(13,148,136,.44)}
+.btn-cta-ghost{background:rgba(255,255,255,.07);color:rgba(255,255,255,.82);font-weight:700;border-radius:var(--r-pill);padding:13px 26px;font-size:.9rem;font-family:'Plus Jakarta Sans',sans-serif;display:inline-flex;align-items:center;gap:7px;transition:var(--t);border:1.5px solid rgba(255,255,255,.18);backdrop-filter:blur(8px);text-decoration:none}
+.btn-cta-ghost:hover{background:rgba(255,255,255,.13);transform:translateY(-2px)}
+.cta-trust{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;margin-top:22px}
+.cta-trust-item{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;color:rgba(255,255,255,.45);font-weight:600}
+.cta-trust-item i{color:rgba(13,148,136,.7);font-size:.66rem}
+
+/* ════════════════════════════════
+   NEWSLETTER
+════════════════════════════════ */
+.newsletter-section{background:linear-gradient(135deg,#edf7f7,#edf1ff)}
+.newsletter-box{background:#fff;border-radius:var(--r-2xl);padding:36px 28px;border:1px solid var(--mist);box-shadow:var(--sh-md)}
+body.dark .newsletter-box{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.nl-icon{width:48px;height:48px;background:rgba(13,148,136,.08);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:1.35rem;color:var(--ai-1);margin-bottom:13px}
+.nl-grid{display:grid;grid-template-columns:1fr;gap:26px}
+@media(min-width:992px){.nl-grid{grid-template-columns:1fr 1fr;align-items:center}}
+.nl-form{position:relative;display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.nl-form-inp{flex:1;min-width:0;padding:12px 16px 12px 42px;border:1.5px solid var(--mist);border-radius:var(--r-pill);font-size:15px;font-family:'Plus Jakarta Sans',sans-serif;transition:var(--t);background:#fff;color:var(--ink);outline:none}
+body.dark .nl-form-inp{background:var(--ink-3);border-color:rgba(255,255,255,.1);color:#fff}
+.nl-form-inp:focus{border-color:var(--ai-1);box-shadow:0 0 0 3px rgba(13,148,136,.1)}
+.nl-form .nl-ico{position:absolute;left:15px;color:var(--slate-l);font-size:.86rem;pointer-events:none;top:50%;transform:translateY(-50%)}
+.nl-submit{background:linear-gradient(135deg,#0d9488,#06b6d4);color:#fff;border:none;padding:12px 20px;border-radius:var(--r-pill);font-weight:700;font-size:.82rem;font-family:'Plus Jakarta Sans',sans-serif;transition:var(--t);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.nl-submit:hover{background:linear-gradient(135deg,#7c3aed,#a78bfa)}
+@media(min-width:992px){
+  .nl-form{flex-wrap:nowrap}
+  .nl-form-inp{padding:12px 150px 12px 42px}
+  .nl-submit{position:absolute;right:5px;top:50%;transform:translateY(-50%)}
+}
+
+/* ════════════════════════════════
+   FOOTER
+════════════════════════════════ */
+footer{background:#020a08;color:rgba(255,255,255,.48);font-size:.82rem;border-top:1px solid rgba(255,255,255,.04)}
+.footer-accent-bar{height:2px;background:var(--g-ai);background-size:200% 100%;animation:bar-shift2 6s linear infinite}
+@keyframes bar-shift2{0%{background-position:0%}100%{background-position:200%}}
+.footer-cta-strip{background:linear-gradient(135deg,#041818,#061024);border-bottom:1px solid rgba(255,255,255,.04);padding:30px 0}
+.footer-cta-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.footer-cta-text h4{font-family:'Fraunces',serif;font-size:clamp(.98rem,2.8vw,1.35rem);font-weight:700;color:#fff;margin-bottom:3px;line-height:1.2}
+.footer-cta-text p{font-size:.76rem;color:rgba(255,255,255,.32);margin:0}
+.footer-cta-btns{display:flex;gap:9px;flex-wrap:wrap;flex-shrink:0}
+.footer-body{padding:52px 0 36px}
+.footer-cols{display:grid;grid-template-columns:2fr 1fr 1fr 1.6fr;gap:34px 28px}
+.footer-brand-name{font-family:'Fraunces',serif;font-size:1.14rem;font-weight:700;color:#fff;letter-spacing:-.04em;display:flex;align-items:center;gap:7px;margin-bottom:9px}
+.footer-brand-name em{font-style:italic;color:#e8620a}
+.footer-bmark{width:27px;height:27px;background:var(--g-blue);border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:.8rem;color:#fff;flex-shrink:0}
+.footer-tagline{font-size:.77rem;color:rgba(255,255,255,.3);line-height:1.74;max-width:270px;margin-bottom:16px}
+.footer-socials{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.fsoc{width:32px;height:32px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);color:rgba(255,255,255,.42);font-size:.78rem;transition:all .2s;text-decoration:none}
+.fsoc:hover{transform:translateY(-2px)}
+.fsoc.tw:hover{background:#1da1f2;color:#fff}
+.fsoc.li:hover{background:#0077b5;color:#fff}
+.fsoc.gh:hover{background:#fff;color:#111}
+.fsoc.ig:hover{background:linear-gradient(135deg,#fd5949,#d6249f,#285aeb);color:#fff}
+.fsoc.yt:hover{background:#ff0000;color:#fff}
+.fsoc.wa:hover{background:#25D366;color:#fff}
+.footer-col-title{font-size:.62rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,.22);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.footer-col-title::before{content:'';width:10px;height:1.5px;background:var(--ai-1);border-radius:2px;flex-shrink:0}
+.footer-links{list-style:none;padding:0;margin:0}
+.footer-links li{margin-bottom:9px}
+.footer-links a{color:rgba(255,255,255,.36);text-decoration:none;font-size:.77rem;transition:color .18s,padding-left .18s;display:inline-flex;align-items:center;gap:5px}
+.footer-links a:hover{color:#fff;padding-left:3px}
+.footer-links a i{width:12px;font-size:.66rem;opacity:.4}
+.footer-links a.acad{color:#5eead4;font-weight:600}
+.fci{display:flex;align-items:flex-start;gap:9px;margin-bottom:12px}
+.fci-ic{width:28px;height:28px;flex-shrink:0;background:rgba(13,148,136,.1);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#5eead4;font-size:.68rem;margin-top:1px}
+.fci-label{font-size:.58rem;color:rgba(255,255,255,.2);font-weight:800;letter-spacing:.7px;text-transform:uppercase}
+.fci-val{font-size:.77rem;color:rgba(255,255,255,.52)}
+.fci-val a{color:rgba(255,255,255,.52);text-decoration:none;transition:color .18s}
+.fci-val a:hover{color:#5eead4}
+.footer-hours{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.04);border-radius:7px;padding:6px 10px;font-size:.69rem;color:rgba(255,255,255,.3);margin-top:3px}
+.hdot{width:6px;height:6px;background:#34d399;border-radius:50%;animation:dot-p 2.4s ease-in-out infinite;flex-shrink:0}
+.footer-divider{border:none;border-top:1px solid rgba(255,255,255,.04)}
+.footer-bottom{padding:16px 0}
+.footer-bottom-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.footer-copy{font-size:.7rem;color:rgba(255,255,255,.18)}
+.footer-legal{display:flex;gap:18px;flex-wrap:wrap}
+.footer-legal a{font-size:.69rem;color:rgba(255,255,255,.2);text-decoration:none;transition:color .18s}
+.footer-legal a:hover{color:rgba(255,255,255,.6)}
+.footer-made{font-size:.69rem;color:rgba(255,255,255,.15);display:flex;align-items:center;gap:3px}
+.footer-made span{color:var(--orange-l)}
+
+/* ── RESPONSIVE ── */
+@media(min-width:992px){
+  :root{--nav-h:72px}
+  .container{padding:0 32px}
+  .nav-inner{padding:0 32px}
+  .nav-links{display:flex}
+  .nav-cta{display:flex}
+  .ham-btn{display:none!important}
+  .mob-quick{display:none!important}
+  .hero-inner{grid-template-columns:1fr 1fr;gap:52px;padding:80px 0 88px}
+}
+@media(max-width:539px){
+  .footer-cols{grid-template-columns:1fr 1fr;gap:22px 14px}
+  .footer-col-brand{grid-column:1/-1}
+  .footer-col-contact{grid-column:1/-1}
+  .footer-cta-inner{flex-direction:column;align-items:flex-start}
+  .footer-cta-btns{width:100%}
+  .footer-cta-btns a{flex:1;justify-content:center}
+  .footer-bottom-inner{flex-direction:column;align-items:center;text-align:center;gap:8px}
+  .footer-legal{justify-content:center;gap:10px}
+}
+@media(max-width:1023px){
+  .footer-cols{grid-template-columns:1fr 1fr;gap:26px 22px}
+  .footer-col-brand{grid-column:1/-1}
+}
+@media print{.navbar,#wa-float,#theme-toggle,#back-to-top,#scroll-progress,#cookie-bar{display:none!important}}
+</style>
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+
+<button id="theme-toggle" title="Toggle dark mode" aria-label="Toggle dark mode">
+  <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+<button id="back-to-top" aria-label="Back to top">
+  <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<a id="wa-float" href="https://wa.me/254769329340?text=Hello%20NeurowexTech!%20I'm%20interested%20in%20the%20Agentic%20AI%20programme." target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+  <span class="wa-ring" aria-hidden="true"></span>
+  <span class="wa-ring" aria-hidden="true"></span>
+  <div class="wa-pill">
+    <div class="wa-ico"><i class="fab fa-whatsapp"></i><span class="wa-dot"></span></div>
+    <div class="wa-text">
+      <span class="wa-label">Enquire about this course</span>
+      <span class="wa-cta">Chat with us</span>
+    </div>
+    <i class="fas fa-arrow-right wa-arr"></i>
+  </div>
+</a>
+
+<div id="toast" role="status" aria-live="polite">
+  <i class="fas fa-check-circle" style="color:#34d399"></i>
+  <span id="toast-msg">Done!</span>
+</div>
+<div id="cookie-bar">
+  <p>🍪 We use cookies to improve your experience.</p>
+  <button id="cookie-accept">Accept</button>
+</div>
+
+<!-- Mobile panel -->
+<div class="mob-overlay" id="mobOverlay" aria-hidden="true"></div>
+<div class="mob-panel" id="mobPanel" role="dialog" aria-modal="true" aria-label="Navigation menu">
+  <div class="mob-head">
+    <a href="/" class="nav-brand" style="font-size:1.1rem;" aria-label="NeurowexTech">
+      <span class="brand-mark">N</span>Neurowex<em>Tech</em>
+    </a>
+    <button class="mob-close" id="mobClose" aria-label="Close menu"><i class="fas fa-times"></i></button>
+  </div>
+  <nav class="mob-body" aria-label="Mobile navigation">
+    <a href="/"            class="mob-link"><i class="fas fa-home"></i> Home</a>
+    <a href="/learn"       class="mob-link"><i class="fas fa-graduation-cap"></i> Academy</a>
+    <a href="/kids-coding" class="mob-link"><i class="fas fa-child"></i> Kids Academy</a>
+    <a href="/#services"   class="mob-link"><i class="fas fa-th-large"></i> Services</a>
+    <a href="/#portfolio"  class="mob-link"><i class="fas fa-briefcase"></i> Portfolio</a>
+    <a href="/contact"     class="mob-link"><i class="fas fa-envelope"></i> Contact</a>
+    <hr class="mob-hr">
+    {{#if isAuthenticated}}
+    <a href="/my-learning"    class="mob-link"><i class="fas fa-book-open"></i> My Learning</a>
+    <a href="/user_dashboard" class="mob-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <a href="/logout"         class="mob-link" style="color:var(--rose)"><i class="fas fa-sign-out-alt" style="color:var(--rose)"></i> Sign Out</a>
+    {{else}}
+    <a href="/login"   class="mob-link"><i class="fas fa-sign-in-alt"></i> Log In</a>
+    <a href="/sign_up" class="mob-link"><i class="fas fa-user-plus"></i> Sign Up</a>
+    {{/if}}
+  </nav>
+  <div class="mob-footer">
+    <a href="#enrol" class="btn btn-teal" style="justify-content:center;border-radius:var(--r-pill)">Enrol Now <i class="fas fa-arrow-right"></i></a>
+    {{#if isAuthenticated}}
+    <a href="/my-learning" class="btn btn-outline" style="justify-content:center;">My Learning</a>
+    {{else}}
+    <a href="/sign_up" class="btn btn-outline" style="justify-content:center;">Sign Up Free</a>
+    {{/if}}
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="mainNav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand" aria-label="NeurowexTech">
+      <span class="brand-mark">N</span>Neurowex<em>Tech</em>
+    </a>
+    <ul class="nav-links" role="list">
+      <li class="nl-item"><a href="/"          class="nl-a">Home</a></li>
+      <li class="nl-item"><a href="/learn"      class="nl-a active">Academy</a></li>
+      <li class="nl-item">
+        <a href="/#services" class="nl-a">Services <i class="fas fa-chevron-down chev"></i></a>
+        <div class="mega-drop" role="menu">
+          <div class="mega-grid">
+            <div>
+              <span class="mega-col-label">Development</span>
+              <a class="mega-link" href="/contact?service=Web+Development"><i class="fas fa-laptop-code"></i> Web Dev</a>
+              <a class="mega-link" href="/contact?service=Mobile+Apps"><i class="fas fa-mobile-alt"></i> Mobile Apps</a>
+              <a class="mega-link" href="/contact?service=E-commerce"><i class="fas fa-shopping-cart"></i> E-commerce</a>
+              <a class="mega-link" href="/contact?service=MVP+Development"><i class="fas fa-rocket"></i> MVP Dev</a>
+            </div>
+            <div>
+              <span class="mega-col-label">Cloud & Security</span>
+              <a class="mega-link" href="/contact?service=Cloud"><i class="fas fa-cloud-upload-alt"></i> Cloud</a>
+              <a class="mega-link" href="/contact?service=Cyber+Security"><i class="fas fa-shield-alt"></i> Cyber Security</a>
+              <a class="mega-link" href="/contact?service=AI+Integration"><i class="fas fa-robot"></i> AI Integration</a>
+              <a class="mega-link" href="/#graphic"><i class="fas fa-palette"></i> Graphic Design</a>
+            </div>
+            <div>
+              <span class="mega-col-label">Data & Support</span>
+              <a class="mega-link" href="/contact?service=Analytics"><i class="fas fa-chart-line"></i> Analytics</a>
+              <a class="mega-link" href="/contact?service=IT+Consulting"><i class="fas fa-headset"></i> IT Consulting</a>
+              <a class="mega-link" href="/contact?service=Database"><i class="fas fa-database"></i> Database</a>
+              <a class="mega-link" href="/contact?service=SEO"><i class="fas fa-search"></i> SEO</a>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="nl-item"><a href="/kids-coding" class="nl-a"><i class="fas fa-child" style="font-size:.72rem"></i> Kids</a></li>
+      <li class="nl-item"><a href="/#pricing"    class="nl-a">Pricing</a></li>
+      <li class="nl-item"><a href="/contact"     class="nl-a">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <button id="theme-toggle-nav" style="width:36px;height:36px;border-radius:50%;background:rgba(13,148,136,.08);border:1.5px solid var(--mist);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--t);color:var(--teal);" aria-label="Toggle dark mode">
+        <i class="fas fa-moon" style="font-size:.82rem"></i>
+      </button>
+      {{#if isAuthenticated}}
+      <div class="user-drop">
+        <button class="user-btn"><i class="fas fa-user"></i> {{userName}} <i class="fas fa-chevron-down chev-u"></i></button>
+        <div class="user-menu" role="menu">
+          <a href="/my-learning"    role="menuitem"><i class="fas fa-book-open"></i> My Learning</a>
+          <a href="/user_dashboard" role="menuitem"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+          <hr class="user-menu-divider">
+          <a href="/logout" role="menuitem" style="color:var(--rose)"><i class="fas fa-sign-out-alt" style="color:var(--rose)"></i> Sign Out</a>
+        </div>
+      </div>
+      {{else}}
+      <a href="/login"   class="btn-nav-signin">Log in</a>
+      <a href="/sign_up" class="btn-nav-signup">Sign up free <i class="fas fa-arrow-right" style="font-size:.7rem"></i></a>
+      {{/if}}
+    </div>
+    <div class="mob-quick" id="mobQuick">
+      <button class="mob-quick-btn" id="mobThemeBtn" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+      <button class="ham-btn" id="hamBtn" aria-label="Open menu" aria-expanded="false">
+        <span class="ham-line"></span><span class="ham-line"></span><span class="ham-line"></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════
+     HERO
+════════════════════════════════ -->
+<section class="hero-ai">
+  <div class="ai-ring ai-ring-1" aria-hidden="true"></div>
+  <div class="ai-ring ai-ring-2" aria-hidden="true"></div>
+  <div class="ai-ring ai-ring-3" aria-hidden="true"></div>
+  <div class="ai-orb-1" aria-hidden="true"></div>
+  <div class="ai-orb-2" aria-hidden="true"></div>
+  <div class="ai-orb-3" aria-hidden="true"></div>
+  <div class="container">
+    <div class="hero-inner">
+      <!-- LEFT -->
+      <div>
+        <div class="hero-eyebrow">
+          <div class="hero-badge"><span class="dot"></span> NeurowexTech Academy · {{currentYear}}</div>
+          <div class="premium-chip"><i class="fas fa-gem"></i> Premium Programme</div>
+        </div>
+        <h1>Artificial<br><em>Intelligence (AI)</em></h1>
+        <p class="hero-desc">Build intelligent systems that think, plan, and act autonomously. Master Agentic AI — from LLM fundamentals to multi-agent workflows, automation pipelines, and real-world deployment.</p>
+
+        <div class="outcome-pills">
+          <span class="op"><i class="fas fa-check"></i> Build real AI agents</span>
+          <span class="op"><i class="fas fa-check"></i> Automate complex workflows</span>
+          <span class="op"><i class="fas fa-check"></i> Deploy production AI apps</span>
+          <span class="op"><i class="fas fa-check"></i> No prior AI experience needed</span>
+        </div>
+
+        <div class="hero-actions">
+          <a href="#enrol" class="btn btn-teal btn-lg"><i class="fas fa-robot"></i> Enrol Now</a>
+          <a href="#curriculum" class="btn btn-ghost btn-lg"><i class="fas fa-map"></i> See Curriculum</a>
+        </div>
+
+        <div class="hero-meta">
+          <div class="hm-item"><i class="fas fa-clock"></i><span><strong>14 weeks</strong> · Self-paced</span></div>
+          <div class="hm-item"><i class="fas fa-layer-group"></i><span><strong>5 modules</strong> · 70+ lessons</span></div>
+          <div class="hm-item"><i class="fas fa-star" style="color:var(--yellow)"></i><span><strong>4.9</strong> / 5 rating</span></div>
+          <div class="hm-item"><i class="fas fa-users"></i><span><strong>180+</strong> enrolled</span></div>
+          <div class="hm-item"><i class="fas fa-certificate"></i><span>Certificate included</span></div>
+        </div>
+      </div>
+
+      <!-- RIGHT — Agent flow diagram -->
+      <div>
+        <div class="agent-flow" role="img" aria-label="Agentic AI workflow diagram">
+          <div class="af-title">Agentic AI in action</div>
+          <div class="agent-nodes">
+
+            <div class="agent-node">
+              <div class="an-icon user">👤</div>
+              <div>
+                <div class="an-label">User Prompt</div>
+                <div class="an-sub">"Research competitors and write a report"</div>
+              </div>
+              <div class="an-status"><div class="status-dot done"></div></div>
+            </div>
+
+            <div class="af-arrow"><i class="fas fa-chevron-down"></i></div>
+
+            <div class="agent-node">
+              <div class="an-icon agent">🤖</div>
+              <div>
+                <div class="an-label">Orchestrator Agent</div>
+                <div class="an-sub">Planning &amp; task decomposition</div>
+              </div>
+              <div class="an-status"><div class="status-dot active"></div></div>
+            </div>
+
+            <div class="af-arrow"><i class="fas fa-chevron-down"></i></div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <div class="agent-node">
+                <div class="an-icon tool">🔍</div>
+                <div>
+                  <div class="an-label">Search Agent</div>
+                  <div class="an-sub">Web &amp; data retrieval</div>
+                </div>
+                <div class="an-status"><div class="status-dot thinking"></div></div>
+              </div>
+              <div class="agent-node">
+                <div class="an-icon tool">✍️</div>
+                <div>
+                  <div class="an-label">Writer Agent</div>
+                  <div class="an-sub">Content synthesis</div>
+                </div>
+                <div class="an-status"><div class="status-dot idle"></div></div>
+              </div>
+            </div>
+
+            <div class="af-arrow"><i class="fas fa-chevron-down"></i></div>
+
+            <div class="agent-node">
+              <div class="an-icon output">📄</div>
+              <div>
+                <div class="an-label">Final Output</div>
+                <div class="an-sub">Structured report delivered to user</div>
+              </div>
+              <div class="an-status"><div class="status-dot idle"></div></div>
+            </div>
+
+          </div>
+
+          <div class="af-output">
+            <div class="af-output-label">Agent reasoning</div>
+            <div class="af-output-text">Decomposing task → dispatching sub-agents → aggregating results<span class="af-cursor"></span></div>
+          </div>
+        </div>
+
+        <!-- tech badges -->
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;justify-content:center">
+          <span style="background:rgba(13,148,136,.12);border:1px solid rgba(13,148,136,.2);border-radius:var(--r-pill);padding:4px 13px;font-size:.72rem;font-weight:700;color:#5eead4">LangChain</span>
+          <span style="background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.2);border-radius:var(--r-pill);padding:4px 13px;font-size:.72rem;font-weight:700;color:#c4b5fd">OpenAI API</span>
+          <span style="background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.2);border-radius:var(--r-pill);padding:4px 13px;font-size:.72rem;font-weight:700;color:#67e8f9">CrewAI</span>
+          <span style="background:rgba(5,150,105,.12);border:1px solid rgba(5,150,105,.2);border-radius:var(--r-pill);padding:4px 13px;font-size:.72rem;font-weight:700;color:#6ee7b7">n8n</span>
+          <span style="background:rgba(232,98,10,.12);border:1px solid rgba(232,98,10,.2);border-radius:var(--r-pill);padding:4px 13px;font-size:.72rem;font-weight:700;color:var(--orange-l)">Python</span>
+          <span style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-pill);padding:4px 13px;font-size:.72rem;font-weight:700;color:rgba(255,255,255,.55)">Deploy ☁️</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap" aria-hidden="true">
+  <div class="marquee-track">
+    <span class="marquee-item">🤖 Large Language Models <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🔗 LangChain &amp; LangGraph <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🧠 Agentic Workflows <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">👥 Multi-Agent Systems <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🔌 OpenAI &amp; Anthropic APIs <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">⚙️ n8n Automation <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🐍 Python for AI <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">☁️ Production Deployment <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🔍 RAG &amp; Vector Databases <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🤖 Large Language Models <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🔗 LangChain &amp; LangGraph <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🧠 Agentic Workflows <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">👥 Multi-Agent Systems <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🔌 OpenAI &amp; Anthropic APIs <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">⚙️ n8n Automation <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🐍 Python for AI <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">☁️ Production Deployment <span class="marquee-sep">·</span></span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     WHAT IS AGENTIC AI
+════════════════════════════════ -->
+<section class="section-py" style="background:#fff" id="about-ai">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:48px">
+      <div class="section-kicker">What You'll Learn</div>
+      <h2 class="section-title">AI That <span class="g-ai">Acts, Not Just Answers</span></h2>
+      <p class="section-body" style="margin:0 auto">Agentic AI is the next frontier — systems that don't just generate text, but reason through multi-step tasks, use tools, and get things done autonomously.</p>
+    </div>
+    <div class="explainer-grid">
+      <div class="explainer-card">
+        <span class="ec-icon">🧠</span>
+        <div class="ec-title">LLM Foundations</div>
+        <p class="ec-desc">Understand how Large Language Models work — tokens, context windows, prompting strategies, and the difference between models from OpenAI, Anthropic, and open-source alternatives.</p>
+      </div>
+      <div class="explainer-card">
+        <span class="ec-icon">🤖</span>
+        <div class="ec-title">AI Agents</div>
+        <p class="ec-desc">Build agents that reason step-by-step, use tools (web search, code execution, APIs), remember context, and complete complex tasks with minimal human input.</p>
+      </div>
+      <div class="explainer-card">
+        <span class="ec-icon">⚙️</span>
+        <div class="ec-title">Automation Pipelines</div>
+        <p class="ec-desc">Design multi-agent systems and no-code automation workflows with n8n and Flowise. Connect AI to the real world — emails, spreadsheets, databases, and external APIs.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     TOOLS YOU'LL USE
+════════════════════════════════ -->
+<section class="section-py" style="background:var(--ghost)">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:44px">
+      <div class="section-kicker violet">AI Toolbox</div>
+      <h2 class="section-title">Tools You'll <span class="g-ai">Master</span></h2>
+      <p class="section-body" style="margin:0 auto">The exact stack used by AI engineers building production systems today.</p>
+    </div>
+    <div class="tools-grid">
+      <div class="tool-card"><span class="tool-emoji">🐍</span><div class="tool-name">Python</div><div class="tool-type">Language</div></div>
+      <div class="tool-card"><span class="tool-emoji">🔗</span><div class="tool-name">LangChain</div><div class="tool-type">Agent Framework</div></div>
+      <div class="tool-card"><span class="tool-emoji">🕸️</span><div class="tool-name">LangGraph</div><div class="tool-type">Multi-Agent</div></div>
+      <div class="tool-card"><span class="tool-emoji">🤖</span><div class="tool-name">OpenAI API</div><div class="tool-type">LLM Provider</div></div>
+      <div class="tool-card"><span class="tool-emoji">🧬</span><div class="tool-name">Anthropic Claude</div><div class="tool-type">LLM Provider</div></div>
+      <div class="tool-card"><span class="tool-emoji">👥</span><div class="tool-name">CrewAI</div><div class="tool-type">Multi-Agent</div></div>
+      <div class="tool-card"><span class="tool-emoji">⚙️</span><div class="tool-name">n8n</div><div class="tool-type">Automation</div></div>
+      <div class="tool-card"><span class="tool-emoji">🌊</span><div class="tool-name">Flowise</div><div class="tool-type">No-Code AI</div></div>
+      <div class="tool-card"><span class="tool-emoji">🗄️</span><div class="tool-name">Pinecone</div><div class="tool-type">Vector DB</div></div>
+      <div class="tool-card"><span class="tool-emoji">📚</span><div class="tool-name">RAG</div><div class="tool-type">Retrieval AI</div></div>
+      <div class="tool-card"><span class="tool-emoji">☁️</span><div class="tool-name">Vercel / Railway</div><div class="tool-type">Deployment</div></div>
+      <div class="tool-card"><span class="tool-emoji">🔀</span><div class="tool-name">Git &amp; GitHub</div><div class="tool-type">Version Control</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     CURRICULUM
+════════════════════════════════ -->
+<section class="section-py" style="background:#fff" id="curriculum">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:48px">
+      <div class="section-kicker blue">Curriculum</div>
+      <h2 class="section-title">5 Modules · <span class="g-blue">70+ Lessons</span></h2>
+      <p class="section-body" style="margin:0 auto">A structured path from LLM basics to shipping production AI agents.</p>
+    </div>
+    <div class="curriculum-wrap" id="curriculumWrap">
+
+      <!-- Module 1 -->
+      <div class="module-card open" data-module="1">
+        <div class="module-head">
+          <div class="module-num mn-1">01</div>
+          <div class="module-info">
+            <div class="module-title">Python for AI &amp; LLM Foundations</div>
+            <div class="module-subtitle">
+              <span><i class="fas fa-play-circle"></i> 16 lessons</span>
+              <span><i class="fas fa-clock"></i> ~2.5 weeks</span>
+            </div>
+          </div>
+          <div class="module-toggle"><i class="fas fa-chevron-up"></i></div>
+        </div>
+        <div class="module-body">
+          <div class="module-lessons">
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Python essentials for AI (rapid onboarding)</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> How LLMs work — tokens, context, attention</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Prompt engineering fundamentals</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> OpenAI API &amp; Anthropic Claude API</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> System prompts, few-shot &amp; chain-of-thought</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Comparing models: GPT-4, Claude, Gemini, Llama</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Managing API costs &amp; rate limits</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Building your first LLM-powered CLI app</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Module 2 -->
+      <div class="module-card" data-module="2">
+        <div class="module-head">
+          <div class="module-num mn-2">02</div>
+          <div class="module-info">
+            <div class="module-title">AI Agents with LangChain</div>
+            <div class="module-subtitle">
+              <span><i class="fas fa-play-circle"></i> 16 lessons</span>
+              <span><i class="fas fa-clock"></i> ~3 weeks</span>
+              <span><i class="fas fa-briefcase"></i> Project 01</span>
+            </div>
+          </div>
+          <div class="module-toggle"><i class="fas fa-chevron-down"></i></div>
+        </div>
+        <div class="module-body">
+          <div class="module-lessons">
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> LangChain fundamentals &amp; LCEL</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Chains, prompts &amp; output parsers</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Memory — conversation history &amp; persistence</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Tools: web search, calculator, code runner</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> ReAct agent pattern</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Function calling with OpenAI</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Error handling &amp; agent fallbacks</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> ▶ Build: AI Research Assistant agent</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Module 3 -->
+      <div class="module-card" data-module="3">
+        <div class="module-head">
+          <div class="module-num mn-3">03</div>
+          <div class="module-info">
+            <div class="module-title">RAG — Retrieval-Augmented Generation</div>
+            <div class="module-subtitle">
+              <span><i class="fas fa-play-circle"></i> 14 lessons</span>
+              <span><i class="fas fa-clock"></i> ~2.5 weeks</span>
+              <span><i class="fas fa-briefcase"></i> Project 02</span>
+            </div>
+          </div>
+          <div class="module-toggle"><i class="fas fa-chevron-down"></i></div>
+        </div>
+        <div class="module-body">
+          <div class="module-lessons">
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Embeddings &amp; semantic search</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Vector databases — Pinecone &amp; Chroma</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Document ingestion &amp; chunking strategies</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> RAG pipeline design patterns</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Hybrid search (semantic + keyword)</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Evaluating RAG quality</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> ▶ Build: AI Document Q&amp;A system</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Module 4 -->
+      <div class="module-card" data-module="4">
+        <div class="module-head">
+          <div class="module-num mn-4">04</div>
+          <div class="module-info">
+            <div class="module-title">Multi-Agent Systems &amp; Automation</div>
+            <div class="module-subtitle">
+              <span><i class="fas fa-play-circle"></i> 14 lessons</span>
+              <span><i class="fas fa-clock"></i> ~2.5 weeks</span>
+              <span><i class="fas fa-briefcase"></i> Project 03</span>
+            </div>
+          </div>
+          <div class="module-toggle"><i class="fas fa-chevron-down"></i></div>
+        </div>
+        <div class="module-body">
+          <div class="module-lessons">
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Multi-agent architectures</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> CrewAI — roles, tasks &amp; crews</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> LangGraph — stateful agent workflows</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> n8n automation — triggers, nodes &amp; webhooks</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Flowise no-code agent builder</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Connecting agents to real APIs &amp; databases</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> ▶ Build: Multi-agent business automation</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Module 5 -->
+      <div class="module-card" data-module="5">
+        <div class="module-head">
+          <div class="module-num mn-5">05</div>
+          <div class="module-info">
+            <div class="module-title">Production AI Apps &amp; Capstone</div>
+            <div class="module-subtitle">
+              <span><i class="fas fa-play-circle"></i> 12 lessons</span>
+              <span><i class="fas fa-clock"></i> ~3 weeks</span>
+              <span><i class="fas fa-briefcase"></i> Capstone Project</span>
+            </div>
+          </div>
+          <div class="module-toggle"><i class="fas fa-chevron-down"></i></div>
+        </div>
+        <div class="module-body">
+          <div class="module-lessons">
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Building AI APIs with FastAPI</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Streaming responses &amp; real-time UI</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Security — key management &amp; guardrails</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Monitoring AI in production (LangSmith)</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Deploying to Railway, Render &amp; Vercel</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> AI product monetisation strategies</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> ▶ Capstone: Full AI SaaS product</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     PROJECTS
+════════════════════════════════ -->
+<section class="section-py" style="background:var(--ghost)" id="projects">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:48px">
+      <div class="section-kicker">Portfolio Projects</div>
+      <h2 class="section-title">4 AI Apps You'll <span class="g-ai">Deploy</span></h2>
+      <p class="section-body" style="margin:0 auto">Every project is a real, deployed application — not a notebook exercise. Your portfolio proves you can build.</p>
+    </div>
+    <div class="projects-grid">
+
+      <div class="project-card">
+        <div class="proj-thumb pt-1">🔍<div style="position:absolute;inset:0;z-index:1;pointer-events:none"></div></div>
+        <span class="proj-num">Project 01</span>
+        <div class="proj-tags">
+          <span class="proj-tag">LangChain</span>
+          <span class="proj-tag">OpenAI</span>
+          <span class="proj-tag">Python</span>
+        </div>
+        <div class="proj-body">
+          <div class="proj-title">AI Research Assistant</div>
+          <p class="proj-desc">An agent that accepts a research question, searches the web, reads sources, synthesises findings, and outputs a structured report — fully autonomous.</p>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="proj-thumb pt-2">📚<div style="position:absolute;inset:0;z-index:1;pointer-events:none"></div></div>
+        <span class="proj-num">Project 02</span>
+        <div class="proj-tags">
+          <span class="proj-tag">RAG</span>
+          <span class="proj-tag">Pinecone</span>
+          <span class="proj-tag">Embeddings</span>
+        </div>
+        <div class="proj-body">
+          <div class="proj-title">AI Document Q&amp;A System</div>
+          <p class="proj-desc">Upload any PDF or document set and ask questions in natural language. The system retrieves relevant passages and answers accurately using RAG architecture.</p>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="proj-thumb pt-3">⚙️<div style="position:absolute;inset:0;z-index:1;pointer-events:none"></div></div>
+        <span class="proj-num">Project 03</span>
+        <div class="proj-tags">
+          <span class="proj-tag">CrewAI</span>
+          <span class="proj-tag">n8n</span>
+          <span class="proj-tag">APIs</span>
+        </div>
+        <div class="proj-body">
+          <div class="proj-title">Multi-Agent Business Automation</div>
+          <p class="proj-desc">A crew of specialised agents that automate a business workflow — market research, content creation, and email outreach — triggered on a schedule via n8n.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Capstone callout -->
+    <div style="margin-top:22px;background:linear-gradient(135deg,#020f0e,#0a1a18);border:1px solid rgba(13,148,136,.2);border-radius:var(--r-2xl);padding:32px 36px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap">
+      <div>
+        <div style="font-size:.65rem;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:rgba(13,148,136,.8);margin-bottom:8px">🚀 Capstone</div>
+        <div style="font-size:1.2rem;font-weight:700;color:#fff;font-family:'Fraunces',serif;margin-bottom:6px">Full AI SaaS Product</div>
+        <p style="font-size:.82rem;color:rgba(255,255,255,.5);margin:0;max-width:480px">Your final project: a complete, production-deployed AI-powered SaaS application with a web interface, API, subscription model, and live LLM integration. Built entirely by you.</p>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0">
+        <span style="background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.25);border-radius:var(--r-pill);padding:4px 13px;font-size:.72rem;font-weight:700;color:#5eead4">FastAPI</span>
+        <span style="background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.25);border-radius:var(--r-pill);padding:4px 13px;font-size:.72rem;font-weight:700;color:#c4b5fd">LangChain</span>
+        <span style="background:rgba(6,182,212,.15);border:1px solid rgba(6,182,212,.25);border-radius:var(--r-pill);padding:4px 13px;font-size:.72rem;font-weight:700;color:#67e8f9">Production</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     WHO IT'S FOR
+════════════════════════════════ -->
+<section class="section-py" style="background:#fff">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:48px">
+      <div class="section-kicker orange">Who It's For</div>
+      <h2 class="section-title">For <span class="g-orange">Builders</span>, Not Just Learners</h2>
+      <p class="section-body" style="margin:0 auto">This programme is for people who want to build and ship AI — not just understand it conceptually.</p>
+    </div>
+    <div class="who-grid" style="max-width:860px;margin:0 auto">
+      <div class="who-card">
+        <div class="who-icon wi-a">💻</div>
+        <div class="who-text">
+          <h5>Developers Adding AI to Their Stack</h5>
+          <p>Already know how to code? This programme teaches you to integrate LLMs, build agents, and ship AI-powered features into any application.</p>
+        </div>
+      </div>
+      <div class="who-card">
+        <div class="who-icon wi-b">🚀</div>
+        <div class="who-text">
+          <h5>Founders Building AI Products</h5>
+          <p>Want to build an AI SaaS but don't know where to start? The capstone project gives you a full production template you can adapt for your own idea.</p>
+        </div>
+      </div>
+      <div class="who-card">
+        <div class="who-icon wi-c">📊</div>
+        <div class="who-text">
+          <h5>Analysts &amp; Non-Technical Professionals</h5>
+          <p>Use n8n and Flowise to automate your workflows with AI — no deep coding required for these modules. Dramatically increase your output with AI agents.</p>
+        </div>
+      </div>
+      <div class="who-card">
+        <div class="who-icon wi-d">🎓</div>
+        <div class="who-text">
+          <h5>Complete Beginners to AI</h5>
+          <p>Never worked with AI before? We start from zero — Python basics are covered, LLMs are explained from first principles, and every concept builds on the last.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     INSTRUCTOR
+════════════════════════════════ -->
+<section class="section-py" style="background:var(--ghost)">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:40px">
+      <div class="section-kicker">Your Instructor</div>
+      <h2 class="section-title">Learn from Someone <span class="g-ai">Building with AI</span></h2>
+    </div>
+    <div class="instructor-strip">
+      <div class="instr-avatar-wrap">
+        <div class="instr-ring" aria-hidden="true"></div>
+        <div class="instr-avatar">SK</div>
+      </div>
+      <div class="instr-content">
+        <div class="instr-name">Stephen Kingori</div>
+        <div class="instr-role">Lead Instructor · AI Engineer · NeurowexTech</div>
+        <p class="instr-bio">Stephen has been building with AI since the early days of the OpenAI API — creating autonomous agents, RAG systems, and AI-powered tools for clients across East Africa. He's obsessed with one question: how do you make AI actually useful in production? Everything he teaches, he's already shipped.</p>
+        <div class="instr-stats">
+          <div class="is-stat"><i class="fas fa-users"></i><span><strong>500+</strong> students taught</span></div>
+          <div class="is-stat"><i class="fas fa-star" style="color:var(--yellow)"></i><span><strong>4.9</strong> avg rating</span></div>
+          <div class="is-stat"><i class="fas fa-robot"></i><span><strong>12+</strong> AI products built</span></div>
+          <div class="is-stat"><i class="fas fa-map-marker-alt"></i><span>Nairobi, Kenya</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     TESTIMONIALS
+════════════════════════════════ -->
+<section class="section-py" style="background:#fff">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:48px">
+      <div class="section-kicker orange">Student Outcomes</div>
+      <h2 class="section-title">From <span class="g-orange">Curious to Building</span></h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="t-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"I went from knowing nothing about AI to building a fully functional RAG system for my law firm in 8 weeks. The programme is dense but every lesson is immediately actionable. The best investment I've made in my career."</p>
+        <div class="t-author">
+          <div class="t-ava" style="background:#d1fae5">⚖️</div>
+          <div>
+            <div class="t-name">Patricia Waweru</div>
+            <div class="t-role">Lawyer &amp; AI Founder, Nairobi</div>
+          </div>
+        </div>
+        <div class="t-outcome"><i class="fas fa-rocket"></i> Launched AI legal tool</div>
+      </div>
+      <div class="t-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"The multi-agent module alone changed how I work. I built a CrewAI system that does competitive research and content drafting — what used to take me 8 hours now takes 20 minutes. Incredible ROI."</p>
+        <div class="t-author">
+          <div class="t-ava" style="background:#dbeafe">📊</div>
+          <div>
+            <div class="t-name">James Muriuki</div>
+            <div class="t-role">Marketing Director, Mombasa</div>
+          </div>
+        </div>
+        <div class="t-outcome"><i class="fas fa-clock"></i> 8hr task → 20 minutes</div>
+      </div>
+      <div class="t-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"Stephen doesn't just teach you what AI tools do — he teaches you to think like an AI engineer. The capstone project is a real SaaS that I'm now selling to SMEs. The programme paid for itself within a month."</p>
+        <div class="t-author">
+          <div class="t-ava" style="background:#fef3c7">🧑‍💻</div>
+          <div>
+            <div class="t-name">Daniel Ochieng</div>
+            <div class="t-role">Software Developer, Kisumu</div>
+          </div>
+        </div>
+        <div class="t-outcome"><i class="fas fa-star"></i> Selling AI product to clients</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     PRICING
+════════════════════════════════ -->
+<section class="section-py" style="background:var(--ghost)" id="enrol">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:48px">
+      <div class="section-kicker">Pricing</div>
+      <h2 class="section-title">Choose Your <span class="g-ai">Access Level</span></h2>
+      <p class="section-body" style="margin:0 auto">Both plans include lifetime access, the certificate, and all 4 portfolio projects.</p>
+    </div>
+
+    <div class="pricing-wrap">
+
+      <!-- Self-paced -->
+      <div class="price-card">
+        <div class="price-label">Self-Paced</div>
+        <div class="price-amount">
+          <span class="price-currency">Ksh</span>
+          <span class="price-val">15,000</span>
+        </div>
+        <div class="price-sub">One-time payment · Lifetime access</div>
+        <div class="price-features">
+          <div class="pf"><i class="fas fa-check-circle ok"></i> 70+ video lessons</div>
+          <div class="pf"><i class="fas fa-check-circle ok"></i> 4 portfolio projects</div>
+          <div class="pf"><i class="fas fa-check-circle ok"></i> Completion certificate</div>
+          <div class="pf"><i class="fas fa-check-circle ok"></i> Community forum access</div>
+          <div class="pf"><i class="fas fa-check-circle ok"></i> Lifetime access &amp; updates</div>
+          <div class="pf dim"><i class="fas fa-times-circle no"></i> 1-on-1 mentor sessions</div>
+          <div class="pf dim"><i class="fas fa-times-circle no"></i> Code review sessions</div>
+        </div>
+        <a href="https://wa.me/254769329340?text=I'd%20like%20to%20enrol%20in%20the%20AI%20Self-Paced%20plan%20(Ksh%2015,000)" target="_blank" rel="noopener" class="btn btn-outline" style="width:100%;justify-content:center">Enrol Self-Paced <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+      <!-- Mentored -->
+      <div class="price-card featured">
+        <div class="featured-chip">⭐ Most popular</div>
+        <div class="price-label">Mentored</div>
+        <div class="price-amount">
+          <span class="price-currency">Ksh</span>
+          <span class="price-val">27,500</span>
+        </div>
+        <div class="price-sub">One-time payment · Lifetime access</div>
+        <div class="price-features">
+          <div class="pf"><i class="fas fa-check-circle ok"></i> Everything in Self-Paced</div>
+          <div class="pf"><i class="fas fa-check-circle ok"></i> 4× 1-on-1 mentor sessions</div>
+          <div class="pf"><i class="fas fa-check-circle ok"></i> Weekly project code reviews</div>
+          <div class="pf"><i class="fas fa-check-circle ok"></i> Priority WhatsApp support</div>
+          <div class="pf"><i class="fas fa-check-circle ok"></i> AI career guidance</div>
+          <div class="pf"><i class="fas fa-check-circle ok"></i> Private cohort group</div>
+          <div class="pf"><i class="fas fa-check-circle ok"></i> Job &amp; client referral network</div>
+        </div>
+        <a href="https://wa.me/254769329340?text=I'd%20like%20to%20enrol%20in%20the%20AI%20Mentored%20plan%20(Ksh%2027,500)" target="_blank" rel="noopener" class="btn btn-teal" style="width:100%;justify-content:center">Enrol Mentored <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+    </div>
+
+    <p style="text-align:center;font-size:.78rem;color:var(--slate);margin-top:20px">
+      <i class="fas fa-lock" style="color:var(--ai-1)"></i> M-Pesa, bank transfer, or card accepted.
+      &nbsp;|&nbsp; <i class="fas fa-undo" style="color:var(--ai-1)"></i> 7-day money-back guarantee.
+      &nbsp;|&nbsp; <i class="fab fa-whatsapp" style="color:var(--ai-1)"></i> Questions?
+      <a href="https://wa.me/254769329340" target="_blank" rel="noopener" style="color:var(--teal);font-weight:600">Chat on WhatsApp</a>
+    </p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     FAQ
+════════════════════════════════ -->
+<section class="section-py" style="background:#fff">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:48px">
+      <div class="section-kicker">FAQ</div>
+      <h2 class="section-title">Common <span class="g-blue">Questions</span></h2>
+      <p class="section-body" style="margin:0 auto">Everything you need to know before enrolling.</p>
+    </div>
+    <div class="faq-grid" style="max-width:920px;margin:0 auto">
+      <div class="faq-item">
+        <div class="faq-q">Do I need to know Python first? <span class="faq-icon"><i class="fas fa-plus"></i></span></div>
+        <div class="faq-a">No. Module 1 covers all the Python you need specifically for AI — variables, functions, loops, working with APIs and JSON. If you can follow basic coding logic, you're ready.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Is this just prompt engineering? <span class="faq-icon"><i class="fas fa-plus"></i></span></div>
+        <div class="faq-a">Far from it. Prompting is covered in Module 1, but most of the programme is about building real software — AI agents, RAG systems, multi-agent workflows, and production APIs.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How much does the OpenAI API cost? <span class="faq-icon"><i class="fas fa-plus"></i></span></div>
+        <div class="faq-a">Typical API usage during the course costs $5–$20 depending on how much you experiment. We show you how to manage costs and use free-tier models where possible.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Will the tools become outdated quickly? <span class="faq-icon"><i class="fas fa-plus"></i></span></div>
+        <div class="faq-a">The core frameworks (LangChain, LangGraph, CrewAI) are now mature and well-supported. We keep the curriculum updated and you get lifetime access to all updates at no extra cost.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How long to complete? <span class="faq-icon"><i class="fas fa-plus"></i></span></div>
+        <div class="faq-a">Most students finish in 12–16 weeks at 8–12 hours per week. It's fully self-paced with no deadline. Access never expires, so you can revisit modules any time.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What's the refund policy? <span class="faq-icon"><i class="fas fa-plus"></i></span></div>
+        <div class="faq-a">Full 7-day refund from enrolment date, no questions asked. We're confident in the programme — but if it's not the right fit, we'll refund you immediately.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     CTA BAND
+════════════════════════════════ -->
+<div style="padding:72px 0;background:var(--ghost)">
+  <div class="container">
+    <div class="cta-band">
+      <div class="cta-band-orb a" aria-hidden="true"></div>
+      <div class="cta-band-orb b" aria-hidden="true"></div>
+      <div class="cta-inner">
+        <div class="cta-kicker"><i class="fas fa-robot"></i> AI is the skill of the decade</div>
+        <h2>Start Building <em>Intelligent Systems</em></h2>
+        <p>Join 180+ learners already mastering Agentic AI. The tools exist. The demand is massive. The only missing piece is you.</p>
+        <div class="cta-actions">
+          <a href="https://wa.me/254769329340?text=I'd%20like%20to%20enrol%20in%20the%20Agentic%20AI%20programme" target="_blank" rel="noopener" class="btn-cta-teal"><i class="fas fa-robot"></i> Enrol via WhatsApp</a>
+          <a href="/contact" class="btn-cta-ghost"><i class="fas fa-envelope"></i> Ask a Question</a>
+        </div>
+        <div class="cta-trust">
+          <span class="cta-trust-item"><i class="fas fa-shield-alt"></i> 7-day refund guarantee</span>
+          <span class="cta-trust-item"><i class="fas fa-certificate"></i> Completion certificate</span>
+          <span class="cta-trust-item"><i class="fas fa-infinity"></i> Lifetime access + updates</span>
+          <span class="cta-trust-item"><i class="fas fa-map-marker-alt"></i> Nairobi-based support</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     NEWSLETTER
+════════════════════════════════ -->
+<section class="newsletter-section section-py-sm">
+  <div class="container">
+    <div class="newsletter-box">
+      <div class="nl-grid">
+        <div>
+          <div class="nl-icon"><i class="fas fa-brain"></i></div>
+          <h3 style="font-size:clamp(1.2rem,3.5vw,1.7rem);margin-bottom:8px">Stay Ahead in <span class="g-ai">AI</span> 📬</h3>
+          <p style="color:var(--slate);margin:0 0 13px">Get new module alerts, AI tool breakdowns, and cohort openings. Zero spam.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:14px;font-size:.74rem;color:var(--slate)">
+            <span><i class="fas fa-check-circle" style="color:var(--teal)"></i> AI tool deep-dives</span>
+            <span><i class="fas fa-check-circle" style="color:var(--teal)"></i> New module alerts</span>
+            <span><i class="fas fa-check-circle" style="color:var(--teal)"></i> Cohort openings</span>
+          </div>
+        </div>
+        <div>
+          <form id="nlForm">
+            <div class="nl-form">
+              <i class="fas fa-envelope nl-ico"></i>
+              <input type="email" id="nlEmail" class="nl-form-inp" placeholder="Enter your email address" required aria-label="Email for newsletter" />
+              <button type="submit" id="nlBtn" class="nl-submit">Subscribe <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
+              <input type="checkbox" id="nlConsent" checked style="cursor:pointer;width:15px;height:15px;accent-color:var(--teal)">
+              <label for="nlConsent" style="font-size:.71rem;color:var(--slate);cursor:pointer">I agree to receive emails from NeurowexTech</label>
+            </div>
+            <p id="nlMsg" style="font-size:.78rem;margin-top:8px" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-accent-bar"></div>
+  <div class="footer-cta-strip">
+    <div class="container">
+      <div class="footer-cta-inner">
+        <div class="footer-cta-text">
+          <h4>Ready to build AI that actually works? 🤖</h4>
+          <p>Sign up free and start the first module today — no credit card required.</p>
+        </div>
+        <div class="footer-cta-btns">
+          <a href="/sign_up" class="btn btn-teal"   style="padding:10px 20px;font-size:.83rem">Sign Up Free <i class="fas fa-arrow-right"></i></a>
+          <a href="/contact" class="btn btn-orange"  style="padding:10px 18px;font-size:.83rem"><i class="fas fa-envelope"></i> Contact Us</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-body">
+    <div class="container">
+      <div class="footer-cols">
+        <div class="footer-col-brand">
+          <div class="footer-brand-name"><span class="footer-bmark">N</span>Neurowex<em>Tech</em></div>
+          <p class="footer-tagline">Practical AI engineering education — from LLM basics to production agentic systems.</p>
+          <div class="footer-socials">
+            <a href="#" class="fsoc tw" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="fsoc li" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="fsoc gh" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="#" class="fsoc ig" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="fsoc yt" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://wa.me/254769329340" target="_blank" rel="noopener noreferrer" class="fsoc wa" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span style="background:rgba(13,148,136,.12);color:#5eead4;border:1px solid rgba(13,148,136,.22);border-radius:6px;padding:3px 9px;font-size:.64rem;font-weight:700">🧠 LLMs</span>
+            <span style="background:rgba(124,58,237,.12);color:#c4b5fd;border:1px solid rgba(124,58,237,.22);border-radius:6px;padding:3px 9px;font-size:.64rem;font-weight:700">🤖 Agents</span>
+            <span style="background:rgba(6,182,212,.12);color:#67e8f9;border:1px solid rgba(6,182,212,.22);border-radius:6px;padding:3px 9px;font-size:.64rem;font-weight:700">⚙️ Automation</span>
+            <span style="background:rgba(5,150,105,.12);color:#6ee7b7;border:1px solid rgba(5,150,105,.22);border-radius:6px;padding:3px 9px;font-size:.64rem;font-weight:700">☁️ Deploy</span>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">AI Programme</div>
+          <ul class="footer-links">
+            <li><a href="#about-ai"><i class="fas fa-brain"></i> What is Agentic AI</a></li>
+            <li><a href="#curriculum"><i class="fas fa-map"></i> Curriculum</a></li>
+            <li><a href="#projects"><i class="fas fa-briefcase"></i> Projects</a></li>
+            <li><a href="#enrol"><i class="fas fa-rocket"></i> Pricing</a></li>
+            <li><a href="/learn" class="acad"><i class="fas fa-graduation-cap"></i> All Courses</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-links">
+            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="/learn/fullstack"><i class="fas fa-laptop-code"></i> Full Stack</a></li>
+            <li><a href="/kids-coding"><i class="fas fa-child"></i> Kids Academy</a></li>
+            <li><a href="/about"><i class="fas fa-info-circle"></i> About Us</a></li>
+            <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col-contact">
+          <div class="footer-col-title">Contact</div>
+          <div class="fci"><div class="fci-ic"><i class="fas fa-envelope"></i></div><div><div class="fci-label">Email</div><div class="fci-val"><a href="mailto:techneurowex@gmail.com">techneurowex@gmail.com</a></div></div></div>
+          <div class="fci"><div class="fci-ic"><i class="fab fa-whatsapp"></i></div><div><div class="fci-label">WhatsApp</div><div class="fci-val"><a href="https://wa.me/254769329340" target="_blank" rel="noopener noreferrer">+254 769 329 340</a></div></div></div>
+          <div class="fci"><div class="fci-ic"><i class="fas fa-map-marker-alt"></i></div><div><div class="fci-label">Location</div><div class="fci-val">Nairobi, Kenya 🇰🇪</div></div></div>
+          <div class="footer-hours"><span class="hdot"></span> Mon – Fri · 9 am – 6 pm EAT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr class="footer-divider">
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="footer-copy">© {{currentYear}} NeurowexTech Academy. All rights reserved.</p>
+        <nav class="footer-legal" aria-label="Legal">
+          <a href="/about">About</a>
+          <a href="/privacy-policy">Privacy</a>
+          <a href="/terms-of-service">Terms</a>
+          <a href="/cookie-policy">Cookies</a>
+        </nav>
+        <p class="footer-made">Made with <span>♥</span> in Nairobi</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── THEME ── */
+var dark = localStorage.getItem('nw-theme')==='dark' || (!localStorage.getItem('nw-theme') && window.matchMedia('(prefers-color-scheme:dark)').matches);
+var MOON = '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>';
+var SUN  = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+function applyTheme(){
+  document.body.classList.toggle('dark',dark);
+  document.getElementById('theme-toggle').innerHTML = dark ? SUN : MOON;
+  var tn = document.getElementById('theme-toggle-nav');
+  var mt = document.getElementById('mobThemeBtn');
+  if(tn) tn.innerHTML = dark ? '<i class="fas fa-sun" style="font-size:.82rem"></i>' : '<i class="fas fa-moon" style="font-size:.82rem"></i>';
+  if(mt) mt.innerHTML = dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+}
+applyTheme();
+function toggleTheme(){ dark=!dark; localStorage.setItem('nw-theme',dark?'dark':'light'); applyTheme(); }
+document.getElementById('theme-toggle').addEventListener('click',toggleTheme);
+var ttn=document.getElementById('theme-toggle-nav'); if(ttn) ttn.addEventListener('click',toggleTheme);
+var mtb=document.getElementById('mobThemeBtn');      if(mtb) mtb.addEventListener('click',toggleTheme);
+
+/* ── SCROLL ── */
+var navbar=document.getElementById('mainNav'), btt=document.getElementById('back-to-top'), sp=document.getElementById('scroll-progress');
+window.addEventListener('scroll',function(){
+  var s=window.pageYOffset, d=document.documentElement.scrollHeight-window.innerHeight;
+  sp.style.width=(d>0?s/d*100:0)+'%';
+  navbar.classList.toggle('scrolled',s>40);
+  btt.classList.toggle('visible',s>400);
+},{passive:true});
+btt.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+
+/* ── MOBILE NAV ── */
+var ov=document.getElementById('mobOverlay'), pan=document.getElementById('mobPanel'),
+    ham=document.getElementById('hamBtn'),    mc=document.getElementById('mobClose');
+function openM(){ ov.classList.add('open'); pan.classList.add('open'); ham.classList.add('open'); ham.setAttribute('aria-expanded','true'); document.body.style.overflow='hidden'; mc.focus(); }
+function closeM(){ ov.classList.remove('open'); pan.classList.remove('open'); ham.classList.remove('open'); ham.setAttribute('aria-expanded','false'); document.body.style.overflow=''; }
+ham.addEventListener('click',openM); mc.addEventListener('click',closeM); ov.addEventListener('click',closeM);
+document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&pan.classList.contains('open')) closeM(); });
+
+/* ── COOKIE ── */
+var cb=document.getElementById('cookie-bar');
+if(!localStorage.getItem('nw-cookie')) setTimeout(function(){ cb.classList.add('show'); },2800);
+document.getElementById('cookie-accept').addEventListener('click',function(){ localStorage.setItem('nw-cookie','1'); cb.classList.remove('show'); });
+
+/* ── TOAST ── */
+function toast(msg){
+  var t=document.getElementById('toast'); document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); },3600);
+}
+
+/* ── CURRICULUM ACCORDION ── */
+document.querySelectorAll('.module-head').forEach(function(head){
+  head.addEventListener('click',function(){
+    var card=head.parentElement, isOpen=card.classList.contains('open');
+    document.querySelectorAll('.module-card').forEach(function(c){ c.classList.remove('open'); });
+    if(!isOpen) card.classList.add('open');
+  });
+});
+
+/* ── FAQ ── */
+document.querySelectorAll('.faq-q').forEach(function(q){
+  q.addEventListener('click',function(){
+    var item=q.parentElement, isOpen=item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(function(i){ i.classList.remove('open'); });
+    if(!isOpen) item.classList.add('open');
+  });
+});
+
+/* ── NEWSLETTER ── */
+document.getElementById('nlForm').addEventListener('submit',async function(e){
+  e.preventDefault();
+  var email=document.getElementById('nlEmail').value.trim();
+  var consent=document.getElementById('nlConsent').checked;
+  var btn=document.getElementById('nlBtn'), msg=document.getElementById('nlMsg');
+  if(!email||!/^\S+@\S+\.\S+$/.test(email)){ msg.innerHTML='<span style="color:var(--rose)"><i class="fas fa-exclamation-circle"></i> Please enter a valid email.</span>'; return; }
+  if(!consent){ msg.innerHTML='<span style="color:var(--rose)"><i class="fas fa-exclamation-circle"></i> Please agree to receive emails.</span>'; return; }
+  var orig=btn.innerHTML; btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Subscribing…'; btn.disabled=true;
+  try{
+    var res=await fetch('/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+    var data=await res.json();
+    if(data.success){ msg.innerHTML='<span style="color:var(--teal)"><i class="fas fa-check-circle"></i> 🎉 Subscribed!</span>'; document.getElementById('nlForm').reset(); document.getElementById('nlConsent').checked=true; toast('Subscribed! Welcome aboard 🎉'); }
+    else{ msg.innerHTML='<span style="color:var(--rose)">'+(data.message||'Failed. Please try again.')+'</span>'; }
+  }catch(err){ msg.innerHTML='<span style="color:var(--rose)">Network error. Please try again.</span>'; }
+  finally{ btn.innerHTML=orig; btn.disabled=false; setTimeout(function(){ msg.innerHTML=''; },5500); }
+});
+
+/* ── SMOOTH SCROLL ── */
+document.querySelectorAll('a[href^="#"]').forEach(function(a){
+  a.addEventListener('click',function(e){
+    var href=a.getAttribute('href'); if(href.length<2) return;
+    var target=document.querySelector(href);
+    if(target){ e.preventDefault(); var offset=parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'))||72; window.scrollTo({top:target.offsetTop-offset-12,behavior:'smooth'}); if(pan.classList.contains('open')) closeM(); }
+  });
+});
+
+/* ── AGENT NODE ANIMATION — auto-progress thinking state ── */
+(function(){
+  var statuses = document.querySelectorAll('.status-dot');
+  var nodes    = document.querySelectorAll('.agent-node');
+  // Cycle agent state every few seconds to look alive
+  var step = 0;
+  var states = ['done','active','thinking','idle','idle'];
+  var classMap = {done:'done',active:'active',thinking:'thinking',idle:'idle'};
+  setInterval(function(){
+    step = (step + 1) % 3;
+    var seqA = [['done','active','thinking','idle','idle'],
+                ['done','done','active','thinking','idle'],
+                ['done','done','done','active','done']];
+    var seq = seqA[step];
+    statuses.forEach(function(dot,i){
+      dot.className = 'status-dot ' + (seq[i]||'idle');
+    });
+  }, 2200);
+})();
+</script>
+</body>
+</html>

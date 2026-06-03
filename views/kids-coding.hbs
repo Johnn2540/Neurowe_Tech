@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{title}} | NeurowexTech Kids Academy</title>
+  <meta name="description" content="Coding bootcamps for kids and teens in Kenya. Scratch, HTML, CSS, JavaScript — structured pathways from age 8 to 17 with dedicated high school labs." />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<style>
+/* ── DESIGN TOKENS ── */
+:root{
+  --blue:#1a4fd6;--blue-d:#1340b0;--blue-l:#4a7aee;
+  --blue-pale:rgba(26,79,214,.08);--blue-pale2:rgba(26,79,214,.14);
+  --orange:#e8620a;--orange-d:#c94f05;--orange-l:#f28840;
+  --orange-pale:rgba(232,98,10,.08);
+  --black:#050810;--ink:#0c1220;--ink-2:#141c30;--ink-3:#1c2840;
+  --slate:#5a6880;--slate-l:#7a8ea8;
+  --mist:#e2e8f5;--ghost:#f5f7fd;--white:#ffffff;
+  --emerald:#059669;--teal:#0d9488;--yellow:#f59e0b;--rose:#e11d48;
+  --kids-green:#10b981;--kids-purple:#8b5cf6;--kids-pink:#ec4899;--kids-cyan:#06b6d4;
+  --g-blue:linear-gradient(135deg,#1a4fd6,#1340b0);
+  --g-orange:linear-gradient(135deg,#e8620a,#c94f05);
+  --g-hero:linear-gradient(168deg,#030610 0%,#07102a 50%,#0b1535 100%);
+  --g-kids:linear-gradient(135deg,#1a4fd6 0%,#8b5cf6 50%,#ec4899 100%);
+  --g-kids-warm:linear-gradient(135deg,#e8620a,#f59e0b,#10b981);
+  --r-xs:6px;--r-sm:10px;--r-md:14px;--r-lg:18px;--r-xl:24px;--r-2xl:32px;--r-pill:999px;
+  --nav-h:68px;
+  --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);--t:.26s var(--ease);
+  --sh-sm:0 1px 4px rgba(8,12,24,.06),0 4px 12px rgba(8,12,24,.06);
+  --sh-md:0 4px 16px rgba(8,12,24,.08),0 12px 36px rgba(8,12,24,.08);
+  --sh-lg:0 12px 40px rgba(8,12,24,.12),0 4px 12px rgba(8,12,24,.06);
+  --sh-blue:0 8px 28px rgba(26,79,214,.28);
+  --sh-orange:0 8px 28px rgba(232,98,10,.26);
+  --sh-purple:0 8px 28px rgba(139,92,246,.3);
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--ghost);color:var(--ink);overflow-x:hidden;line-height:1.65}
+h1,h2,h3,h4,h5{font-family:'Fraunces',serif;line-height:1.1;letter-spacing:-.02em}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
+button,input,select,textarea{font-family:'Plus Jakarta Sans',sans-serif}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--ink)}::-webkit-scrollbar-thumb{background:var(--blue);border-radius:4px}
+
+#scroll-progress{position:fixed;top:0;left:0;height:2px;width:0%;background:var(--g-kids);z-index:9999;transition:width .08s linear}
+
+/* ── NAVBAR ── */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1040;height:var(--nav-h);background:rgba(255,255,255,.95);backdrop-filter:blur(24px) saturate(2);border-bottom:1px solid rgba(8,12,24,.06);transition:var(--t)}
+.navbar.scrolled{background:rgba(255,255,255,.98);box-shadow:0 2px 24px rgba(8,12,24,.07)}
+.nav-inner{max-width:1320px;margin:0 auto;padding:0 24px;height:100%;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.nav-brand{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;color:var(--ink);flex-shrink:0;letter-spacing:-.04em;display:flex;align-items:center;gap:7px}
+.brand-mark{width:30px;height:30px;background:var(--g-blue);border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:.85rem;color:#fff;flex-shrink:0}
+.nav-brand em{font-style:italic;color:var(--orange)}
+.nav-links{display:none;align-items:center;gap:2px;list-style:none;flex:1;justify-content:center}
+.nl-item{position:relative}
+.nl-a{font-size:.82rem;font-weight:600;color:var(--slate);padding:7px 12px;border-radius:var(--r-sm);transition:var(--t);white-space:nowrap;display:flex;align-items:center;gap:5px}
+.nl-a:hover,.nl-a.active{color:var(--blue);background:var(--blue-pale)}
+.nl-a .chev{font-size:.52rem;transition:transform .22s}
+.nl-item:hover .chev{transform:rotate(180deg)}
+.mega-drop{position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(8px);min-width:540px;background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);box-shadow:0 24px 64px rgba(8,12,24,.14);padding:22px;opacity:0;visibility:hidden;pointer-events:none;transition:all .2s var(--ease)}
+.nl-item:hover .mega-drop{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+.mega-drop::before{content:'';position:absolute;top:-5px;left:50%;width:10px;height:10px;background:#fff;border-left:1px solid var(--mist);border-top:1px solid var(--mist);transform:translateX(-50%) rotate(45deg)}
+.mega-grid{display:grid;grid-template-columns:1fr 1fr 1fr}
+.mega-col-label{font-size:.61rem;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:var(--blue);padding:0 8px 8px;display:block}
+.mega-link{display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:var(--r-sm);font-size:.79rem;font-weight:500;color:var(--slate);transition:all .14s}
+.mega-link i{width:15px;color:var(--blue);font-size:.74rem;flex-shrink:0}
+.mega-link:hover{background:var(--blue-pale);color:var(--blue);transform:translateX(2px)}
+.nav-cta{display:none;align-items:center;gap:8px;flex-shrink:0}
+.user-drop{position:relative}
+.user-btn{display:inline-flex;align-items:center;gap:6px;background:var(--g-blue);color:#fff;border:none;padding:7px 16px;border-radius:var(--r-pill);font-size:.79rem;font-weight:700;cursor:pointer;transition:var(--t);font-family:'Plus Jakarta Sans',sans-serif}
+.user-btn:hover{transform:translateY(-1px);box-shadow:var(--sh-blue)}
+.user-btn .chev-u{font-size:.5rem;transition:transform .22s}
+.user-drop:hover .chev-u{transform:rotate(180deg)}
+.user-menu{position:absolute;top:calc(100% + 10px);right:0;min-width:200px;background:#fff;border-radius:var(--r-lg);border:1px solid var(--mist);box-shadow:var(--sh-md);padding:8px;opacity:0;visibility:hidden;pointer-events:none;transition:all .2s var(--ease)}
+.user-drop:hover .user-menu{opacity:1;visibility:visible;pointer-events:auto}
+.user-menu a{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:var(--r-sm);font-size:.81rem;font-weight:600;color:var(--slate);transition:var(--t)}
+.user-menu a i{width:15px;color:var(--blue);font-size:.75rem}
+.user-menu a:hover{background:var(--blue-pale);color:var(--blue)}
+.user-menu-divider{border:none;border-top:1px solid var(--mist);margin:5px 0}
+.btn-nav-signin{font-size:.79rem;font-weight:600;color:var(--slate);padding:7px 15px;border:1.5px solid var(--mist);border-radius:var(--r-pill);background:#fff;cursor:pointer;transition:var(--t)}
+.btn-nav-signin:hover{color:var(--blue);border-color:var(--blue)}
+.btn-nav-signup{font-size:.79rem;font-weight:700;color:#fff;padding:8px 19px;border:none;border-radius:var(--r-pill);background:var(--g-blue);cursor:pointer;box-shadow:var(--sh-blue);display:inline-flex;align-items:center;gap:5px;transition:var(--t)}
+.btn-nav-signup:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(26,79,214,.38)}
+.ham-btn{display:flex;flex-direction:column;gap:5px;align-items:center;justify-content:center;width:44px;height:44px;background:none;border:none;cursor:pointer;border-radius:var(--r-sm);transition:var(--t);flex-shrink:0}
+.ham-btn:hover{background:var(--blue-pale)}
+.ham-line{display:block;width:20px;height:1.5px;background:var(--ink);border-radius:2px;transition:all .24s var(--ease);transform-origin:center}
+.ham-btn.open .ham-line:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.ham-btn.open .ham-line:nth-child(2){opacity:0;transform:scaleX(0)}
+.ham-btn.open .ham-line:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+.mob-quick{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.mob-quick-btn{width:38px;height:38px;border-radius:var(--r-sm);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:var(--t);background:var(--blue-pale);color:var(--blue)}
+.mob-overlay{position:fixed;inset:0;background:rgba(8,12,24,.55);backdrop-filter:blur(6px);z-index:1038;opacity:0;visibility:hidden;transition:opacity .28s,visibility .28s}
+.mob-overlay.open{opacity:1;visibility:visible}
+.mob-panel{position:fixed;top:0;right:0;width:min(340px,88vw);height:100dvh;background:#fff;z-index:1039;overflow-y:auto;transform:translateX(100%);transition:transform .3s var(--ease);box-shadow:-12px 0 48px rgba(8,12,24,.18);display:flex;flex-direction:column}
+.mob-panel.open{transform:translateX(0)}
+.mob-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--mist);flex-shrink:0}
+.mob-close{width:36px;height:36px;border:none;background:var(--mist);cursor:pointer;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;transition:var(--t);font-size:.82rem}
+.mob-close:hover{background:#ef4444;color:#fff}
+.mob-body{padding:8px 0;flex:1}
+.mob-link{display:flex;align-items:center;gap:11px;padding:12px 22px;font-size:.88rem;font-weight:600;color:var(--ink);transition:var(--t);min-height:48px}
+.mob-link i{width:18px;color:var(--blue);font-size:.8rem;flex-shrink:0}
+.mob-link:hover,.mob-link.cur{background:var(--blue-pale);color:var(--blue);padding-left:28px}
+.mob-hr{border:none;border-top:1px solid var(--mist);margin:6px 18px}
+.mob-footer{padding:14px 18px 30px;border-top:1px solid var(--mist);display:flex;flex-direction:column;gap:9px}
+
+/* ── DARK MODE ── */
+body.dark{background:var(--black);color:rgba(255,255,255,.84)}
+body.dark .navbar{background:rgba(8,12,24,.97);border-bottom-color:rgba(255,255,255,.05)}
+body.dark .navbar.scrolled{background:rgba(8,12,24,.99)}
+body.dark .nl-a{color:rgba(255,255,255,.52)}
+body.dark .nl-a:hover{color:var(--blue-l);background:rgba(26,79,214,.1)}
+body.dark .mega-drop{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+body.dark .mega-drop::before{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+body.dark .mega-link{color:rgba(255,255,255,.52)}
+body.dark .ham-line{background:rgba(255,255,255,.85)}
+body.dark .mob-panel{background:var(--ink-2)}
+body.dark .mob-head{border-color:rgba(255,255,255,.07)}
+body.dark .mob-link{color:rgba(255,255,255,.82)}
+body.dark .mob-close{background:rgba(255,255,255,.07);color:rgba(255,255,255,.7)}
+body.dark .mob-hr{border-color:rgba(255,255,255,.07)}
+body.dark .mob-footer{border-color:rgba(255,255,255,.07)}
+body.dark .btn-nav-signin{color:rgba(255,255,255,.52);border-color:rgba(255,255,255,.1);background:transparent}
+body.dark #theme-toggle{background:var(--ink-2);border-color:rgba(255,255,255,.09)}
+body.dark #theme-toggle svg{stroke:rgba(255,255,255,.72)}
+body.dark .user-menu{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+body.dark .user-menu a{color:rgba(255,255,255,.65)}
+body.dark .user-menu-divider{border-color:rgba(255,255,255,.07)}
+
+/* ── UTILITIES ── */
+.container{max-width:1320px;margin:0 auto;padding:0 24px}
+.section-py{padding:80px 0}
+.section-py-sm{padding:56px 0}
+.text-center{text-align:center}
+.text-muted{color:var(--slate)}
+.g-blue{background:var(--g-blue);-webkit-background-clip:text;background-clip:text;color:transparent}
+.g-orange{background:var(--g-orange);-webkit-background-clip:text;background-clip:text;color:transparent}
+.g-kids{background:var(--g-kids);-webkit-background-clip:text;background-clip:text;color:transparent}
+.section-kicker{display:inline-flex;align-items:center;gap:7px;border-radius:var(--r-pill);padding:5px 14px;font-size:.67rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;margin-bottom:14px;border:1px solid rgba(26,79,214,.15);background:var(--blue-pale);color:var(--blue)}
+.section-kicker::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--blue);flex-shrink:0}
+.section-kicker.orange{background:var(--orange-pale);color:var(--orange);border-color:rgba(232,98,10,.15)}
+.section-kicker.orange::before{background:var(--orange)}
+.section-kicker.purple{background:rgba(139,92,246,.08);color:var(--kids-purple);border-color:rgba(139,92,246,.2)}
+.section-kicker.purple::before{background:var(--kids-purple)}
+.section-kicker.green{background:rgba(16,185,129,.08);color:var(--kids-green);border-color:rgba(16,185,129,.2)}
+.section-kicker.green::before{background:var(--kids-green)}
+.section-title{font-size:clamp(1.75rem,5vw,3rem);font-weight:700;margin-bottom:14px}
+.section-body{color:var(--slate);font-size:clamp(.9rem,2.5vw,1.04rem);line-height:1.78;max-width:540px}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:.86rem;border-radius:var(--r-pill);transition:var(--t);cursor:pointer;border:none;letter-spacing:.01em;white-space:nowrap}
+.btn-primary{background:var(--g-blue);color:#fff;padding:12px 26px;box-shadow:var(--sh-blue)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(26,79,214,.36)}
+.btn-orange{background:var(--g-orange);color:#fff;padding:12px 26px;box-shadow:var(--sh-orange)}
+.btn-orange:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(232,98,10,.36)}
+.btn-purple{background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;padding:12px 26px;box-shadow:var(--sh-purple)}
+.btn-purple:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(139,92,246,.4)}
+.btn-outline{background:transparent;color:var(--blue);padding:10px 22px;border:1.5px solid var(--blue)}
+.btn-outline:hover{background:var(--g-blue);color:#fff;transform:translateY(-2px)}
+.btn-ghost{background:rgba(255,255,255,.1);color:#fff;padding:11px 22px;border:1.5px solid rgba(255,255,255,.25);backdrop-filter:blur(8px)}
+.btn-ghost:hover{background:rgba(255,255,255,.18);transform:translateY(-2px)}
+.btn-sm{padding:8px 18px;font-size:.78rem}
+.btn-lg{padding:14px 32px;font-size:.95rem}
+
+/* ── ANIMATIONS ── */
+@keyframes float-bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-12px) rotate(2deg)}}
+@keyframes float-bob2{0%,100%{transform:translateY(0) rotate(3deg)}50%{transform:translateY(-10px) rotate(-1deg)}}
+@keyframes spin-slow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes dot-p{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.45);opacity:.5}}
+@keyframes wa-ripple{0%{transform:scale(1);opacity:.65}100%{transform:scale(2);opacity:0}}
+@keyframes bounce-up{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-8px)}}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes fade-up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes bar-shift{0%{background-position:0%}100%{background-position:200%}}
+@keyframes twinkle{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
+@keyframes path-dash{from{stroke-dashoffset:600}to{stroke-dashoffset:0}}
+
+/* ── FIXED WIDGETS ── */
+#theme-toggle{position:fixed;bottom:22px;left:22px;z-index:10000;width:44px;height:44px;background:#fff;border:1.5px solid rgba(8,12,24,.08);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 18px rgba(8,12,24,.1);transition:var(--t)}
+#theme-toggle svg{width:16px;height:16px;stroke:var(--slate);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+#theme-toggle:hover{background:var(--blue);border-color:var(--blue);transform:rotate(20deg) scale(1.07)}
+#theme-toggle:hover svg{stroke:#fff}
+#back-to-top{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(16px);z-index:10000;width:48px;height:48px;background:var(--g-blue);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s,transform .4s var(--spring);box-shadow:var(--sh-blue)}
+#back-to-top.visible{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;animation:bounce-up 2.4s ease-in-out infinite}
+#back-to-top:hover{animation-play-state:paused}
+#back-to-top svg{width:18px;height:18px;stroke:#fff;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+#wa-float{position:fixed;bottom:86px;right:20px;z-index:10001;text-decoration:none;display:block}
+.wa-ring{position:absolute;inset:0;border-radius:999px;border:2px solid #25D366;opacity:0;animation:wa-ripple 2.8s ease-out infinite;pointer-events:none}
+.wa-ring:nth-child(2){animation-delay:1.2s}
+.wa-pill{display:flex;align-items:center;gap:9px;background:linear-gradient(135deg,#128C7E,#075E54);border-radius:999px;padding:8px 17px 8px 8px;box-shadow:0 6px 26px rgba(18,140,126,.42);transition:transform .3s var(--spring),box-shadow .28s;white-space:nowrap}
+#wa-float:hover .wa-pill{transform:translateY(-3px) scale(1.02)}
+.wa-ico{width:36px;height:36px;flex-shrink:0;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.15rem;color:#fff;position:relative}
+.wa-dot{position:absolute;top:1px;right:1px;width:9px;height:9px;background:#a8ff78;border:2px solid #128C7E;border-radius:50%;animation:dot-p 2.4s ease-in-out infinite}
+.wa-text{display:flex;flex-direction:column;gap:1px}
+.wa-label{font-size:.64rem;color:rgba(255,255,255,.55);font-weight:600}
+.wa-cta{font-size:.88rem;color:#fff;font-weight:800;font-family:'Fraunces',serif}
+.wa-arr{color:rgba(255,255,255,.6);font-size:.68rem;margin-left:2px;transition:transform .2s}
+#wa-float:hover .wa-arr{transform:translateX(3px)}
+#toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--ink-2);color:#fff;border-radius:var(--r-md);padding:11px 17px;font-size:.82rem;display:flex;align-items:center;gap:8px;z-index:10002;opacity:0;transition:var(--t);border-left:3px solid var(--emerald);min-width:210px;max-width:calc(100vw - 40px)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#cookie-bar{position:fixed;bottom:0;left:0;right:0;background:var(--ink-2);color:rgba(255,255,255,.8);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:9998;transform:translateY(100%);transition:transform .38s;border-top:1px solid rgba(255,255,255,.06);flex-wrap:wrap}
+#cookie-bar.show{transform:translateY(0)}
+#cookie-bar p{font-size:.77rem;margin:0;flex:1;min-width:180px}
+#cookie-accept{background:var(--blue);color:#fff;border:none;padding:7px 18px;border-radius:var(--r-pill);font-size:.79rem;cursor:pointer;font-weight:700;transition:var(--t)}
+#cookie-accept:hover{background:var(--blue-d)}
+@media(max-width:767px){
+  #wa-float{bottom:74px;right:14px}
+  .wa-text,.wa-arr{display:none}
+  .wa-pill{padding:0;width:52px;height:52px;border-radius:50%;justify-content:center}
+  .wa-ico{width:52px;height:52px;font-size:1.4rem}
+  #theme-toggle{bottom:14px;left:14px;width:40px;height:40px}
+  #back-to-top{bottom:12px;width:46px;height:46px}
+}
+
+/* ════════════════════════════════
+   HERO
+════════════════════════════════ */
+.hero-kids{background:var(--g-hero);padding-top:var(--nav-h);position:relative;overflow:hidden;min-height:calc(100svh - var(--nav-h));display:flex;align-items:center}
+.hero-kids::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(139,92,246,.12) 1px,transparent 1px);background-size:32px 32px}
+
+/* Floating emoji deco */
+.hero-deco{position:absolute;font-size:2rem;pointer-events:none;user-select:none;line-height:1}
+.deco-1{top:12%;right:8%;animation:float-bob  5s ease-in-out infinite}
+.deco-2{top:28%;right:18%;animation:float-bob2 7s ease-in-out infinite;font-size:1.5rem}
+.deco-3{bottom:22%;right:6%;animation:float-bob  6s ease-in-out infinite 1s}
+.deco-4{bottom:35%;right:22%;animation:float-bob2 4.5s ease-in-out infinite .5s;font-size:1.4rem}
+.deco-5{top:60%;right:32%;animation:float-bob  8s ease-in-out infinite 2s;font-size:1.1rem}
+.orb-kids-1{position:absolute;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.18) 0%,transparent 70%);top:-80px;right:-60px;pointer-events:none}
+.orb-kids-2{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(236,72,153,.12) 0%,transparent 70%);bottom:-40px;left:5%;pointer-events:none}
+.orb-kids-3{position:absolute;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(6,182,212,.1) 0%,transparent 70%);top:40%;left:42%;pointer-events:none}
+
+.hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1fr;gap:40px;padding:64px 0 72px;align-items:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:var(--r-pill);padding:6px 15px;color:rgba(255,255,255,.78);font-size:.73rem;font-weight:700;margin-bottom:14px;backdrop-filter:blur(8px)}
+.hero-badge .dot{width:7px;height:7px;border-radius:50%;background:#34d399;animation:dot-p 2s infinite;flex-shrink:0}
+.hero-inner h1{font-size:clamp(2.2rem,6.5vw,4.2rem);font-weight:700;color:#fff;margin-bottom:12px;line-height:1.05}
+.hero-inner h1 em{font-style:italic;background:var(--g-kids);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-inner p{color:rgba(255,255,255,.58);font-size:clamp(.9rem,2.4vw,1.06rem);line-height:1.78;max-width:490px;margin-bottom:28px}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:36px}
+
+/* hero age badge strip */
+.age-strip{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:32px}
+.age-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);border-radius:var(--r-pill);padding:5px 14px;font-size:.74rem;font-weight:700;color:rgba(255,255,255,.78);backdrop-filter:blur(8px)}
+.age-chip.g{border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.12);color:#34d399}
+.age-chip.p{border-color:rgba(139,92,246,.4);background:rgba(139,92,246,.12);color:#c4b5fd}
+.age-chip.b{border-color:rgba(26,79,214,.4);background:rgba(26,79,214,.14);color:#93c5fd}
+.age-chip.o{border-color:rgba(232,98,10,.4);background:rgba(232,98,10,.12);color:var(--orange-l)}
+
+/* hero stat cards */
+.hero-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.h-stat{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-lg);padding:18px 16px;text-align:center;backdrop-filter:blur(8px);transition:var(--t)}
+.h-stat:hover{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.18)}
+.h-stat-num{font-family:'Fraunces',serif;font-size:clamp(1.6rem,5vw,2.2rem);font-weight:700;color:#fff;line-height:1}
+.h-stat-label{font-size:.72rem;color:rgba(255,255,255,.52);margin-top:5px;font-weight:600}
+
+/* hero right side — visual */
+.hero-visual{display:flex;flex-direction:column;gap:14px}
+.code-window{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:var(--r-xl);overflow:hidden;backdrop-filter:blur(16px)}
+.code-win-bar{display:flex;align-items:center;gap:7px;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.code-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+.code-dot.r{background:#ff5f57}
+.code-dot.y{background:#febc2e}
+.code-dot.g{background:#28c840}
+.code-title{font-size:.72rem;color:rgba(255,255,255,.38);font-weight:600;margin-left:4px}
+.code-body{padding:16px 18px;font-family:'Courier New',monospace;font-size:.78rem;line-height:1.9}
+.code-line{display:flex;gap:12px}
+.code-ln{color:rgba(255,255,255,.2);width:14px;flex-shrink:0;text-align:right;font-size:.68rem;margin-top:1px}
+.code-c{color:rgba(255,255,255,.72)}
+.kw{color:#c084fc}.fn{color:#7dd3fc}.str{color:#86efac}.tag{color:#f97316}.attr{color:#7dd3fc}.val{color:#86efac}.cm{color:rgba(255,255,255,.28)}
+
+.progress-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.prog-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-lg);padding:14px;backdrop-filter:blur(8px)}
+.prog-label{font-size:.7rem;color:rgba(255,255,255,.48);font-weight:600;margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.prog-label i{font-size:.65rem}
+.prog-bar{height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px;transition:width 1.4s cubic-bezier(.34,1.2,.64,1)}
+.prog-fill.scratch{background:linear-gradient(90deg,#f59e0b,#f97316);width:90%}
+.prog-fill.html{background:linear-gradient(90deg,#3b82f6,#8b5cf6);width:72%}
+.prog-fill.css{background:linear-gradient(90deg,#ec4899,#f43f5e);width:60%}
+.prog-fill.js{background:linear-gradient(90deg,#10b981,#06b6d4);width:38%}
+.prog-pct{font-size:.68rem;color:rgba(255,255,255,.55);margin-top:4px;font-weight:700}
+
+/* ════════════════════════════════
+   MARQUEE
+════════════════════════════════ */
+.marquee-wrap{background:var(--g-kids);padding:11px 0;overflow:hidden;white-space:nowrap}
+.marquee-track{display:inline-flex;animation:marquee 28s linear infinite}
+.marquee-track:hover{animation-play-state:paused}
+.marquee-item{display:inline-flex;align-items:center;gap:7px;padding:0 24px;color:rgba(255,255,255,.9);font-size:.81rem;font-weight:700}
+.marquee-sep{opacity:.32}
+
+/* ════════════════════════════════
+   PATHWAYS (CURRICULUM TRACKS)
+════════════════════════════════ */
+.pathway-grid{display:grid;grid-template-columns:1fr;gap:24px}
+@media(min-width:640px){.pathway-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.pathway-grid{grid-template-columns:repeat(4,1fr)}}
+
+.pathway-card{background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);padding:26px 22px;transition:var(--t);box-shadow:var(--sh-sm);position:relative;overflow:hidden;display:flex;flex-direction:column}
+body.dark .pathway-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.pathway-card:hover{transform:translateY(-6px);box-shadow:var(--sh-lg)}
+.pathway-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r-xl) var(--r-xl) 0 0}
+.pathway-card.scratch::before{background:linear-gradient(90deg,#f59e0b,#f97316)}
+.pathway-card.html::before{background:linear-gradient(90deg,#3b82f6,#8b5cf6)}
+.pathway-card.css::before{background:linear-gradient(90deg,#ec4899,#f43f5e)}
+.pathway-card.js::before{background:linear-gradient(90deg,#10b981,#06b6d4)}
+.pc-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.55rem;margin-bottom:16px;flex-shrink:0;transition:var(--t)}
+.pathway-card:hover .pc-icon{transform:scale(1.08) rotate(-4deg)}
+.pc-icon.scratch{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.22)}
+.pc-icon.html{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2)}
+.pc-icon.css{background:rgba(236,72,153,.1);border:1px solid rgba(236,72,153,.2)}
+.pc-icon.js{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2)}
+.pc-age{display:inline-flex;align-items:center;gap:4px;font-size:.64rem;font-weight:800;letter-spacing:.6px;padding:3px 9px;border-radius:var(--r-pill);margin-bottom:10px}
+.pc-age.scratch{background:rgba(245,158,11,.1);color:#d97706}
+.pc-age.html{background:rgba(59,130,246,.1);color:#2563eb}
+.pc-age.css{background:rgba(236,72,153,.1);color:#db2777}
+.pc-age.js{background:rgba(16,185,129,.1);color:#059669}
+body.dark .pc-age.scratch{background:rgba(245,158,11,.15);color:#fbbf24}
+body.dark .pc-age.html{background:rgba(59,130,246,.15);color:#93c5fd}
+body.dark .pc-age.css{background:rgba(236,72,153,.15);color:#f9a8d4}
+body.dark .pc-age.js{background:rgba(16,185,129,.15);color:#6ee7b7}
+.pc-title{font-size:1.05rem;font-weight:700;margin-bottom:6px;font-family:'Fraunces',serif;color:var(--ink)}
+body.dark .pc-title{color:rgba(255,255,255,.9)}
+.pc-desc{font-size:.8rem;color:var(--slate);line-height:1.62;flex:1;margin-bottom:14px}
+body.dark .pc-desc{color:rgba(255,255,255,.48)}
+.pc-lessons{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--slate-l);font-weight:600;margin-bottom:16px}
+.pc-lessons i{font-size:.68rem}
+.pc-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:var(--r-pill);font-size:.77rem;font-weight:700;transition:var(--t);text-decoration:none;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;margin-top:auto}
+.pc-btn.scratch{background:rgba(245,158,11,.12);color:#d97706;border:1.5px solid rgba(245,158,11,.25)}
+.pc-btn.scratch:hover{background:linear-gradient(135deg,#f59e0b,#f97316);color:#fff;border-color:transparent;box-shadow:0 8px 22px rgba(245,158,11,.35)}
+.pc-btn.html{background:rgba(59,130,246,.1);color:#2563eb;border:1.5px solid rgba(59,130,246,.2)}
+.pc-btn.html:hover{background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;border-color:transparent;box-shadow:var(--sh-blue)}
+.pc-btn.css{background:rgba(236,72,153,.1);color:#db2777;border:1.5px solid rgba(236,72,153,.2)}
+.pc-btn.css:hover{background:linear-gradient(135deg,#ec4899,#f43f5e);color:#fff;border-color:transparent;box-shadow:0 8px 22px rgba(236,72,153,.35)}
+.pc-btn.js{background:rgba(16,185,129,.1);color:#059669;border:1.5px solid rgba(16,185,129,.2)}
+.pc-btn.js:hover{background:linear-gradient(135deg,#10b981,#06b6d4);color:#fff;border-color:transparent;box-shadow:0 8px 22px rgba(16,185,129,.3)}
+
+/* ════════════════════════════════
+   HS LABS (ISOLATED HIGH SCHOOL)
+════════════════════════════════ */
+.hs-section{background:linear-gradient(135deg,#0c1630,#101f40);position:relative;overflow:hidden;padding:72px 0}
+.hs-section::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:48px 48px}
+.hs-orb{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.14) 0%,transparent 70%);top:-100px;right:-60px;pointer-events:none}
+.hs-inner{position:relative;z-index:1;display:grid;grid-template-columns:1fr;gap:40px;align-items:center}
+.hs-kicker{display:inline-flex;align-items:center;gap:7px;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.28);border-radius:var(--r-pill);padding:5px 14px;font-size:.67rem;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:#c4b5fd;margin-bottom:14px}
+.hs-inner h2{font-size:clamp(1.7rem,4.5vw,2.9rem);font-weight:700;color:#fff;margin-bottom:12px}
+.hs-inner p{color:rgba(255,255,255,.58);font-size:clamp(.88rem,2.2vw,1rem);line-height:1.78;margin-bottom:28px;max-width:480px}
+.hs-features{display:flex;flex-direction:column;gap:12px;margin-bottom:32px}
+.hs-feat{display:flex;align-items:flex-start;gap:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:var(--r-lg);padding:14px 16px}
+.hs-feat-icon{width:36px;height:36px;flex-shrink:0;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.95rem}
+.hs-feat-icon.p{background:rgba(139,92,246,.2);color:#c4b5fd}
+.hs-feat-icon.b{background:rgba(26,79,214,.2);color:#93c5fd}
+.hs-feat-icon.g{background:rgba(16,185,129,.2);color:#6ee7b7}
+.hs-feat-title{font-size:.84rem;font-weight:700;color:rgba(255,255,255,.88);margin-bottom:2px}
+.hs-feat-desc{font-size:.75rem;color:rgba(255,255,255,.45);line-height:1.5}
+
+/* HS laptop visual */
+.hs-visual{display:flex;justify-content:center}
+.laptop-frame{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:var(--r-xl);overflow:hidden;width:100%;max-width:460px;backdrop-filter:blur(16px)}
+.laptop-bar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.laptop-dots{display:flex;gap:6px}
+.laptop-dot{width:10px;height:10px;border-radius:50%}
+.laptop-dot.r{background:#ff5f57}
+.laptop-dot.y{background:#febc2e}
+.laptop-dot.g{background:#28c840}
+.laptop-title{font-size:.7rem;color:rgba(255,255,255,.35);font-weight:600}
+.laptop-tab{font-size:.67rem;background:rgba(139,92,246,.2);color:#c4b5fd;padding:3px 9px;border-radius:4px;font-weight:700}
+.laptop-content{padding:20px}
+.lab-project{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:var(--r-lg);padding:14px 16px;margin-bottom:10px}
+.lab-project:last-child{margin-bottom:0}
+.lab-proj-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.lab-proj-name{font-size:.78rem;font-weight:700;color:rgba(255,255,255,.82)}
+.lab-proj-status{font-size:.62rem;font-weight:800;padding:2px 8px;border-radius:var(--r-pill)}
+.lab-proj-status.done{background:rgba(16,185,129,.2);color:#6ee7b7}
+.lab-proj-status.wip{background:rgba(245,158,11,.2);color:#fbbf24}
+.lab-proj-status.new{background:rgba(139,92,246,.2);color:#c4b5fd}
+.lab-proj-bar{height:4px;background:rgba(255,255,255,.08);border-radius:2px;margin-bottom:5px}
+.lab-proj-fill{height:100%;border-radius:2px}
+.lab-proj-fill.done{background:linear-gradient(90deg,#10b981,#06b6d4);width:100%}
+.lab-proj-fill.wip{background:linear-gradient(90deg,#f59e0b,#f97316);width:60%}
+.lab-proj-fill.new{background:linear-gradient(90deg,#8b5cf6,#ec4899);width:15%}
+.lab-proj-meta{font-size:.67rem;color:rgba(255,255,255,.35);display:flex;justify-content:space-between}
+
+/* ════════════════════════════════
+   WHY KIDS LOVE IT — BENEFITS
+════════════════════════════════ */
+.benefits-grid{display:grid;grid-template-columns:1fr;gap:20px}
+@media(min-width:640px){.benefits-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.benefits-grid{grid-template-columns:repeat(3,1fr)}}
+
+.benefit-card{background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);padding:28px 24px;transition:var(--t);box-shadow:var(--sh-sm)}
+body.dark .benefit-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.benefit-card:hover{transform:translateY(-5px);box-shadow:var(--sh-lg)}
+.bc-ico{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:1.55rem;margin-bottom:16px;transition:var(--t)}
+.benefit-card:hover .bc-ico{transform:scale(1.1) rotate(-5deg)}
+.bc-ico.a{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2)}
+.bc-ico.b{background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.2)}
+.bc-ico.c{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2)}
+.bc-ico.d{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2)}
+.bc-ico.e{background:rgba(236,72,153,.1);border:1px solid rgba(236,72,153,.2)}
+.bc-ico.f{background:rgba(26,79,214,.1);border:1px solid rgba(26,79,214,.2)}
+.bc-title{font-size:.96rem;font-weight:700;margin-bottom:6px;font-family:'Fraunces',serif;color:var(--ink)}
+body.dark .bc-title{color:rgba(255,255,255,.9)}
+.bc-desc{font-size:.8rem;color:var(--slate);line-height:1.66}
+body.dark .bc-desc{color:rgba(255,255,255,.48)}
+
+/* ════════════════════════════════
+   LEARNING STEPS / HOW IT WORKS
+════════════════════════════════ */
+.steps-wrap{position:relative;display:grid;grid-template-columns:1fr;gap:20px}
+@media(min-width:768px){.steps-wrap{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:768px){
+  .steps-wrap::before{content:'';position:absolute;top:36px;left:calc(12.5% + 20px);right:calc(12.5% + 20px);height:2px;background:linear-gradient(90deg,var(--blue),var(--kids-purple),var(--kids-pink));opacity:.3;border-radius:2px}
+}
+.step-item{display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 8px;position:relative}
+.step-num{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:1.5rem;font-weight:700;color:#fff;margin-bottom:16px;position:relative;flex-shrink:0}
+.step-num.s1{background:linear-gradient(135deg,#f59e0b,#f97316);box-shadow:0 8px 24px rgba(245,158,11,.35)}
+.step-num.s2{background:linear-gradient(135deg,#3b82f6,#8b5cf6);box-shadow:var(--sh-blue)}
+.step-num.s3{background:linear-gradient(135deg,#ec4899,#f43f5e);box-shadow:0 8px 24px rgba(236,72,153,.35)}
+.step-num.s4{background:linear-gradient(135deg,#10b981,#06b6d4);box-shadow:0 8px 24px rgba(16,185,129,.3)}
+.step-title{font-size:.95rem;font-weight:700;margin-bottom:6px;font-family:'Fraunces',serif;color:var(--ink)}
+body.dark .step-title{color:rgba(255,255,255,.9)}
+.step-desc{font-size:.78rem;color:var(--slate);line-height:1.6}
+body.dark .step-desc{color:rgba(255,255,255,.48)}
+
+/* ════════════════════════════════
+   PARENT TESTIMONIALS
+════════════════════════════════ */
+.testimonials-grid{display:grid;grid-template-columns:1fr;gap:18px}
+@media(min-width:640px){.testimonials-grid{grid-template-columns:repeat(3,1fr)}}
+.t-card{background:#fff;border-radius:var(--r-xl);padding:26px 22px;border:1px solid var(--mist);transition:var(--t);display:flex;flex-direction:column;box-shadow:var(--sh-sm);position:relative;overflow:hidden}
+body.dark .t-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.t-card::before{content:'"';position:absolute;top:-8px;left:16px;font-family:'Fraunces',serif;font-size:7rem;color:var(--blue-pale);line-height:1;pointer-events:none}
+.t-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg)}
+.t-stars{color:var(--yellow);letter-spacing:1px;margin-bottom:10px;font-size:.9rem}
+.t-quote{font-style:italic;color:var(--slate);line-height:1.78;font-size:.83rem;flex-grow:1;margin-bottom:16px;position:relative;z-index:1}
+body.dark .t-quote{color:rgba(255,255,255,.5)}
+.t-author{display:flex;align-items:center;gap:11px}
+.t-ava{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.t-name{font-weight:700;font-size:.84rem;font-family:'Fraunces',serif;color:var(--ink)}
+body.dark .t-name{color:rgba(255,255,255,.88)}
+.t-role{font-size:.69rem;color:var(--slate)}
+
+/* ════════════════════════════════
+   FAQ
+════════════════════════════════ */
+.faq-grid{display:grid;grid-template-columns:1fr;gap:9px}
+@media(min-width:640px){.faq-grid{grid-template-columns:1fr 1fr}}
+.faq-item{background:#fff;border-radius:var(--r-lg);border:1px solid var(--mist);overflow:hidden;transition:border-color .22s;box-shadow:var(--sh-sm)}
+body.dark .faq-item{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.faq-item:hover{border-color:var(--kids-purple)}
+.faq-item.open{border-color:var(--kids-purple)}
+.faq-q{padding:15px 18px;font-weight:700;font-size:.84rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-family:'Plus Jakarta Sans',sans-serif;min-height:52px;gap:12px;color:var(--ink)}
+body.dark .faq-q{color:rgba(255,255,255,.85)}
+.faq-icon{width:20px;height:20px;flex-shrink:0;background:rgba(139,92,246,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--kids-purple);font-size:.62rem;transition:transform .24s,background .22s}
+.faq-item.open .faq-icon{transform:rotate(45deg);background:var(--kids-purple);color:#fff}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;color:var(--slate);font-size:.81rem;line-height:1.76}
+body.dark .faq-a{color:rgba(255,255,255,.48)}
+.faq-item.open .faq-a{max-height:200px;padding:0 18px 14px}
+
+/* ════════════════════════════════
+   ENROL CTA BAND
+════════════════════════════════ */
+.enrol-band{background:var(--g-kids);position:relative;overflow:hidden;padding:72px 0}
+.enrol-band::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:36px 36px}
+.enrol-band::after{content:'';position:absolute;top:-80px;right:-60px;width:360px;height:360px;border-radius:50%;background:rgba(255,255,255,.08);pointer-events:none}
+.enrol-inner{position:relative;z-index:1;text-align:center}
+.enrol-band h2{font-size:clamp(1.8rem,5vw,3rem);font-weight:700;color:#fff;margin-bottom:12px}
+.enrol-band h2 em{font-style:italic;color:#fde68a}
+.enrol-band p{color:rgba(255,255,255,.68);font-size:clamp(.9rem,2vw,1.06rem);line-height:1.76;max-width:480px;margin:0 auto 30px}
+.enrol-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-enrol-white{background:#fff;color:var(--blue);font-weight:800;border-radius:var(--r-pill);padding:14px 30px;font-size:.92rem;font-family:'Plus Jakarta Sans',sans-serif;display:inline-flex;align-items:center;gap:8px;transition:var(--t);box-shadow:0 6px 22px rgba(0,0,0,.18);cursor:pointer;border:none;text-decoration:none}
+.btn-enrol-white:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.25)}
+.btn-enrol-ghost{background:rgba(255,255,255,.12);color:#fff;font-weight:700;border-radius:var(--r-pill);padding:13px 26px;font-size:.9rem;font-family:'Plus Jakarta Sans',sans-serif;display:inline-flex;align-items:center;gap:7px;transition:var(--t);border:1.5px solid rgba(255,255,255,.3);backdrop-filter:blur(8px);text-decoration:none}
+.btn-enrol-ghost:hover{background:rgba(255,255,255,.2);transform:translateY(-2px)}
+.trust-badges{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;margin-top:28px}
+.trust-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:var(--r-pill);padding:5px 14px;font-size:.73rem;font-weight:700;color:rgba(255,255,255,.82)}
+
+/* ════════════════════════════════
+   NEWSLETTER
+════════════════════════════════ */
+.newsletter-section{background:linear-gradient(135deg,#edf1ff,#ecfdf5)}
+.newsletter-box{background:#fff;border-radius:var(--r-2xl);padding:36px 28px;border:1px solid var(--mist);box-shadow:var(--sh-md)}
+body.dark .newsletter-box{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.nl-icon{width:48px;height:48px;background:rgba(139,92,246,.1);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:1.35rem;color:var(--kids-purple);margin-bottom:13px}
+.nl-grid{display:grid;grid-template-columns:1fr;gap:26px}
+@media(min-width:992px){.nl-grid{grid-template-columns:1fr 1fr;align-items:center}}
+.nl-form{position:relative;display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.nl-form-inp{flex:1;min-width:0;padding:12px 16px 12px 42px;border:1.5px solid var(--mist);border-radius:var(--r-pill);font-size:15px;font-family:'Plus Jakarta Sans',sans-serif;transition:var(--t);background:#fff;color:var(--ink);outline:none}
+body.dark .nl-form-inp{background:var(--ink-3);border-color:rgba(255,255,255,.1);color:#fff}
+.nl-form-inp:focus{border-color:var(--kids-purple);box-shadow:0 0 0 3px rgba(139,92,246,.1)}
+.nl-form .nl-ico{position:absolute;left:15px;color:var(--slate-l);font-size:.86rem;pointer-events:none;top:50%;transform:translateY(-50%)}
+.nl-submit{background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;border:none;padding:12px 20px;border-radius:var(--r-pill);font-weight:700;font-size:.82rem;font-family:'Plus Jakarta Sans',sans-serif;transition:var(--t);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.nl-submit:hover{background:linear-gradient(135deg,#ec4899,#db2777)}
+@media(min-width:992px){
+  .nl-form{flex-wrap:nowrap}
+  .nl-form-inp{padding:12px 150px 12px 42px}
+  .nl-submit{position:absolute;right:5px;top:50%;transform:translateY(-50%)}
+}
+
+/* ════════════════════════════════
+   FOOTER
+════════════════════════════════ */
+@keyframes bar-shift2{0%{background-position:0%}100%{background-position:200%}}
+footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-top:1px solid rgba(255,255,255,.05)}
+.footer-accent-bar{height:2px;background:var(--g-kids);background-size:200% 100%;animation:bar-shift2 6s linear infinite}
+.footer-cta-strip{background:linear-gradient(135deg,#0c1630,#101f40);border-bottom:1px solid rgba(255,255,255,.05);padding:30px 0}
+.footer-cta-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.footer-cta-text h4{font-family:'Fraunces',serif;font-size:clamp(.98rem,2.8vw,1.35rem);font-weight:700;color:#fff;margin-bottom:3px;line-height:1.2}
+.footer-cta-text p{font-size:.76rem;color:rgba(255,255,255,.36);margin:0}
+.footer-cta-btns{display:flex;gap:9px;flex-wrap:wrap;flex-shrink:0}
+.footer-body{padding:52px 0 36px}
+.footer-cols{display:grid;grid-template-columns:2fr 1fr 1fr 1.6fr;gap:34px 28px}
+.footer-brand-name{font-family:'Fraunces',serif;font-size:1.14rem;font-weight:700;color:#fff;letter-spacing:-.04em;display:flex;align-items:center;gap:7px;margin-bottom:9px}
+.footer-brand-name em{font-style:italic;color:#e8620a}
+.footer-bmark{width:27px;height:27px;background:var(--g-blue);border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:.8rem;color:#fff;flex-shrink:0}
+.footer-tagline{font-size:.77rem;color:rgba(255,255,255,.34);line-height:1.74;max-width:270px;margin-bottom:16px}
+.footer-socials{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.fsoc{width:32px;height:32px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);color:rgba(255,255,255,.48);font-size:.78rem;transition:all .2s;text-decoration:none}
+.fsoc:hover{transform:translateY(-2px)}
+.fsoc.tw:hover{background:#1da1f2;color:#fff}
+.fsoc.li:hover{background:#0077b5;color:#fff}
+.fsoc.gh:hover{background:#fff;color:#111}
+.fsoc.ig:hover{background:linear-gradient(135deg,#fd5949,#d6249f,#285aeb);color:#fff}
+.fsoc.yt:hover{background:#ff0000;color:#fff}
+.fsoc.wa:hover{background:#25D366;color:#fff}
+.footer-col-title{font-size:.62rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,.26);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.footer-col-title::before{content:'';width:10px;height:1.5px;background:var(--kids-purple);border-radius:2px;flex-shrink:0}
+.footer-links{list-style:none;padding:0;margin:0}
+.footer-links li{margin-bottom:9px}
+.footer-links a{color:rgba(255,255,255,.4);text-decoration:none;font-size:.77rem;transition:color .18s,padding-left .18s;display:inline-flex;align-items:center;gap:5px}
+.footer-links a:hover{color:#fff;padding-left:3px}
+.footer-links a i{width:12px;font-size:.66rem;opacity:.5}
+.footer-links a.acad{color:#5eead4;font-weight:600}
+.fci{display:flex;align-items:flex-start;gap:9px;margin-bottom:12px}
+.fci-ic{width:28px;height:28px;flex-shrink:0;background:rgba(139,92,246,.12);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#c4b5fd;font-size:.68rem;margin-top:1px}
+.fci-label{font-size:.58rem;color:rgba(255,255,255,.22);font-weight:800;letter-spacing:.7px;text-transform:uppercase}
+.fci-val{font-size:.77rem;color:rgba(255,255,255,.58)}
+.fci-val a{color:rgba(255,255,255,.58);text-decoration:none;transition:color .18s}
+.fci-val a:hover{color:var(--orange-l)}
+.footer-hours{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05);border-radius:7px;padding:6px 10px;font-size:.69rem;color:rgba(255,255,255,.36);margin-top:3px}
+.hdot{width:6px;height:6px;background:#34d399;border-radius:50%;animation:dot-p 2.4s ease-in-out infinite;flex-shrink:0}
+.footer-divider{border:none;border-top:1px solid rgba(255,255,255,.05)}
+.footer-bottom{padding:16px 0}
+.footer-bottom-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.footer-copy{font-size:.7rem;color:rgba(255,255,255,.2)}
+.footer-legal{display:flex;gap:18px;flex-wrap:wrap}
+.footer-legal a{font-size:.69rem;color:rgba(255,255,255,.24);text-decoration:none;transition:color .18s}
+.footer-legal a:hover{color:rgba(255,255,255,.6)}
+.footer-made{font-size:.69rem;color:rgba(255,255,255,.18);display:flex;align-items:center;gap:3px}
+.footer-made span{color:var(--orange-l)}
+
+/* ── RESPONSIVE ── */
+@media(min-width:992px){
+  :root{--nav-h:72px}
+  .container{padding:0 32px}
+  .nav-inner{padding:0 32px}
+  .nav-links{display:flex}
+  .nav-cta{display:flex}
+  .ham-btn{display:none!important}
+  .mob-quick{display:none!important}
+  .hero-inner{grid-template-columns:1fr 1fr;gap:56px;padding:80px 0 88px}
+  .hero-stats{grid-template-columns:repeat(2,1fr)}
+  .hs-inner{grid-template-columns:1fr 1fr;gap:56px}
+}
+@media(max-width:539px){
+  .footer-cols{grid-template-columns:1fr 1fr;gap:22px 14px}
+  .footer-col-brand{grid-column:1/-1}
+  .footer-col-contact{grid-column:1/-1}
+  .footer-cta-inner{flex-direction:column;align-items:flex-start}
+  .footer-cta-btns{width:100%}
+  .footer-cta-btns a{flex:1;justify-content:center}
+  .footer-bottom-inner{flex-direction:column;align-items:center;text-align:center;gap:8px}
+  .footer-legal{justify-content:center;gap:10px}
+  .enrol-band{padding:52px 0}
+}
+@media(max-width:1023px){
+  .footer-cols{grid-template-columns:1fr 1fr;gap:26px 22px}
+  .footer-col-brand{grid-column:1/-1}
+}
+@media print{.navbar,#wa-float,#theme-toggle,#back-to-top,#scroll-progress,#cookie-bar{display:none!important}}
+</style>
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+
+<button id="theme-toggle" title="Toggle dark mode" aria-label="Toggle dark mode">
+  <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+<button id="back-to-top" aria-label="Back to top">
+  <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- WhatsApp float -->
+<a id="wa-float" href="https://wa.me/254769329340?text=Hello%20NeurowexTech!%20I'm%20interested%20in%20the%20Kids%20Coding%20Academy." target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+  <span class="wa-ring" aria-hidden="true"></span>
+  <span class="wa-ring" aria-hidden="true"></span>
+  <div class="wa-pill">
+    <div class="wa-ico"><i class="fab fa-whatsapp"></i><span class="wa-dot"></span></div>
+    <div class="wa-text">
+      <span class="wa-label">Enrol your child today</span>
+      <span class="wa-cta">Chat with us</span>
+    </div>
+    <i class="fas fa-arrow-right wa-arr"></i>
+  </div>
+</a>
+
+<div id="toast" role="status" aria-live="polite">
+  <i class="fas fa-check-circle" style="color:#34d399"></i>
+  <span id="toast-msg">Done!</span>
+</div>
+<div id="cookie-bar">
+  <p>🍪 We use cookies to improve your experience.</p>
+  <button id="cookie-accept">Accept</button>
+</div>
+
+<!-- Mobile panel -->
+<div class="mob-overlay" id="mobOverlay" aria-hidden="true"></div>
+<div class="mob-panel" id="mobPanel" role="dialog" aria-modal="true" aria-label="Navigation menu">
+  <div class="mob-head">
+    <a href="/" class="nav-brand" style="font-size:1.1rem;" aria-label="NeurowexTech">
+      <span class="brand-mark">N</span>Neurowex<em>Tech</em>
+    </a>
+    <button class="mob-close" id="mobClose" aria-label="Close menu"><i class="fas fa-times"></i></button>
+  </div>
+  <nav class="mob-body" aria-label="Mobile navigation">
+    <a href="/"           class="mob-link"><i class="fas fa-home"></i> Home</a>
+    <a href="/learn"      class="mob-link"><i class="fas fa-graduation-cap"></i> Academy</a>
+    <a href="/kids-coding" class="mob-link cur"><i class="fas fa-child"></i> Kids Academy</a>
+    <a href="/#services"  class="mob-link"><i class="fas fa-th-large"></i> Services</a>
+    <a href="/#portfolio" class="mob-link"><i class="fas fa-briefcase"></i> Portfolio</a>
+    <a href="/#pricing"   class="mob-link"><i class="fas fa-tags"></i> Pricing</a>
+    <a href="/contact"    class="mob-link"><i class="fas fa-envelope"></i> Contact</a>
+    <hr class="mob-hr">
+    {{#if isAuthenticated}}
+    <a href="/my-learning"    class="mob-link"><i class="fas fa-book-open"></i> My Learning</a>
+    <a href="/user_dashboard" class="mob-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <a href="/logout"         class="mob-link" style="color:var(--rose)"><i class="fas fa-sign-out-alt" style="color:var(--rose)"></i> Sign Out</a>
+    {{else}}
+    <a href="/login"   class="mob-link"><i class="fas fa-sign-in-alt"></i> Log In</a>
+    <a href="/sign_up" class="mob-link"><i class="fas fa-user-plus"></i> Sign Up</a>
+    {{/if}}
+  </nav>
+  <div class="mob-footer">
+    <a href="#enrol" class="btn btn-purple" style="justify-content:center;border-radius:var(--r-pill)">Enrol Your Child <i class="fas fa-arrow-right"></i></a>
+    {{#if isAuthenticated}}
+    <a href="/my-learning" class="btn btn-outline" style="justify-content:center;">My Learning</a>
+    {{else}}
+    <a href="/sign_up" class="btn btn-outline" style="justify-content:center;">Create Free Account</a>
+    {{/if}}
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     NAVBAR
+════════════════════════════════ -->
+<nav class="navbar" id="mainNav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand" aria-label="NeurowexTech">
+      <span class="brand-mark">N</span>Neurowex<em>Tech</em>
+    </a>
+    <ul class="nav-links" role="list">
+      <li class="nl-item"><a href="/"          class="nl-a">Home</a></li>
+      <li class="nl-item"><a href="/learn"      class="nl-a">Academy</a></li>
+      <li class="nl-item"><a href="/kids-coding" class="nl-a active"><i class="fas fa-child" style="font-size:.75rem;color:var(--kids-purple)"></i> Kids Academy</a></li>
+      <li class="nl-item">
+        <a href="/#services" class="nl-a">Services <i class="fas fa-chevron-down chev"></i></a>
+        <div class="mega-drop" role="menu">
+          <div class="mega-grid">
+            <div>
+              <span class="mega-col-label">Development</span>
+              <a class="mega-link" href="/contact?service=Web+Development"><i class="fas fa-laptop-code"></i> Web Dev</a>
+              <a class="mega-link" href="/contact?service=Mobile+Apps"><i class="fas fa-mobile-alt"></i> Mobile Apps</a>
+              <a class="mega-link" href="/contact?service=E-commerce"><i class="fas fa-shopping-cart"></i> E-commerce</a>
+              <a class="mega-link" href="/contact?service=MVP+Development"><i class="fas fa-rocket"></i> MVP Dev</a>
+            </div>
+            <div>
+              <span class="mega-col-label">Cloud & Security</span>
+              <a class="mega-link" href="/contact?service=Cloud"><i class="fas fa-cloud-upload-alt"></i> Cloud</a>
+              <a class="mega-link" href="/contact?service=Cyber+Security"><i class="fas fa-shield-alt"></i> Cyber Security</a>
+              <a class="mega-link" href="/contact?service=AI+Integration"><i class="fas fa-robot"></i> AI Integration</a>
+              <a class="mega-link" href="/#graphic"><i class="fas fa-palette"></i> Graphic Design</a>
+            </div>
+            <div>
+              <span class="mega-col-label">Data & Support</span>
+              <a class="mega-link" href="/contact?service=Analytics"><i class="fas fa-chart-line"></i> Analytics</a>
+              <a class="mega-link" href="/contact?service=IT+Consulting"><i class="fas fa-headset"></i> IT Consulting</a>
+              <a class="mega-link" href="/contact?service=Database"><i class="fas fa-database"></i> Database</a>
+              <a class="mega-link" href="/contact?service=SEO"><i class="fas fa-search"></i> SEO</a>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="nl-item"><a href="/#pricing" class="nl-a">Pricing</a></li>
+      <li class="nl-item"><a href="/contact"  class="nl-a">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <button id="theme-toggle-nav" style="width:36px;height:36px;border-radius:50%;background:var(--blue-pale);border:1.5px solid var(--mist);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--t);color:var(--blue);" aria-label="Toggle dark mode">
+        <i class="fas fa-moon" style="font-size:.82rem"></i>
+      </button>
+      {{#if isAuthenticated}}
+      <div class="user-drop">
+        <button class="user-btn"><i class="fas fa-user"></i> {{userName}} <i class="fas fa-chevron-down chev-u"></i></button>
+        <div class="user-menu" role="menu">
+          <a href="/my-learning"    role="menuitem"><i class="fas fa-book-open"></i> My Learning</a>
+          <a href="/user_dashboard" role="menuitem"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+          <hr class="user-menu-divider">
+          <a href="/logout" role="menuitem" style="color:var(--rose)"><i class="fas fa-sign-out-alt" style="color:var(--rose)"></i> Sign Out</a>
+        </div>
+      </div>
+      {{else}}
+      <a href="/login"   class="btn-nav-signin">Log in</a>
+      <a href="/sign_up" class="btn-nav-signup">Sign up free <i class="fas fa-arrow-right" style="font-size:.7rem"></i></a>
+      {{/if}}
+    </div>
+    <div class="mob-quick" id="mobQuick">
+      <button class="mob-quick-btn" id="mobThemeBtn" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+      <button class="ham-btn" id="hamBtn" aria-label="Open menu" aria-expanded="false">
+        <span class="ham-line"></span><span class="ham-line"></span><span class="ham-line"></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════
+     HERO
+════════════════════════════════ -->
+<section class="hero-kids">
+  <div class="orb-kids-1" aria-hidden="true"></div>
+  <div class="orb-kids-2" aria-hidden="true"></div>
+  <div class="orb-kids-3" aria-hidden="true"></div>
+  <!-- floating emoji -->
+  <div class="hero-deco deco-1" aria-hidden="true">🚀</div>
+  <div class="hero-deco deco-2" aria-hidden="true">⭐</div>
+  <div class="hero-deco deco-3" aria-hidden="true">💻</div>
+  <div class="hero-deco deco-4" aria-hidden="true">🎮</div>
+  <div class="hero-deco deco-5" aria-hidden="true">🧩</div>
+
+  <div class="container">
+    <div class="hero-inner">
+      <!-- LEFT -->
+      <div>
+        <div class="hero-badge"><span class="dot"></span> NeurowexTech Kids Academy · {{currentYear}}</div>
+        <h1>Where <em>Young Coders</em><br>Build Real Things</h1>
+        <p>Structured coding pathways for kids and teens aged 8–17. From Scratch logic blocks to HTML, CSS, and JavaScript — with dedicated, isolated high school labs.</p>
+
+        <div class="age-strip">
+          <span class="age-chip g"><i class="fas fa-seedling"></i> Ages 8–10 · Scratch</span>
+          <span class="age-chip p"><i class="fas fa-code"></i> Ages 11–13 · HTML & CSS</span>
+          <span class="age-chip b"><i class="fas fa-laptop-code"></i> Ages 14–17 · JavaScript</span>
+          <span class="age-chip o"><i class="fas fa-flask"></i> HS Isolated Labs</span>
+        </div>
+
+        <div class="hero-actions">
+          <a href="#enrol" class="btn btn-purple btn-lg"><i class="fas fa-rocket"></i> Enrol Your Child</a>
+          <a href="#pathways" class="btn btn-ghost btn-lg"><i class="fas fa-map"></i> View Pathways</a>
+        </div>
+
+        <div class="hero-stats">
+          <div class="h-stat">
+            <div class="h-stat-num" id="statKids">120+</div>
+            <div class="h-stat-label">Kids Enrolled</div>
+          </div>
+          <div class="h-stat">
+            <div class="h-stat-num">4</div>
+            <div class="h-stat-label">Coding Tracks</div>
+          </div>
+          <div class="h-stat">
+            <div class="h-stat-num">8–17</div>
+            <div class="h-stat-label">Age Range</div>
+          </div>
+          <div class="h-stat">
+            <div class="h-stat-num">100%</div>
+            <div class="h-stat-label">Project-Based</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT — code window + progress -->
+      <div class="hero-visual">
+        <div class="code-window" role="img" aria-label="Sample kids code preview">
+          <div class="code-win-bar">
+            <span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span>
+            <span class="code-title">my-first-website.html</span>
+          </div>
+          <div class="code-body">
+            <div class="code-line"><span class="code-ln">1</span><span class="code-c"><span class="tag">&lt;!</span><span class="kw">DOCTYPE</span> <span class="attr">html</span><span class="tag">&gt;</span></span></div>
+            <div class="code-line"><span class="code-ln">2</span><span class="code-c"><span class="tag">&lt;html</span> <span class="attr">lang</span>=<span class="val">"en"</span><span class="tag">&gt;</span></span></div>
+            <div class="code-line"><span class="code-ln">3</span><span class="code-c"><span class="tag">&lt;head&gt;</span></span></div>
+            <div class="code-line"><span class="code-ln">4</span><span class="code-c">&nbsp;&nbsp;<span class="tag">&lt;title&gt;</span><span class="str">My Awesome Site</span><span class="tag">&lt;/title&gt;</span></span></div>
+            <div class="code-line"><span class="code-ln">5</span><span class="code-c"><span class="tag">&lt;/head&gt;</span></span></div>
+            <div class="code-line"><span class="code-ln">6</span><span class="code-c"><span class="tag">&lt;body&gt;</span></span></div>
+            <div class="code-line"><span class="code-ln">7</span><span class="code-c">&nbsp;&nbsp;<span class="tag">&lt;h1&gt;</span><span class="str">Hello World! 🌍</span><span class="tag">&lt;/h1&gt;</span></span></div>
+            <div class="code-line"><span class="code-ln">8</span><span class="code-c">&nbsp;&nbsp;<span class="tag">&lt;p&gt;</span><span class="str">I built this myself!</span><span class="tag">&lt;/p&gt;</span></span></div>
+            <div class="code-line"><span class="code-ln">9</span><span class="code-c"><span class="tag">&lt;/body&gt;</span></span></div>
+            <div class="code-line"><span class="code-ln">10</span><span class="code-c cm"><!-- more code to come... --></span></div>
+          </div>
+        </div>
+
+        <div class="progress-cards">
+          <div class="prog-card">
+            <div class="prog-label"><i class="fas fa-puzzle-piece"></i> Scratch</div>
+            <div class="prog-bar"><div class="prog-fill scratch"></div></div>
+            <div class="prog-pct">90% complete</div>
+          </div>
+          <div class="prog-card">
+            <div class="prog-label"><i class="fab fa-html5"></i> HTML</div>
+            <div class="prog-bar"><div class="prog-fill html"></div></div>
+            <div class="prog-pct">72% complete</div>
+          </div>
+          <div class="prog-card">
+            <div class="prog-label"><i class="fab fa-css3-alt"></i> CSS</div>
+            <div class="prog-bar"><div class="prog-fill css"></div></div>
+            <div class="prog-pct">60% complete</div>
+          </div>
+          <div class="prog-card">
+            <div class="prog-label"><i class="fab fa-js"></i> JavaScript</div>
+            <div class="prog-bar"><div class="prog-fill js"></div></div>
+            <div class="prog-pct">Just started!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap" aria-hidden="true">
+  <div class="marquee-track">
+    <span class="marquee-item">🧩 Scratch Logic Blocks <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🌐 HTML &amp; CSS <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">⚡ JavaScript Fundamentals <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🏫 Isolated High School Labs <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🎓 Completion Certificates <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">👩‍🏫 Expert Instructors <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">📱 Mobile-Friendly <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🇰🇪 Made for Kenya <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🧩 Scratch Logic Blocks <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🌐 HTML &amp; CSS <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">⚡ JavaScript Fundamentals <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🏫 Isolated High School Labs <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🎓 Completion Certificates <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">👩‍🏫 Expert Instructors <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">📱 Mobile-Friendly <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🇰🇪 Made for Kenya <span class="marquee-sep">·</span></span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     CURRICULUM PATHWAYS
+════════════════════════════════ -->
+<section class="section-py" id="pathways" style="background:var(--ghost)">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:52px">
+      <div class="section-kicker purple">Curriculum Tracks</div>
+      <h2 class="section-title">4 <span class="g-kids">Pathways</span> to Tech Fluency</h2>
+      <p class="section-body" style="margin:0 auto">Each pathway is age-appropriate, project-based, and designed to build genuine confidence. Kids graduate with real work they can show off.</p>
+    </div>
+
+    <div class="pathway-grid">
+
+      <!-- Scratch -->
+      <div class="pathway-card scratch" style="animation:fade-up .5s ease .1s both">
+        <div class="pc-icon scratch">🧩</div>
+        <span class="pc-age scratch"><i class="fas fa-child"></i> Ages 8–10</span>
+        <div class="pc-title">Scratch &amp; Logic Blocks</div>
+        <p class="pc-desc">Learn computational thinking through visual drag-and-drop coding. Build interactive stories, games, and animations — no typing required.</p>
+        <div class="pc-lessons"><i class="fas fa-play-circle"></i> 16 lessons · 8 projects · Self-paced</div>
+        <a href="#enrol" class="pc-btn scratch"><i class="fas fa-puzzle-piece"></i> Start Scratching</a>
+      </div>
+
+      <!-- HTML -->
+      <div class="pathway-card html" style="animation:fade-up .5s ease .2s both">
+        <div class="pc-icon html">🌐</div>
+        <span class="pc-age html"><i class="fas fa-child"></i> Ages 11–13</span>
+        <div class="pc-title">HTML Foundations</div>
+        <p class="pc-desc">Create real web pages from scratch. Learn HTML structure, semantic tags, headings, links, images, and publish a personal webpage by end of track.</p>
+        <div class="pc-lessons"><i class="fas fa-play-circle"></i> 20 lessons · 5 projects · Self-paced</div>
+        <a href="#enrol" class="pc-btn html"><i class="fab fa-html5"></i> Start Building</a>
+      </div>
+
+      <!-- CSS -->
+      <div class="pathway-card css" style="animation:fade-up .5s ease .3s both">
+        <div class="pc-icon css">🎨</div>
+        <span class="pc-age css"><i class="fas fa-child"></i> Ages 11–14</span>
+        <div class="pc-title">CSS Styling &amp; Design</div>
+        <p class="pc-desc">Make the web beautiful. Master colours, fonts, flexbox layouts, animations, and responsive design. Style your HTML into a professional-looking website.</p>
+        <div class="pc-lessons"><i class="fas fa-play-circle"></i> 18 lessons · 4 projects · Self-paced</div>
+        <a href="#enrol" class="pc-btn css"><i class="fab fa-css3-alt"></i> Start Designing</a>
+      </div>
+
+      <!-- JavaScript -->
+      <div class="pathway-card js" style="animation:fade-up .5s ease .4s both">
+        <div class="pc-icon js">⚡</div>
+        <span class="pc-age js"><i class="fas fa-graduation-cap"></i> Ages 14–17 · HS</span>
+        <div class="pc-title">JavaScript &amp; Logic</div>
+        <p class="pc-desc">Bring websites to life with interactivity. Variables, functions, loops, DOM manipulation — high school students build real dynamic apps in isolated labs.</p>
+        <div class="pc-lessons"><i class="fas fa-play-circle"></i> 24 lessons · 6 projects · HS Labs</div>
+        <a href="#enrol" class="pc-btn js"><i class="fab fa-js"></i> Start Coding</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     HIGH SCHOOL LABS
+════════════════════════════════ -->
+<section class="hs-section" id="hs-labs">
+  <div class="hs-orb" aria-hidden="true"></div>
+  <div class="container">
+    <div class="hs-inner">
+      <div>
+        <div class="hs-kicker"><i class="fas fa-flask"></i> High School Labs</div>
+        <h2>Isolated Labs<br><em style="font-style:italic;background:var(--g-kids);-webkit-background-clip:text;background-clip:text;color:transparent">Built for Teens</em></h2>
+        <p>Our high school environment is completely separate from the junior tracks — more advanced tooling, real-world project briefs, and a focused peer group of 14–17 year olds.</p>
+
+        <div class="hs-features">
+          <div class="hs-feat">
+            <div class="hs-feat-icon p"><i class="fas fa-lock"></i></div>
+            <div>
+              <div class="hs-feat-title">Isolated Environment</div>
+              <div class="hs-feat-desc">HS students get their own lab — separate logins, codebases, and project boards from the junior cohort.</div>
+            </div>
+          </div>
+          <div class="hs-feat">
+            <div class="hs-feat-icon b"><i class="fas fa-briefcase"></i></div>
+            <div>
+              <div class="hs-feat-title">Real-World Briefs</div>
+              <div class="hs-feat-desc">Projects mirror actual client work: landing pages, interactive quizzes, basic dashboards — portfolio-ready output.</div>
+            </div>
+          </div>
+          <div class="hs-feat">
+            <div class="hs-feat-icon g"><i class="fas fa-users"></i></div>
+            <div>
+              <div class="hs-feat-title">Peer Cohorts</div>
+              <div class="hs-feat-desc">Collaborate with age-matched peers, code review sessions, and team project sprints every term.</div>
+            </div>
+          </div>
+        </div>
+
+        <a href="#enrol" class="btn btn-purple btn-lg"><i class="fas fa-flask"></i> Join HS Labs</a>
+      </div>
+
+      <!-- Laptop visual -->
+      <div class="hs-visual">
+        <div class="laptop-frame">
+          <div class="laptop-bar">
+            <div class="laptop-dots">
+              <div class="laptop-dot r"></div>
+              <div class="laptop-dot y"></div>
+              <div class="laptop-dot g"></div>
+            </div>
+            <span class="laptop-title">HS Lab Portal — Term 2</span>
+            <span class="laptop-tab">🔒 HS Only</span>
+          </div>
+          <div class="laptop-content">
+
+            <div class="lab-project">
+              <div class="lab-proj-head">
+                <span class="lab-proj-name">🌐 Personal Portfolio Website</span>
+                <span class="lab-proj-status done">✓ Done</span>
+              </div>
+              <div class="lab-proj-bar"><div class="lab-proj-fill done"></div></div>
+              <div class="lab-proj-meta"><span>HTML · CSS · JS</span><span>18 / 18 lessons</span></div>
+            </div>
+
+            <div class="lab-project">
+              <div class="lab-proj-head">
+                <span class="lab-proj-name">🧮 Interactive Quiz App</span>
+                <span class="lab-proj-status wip">In Progress</span>
+              </div>
+              <div class="lab-proj-bar"><div class="lab-proj-fill wip"></div></div>
+              <div class="lab-proj-meta"><span>JavaScript · DOM</span><span>11 / 18 lessons</span></div>
+            </div>
+
+            <div class="lab-project">
+              <div class="lab-proj-head">
+                <span class="lab-proj-name">📊 Data Dashboard</span>
+                <span class="lab-proj-status new">Coming Up</span>
+              </div>
+              <div class="lab-proj-bar"><div class="lab-proj-fill new"></div></div>
+              <div class="lab-proj-meta"><span>JS · Charts · APIs</span><span>Starts next week</span></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     HOW IT WORKS
+════════════════════════════════ -->
+<section class="section-py lp-section alt">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:52px">
+      <div class="section-kicker orange">How It Works</div>
+      <h2 class="section-title">From <span class="g-orange">Zero</span> to Builder in 4 Steps</h2>
+      <p class="section-body" style="margin:0 auto">Getting started is simple. We handle the complexity; your child focuses on creating.</p>
+    </div>
+    <div class="steps-wrap">
+      <div class="step-item">
+        <div class="step-num s1">1</div>
+        <div class="step-title">Pick a Pathway</div>
+        <p class="step-desc">Choose the right track based on your child's age and experience. Not sure? Chat with us on WhatsApp — we'll guide you.</p>
+      </div>
+      <div class="step-item">
+        <div class="step-num s2">2</div>
+        <div class="step-title">Create a Free Account</div>
+        <p class="step-desc">Sign up takes under 2 minutes. Free accounts unlock the first module of every pathway so your child can try before you pay.</p>
+      </div>
+      <div class="step-item">
+        <div class="step-num s3">3</div>
+        <div class="step-title">Learn &amp; Build</div>
+        <p class="step-desc">Video lessons, interactive exercises, and real projects. Kids progress at their own pace — no pressure, just building things they're proud of.</p>
+      </div>
+      <div class="step-item">
+        <div class="step-num s4">4</div>
+        <div class="step-title">Graduate &amp; Share</div>
+        <p class="step-desc">Finish a pathway and earn a NeurowexTech Kids Certificate plus a shareable project portfolio — a real head start for their future.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     WHY KIDS LOVE IT
+════════════════════════════════ -->
+<section class="section-py" style="background:var(--ghost)">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:52px">
+      <div class="section-kicker green">Why Kids Love It</div>
+      <h2 class="section-title">Learning That Actually <span class="g-blue">Sticks</span></h2>
+      <p class="section-body" style="margin:0 auto">We design every lesson around what makes kids genuinely engaged — not just what looks good on a curriculum map.</p>
+    </div>
+
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="bc-ico a">🎮</div>
+        <div class="bc-title">Gamified Progress</div>
+        <p class="bc-desc">Badges, streaks, and level-ups keep kids coming back. Every lesson ends with a mini-challenge that feels more like play than school.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="bc-ico b">🛠️</div>
+        <div class="bc-title">Build Real Projects</div>
+        <p class="bc-desc">No toy examples. Kids build actual games, websites, and apps they can show friends and family — instant motivation to keep going.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="bc-ico c">🧑‍🏫</div>
+        <div class="bc-title">Expert Instructors</div>
+        <p class="bc-desc">Our instructors have taught hundreds of kids in Kenya and understand how to explain complex ideas simply, patiently, and with humour.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="bc-ico d">⏱️</div>
+        <div class="bc-title">Self-Paced, Always Available</div>
+        <p class="bc-desc">Lessons are available 24/7. Kids can learn after school, on weekends, or during holidays — at a pace that suits them and their family.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="bc-ico e">📜</div>
+        <div class="bc-title">Verifiable Certificates</div>
+        <p class="bc-desc">Completion certificates from NeurowexTech Academy are shareable on LinkedIn and make a strong addition to any school or university application.</p>
+      </div>
+      <div class="benefit-card">
+        <div class="bc-ico f">👨‍👩‍👧 Parent Dashboard</div>
+        <p class="bc-desc">Parents can monitor lesson progress, project scores, and time spent learning — full visibility into your child's development without pressure.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     TESTIMONIALS
+════════════════════════════════ -->
+<section class="section-py lp-section alt">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:48px">
+      <div class="section-kicker purple">Parent Reviews</div>
+      <h2 class="section-title">What <span class="g-kids">Families</span> Say</h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="t-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"My daughter (age 10) built her first website after just three weeks. She was SO proud showing it to her grandparents on video call. This programme genuinely works."</p>
+        <div class="t-author">
+          <div class="t-ava" style="background:#dbeafe">👩</div>
+          <div>
+            <div class="t-name">Grace Mwangi</div>
+            <div class="t-role">Parent · Nairobi</div>
+          </div>
+        </div>
+      </div>
+      <div class="t-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"The high school lab is exactly what my son needed — a serious environment where he's challenged alongside peers his own age. His JavaScript project blew me away."</p>
+        <div class="t-author">
+          <div class="t-ava" style="background:#d1fae5">👨</div>
+          <div>
+            <div class="t-name">David Otieno</div>
+            <div class="t-role">Parent · Kisumu</div>
+          </div>
+        </div>
+      </div>
+      <div class="t-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"Best investment I've made for my kids' education. The Scratch track made my 9-year-old fall in love with coding. He's already asking when the HTML course starts!"</p>
+        <div class="t-author">
+          <div class="t-ava" style="background:#fef3c7">👩</div>
+          <div>
+            <div class="t-name">Ann Kamau</div>
+            <div class="t-role">Parent · Mombasa</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     FAQ
+════════════════════════════════ -->
+<section class="section-py" style="background:var(--ghost)">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:48px">
+      <div class="section-kicker">FAQ</div>
+      <h2 class="section-title">Questions <span class="g-blue">Parents Ask</span></h2>
+      <p class="section-body" style="margin:0 auto">Everything a parent needs to know before enrolling their child.</p>
+    </div>
+    <div class="faq-grid" style="max-width:920px;margin:0 auto">
+      <div class="faq-item">
+        <div class="faq-q">What age can my child start? <span class="faq-icon"><i class="fas fa-plus"></i></span></div>
+        <div class="faq-a">We accept kids from age 8. The Scratch pathway is designed for 8–10-year-olds with zero prior experience. Teens aged 14–17 can join the High School Labs track directly.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Does my child need their own laptop? <span class="faq-icon"><i class="fas fa-plus"></i></span></div>
+        <div class="faq-a">Yes — a laptop or desktop is recommended for the best experience. Tablets work for the Scratch track. We support Windows, Mac, and Chromebook. Minimum: any modern browser.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How long is each course? <span class="faq-icon"><i class="fas fa-plus"></i></span></div>
+        <div class="faq-a">Pathways range from 16 to 24 lessons. At 3–4 lessons per week, most kids complete a track in 6–8 weeks. All content is self-paced so there's no rush.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Is the High School Lab really separate? <span class="faq-icon"><i class="fas fa-plus"></i></span></div>
+        <div class="faq-a">Yes — completely isolated. HS students have their own login portal, project environment, and peer cohort. Junior tracks and HS tracks never overlap in any way.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can parents track progress? <span class="faq-icon"><i class="fas fa-plus"></i></span></div>
+        <div class="faq-a">Absolutely. Parents receive a separate view of their child's dashboard — showing lesson completion, project scores, time on platform, and upcoming milestones.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What's the refund policy? <span class="faq-icon"><i class="fas fa-plus"></i></span></div>
+        <div class="faq-a">We offer a 7-day full refund from the date of enrolment, no questions asked. We want families to be 100% happy or we'd rather refund you.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     ENROL CTA
+════════════════════════════════ -->
+<section class="enrol-band" id="enrol">
+  <div class="container">
+    <div class="enrol-inner">
+      <div class="section-kicker" style="background:rgba(255,255,255,.12);color:rgba(255,255,255,.8);border-color:rgba(255,255,255,.2);margin-bottom:18px;display:inline-flex">🚀 Get Started Today</div>
+      <h2>Give Your Child a<br><em>Head Start in Tech</em></h2>
+      <p>Sign up free and unlock the first module of any pathway. No credit card required — just create an account and start learning today.</p>
+      <div class="enrol-actions">
+        <a href="/sign_up" class="btn-enrol-white"><i class="fas fa-user-plus"></i> Sign Up Free</a>
+        <a href="https://wa.me/254769329340?text=Hello!%20I'd%20like%20to%20enrol%20my%20child%20in%20the%20Kids%20Coding%20Academy." target="_blank" rel="noopener" class="btn-enrol-ghost"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</a>
+      </div>
+      <div class="trust-badges">
+        <span class="trust-badge">✅ Free first module</span>
+        <span class="trust-badge">🔒 7-day refund guarantee</span>
+        <span class="trust-badge">📜 Completion certificate</span>
+        <span class="trust-badge">🇰🇪 Nairobi-based support</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     NEWSLETTER
+════════════════════════════════ -->
+<section class="newsletter-section section-py-sm">
+  <div class="container">
+    <div class="newsletter-box">
+      <div class="nl-grid">
+        <div>
+          <div class="nl-icon"><i class="fas fa-bell"></i></div>
+          <h3 style="font-size:clamp(1.2rem,3.5vw,1.7rem);margin-bottom:8px">Stay Updated on New <span class="g-kids">Courses</span> 📬</h3>
+          <p class="text-muted" style="margin:0 0 13px">Get notified when new pathways launch, term schedules open, and free resources drop. Zero spam.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:14px;font-size:.74rem;color:var(--slate)">
+            <span><i class="fas fa-check-circle" style="color:var(--kids-green)"></i> New course alerts</span>
+            <span><i class="fas fa-check-circle" style="color:var(--kids-green)"></i> Term schedules</span>
+            <span><i class="fas fa-check-circle" style="color:var(--kids-green)"></i> Parent tips</span>
+          </div>
+        </div>
+        <div>
+          <form id="nlForm">
+            <div class="nl-form">
+              <i class="fas fa-envelope nl-ico"></i>
+              <input type="email" id="nlEmail" class="nl-form-inp" placeholder="Enter your email address" required aria-label="Email for newsletter" />
+              <button type="submit" id="nlBtn" class="nl-submit">Subscribe <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
+              <input type="checkbox" id="nlConsent" checked style="cursor:pointer;width:15px;height:15px;accent-color:var(--kids-purple)">
+              <label for="nlConsent" style="font-size:.71rem;color:var(--slate);cursor:pointer">I agree to receive emails from NeurowexTech</label>
+            </div>
+            <p id="nlMsg" style="font-size:.78rem;margin-top:8px" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     FOOTER
+════════════════════════════════ -->
+<footer>
+  <div class="footer-accent-bar"></div>
+  <div class="footer-cta-strip">
+    <div class="container">
+      <div class="footer-cta-inner">
+        <div class="footer-cta-text">
+          <h4>Ready to launch your child's coding journey? 🚀</h4>
+          <p>Sign up free — first module of every pathway is unlocked instantly.</p>
+        </div>
+        <div class="footer-cta-btns">
+          <a href="/sign_up" class="btn btn-primary"  style="padding:10px 20px;font-size:.83rem">Sign Up Free <i class="fas fa-arrow-right"></i></a>
+          <a href="/contact" class="btn btn-orange"   style="padding:10px 18px;font-size:.83rem"><i class="fas fa-envelope"></i> Contact Us</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-body">
+    <div class="container">
+      <div class="footer-cols">
+        <div class="footer-col-brand">
+          <div class="footer-brand-name"><span class="footer-bmark">N</span>Neurowex<em>Tech</em></div>
+          <p class="footer-tagline">Practical coding education for Kenyan kids and teens — from Scratch to JavaScript, with dedicated High School Labs.</p>
+          <div class="footer-socials">
+            <a href="#" class="fsoc tw" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="fsoc li" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="fsoc gh" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="#" class="fsoc ig" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="fsoc yt" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://wa.me/254769329340" target="_blank" rel="noopener noreferrer" class="fsoc wa" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span style="background:rgba(139,92,246,.12);color:#c4b5fd;border:1px solid rgba(139,92,246,.22);border-radius:6px;padding:3px 9px;font-size:.64rem;font-weight:700">🧩 Scratch</span>
+            <span style="background:rgba(59,130,246,.1);color:#93c5fd;border:1px solid rgba(59,130,246,.2);border-radius:6px;padding:3px 9px;font-size:.64rem;font-weight:700">🌐 HTML &amp; CSS</span>
+            <span style="background:rgba(16,185,129,.1);color:#6ee7b7;border:1px solid rgba(16,185,129,.2);border-radius:6px;padding:3px 9px;font-size:.64rem;font-weight:700">⚡ JavaScript</span>
+            <span style="background:rgba(232,98,10,.1);color:var(--orange-l);border:1px solid rgba(232,98,10,.2);border-radius:6px;padding:3px 9px;font-size:.64rem;font-weight:700">🏫 HS Labs</span>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Kids Academy</div>
+          <ul class="footer-links">
+            <li><a href="/kids-coding"><i class="fas fa-child"></i> Overview</a></li>
+            <li><a href="#pathways"><i class="fas fa-map"></i> Pathways</a></li>
+            <li><a href="#hs-labs"><i class="fas fa-flask"></i> HS Labs</a></li>
+            <li><a href="#enrol"><i class="fas fa-rocket"></i> Enrol Now</a></li>
+            <li><a href="/learn" class="acad"><i class="fas fa-graduation-cap"></i> Adult Academy</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-links">
+            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="/learn"><i class="fas fa-graduation-cap"></i> Academy</a></li>
+            <li><a href="/about"><i class="fas fa-info-circle"></i> About Us</a></li>
+            <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+            <li><a href="/login"><i class="fas fa-sign-in-alt"></i> Log In</a></li>
+            <li><a href="/sign_up"><i class="fas fa-user-plus"></i> Sign Up</a></li>
+          </ul>
+        </div>
+        <div class="footer-col-contact">
+          <div class="footer-col-title">Contact</div>
+          <div class="fci"><div class="fci-ic"><i class="fas fa-envelope"></i></div><div><div class="fci-label">Email</div><div class="fci-val"><a href="mailto:techneurowex@gmail.com">techneurowex@gmail.com</a></div></div></div>
+          <div class="fci"><div class="fci-ic"><i class="fab fa-whatsapp"></i></div><div><div class="fci-label">WhatsApp</div><div class="fci-val"><a href="https://wa.me/254769329340" target="_blank" rel="noopener noreferrer">+254 769 329 340</a></div></div></div>
+          <div class="fci"><div class="fci-ic"><i class="fas fa-map-marker-alt"></i></div><div><div class="fci-label">Location</div><div class="fci-val">Nairobi, Kenya 🇰🇪</div></div></div>
+          <div class="footer-hours"><span class="hdot"></span> Mon – Fri · 9 am – 6 pm EAT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr class="footer-divider">
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="footer-copy">© {{currentYear}} NeurowexTech Academy. All rights reserved.</p>
+        <nav class="footer-legal" aria-label="Legal">
+          <a href="/about">About</a>
+          <a href="/privacy-policy">Privacy</a>
+          <a href="/terms-of-service">Terms</a>
+          <a href="/cookie-policy">Cookies</a>
+        </nav>
+        <p class="footer-made">Made with <span>♥</span> in Nairobi</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── THEME ── */
+var dark = localStorage.getItem('nw-theme')==='dark' || (!localStorage.getItem('nw-theme') && window.matchMedia('(prefers-color-scheme:dark)').matches);
+var MOON = '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>';
+var SUN  = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+
+function applyTheme() {
+  document.body.classList.toggle('dark', dark);
+  document.getElementById('theme-toggle').innerHTML = dark ? SUN : MOON;
+  var tn = document.getElementById('theme-toggle-nav');
+  var mt = document.getElementById('mobThemeBtn');
+  if (tn) tn.innerHTML = dark ? '<i class="fas fa-sun" style="font-size:.82rem"></i>' : '<i class="fas fa-moon" style="font-size:.82rem"></i>';
+  if (mt) mt.innerHTML = dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+}
+applyTheme();
+function toggleTheme() { dark = !dark; localStorage.setItem('nw-theme', dark ? 'dark' : 'light'); applyTheme(); }
+document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+var ttn = document.getElementById('theme-toggle-nav'); if (ttn) ttn.addEventListener('click', toggleTheme);
+var mtb = document.getElementById('mobThemeBtn');      if (mtb) mtb.addEventListener('click', toggleTheme);
+
+/* ── SCROLL ── */
+var navbar = document.getElementById('mainNav');
+var btt    = document.getElementById('back-to-top');
+var sp     = document.getElementById('scroll-progress');
+window.addEventListener('scroll', function() {
+  var s = window.pageYOffset, d = document.documentElement.scrollHeight - window.innerHeight;
+  sp.style.width = (d > 0 ? s / d * 100 : 0) + '%';
+  navbar.classList.toggle('scrolled', s > 40);
+  btt.classList.toggle('visible', s > 400);
+}, { passive: true });
+btt.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+/* ── MOBILE NAV ── */
+var ov = document.getElementById('mobOverlay'), pan = document.getElementById('mobPanel'),
+    ham = document.getElementById('hamBtn'),    mc  = document.getElementById('mobClose');
+function openM()  { ov.classList.add('open');    pan.classList.add('open');    ham.classList.add('open');    ham.setAttribute('aria-expanded','true');  document.body.style.overflow = 'hidden'; mc.focus(); }
+function closeM() { ov.classList.remove('open'); pan.classList.remove('open'); ham.classList.remove('open'); ham.setAttribute('aria-expanded','false'); document.body.style.overflow = ''; }
+ham.addEventListener('click', openM); mc.addEventListener('click', closeM); ov.addEventListener('click', closeM);
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && pan.classList.contains('open')) closeM(); });
+
+/* ── COOKIE ── */
+var cb = document.getElementById('cookie-bar');
+if (!localStorage.getItem('nw-cookie')) setTimeout(function() { cb.classList.add('show'); }, 2800);
+document.getElementById('cookie-accept').addEventListener('click', function() { localStorage.setItem('nw-cookie','1'); cb.classList.remove('show'); });
+
+/* ── TOAST ── */
+function toast(msg) {
+  var t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 3600);
+}
+
+/* ── NEWSLETTER ── */
+document.getElementById('nlForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  var email   = document.getElementById('nlEmail').value.trim();
+  var consent = document.getElementById('nlConsent').checked;
+  var btn     = document.getElementById('nlBtn');
+  var msg     = document.getElementById('nlMsg');
+  if (!email || !/^\S+@\S+\.\S+$/.test(email)) { msg.innerHTML = '<span style="color:var(--rose)"><i class="fas fa-exclamation-circle"></i> Please enter a valid email.</span>'; return; }
+  if (!consent) { msg.innerHTML = '<span style="color:var(--rose)"><i class="fas fa-exclamation-circle"></i> Please agree to receive emails.</span>'; return; }
+  var orig = btn.innerHTML; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subscribing…'; btn.disabled = true;
+  try {
+    var res  = await fetch('/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
+    var data = await res.json();
+    if (data.success) { msg.innerHTML = '<span style="color:var(--kids-green)"><i class="fas fa-check-circle"></i> 🎉 Subscribed!</span>'; document.getElementById('nlForm').reset(); document.getElementById('nlConsent').checked = true; toast('Subscribed! Welcome aboard 🎉'); }
+    else { msg.innerHTML = '<span style="color:var(--rose)">' + (data.message || 'Failed. Please try again.') + '</span>'; }
+  } catch(err) { msg.innerHTML = '<span style="color:var(--rose)">Network error. Please try again.</span>'; }
+  finally { btn.innerHTML = orig; btn.disabled = false; setTimeout(function() { msg.innerHTML = ''; }, 5500); }
+});
+
+/* ── FAQ ── */
+document.querySelectorAll('.faq-q').forEach(function(q) {
+  q.addEventListener('click', function() {
+    var item = q.parentElement, isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(function(i) { i.classList.remove('open'); });
+    if (!isOpen) item.classList.add('open');
+  });
+});
+
+/* ── HERO STAT COUNTER ── */
+var counted = false;
+var obs = new IntersectionObserver(function(entries) {
+  if (counted) return;
+  entries.forEach(function(entry) {
+    if (!entry.isIntersecting) return;
+    counted = true;
+    document.querySelectorAll('.h-stat-num').forEach(function(el) {
+      var raw = el.textContent.replace(/[^0-9]/g,'');
+      var target = parseInt(raw,10);
+      if (isNaN(target) || target === 0) return;
+      var suffix = el.textContent.replace(/[0-9]/g,'').replace('+','').trim();
+      var hasPlus = el.textContent.includes('+');
+      var step = target / 80, val = 0;
+      (function tick() {
+        val = Math.min(val + step, target);
+        el.textContent = Math.floor(val) + (hasPlus ? '+' : '') + suffix;
+        if (val < target) requestAnimationFrame(tick);
+      })();
+    });
+  });
+}, { threshold: 0.4 });
+var statsEl = document.querySelector('.hero-stats');
+if (statsEl) obs.observe(statsEl);
+
+/* ── SMOOTH SCROLL for anchor links ── */
+document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+  a.addEventListener('click', function(e) {
+    var href = a.getAttribute('href');
+    if (href.length < 2) return;
+    var target = document.querySelector(href);
+    if (target) {
+      e.preventDefault();
+      var offset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'))||72;
+      window.scrollTo({ top: target.offsetTop - offset - 12, behavior: 'smooth' });
+      if (pan.classList.contains('open')) closeM();
+    }
+  });
+});
+
+/* ── PATHWAY CARD ANIMATION on scroll ── */
+var cardObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) e.target.style.animationPlayState = 'running';
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('.pathway-card').forEach(function(c) {
+  c.style.animationPlayState = 'paused';
+  cardObs.observe(c);
+});
+</script>
+</body>
+</html>

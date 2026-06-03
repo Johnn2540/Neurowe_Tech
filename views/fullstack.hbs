@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{title}} | NeurowexTech Academy</title>
+  <meta name="description" content="Master Full Stack Software Engineering at NeurowexTech. Build complete web applications from front-end to back-end. HTML, CSS, JavaScript, Node.js, databases and deployment." />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<style>
+/* ── DESIGN TOKENS ── */
+:root{
+  --blue:#1a4fd6;--blue-d:#1340b0;--blue-l:#4a7aee;
+  --blue-pale:rgba(26,79,214,.08);--blue-pale2:rgba(26,79,214,.14);
+  --orange:#e8620a;--orange-d:#c94f05;--orange-l:#f28840;
+  --orange-pale:rgba(232,98,10,.08);
+  --black:#050810;--ink:#0c1220;--ink-2:#141c30;--ink-3:#1c2840;
+  --slate:#5a6880;--slate-l:#7a8ea8;
+  --mist:#e2e8f5;--ghost:#f5f7fd;
+  --emerald:#059669;--teal:#0d9488;--yellow:#f59e0b;--rose:#e11d48;
+  --cyan:#06b6d4;--violet:#7c3aed;
+  --g-blue:linear-gradient(135deg,#1a4fd6,#1340b0);
+  --g-orange:linear-gradient(135deg,#e8620a,#c94f05);
+  --g-hero:linear-gradient(168deg,#030610 0%,#07102a 50%,#0b1535 100%);
+  --g-fs:linear-gradient(135deg,#1a4fd6 0%,#0d9488 100%);
+  --g-fs-warm:linear-gradient(135deg,#1a4fd6,#7c3aed);
+  --r-xs:6px;--r-sm:10px;--r-md:14px;--r-lg:18px;--r-xl:24px;--r-2xl:32px;--r-pill:999px;
+  --nav-h:68px;
+  --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);--t:.26s var(--ease);
+  --sh-sm:0 1px 4px rgba(8,12,24,.06),0 4px 12px rgba(8,12,24,.06);
+  --sh-md:0 4px 16px rgba(8,12,24,.08),0 12px 36px rgba(8,12,24,.08);
+  --sh-lg:0 12px 40px rgba(8,12,24,.12),0 4px 12px rgba(8,12,24,.06);
+  --sh-blue:0 8px 28px rgba(26,79,214,.28);
+  --sh-orange:0 8px 28px rgba(232,98,10,.26);
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--ghost);color:var(--ink);overflow-x:hidden;line-height:1.65}
+h1,h2,h3,h4,h5{font-family:'Fraunces',serif;line-height:1.1;letter-spacing:-.02em}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
+button,input,select,textarea{font-family:'Plus Jakarta Sans',sans-serif}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--ink)}::-webkit-scrollbar-thumb{background:var(--blue);border-radius:4px}
+
+#scroll-progress{position:fixed;top:0;left:0;height:2px;width:0%;background:var(--g-fs);z-index:9999;transition:width .08s linear}
+
+/* ── NAVBAR ── */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1040;height:var(--nav-h);background:rgba(255,255,255,.95);backdrop-filter:blur(24px) saturate(2);border-bottom:1px solid rgba(8,12,24,.06);transition:var(--t)}
+.navbar.scrolled{background:rgba(255,255,255,.98);box-shadow:0 2px 24px rgba(8,12,24,.07)}
+.nav-inner{max-width:1320px;margin:0 auto;padding:0 24px;height:100%;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.nav-brand{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;color:var(--ink);flex-shrink:0;letter-spacing:-.04em;display:flex;align-items:center;gap:7px}
+.brand-mark{width:30px;height:30px;background:var(--g-blue);border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:.85rem;color:#fff;flex-shrink:0}
+.nav-brand em{font-style:italic;color:var(--orange)}
+.nav-links{display:none;align-items:center;gap:2px;list-style:none;flex:1;justify-content:center}
+.nl-item{position:relative}
+.nl-a{font-size:.82rem;font-weight:600;color:var(--slate);padding:7px 12px;border-radius:var(--r-sm);transition:var(--t);white-space:nowrap;display:flex;align-items:center;gap:5px}
+.nl-a:hover,.nl-a.active{color:var(--blue);background:var(--blue-pale)}
+.nl-a .chev{font-size:.52rem;transition:transform .22s}
+.nl-item:hover .chev{transform:rotate(180deg)}
+.mega-drop{position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(8px);min-width:540px;background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);box-shadow:0 24px 64px rgba(8,12,24,.14);padding:22px;opacity:0;visibility:hidden;pointer-events:none;transition:all .2s var(--ease)}
+.nl-item:hover .mega-drop{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+.mega-drop::before{content:'';position:absolute;top:-5px;left:50%;width:10px;height:10px;background:#fff;border-left:1px solid var(--mist);border-top:1px solid var(--mist);transform:translateX(-50%) rotate(45deg)}
+.mega-grid{display:grid;grid-template-columns:1fr 1fr 1fr}
+.mega-col-label{font-size:.61rem;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:var(--blue);padding:0 8px 8px;display:block}
+.mega-link{display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:var(--r-sm);font-size:.79rem;font-weight:500;color:var(--slate);transition:all .14s}
+.mega-link i{width:15px;color:var(--blue);font-size:.74rem;flex-shrink:0}
+.mega-link:hover{background:var(--blue-pale);color:var(--blue);transform:translateX(2px)}
+.nav-cta{display:none;align-items:center;gap:8px;flex-shrink:0}
+.user-drop{position:relative}
+.user-btn{display:inline-flex;align-items:center;gap:6px;background:var(--g-blue);color:#fff;border:none;padding:7px 16px;border-radius:var(--r-pill);font-size:.79rem;font-weight:700;cursor:pointer;transition:var(--t);font-family:'Plus Jakarta Sans',sans-serif}
+.user-btn:hover{transform:translateY(-1px);box-shadow:var(--sh-blue)}
+.user-btn .chev-u{font-size:.5rem;transition:transform .22s}
+.user-drop:hover .chev-u{transform:rotate(180deg)}
+.user-menu{position:absolute;top:calc(100% + 10px);right:0;min-width:200px;background:#fff;border-radius:var(--r-lg);border:1px solid var(--mist);box-shadow:var(--sh-md);padding:8px;opacity:0;visibility:hidden;pointer-events:none;transition:all .2s var(--ease)}
+.user-drop:hover .user-menu{opacity:1;visibility:visible;pointer-events:auto}
+.user-menu a{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:var(--r-sm);font-size:.81rem;font-weight:600;color:var(--slate);transition:var(--t)}
+.user-menu a i{width:15px;color:var(--blue);font-size:.75rem}
+.user-menu a:hover{background:var(--blue-pale);color:var(--blue)}
+.user-menu-divider{border:none;border-top:1px solid var(--mist);margin:5px 0}
+.btn-nav-signin{font-size:.79rem;font-weight:600;color:var(--slate);padding:7px 15px;border:1.5px solid var(--mist);border-radius:var(--r-pill);background:#fff;cursor:pointer;transition:var(--t)}
+.btn-nav-signin:hover{color:var(--blue);border-color:var(--blue)}
+.btn-nav-signup{font-size:.79rem;font-weight:700;color:#fff;padding:8px 19px;border:none;border-radius:var(--r-pill);background:var(--g-blue);cursor:pointer;box-shadow:var(--sh-blue);display:inline-flex;align-items:center;gap:5px;transition:var(--t)}
+.btn-nav-signup:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(26,79,214,.38)}
+.ham-btn{display:flex;flex-direction:column;gap:5px;align-items:center;justify-content:center;width:44px;height:44px;background:none;border:none;cursor:pointer;border-radius:var(--r-sm);transition:var(--t);flex-shrink:0}
+.ham-btn:hover{background:var(--blue-pale)}
+.ham-line{display:block;width:20px;height:1.5px;background:var(--ink);border-radius:2px;transition:all .24s var(--ease);transform-origin:center}
+.ham-btn.open .ham-line:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.ham-btn.open .ham-line:nth-child(2){opacity:0;transform:scaleX(0)}
+.ham-btn.open .ham-line:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+.mob-quick{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.mob-quick-btn{width:38px;height:38px;border-radius:var(--r-sm);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:var(--t);background:var(--blue-pale);color:var(--blue)}
+.mob-overlay{position:fixed;inset:0;background:rgba(8,12,24,.55);backdrop-filter:blur(6px);z-index:1038;opacity:0;visibility:hidden;transition:opacity .28s,visibility .28s}
+.mob-overlay.open{opacity:1;visibility:visible}
+.mob-panel{position:fixed;top:0;right:0;width:min(340px,88vw);height:100dvh;background:#fff;z-index:1039;overflow-y:auto;transform:translateX(100%);transition:transform .3s var(--ease);box-shadow:-12px 0 48px rgba(8,12,24,.18);display:flex;flex-direction:column}
+.mob-panel.open{transform:translateX(0)}
+.mob-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--mist);flex-shrink:0}
+.mob-close{width:36px;height:36px;border:none;background:var(--mist);cursor:pointer;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;transition:var(--t);font-size:.82rem}
+.mob-close:hover{background:#ef4444;color:#fff}
+.mob-body{padding:8px 0;flex:1}
+.mob-link{display:flex;align-items:center;gap:11px;padding:12px 22px;font-size:.88rem;font-weight:600;color:var(--ink);transition:var(--t);min-height:48px}
+.mob-link i{width:18px;color:var(--blue);font-size:.8rem;flex-shrink:0}
+.mob-link:hover,.mob-link.cur{background:var(--blue-pale);color:var(--blue);padding-left:28px}
+.mob-hr{border:none;border-top:1px solid var(--mist);margin:6px 18px}
+.mob-footer{padding:14px 18px 30px;border-top:1px solid var(--mist);display:flex;flex-direction:column;gap:9px}
+
+/* ── DARK MODE ── */
+body.dark{background:var(--black);color:rgba(255,255,255,.84)}
+body.dark .navbar{background:rgba(8,12,24,.97);border-bottom-color:rgba(255,255,255,.05)}
+body.dark .navbar.scrolled{background:rgba(8,12,24,.99)}
+body.dark .nl-a{color:rgba(255,255,255,.52)}
+body.dark .nl-a:hover{color:var(--blue-l);background:rgba(26,79,214,.1)}
+body.dark .mega-drop{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+body.dark .mega-drop::before{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+body.dark .mega-link{color:rgba(255,255,255,.52)}
+body.dark .ham-line{background:rgba(255,255,255,.85)}
+body.dark .mob-panel{background:var(--ink-2)}
+body.dark .mob-head{border-color:rgba(255,255,255,.07)}
+body.dark .mob-link{color:rgba(255,255,255,.82)}
+body.dark .mob-close{background:rgba(255,255,255,.07);color:rgba(255,255,255,.7)}
+body.dark .mob-hr{border-color:rgba(255,255,255,.07)}
+body.dark .mob-footer{border-color:rgba(255,255,255,.07)}
+body.dark .btn-nav-signin{color:rgba(255,255,255,.52);border-color:rgba(255,255,255,.1);background:transparent}
+body.dark #theme-toggle{background:var(--ink-2);border-color:rgba(255,255,255,.09)}
+body.dark #theme-toggle svg{stroke:rgba(255,255,255,.72)}
+body.dark .user-menu{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+body.dark .user-menu a{color:rgba(255,255,255,.65)}
+body.dark .user-menu-divider{border-color:rgba(255,255,255,.07)}
+
+/* ── UTILITIES ── */
+.container{max-width:1320px;margin:0 auto;padding:0 24px}
+.section-py{padding:80px 0}
+.section-py-sm{padding:56px 0}
+.text-center{text-align:center}
+.g-blue{background:var(--g-blue);-webkit-background-clip:text;background-clip:text;color:transparent}
+.g-orange{background:var(--g-orange);-webkit-background-clip:text;background-clip:text;color:transparent}
+.g-fs{background:var(--g-fs);-webkit-background-clip:text;background-clip:text;color:transparent}
+.section-kicker{display:inline-flex;align-items:center;gap:7px;border-radius:var(--r-pill);padding:5px 14px;font-size:.67rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;margin-bottom:14px;border:1px solid rgba(26,79,214,.15);background:var(--blue-pale);color:var(--blue)}
+.section-kicker::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--blue);flex-shrink:0}
+.section-kicker.orange{background:var(--orange-pale);color:var(--orange);border-color:rgba(232,98,10,.15)}
+.section-kicker.orange::before{background:var(--orange)}
+.section-kicker.teal{background:rgba(13,148,136,.08);color:var(--teal);border-color:rgba(13,148,136,.2)}
+.section-kicker.teal::before{background:var(--teal)}
+.section-title{font-size:clamp(1.75rem,5vw,3rem);font-weight:700;margin-bottom:14px}
+.section-body{color:var(--slate);font-size:clamp(.9rem,2.5vw,1.04rem);line-height:1.78;max-width:540px}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:.86rem;border-radius:var(--r-pill);transition:var(--t);cursor:pointer;border:none;letter-spacing:.01em;white-space:nowrap}
+.btn-primary{background:var(--g-blue);color:#fff;padding:12px 26px;box-shadow:var(--sh-blue)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(26,79,214,.36)}
+.btn-orange{background:var(--g-orange);color:#fff;padding:12px 26px;box-shadow:var(--sh-orange)}
+.btn-orange:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(232,98,10,.36)}
+.btn-teal{background:linear-gradient(135deg,#0d9488,#0f766e);color:#fff;padding:12px 26px;box-shadow:0 8px 28px rgba(13,148,136,.28)}
+.btn-teal:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(13,148,136,.38)}
+.btn-outline{background:transparent;color:var(--blue);padding:10px 22px;border:1.5px solid var(--blue)}
+.btn-outline:hover{background:var(--g-blue);color:#fff;transform:translateY(-2px)}
+.btn-ghost{background:rgba(255,255,255,.1);color:#fff;padding:11px 22px;border:1.5px solid rgba(255,255,255,.25);backdrop-filter:blur(8px)}
+.btn-ghost:hover{background:rgba(255,255,255,.18);transform:translateY(-2px)}
+.btn-sm{padding:8px 18px;font-size:.78rem}
+.btn-lg{padding:14px 32px;font-size:.95rem}
+
+/* ── ANIMATIONS ── */
+@keyframes dot-p{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.45);opacity:.5}}
+@keyframes wa-ripple{0%{transform:scale(1);opacity:.65}100%{transform:scale(2);opacity:0}}
+@keyframes bounce-up{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-8px)}}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes fade-up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes bar-shift{0%{background-position:0%}100%{background-position:200%}}
+@keyframes type-cursor{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes code-scan{0%{top:0}100%{top:100%}}
+@keyframes pulse-ring{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.5);opacity:0}}
+
+/* ── FIXED WIDGETS ── */
+#theme-toggle{position:fixed;bottom:22px;left:22px;z-index:10000;width:44px;height:44px;background:#fff;border:1.5px solid rgba(8,12,24,.08);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 18px rgba(8,12,24,.1);transition:var(--t)}
+#theme-toggle svg{width:16px;height:16px;stroke:var(--slate);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+#theme-toggle:hover{background:var(--blue);border-color:var(--blue);transform:rotate(20deg) scale(1.07)}
+#theme-toggle:hover svg{stroke:#fff}
+#back-to-top{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(16px);z-index:10000;width:48px;height:48px;background:var(--g-blue);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s,transform .4s var(--spring);box-shadow:var(--sh-blue)}
+#back-to-top.visible{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;animation:bounce-up 2.4s ease-in-out infinite}
+#back-to-top:hover{animation-play-state:paused}
+#back-to-top svg{width:18px;height:18px;stroke:#fff;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+#wa-float{position:fixed;bottom:86px;right:20px;z-index:10001;text-decoration:none;display:block}
+.wa-ring{position:absolute;inset:0;border-radius:999px;border:2px solid #25D366;opacity:0;animation:wa-ripple 2.8s ease-out infinite;pointer-events:none}
+.wa-ring:nth-child(2){animation-delay:1.2s}
+.wa-pill{display:flex;align-items:center;gap:9px;background:linear-gradient(135deg,#128C7E,#075E54);border-radius:999px;padding:8px 17px 8px 8px;box-shadow:0 6px 26px rgba(18,140,126,.42);transition:transform .3s var(--spring),box-shadow .28s;white-space:nowrap}
+#wa-float:hover .wa-pill{transform:translateY(-3px) scale(1.02)}
+.wa-ico{width:36px;height:36px;flex-shrink:0;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.15rem;color:#fff;position:relative}
+.wa-dot{position:absolute;top:1px;right:1px;width:9px;height:9px;background:#a8ff78;border:2px solid #128C7E;border-radius:50%;animation:dot-p 2.4s ease-in-out infinite}
+.wa-text{display:flex;flex-direction:column;gap:1px}
+.wa-label{font-size:.64rem;color:rgba(255,255,255,.55);font-weight:600}
+.wa-cta{font-size:.88rem;color:#fff;font-weight:800;font-family:'Fraunces',serif}
+.wa-arr{color:rgba(255,255,255,.6);font-size:.68rem;margin-left:2px;transition:transform .2s}
+#wa-float:hover .wa-arr{transform:translateX(3px)}
+#toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--ink-2);color:#fff;border-radius:var(--r-md);padding:11px 17px;font-size:.82rem;display:flex;align-items:center;gap:8px;z-index:10002;opacity:0;transition:var(--t);border-left:3px solid var(--emerald);min-width:210px;max-width:calc(100vw - 40px)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#cookie-bar{position:fixed;bottom:0;left:0;right:0;background:var(--ink-2);color:rgba(255,255,255,.8);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:9998;transform:translateY(100%);transition:transform .38s;border-top:1px solid rgba(255,255,255,.06);flex-wrap:wrap}
+#cookie-bar.show{transform:translateY(0)}
+#cookie-bar p{font-size:.77rem;margin:0;flex:1;min-width:180px}
+#cookie-accept{background:var(--blue);color:#fff;border:none;padding:7px 18px;border-radius:var(--r-pill);font-size:.79rem;cursor:pointer;font-weight:700;transition:var(--t)}
+#cookie-accept:hover{background:var(--blue-d)}
+@media(max-width:767px){
+  #wa-float{bottom:74px;right:14px}
+  .wa-text,.wa-arr{display:none}
+  .wa-pill{padding:0;width:52px;height:52px;border-radius:50%;justify-content:center}
+  .wa-ico{width:52px;height:52px;font-size:1.4rem}
+  #theme-toggle{bottom:14px;left:14px;width:40px;height:40px}
+  #back-to-top{bottom:12px;width:46px;height:46px}
+}
+
+/* ════════════════════════════════
+   HERO
+════════════════════════════════ */
+.hero-fs{background:var(--g-hero);padding-top:var(--nav-h);position:relative;overflow:hidden}
+.hero-fs::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(26,79,214,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(26,79,214,.05) 1px,transparent 1px);background-size:44px 44px}
+.orb-1{position:absolute;width:560px;height:560px;border-radius:50%;background:radial-gradient(circle,rgba(26,79,214,.18) 0%,transparent 68%);top:-120px;right:-80px;pointer-events:none}
+.orb-2{position:absolute;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(13,148,136,.12) 0%,transparent 70%);bottom:-40px;left:-20px;pointer-events:none}
+.orb-3{position:absolute;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.1) 0%,transparent 70%);top:38%;left:44%;pointer-events:none}
+
+.hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:1fr;gap:40px;padding:64px 0 72px;align-items:center}
+.hero-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:var(--r-pill);padding:5px 13px;color:rgba(255,255,255,.75);font-size:.72rem;font-weight:700;backdrop-filter:blur(8px)}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:#34d399;animation:dot-p 2s infinite;flex-shrink:0}
+.premium-chip{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(232,98,10,.2));border:1px solid rgba(245,158,11,.3);border-radius:var(--r-pill);padding:5px 13px;color:#fbbf24;font-size:.72rem;font-weight:800}
+
+.hero-inner h1{font-size:clamp(2.2rem,6.5vw,4.4rem);font-weight:700;color:#fff;margin-bottom:14px;line-height:1.04}
+.hero-inner h1 em{font-style:italic;background:var(--g-fs);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-desc{color:rgba(255,255,255,.58);font-size:clamp(.9rem,2.4vw,1.06rem);line-height:1.78;max-width:500px;margin-bottom:28px}
+
+/* outcome pills */
+.outcome-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.op{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:var(--r-pill);padding:5px 13px;font-size:.75rem;font-weight:600;color:rgba(255,255,255,.76)}
+.op i{font-size:.68rem;color:#34d399}
+
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:36px}
+
+/* hero meta strip */
+.hero-meta{display:flex;flex-wrap:wrap;gap:18px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08)}
+.hm-item{display:flex;align-items:center;gap:7px;font-size:.78rem;color:rgba(255,255,255,.55);font-weight:600}
+.hm-item i{color:rgba(255,255,255,.35);font-size:.72rem;width:14px}
+.hm-item strong{color:rgba(255,255,255,.82)}
+
+/* hero right — browser mockup */
+.browser-frame{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:var(--r-xl);overflow:hidden;backdrop-filter:blur(16px)}
+.browser-bar{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.b-dots{display:flex;gap:6px}
+.b-dot{width:10px;height:10px;border-radius:50%}
+.b-dot.r{background:#ff5f57}.b-dot.y{background:#febc2e}.b-dot.g{background:#28c840}
+.b-url{flex:1;background:rgba(255,255,255,.08);border-radius:6px;padding:4px 12px;font-size:.7rem;color:rgba(255,255,255,.38);font-family:'Courier New',monospace;margin:0 8px}
+.browser-body{padding:0;position:relative;overflow:hidden}
+.browser-preview{width:100%;display:block;min-height:200px;background:linear-gradient(145deg,#0f172a,#1e293b)}
+.preview-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid rgba(255,255,255,.06)}
+.preview-logo{font-family:'Fraunces',serif;font-size:.88rem;font-weight:700;color:#fff}
+.preview-links{display:flex;gap:14px}
+.preview-link{width:28px;height:5px;background:rgba(255,255,255,.12);border-radius:3px}
+.preview-hero-mini{padding:24px 18px}
+.ph-tag{width:60px;height:5px;background:rgba(26,79,214,.5);border-radius:3px;margin-bottom:10px}
+.ph-h1{width:85%;height:10px;background:rgba(255,255,255,.22);border-radius:4px;margin-bottom:7px}
+.ph-h2{width:60%;height:7px;background:rgba(255,255,255,.12);border-radius:3px;margin-bottom:20px}
+.ph-btns{display:flex;gap:8px}
+.ph-btn{height:26px;border-radius:13px}
+.ph-btn.p{width:90px;background:var(--g-blue)}
+.ph-btn.s{width:74px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15)}
+.preview-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 18px 18px}
+.psr{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:10px 8px;text-align:center}
+.psr-val{width:28px;height:8px;background:var(--g-fs);border-radius:3px;margin:0 auto 5px}
+.psr-lbl{width:36px;height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin:0 auto}
+/* scan line effect */
+.scan-line{position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(26,79,214,.4),transparent);animation:code-scan 3s linear infinite;pointer-events:none}
+
+/* ════════════════════════════════
+   MARQUEE
+════════════════════════════════ */
+.marquee-wrap{background:var(--g-fs);padding:11px 0;overflow:hidden;white-space:nowrap}
+.marquee-track{display:inline-flex;animation:marquee 32s linear infinite}
+.marquee-track:hover{animation-play-state:paused}
+.marquee-item{display:inline-flex;align-items:center;gap:7px;padding:0 24px;color:rgba(255,255,255,.9);font-size:.81rem;font-weight:700}
+.marquee-sep{opacity:.3}
+
+/* ════════════════════════════════
+   WHAT YOU'LL BUILD
+════════════════════════════════ */
+.build-grid{display:grid;grid-template-columns:1fr;gap:22px}
+@media(min-width:640px){.build-grid{grid-template-columns:repeat(3,1fr)}}
+
+.build-card{background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);overflow:hidden;transition:var(--t);box-shadow:var(--sh-sm);position:relative}
+body.dark .build-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.build-card:hover{transform:translateY(-6px);box-shadow:var(--sh-lg)}
+.bc-thumb{height:160px;position:relative;overflow:hidden}
+.bc-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.build-card:hover .bc-thumb img{transform:scale(1.05)}
+.bc-thumb-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.8rem;position:relative;overflow:hidden}
+.bc-thumb-placeholder::before{content:'';position:absolute;inset:0}
+.bc-th-1::before{background:linear-gradient(135deg,#0f172a,#1e3a5f)}
+.bc-th-2::before{background:linear-gradient(135deg,#0c1a14,#064e3b)}
+.bc-th-3::before{background:linear-gradient(135deg,#1a0530,#3b0764)}
+.bc-num{position:absolute;top:10px;left:12px;background:rgba(8,12,24,.72);border:1px solid rgba(255,255,255,.12);border-radius:var(--r-pill);padding:3px 10px;font-size:.67rem;font-weight:800;color:rgba(255,255,255,.7);backdrop-filter:blur(8px)}
+.bc-stack{position:absolute;bottom:10px;left:12px;display:flex;gap:5px;flex-wrap:wrap}
+.bc-tag{background:rgba(8,12,24,.72);border:1px solid rgba(255,255,255,.12);border-radius:var(--r-pill);padding:2px 8px;font-size:.62rem;font-weight:800;color:rgba(255,255,255,.7);backdrop-filter:blur(8px)}
+.bc-body{padding:18px 20px}
+.bc-title{font-size:1rem;font-weight:700;font-family:'Fraunces',serif;color:var(--ink);margin-bottom:6px}
+body.dark .bc-title{color:rgba(255,255,255,.9)}
+.bc-desc{font-size:.79rem;color:var(--slate);line-height:1.62}
+body.dark .bc-desc{color:rgba(255,255,255,.48)}
+
+/* ════════════════════════════════
+   CURRICULUM
+════════════════════════════════ */
+.curriculum-wrap{display:grid;grid-template-columns:1fr;gap:14px}
+
+.module-card{background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);overflow:hidden;transition:border-color .22s;box-shadow:var(--sh-sm)}
+body.dark .module-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.module-card.open{border-color:var(--blue)}
+.module-head{display:flex;align-items:center;gap:14px;padding:18px 22px;cursor:pointer;user-select:none}
+.module-num{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:800;color:#fff;flex-shrink:0}
+.mn-1{background:linear-gradient(135deg,#1a4fd6,#4a7aee)}
+.mn-2{background:linear-gradient(135deg,#0d9488,#14b8a6)}
+.mn-3{background:linear-gradient(135deg,#7c3aed,#a78bfa)}
+.mn-4{background:linear-gradient(135deg,#059669,#10b981)}
+.mn-5{background:linear-gradient(135deg,#e8620a,#f28840)}
+.module-info{flex:1}
+.module-title{font-size:.92rem;font-weight:700;color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:2px}
+body.dark .module-title{color:rgba(255,255,255,.88)}
+.module-subtitle{font-size:.73rem;color:var(--slate);display:flex;align-items:center;gap:8px}
+body.dark .module-subtitle{color:rgba(255,255,255,.4)}
+.module-subtitle span{display:flex;align-items:center;gap:4px}
+.module-icon{width:22px;height:22px;flex-shrink:0;background:var(--blue-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:.58rem;transition:transform .24s,background .22s}
+.module-card.open .module-icon{transform:rotate(180deg);background:var(--blue);color:#fff}
+.module-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.module-card.open .module-body{max-height:500px}
+.module-lessons{padding:0 22px 18px;display:grid;grid-template-columns:1fr;gap:6px}
+@media(min-width:640px){.module-lessons{grid-template-columns:1fr 1fr}}
+.lesson-row{display:flex;align-items:center;gap:9px;padding:8px 12px;background:var(--ghost);border-radius:var(--r-sm);font-size:.78rem;color:var(--slate)}
+body.dark .lesson-row{background:var(--ink-3);color:rgba(255,255,255,.5)}
+.lesson-row i{width:14px;color:var(--blue-l);font-size:.7rem;flex-shrink:0}
+body.dark .lesson-row i{color:var(--blue-l)}
+
+/* ════════════════════════════════
+   TECH STACK
+════════════════════════════════ */
+.stack-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(min-width:480px){.stack-grid{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:768px){.stack-grid{grid-template-columns:repeat(6,1fr)}}
+@media(min-width:1024px){.stack-grid{grid-template-columns:repeat(8,1fr)}}
+
+.stack-item{background:#fff;border:1px solid var(--mist);border-radius:var(--r-xl);padding:18px 12px;text-align:center;transition:var(--t);box-shadow:var(--sh-sm);cursor:default}
+body.dark .stack-item{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.stack-item:hover{transform:translateY(-4px);box-shadow:var(--sh-lg);border-color:rgba(26,79,214,.2)}
+.stack-icon{font-size:1.8rem;margin-bottom:8px;line-height:1;display:block;transition:transform .28s}
+.stack-item:hover .stack-icon{transform:scale(1.15) rotate(-4deg)}
+.stack-name{font-size:.68rem;font-weight:700;color:var(--slate)}
+body.dark .stack-name{color:rgba(255,255,255,.48)}
+
+/* ════════════════════════════════
+   WHO IT'S FOR
+════════════════════════════════ */
+.who-grid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:640px){.who-grid{grid-template-columns:1fr 1fr}}
+
+.who-card{display:flex;align-items:flex-start;gap:14px;background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);padding:20px;box-shadow:var(--sh-sm);transition:var(--t)}
+body.dark .who-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.who-card:hover{transform:translateY(-3px);box-shadow:var(--sh-lg)}
+.who-icon{width:42px;height:42px;flex-shrink:0;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.15rem}
+.wi-a{background:rgba(26,79,214,.1);border:1px solid rgba(26,79,214,.18)}
+.wi-b{background:rgba(13,148,136,.1);border:1px solid rgba(13,148,136,.18)}
+.wi-c{background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.18)}
+.wi-d{background:rgba(232,98,10,.1);border:1px solid rgba(232,98,10,.18)}
+.who-text h5{font-size:.88rem;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;color:var(--ink);margin-bottom:4px}
+body.dark .who-text h5{color:rgba(255,255,255,.88)}
+.who-text p{font-size:.77rem;color:var(--slate);line-height:1.6}
+body.dark .who-text p{color:rgba(255,255,255,.45)}
+
+/* ════════════════════════════════
+   INSTRUCTOR SECTION
+════════════════════════════════ */
+.instructor-strip{background:linear-gradient(135deg,#0c1630,#101f40);border-radius:var(--r-2xl);padding:44px 40px;display:grid;grid-template-columns:1fr;gap:32px;align-items:center;position:relative;overflow:hidden}
+@media(min-width:768px){.instructor-strip{grid-template-columns:auto 1fr}}
+.instructor-strip::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:40px 40px}
+.instr-avatar-wrap{position:relative;z-index:1;flex-shrink:0}
+.instr-avatar{width:110px;height:110px;border-radius:50%;background:var(--g-fs);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:2.4rem;font-weight:700;color:#fff;border:3px solid rgba(255,255,255,.18);box-shadow:0 0 0 6px rgba(26,79,214,.2)}
+.instr-ring{position:absolute;inset:-8px;border-radius:50%;border:2px dashed rgba(255,255,255,.1);animation:spin-slow 20s linear infinite}
+@keyframes spin-slow{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.instr-content{position:relative;z-index:1}
+.instr-name{font-size:1.3rem;font-weight:700;color:#fff;margin-bottom:3px;font-family:'Fraunces',serif}
+.instr-role{font-size:.78rem;color:rgba(255,255,255,.5);margin-bottom:14px;font-weight:600}
+.instr-bio{font-size:.82rem;color:rgba(255,255,255,.6);line-height:1.72;margin-bottom:18px;max-width:540px}
+.instr-stats{display:flex;flex-wrap:wrap;gap:18px}
+.is-stat{display:flex;align-items:center;gap:7px;font-size:.76rem;color:rgba(255,255,255,.55);font-weight:600}
+.is-stat i{color:rgba(255,255,255,.35);font-size:.7rem}
+.is-stat strong{color:rgba(255,255,255,.82)}
+
+/* ════════════════════════════════
+   TESTIMONIALS
+════════════════════════════════ */
+.testimonials-grid{display:grid;grid-template-columns:1fr;gap:18px}
+@media(min-width:640px){.testimonials-grid{grid-template-columns:repeat(3,1fr)}}
+
+.t-card{background:#fff;border-radius:var(--r-xl);padding:26px 22px;border:1px solid var(--mist);transition:var(--t);display:flex;flex-direction:column;box-shadow:var(--sh-sm);position:relative;overflow:hidden}
+body.dark .t-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.t-card::before{content:'"';position:absolute;top:-8px;left:16px;font-family:'Fraunces',serif;font-size:7rem;color:var(--blue-pale);line-height:1;pointer-events:none}
+.t-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg)}
+.t-stars{color:var(--yellow);letter-spacing:1px;margin-bottom:10px;font-size:.9rem}
+.t-quote{font-style:italic;color:var(--slate);line-height:1.78;font-size:.83rem;flex-grow:1;margin-bottom:16px;position:relative;z-index:1}
+body.dark .t-quote{color:rgba(255,255,255,.5)}
+.t-author{display:flex;align-items:center;gap:11px}
+.t-ava{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.t-name{font-weight:700;font-size:.84rem;font-family:'Fraunces',serif;color:var(--ink)}
+body.dark .t-name{color:rgba(255,255,255,.88)}
+.t-role{font-size:.69rem;color:var(--slate)}
+.t-outcome{display:inline-flex;align-items:center;gap:4px;background:rgba(5,150,105,.08);border:1px solid rgba(5,150,105,.18);border-radius:var(--r-pill);padding:3px 9px;font-size:.65rem;font-weight:700;color:var(--emerald);margin-top:8px}
+
+/* ════════════════════════════════
+   PRICING CARD
+════════════════════════════════ */
+.pricing-wrap{display:grid;grid-template-columns:1fr;gap:20px;max-width:860px;margin:0 auto}
+@media(min-width:640px){.pricing-wrap{grid-template-columns:1fr 1fr}}
+
+.price-card{background:#fff;border-radius:var(--r-2xl);border:2px solid var(--mist);padding:32px 28px;transition:var(--t);box-shadow:var(--sh-sm);position:relative}
+body.dark .price-card{background:var(--ink-2);border-color:rgba(255,255,255,.08)}
+.price-card.featured{border-color:var(--blue);box-shadow:var(--sh-blue),var(--sh-md)}
+.price-card:hover{transform:translateY(-4px)}
+.featured-chip{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:var(--g-blue);color:#fff;padding:4px 18px;border-radius:0 0 var(--r-md) var(--r-md);font-size:.66rem;font-weight:800;letter-spacing:.5px;white-space:nowrap}
+.price-label{font-size:.7rem;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--slate);margin-bottom:10px}
+body.dark .price-label{color:rgba(255,255,255,.35)}
+.price-amount{display:flex;align-items:baseline;gap:4px;margin-bottom:6px}
+.price-val{font-family:'Fraunces',serif;font-size:2.6rem;font-weight:700;color:var(--ink);line-height:1}
+body.dark .price-val{color:#fff}
+.price-currency{font-size:.9rem;font-weight:700;color:var(--slate);margin-bottom:4px}
+body.dark .price-currency{color:rgba(255,255,255,.5)}
+.price-sub{font-size:.74rem;color:var(--slate);margin-bottom:22px}
+body.dark .price-sub{color:rgba(255,255,255,.4)}
+.price-features{display:flex;flex-direction:column;gap:9px;margin-bottom:24px}
+.pf{display:flex;align-items:flex-start;gap:9px;font-size:.8rem;color:var(--slate)}
+body.dark .pf{color:rgba(255,255,255,.55)}
+.pf i{flex-shrink:0;width:14px;margin-top:2px;font-size:.7rem}
+.pf i.ok{color:var(--emerald)}
+.pf i.no{color:var(--slate-l);opacity:.5}
+.pf.dim{opacity:.5}
+
+/* ════════════════════════════════
+   FAQ
+════════════════════════════════ */
+.faq-grid{display:grid;grid-template-columns:1fr;gap:9px}
+@media(min-width:640px){.faq-grid{grid-template-columns:1fr 1fr}}
+.faq-item{background:#fff;border-radius:var(--r-lg);border:1px solid var(--mist);overflow:hidden;transition:border-color .22s;box-shadow:var(--sh-sm)}
+body.dark .faq-item{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.faq-item:hover{border-color:var(--blue)}
+.faq-item.open{border-color:var(--blue-l)}
+.faq-q{padding:15px 18px;font-weight:700;font-size:.84rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-family:'Plus Jakarta Sans',sans-serif;min-height:52px;gap:12px;color:var(--ink)}
+body.dark .faq-q{color:rgba(255,255,255,.85)}
+.faq-icon{width:20px;height:20px;flex-shrink:0;background:var(--blue-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:.62rem;transition:transform .24s,background .22s}
+.faq-item.open .faq-icon{transform:rotate(45deg);background:var(--blue);color:#fff}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;color:var(--slate);font-size:.81rem;line-height:1.76}
+body.dark .faq-a{color:rgba(255,255,255,.48)}
+.faq-item.open .faq-a{max-height:200px;padding:0 18px 14px}
+
+/* ════════════════════════════════
+   CTA BAND
+════════════════════════════════ */
+.cta-band{background:linear-gradient(135deg,var(--blue),var(--blue-d) 45%,#0e2d88);border-radius:var(--r-2xl);padding:60px 44px;text-align:center;position:relative;overflow:hidden}
+.cta-band::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px}
+.cta-band::after{content:'';position:absolute;top:-80px;right:-80px;width:320px;height:320px;background:radial-gradient(circle,rgba(255,255,255,.07) 0%,transparent 70%);border-radius:50%}
+.cta-inner{position:relative;z-index:1}
+.cta-band h2{font-size:clamp(1.8rem,4.5vw,2.9rem);font-weight:700;color:#fff;margin-bottom:12px}
+.cta-band h2 em{font-style:italic;color:rgba(255,255,255,.7)}
+.cta-band p{color:rgba(255,255,255,.62);font-size:clamp(.9rem,2vw,1.04rem);line-height:1.76;max-width:480px;margin:0 auto 30px}
+.cta-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-cta-white{background:#fff;color:var(--blue);font-weight:800;border-radius:var(--r-pill);padding:14px 30px;font-size:.9rem;font-family:'Plus Jakarta Sans',sans-serif;display:inline-flex;align-items:center;gap:7px;transition:var(--t);box-shadow:0 6px 22px rgba(0,0,0,.18);text-decoration:none;cursor:pointer;border:none}
+.btn-cta-white:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.25)}
+.btn-cta-ghost{background:rgba(255,255,255,.1);color:#fff;font-weight:700;border-radius:var(--r-pill);padding:13px 26px;font-size:.9rem;font-family:'Plus Jakarta Sans',sans-serif;display:inline-flex;align-items:center;gap:7px;transition:var(--t);border:1.5px solid rgba(255,255,255,.28);backdrop-filter:blur(8px);text-decoration:none}
+.btn-cta-ghost:hover{background:rgba(255,255,255,.18);transform:translateY(-2px)}
+.cta-trust{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;margin-top:22px}
+.cta-trust-item{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;color:rgba(255,255,255,.58);font-weight:600}
+.cta-trust-item i{color:rgba(255,255,255,.38);font-size:.66rem}
+
+/* ════════════════════════════════
+   NEWSLETTER
+════════════════════════════════ */
+.newsletter-section{background:linear-gradient(135deg,#edf1ff,#ecfdf5)}
+.newsletter-box{background:#fff;border-radius:var(--r-2xl);padding:36px 28px;border:1px solid var(--mist);box-shadow:var(--sh-md)}
+body.dark .newsletter-box{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.nl-icon{width:48px;height:48px;background:var(--blue-pale);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:1.35rem;color:var(--blue);margin-bottom:13px}
+.nl-grid{display:grid;grid-template-columns:1fr;gap:26px}
+@media(min-width:992px){.nl-grid{grid-template-columns:1fr 1fr;align-items:center}}
+.nl-form{position:relative;display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.nl-form-inp{flex:1;min-width:0;padding:12px 16px 12px 42px;border:1.5px solid var(--mist);border-radius:var(--r-pill);font-size:15px;font-family:'Plus Jakarta Sans',sans-serif;transition:var(--t);background:#fff;color:var(--ink);outline:none}
+body.dark .nl-form-inp{background:var(--ink-3);border-color:rgba(255,255,255,.1);color:#fff}
+.nl-form-inp:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,79,214,.08)}
+.nl-form .nl-ico{position:absolute;left:15px;color:var(--slate-l);font-size:.86rem;pointer-events:none;top:50%;transform:translateY(-50%)}
+.nl-submit{background:var(--g-blue);color:#fff;border:none;padding:12px 20px;border-radius:var(--r-pill);font-weight:700;font-size:.82rem;font-family:'Plus Jakarta Sans',sans-serif;transition:var(--t);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.nl-submit:hover{background:var(--g-orange)}
+@media(min-width:992px){
+  .nl-form{flex-wrap:nowrap}
+  .nl-form-inp{padding:12px 150px 12px 42px}
+  .nl-submit{position:absolute;right:5px;top:50%;transform:translateY(-50%)}
+}
+
+/* ════════════════════════════════
+   FOOTER
+════════════════════════════════ */
+@keyframes bar-shift2{0%{background-position:0%}100%{background-position:200%}}
+footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-top:1px solid rgba(255,255,255,.05)}
+.footer-accent-bar{height:2px;background:var(--g-fs);background-size:200% 100%;animation:bar-shift2 6s linear infinite}
+.footer-cta-strip{background:linear-gradient(135deg,#0c1630,#101f40);border-bottom:1px solid rgba(255,255,255,.05);padding:30px 0}
+.footer-cta-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.footer-cta-text h4{font-family:'Fraunces',serif;font-size:clamp(.98rem,2.8vw,1.35rem);font-weight:700;color:#fff;margin-bottom:3px;line-height:1.2}
+.footer-cta-text p{font-size:.76rem;color:rgba(255,255,255,.36);margin:0}
+.footer-cta-btns{display:flex;gap:9px;flex-wrap:wrap;flex-shrink:0}
+.footer-body{padding:52px 0 36px}
+.footer-cols{display:grid;grid-template-columns:2fr 1fr 1fr 1.6fr;gap:34px 28px}
+.footer-brand-name{font-family:'Fraunces',serif;font-size:1.14rem;font-weight:700;color:#fff;letter-spacing:-.04em;display:flex;align-items:center;gap:7px;margin-bottom:9px}
+.footer-brand-name em{font-style:italic;color:#e8620a}
+.footer-bmark{width:27px;height:27px;background:var(--g-blue);border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:.8rem;color:#fff;flex-shrink:0}
+.footer-tagline{font-size:.77rem;color:rgba(255,255,255,.34);line-height:1.74;max-width:270px;margin-bottom:16px}
+.footer-socials{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.fsoc{width:32px;height:32px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);color:rgba(255,255,255,.48);font-size:.78rem;transition:all .2s;text-decoration:none}
+.fsoc:hover{transform:translateY(-2px)}
+.fsoc.tw:hover{background:#1da1f2;color:#fff}
+.fsoc.li:hover{background:#0077b5;color:#fff}
+.fsoc.gh:hover{background:#fff;color:#111}
+.fsoc.ig:hover{background:linear-gradient(135deg,#fd5949,#d6249f,#285aeb);color:#fff}
+.fsoc.yt:hover{background:#ff0000;color:#fff}
+.fsoc.wa:hover{background:#25D366;color:#fff}
+.footer-col-title{font-size:.62rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,.26);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.footer-col-title::before{content:'';width:10px;height:1.5px;background:var(--blue);border-radius:2px;flex-shrink:0}
+.footer-links{list-style:none;padding:0;margin:0}
+.footer-links li{margin-bottom:9px}
+.footer-links a{color:rgba(255,255,255,.4);text-decoration:none;font-size:.77rem;transition:color .18s,padding-left .18s;display:inline-flex;align-items:center;gap:5px}
+.footer-links a:hover{color:#fff;padding-left:3px}
+.footer-links a i{width:12px;font-size:.66rem;opacity:.5}
+.footer-links a.acad{color:#5eead4;font-weight:600}
+.fci{display:flex;align-items:flex-start;gap:9px;margin-bottom:12px}
+.fci-ic{width:28px;height:28px;flex-shrink:0;background:rgba(26,79,214,.12);border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--blue-l);font-size:.68rem;margin-top:1px}
+.fci-label{font-size:.58rem;color:rgba(255,255,255,.22);font-weight:800;letter-spacing:.7px;text-transform:uppercase}
+.fci-val{font-size:.77rem;color:rgba(255,255,255,.58)}
+.fci-val a{color:rgba(255,255,255,.58);text-decoration:none;transition:color .18s}
+.fci-val a:hover{color:var(--orange-l)}
+.footer-hours{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05);border-radius:7px;padding:6px 10px;font-size:.69rem;color:rgba(255,255,255,.36);margin-top:3px}
+.hdot{width:6px;height:6px;background:#34d399;border-radius:50%;animation:dot-p 2.4s ease-in-out infinite;flex-shrink:0}
+.footer-divider{border:none;border-top:1px solid rgba(255,255,255,.05)}
+.footer-bottom{padding:16px 0}
+.footer-bottom-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.footer-copy{font-size:.7rem;color:rgba(255,255,255,.2)}
+.footer-legal{display:flex;gap:18px;flex-wrap:wrap}
+.footer-legal a{font-size:.69rem;color:rgba(255,255,255,.24);text-decoration:none;transition:color .18s}
+.footer-legal a:hover{color:rgba(255,255,255,.6)}
+.footer-made{font-size:.69rem;color:rgba(255,255,255,.18);display:flex;align-items:center;gap:3px}
+.footer-made span{color:var(--orange-l)}
+
+/* ── RESPONSIVE ── */
+@media(min-width:992px){
+  :root{--nav-h:72px}
+  .container{padding:0 32px}
+  .nav-inner{padding:0 32px}
+  .nav-links{display:flex}
+  .nav-cta{display:flex}
+  .ham-btn{display:none!important}
+  .mob-quick{display:none!important}
+  .hero-inner{grid-template-columns:1fr 1fr;gap:52px;padding:80px 0 88px}
+}
+@media(max-width:539px){
+  .footer-cols{grid-template-columns:1fr 1fr;gap:22px 14px}
+  .footer-col-brand{grid-column:1/-1}
+  .footer-col-contact{grid-column:1/-1}
+  .footer-cta-inner{flex-direction:column;align-items:flex-start}
+  .footer-cta-btns{width:100%}
+  .footer-cta-btns a{flex:1;justify-content:center}
+  .footer-bottom-inner{flex-direction:column;align-items:center;text-align:center;gap:8px}
+  .footer-legal{justify-content:center;gap:10px}
+}
+@media(max-width:1023px){
+  .footer-cols{grid-template-columns:1fr 1fr;gap:26px 22px}
+  .footer-col-brand{grid-column:1/-1}
+}
+@media print{.navbar,#wa-float,#theme-toggle,#back-to-top,#scroll-progress,#cookie-bar{display:none!important}}
+</style>
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+
+<button id="theme-toggle" title="Toggle dark mode" aria-label="Toggle dark mode">
+  <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+</button>
+<button id="back-to-top" aria-label="Back to top">
+  <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<a id="wa-float" href="https://wa.me/254769329340?text=Hello%20NeurowexTech!%20I'm%20interested%20in%20the%20Full%20Stack%20Software%20Engineering%20programme." target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+  <span class="wa-ring" aria-hidden="true"></span>
+  <span class="wa-ring" aria-hidden="true"></span>
+  <div class="wa-pill">
+    <div class="wa-ico"><i class="fab fa-whatsapp"></i><span class="wa-dot"></span></div>
+    <div class="wa-text">
+      <span class="wa-label">Enquire about this course</span>
+      <span class="wa-cta">Chat with us</span>
+    </div>
+    <i class="fas fa-arrow-right wa-arr"></i>
+  </div>
+</a>
+
+<div id="toast" role="status" aria-live="polite">
+  <i class="fas fa-check-circle" style="color:#34d399"></i>
+  <span id="toast-msg">Done!</span>
+</div>
+<div id="cookie-bar">
+  <p>🍪 We use cookies to improve your experience.</p>
+  <button id="cookie-accept">Accept</button>
+</div>
+
+<!-- Mobile panel -->
+<div class="mob-overlay" id="mobOverlay" aria-hidden="true"></div>
+<div class="mob-panel" id="mobPanel" role="dialog" aria-modal="true" aria-label="Navigation menu">
+  <div class="mob-head">
+    <a href="/" class="nav-brand" style="font-size:1.1rem;" aria-label="NeurowexTech">
+      <span class="brand-mark">N</span>Neurowex<em>Tech</em>
+    </a>
+    <button class="mob-close" id="mobClose" aria-label="Close menu"><i class="fas fa-times"></i></button>
+  </div>
+  <nav class="mob-body" aria-label="Mobile navigation">
+    <a href="/"           class="mob-link"><i class="fas fa-home"></i> Home</a>
+    <a href="/learn"      class="mob-link"><i class="fas fa-graduation-cap"></i> Academy</a>
+    <a href="/kids-coding" class="mob-link"><i class="fas fa-child"></i> Kids Academy</a>
+    <a href="/#services"  class="mob-link"><i class="fas fa-th-large"></i> Services</a>
+    <a href="/#portfolio" class="mob-link"><i class="fas fa-briefcase"></i> Portfolio</a>
+    <a href="/#pricing"   class="mob-link"><i class="fas fa-tags"></i> Pricing</a>
+    <a href="/contact"    class="mob-link"><i class="fas fa-envelope"></i> Contact</a>
+    <hr class="mob-hr">
+    {{#if isAuthenticated}}
+    <a href="/my-learning"    class="mob-link"><i class="fas fa-book-open"></i> My Learning</a>
+    <a href="/user_dashboard" class="mob-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <a href="/logout"         class="mob-link" style="color:var(--rose)"><i class="fas fa-sign-out-alt" style="color:var(--rose)"></i> Sign Out</a>
+    {{else}}
+    <a href="/login"   class="mob-link"><i class="fas fa-sign-in-alt"></i> Log In</a>
+    <a href="/sign_up" class="mob-link"><i class="fas fa-user-plus"></i> Sign Up</a>
+    {{/if}}
+  </nav>
+  <div class="mob-footer">
+    <a href="#enrol" class="btn btn-primary" style="justify-content:center;border-radius:var(--r-pill)">Enrol Now <i class="fas fa-arrow-right"></i></a>
+    {{#if isAuthenticated}}
+    <a href="/my-learning" class="btn btn-outline" style="justify-content:center;">My Learning</a>
+    {{else}}
+    <a href="/sign_up" class="btn btn-outline" style="justify-content:center;">Sign Up Free</a>
+    {{/if}}
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="mainNav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand" aria-label="NeurowexTech">
+      <span class="brand-mark">N</span>Neurowex<em>Tech</em>
+    </a>
+    <ul class="nav-links" role="list">
+      <li class="nl-item"><a href="/"          class="nl-a">Home</a></li>
+      <li class="nl-item"><a href="/learn"      class="nl-a active">Academy</a></li>
+      <li class="nl-item">
+        <a href="/#services" class="nl-a">Services <i class="fas fa-chevron-down chev"></i></a>
+        <div class="mega-drop" role="menu">
+          <div class="mega-grid">
+            <div>
+              <span class="mega-col-label">Development</span>
+              <a class="mega-link" href="/contact?service=Web+Development"><i class="fas fa-laptop-code"></i> Web Dev</a>
+              <a class="mega-link" href="/contact?service=Mobile+Apps"><i class="fas fa-mobile-alt"></i> Mobile Apps</a>
+              <a class="mega-link" href="/contact?service=E-commerce"><i class="fas fa-shopping-cart"></i> E-commerce</a>
+              <a class="mega-link" href="/contact?service=MVP+Development"><i class="fas fa-rocket"></i> MVP Dev</a>
+            </div>
+            <div>
+              <span class="mega-col-label">Cloud & Security</span>
+              <a class="mega-link" href="/contact?service=Cloud"><i class="fas fa-cloud-upload-alt"></i> Cloud</a>
+              <a class="mega-link" href="/contact?service=Cyber+Security"><i class="fas fa-shield-alt"></i> Cyber Security</a>
+              <a class="mega-link" href="/contact?service=AI+Integration"><i class="fas fa-robot"></i> AI Integration</a>
+              <a class="mega-link" href="/#graphic"><i class="fas fa-palette"></i> Graphic Design</a>
+            </div>
+            <div>
+              <span class="mega-col-label">Data & Support</span>
+              <a class="mega-link" href="/contact?service=Analytics"><i class="fas fa-chart-line"></i> Analytics</a>
+              <a class="mega-link" href="/contact?service=IT+Consulting"><i class="fas fa-headset"></i> IT Consulting</a>
+              <a class="mega-link" href="/contact?service=Database"><i class="fas fa-database"></i> Database</a>
+              <a class="mega-link" href="/contact?service=SEO"><i class="fas fa-search"></i> SEO</a>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="nl-item"><a href="/kids-coding" class="nl-a"><i class="fas fa-child" style="font-size:.72rem"></i> Kids</a></li>
+      <li class="nl-item"><a href="/#pricing"    class="nl-a">Pricing</a></li>
+      <li class="nl-item"><a href="/contact"     class="nl-a">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <button id="theme-toggle-nav" style="width:36px;height:36px;border-radius:50%;background:var(--blue-pale);border:1.5px solid var(--mist);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--t);color:var(--blue);" aria-label="Toggle dark mode">
+        <i class="fas fa-moon" style="font-size:.82rem"></i>
+      </button>
+      {{#if isAuthenticated}}
+      <div class="user-drop">
+        <button class="user-btn"><i class="fas fa-user"></i> {{userName}} <i class="fas fa-chevron-down chev-u"></i></button>
+        <div class="user-menu" role="menu">
+          <a href="/my-learning"    role="menuitem"><i class="fas fa-book-open"></i> My Learning</a>
+          <a href="/user_dashboard" role="menuitem"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+          <hr class="user-menu-divider">
+          <a href="/logout" role="menuitem" style="color:var(--rose)"><i class="fas fa-sign-out-alt" style="color:var(--rose)"></i> Sign Out</a>
+        </div>
+      </div>
+      {{else}}
+      <a href="/login"   class="btn-nav-signin">Log in</a>
+      <a href="/sign_up" class="btn-nav-signup">Sign up free <i class="fas fa-arrow-right" style="font-size:.7rem"></i></a>
+      {{/if}}
+    </div>
+    <div class="mob-quick" id="mobQuick">
+      <button class="mob-quick-btn" id="mobThemeBtn" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+      <button class="ham-btn" id="hamBtn" aria-label="Open menu" aria-expanded="false">
+        <span class="ham-line"></span><span class="ham-line"></span><span class="ham-line"></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════
+     HERO
+════════════════════════════════ -->
+<section class="hero-fs">
+  <div class="orb-1" aria-hidden="true"></div>
+  <div class="orb-2" aria-hidden="true"></div>
+  <div class="orb-3" aria-hidden="true"></div>
+  <div class="container">
+    <div class="hero-inner">
+      <!-- LEFT -->
+      <div>
+        <div class="hero-eyebrow">
+          <div class="hero-badge"><span class="dot"></span> NeurowexTech Academy</div>
+          <div class="premium-chip"><i class="fas fa-gem"></i> Premium Programme</div>
+        </div>
+        <h1>Full Stack<br><em>Software Engineering</em></h1>
+        <p class="hero-desc">Build complete, production-ready web applications from the ground up — front-end, back-end, databases, and cloud deployment. One programme, every skill you need to be job-ready.</p>
+
+        <div class="outcome-pills">
+          <span class="op"><i class="fas fa-check"></i> Build & deploy real apps</span>
+          <span class="op"><i class="fas fa-check"></i> Full-time job ready</span>
+          <span class="op"><i class="fas fa-check"></i> Portfolio projects included</span>
+          <span class="op"><i class="fas fa-check"></i> 1-on-1 mentor sessions</span>
+        </div>
+
+        <div class="hero-actions">
+          <a href="#enrol" class="btn btn-primary btn-lg"><i class="fas fa-rocket"></i> Enrol Now</a>
+          <a href="#curriculum" class="btn btn-ghost btn-lg"><i class="fas fa-map"></i> See Curriculum</a>
+        </div>
+
+        <div class="hero-meta">
+          <div class="hm-item"><i class="fas fa-clock"></i> <span><strong>16 weeks</strong> · Self-paced</span></div>
+          <div class="hm-item"><i class="fas fa-layer-group"></i> <span><strong>5 modules</strong> · 80+ lessons</span></div>
+          <div class="hm-item"><i class="fas fa-star" style="color:var(--yellow)"></i> <span><strong>4.8</strong> / 5 rating</span></div>
+          <div class="hm-item"><i class="fas fa-users"></i> <span><strong>340+</strong> enrolled</span></div>
+          <div class="hm-item"><i class="fas fa-certificate"></i> <span>Certificate included</span></div>
+        </div>
+      </div>
+
+      <!-- RIGHT — browser preview -->
+      <div>
+        <div class="browser-frame">
+          <div class="browser-bar">
+            <div class="b-dots">
+              <span class="b-dot r"></span><span class="b-dot y"></span><span class="b-dot g"></span>
+            </div>
+            <div class="b-url">neurowextech.co.ke/my-portfolio</div>
+            <i class="fas fa-lock" style="font-size:.62rem;color:rgba(255,255,255,.2)"></i>
+          </div>
+          <div class="browser-body">
+            <div class="scan-line" aria-hidden="true"></div>
+            <div class="browser-preview">
+              <div class="preview-nav">
+                <span class="preview-logo">PortfolioOS</span>
+                <div class="preview-links">
+                  <div class="preview-link"></div>
+                  <div class="preview-link" style="width:22px"></div>
+                  <div class="preview-link" style="width:18px"></div>
+                </div>
+              </div>
+              <div class="preview-hero-mini">
+                <div class="ph-tag"></div>
+                <div class="ph-h1"></div>
+                <div class="ph-h2"></div>
+                <div class="ph-btns">
+                  <div class="ph-btn p"></div>
+                  <div class="ph-btn s"></div>
+                </div>
+              </div>
+              <div class="preview-stats-row">
+                <div class="psr"><div class="psr-val"></div><div class="psr-lbl"></div></div>
+                <div class="psr"><div class="psr-val" style="background:var(--g-orange)"></div><div class="psr-lbl"></div></div>
+                <div class="psr"><div class="psr-val" style="background:linear-gradient(135deg,#10b981,#06b6d4)"></div><div class="psr-lbl"></div></div>
+                <div class="psr"><div class="psr-val" style="background:linear-gradient(135deg,#7c3aed,#ec4899)"></div><div class="psr-lbl"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- tech badges under browser -->
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;justify-content:center">
+          <span style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-pill);padding:4px 13px;font-size:.72rem;font-weight:700;color:rgba(255,255,255,.65)">HTML &amp; CSS</span>
+          <span style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-pill);padding:4px 13px;font-size:.72rem;font-weight:700;color:rgba(255,255,255,.65)">JavaScript</span>
+          <span style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-pill);padding:4px 13px;font-size:.72rem;font-weight:700;color:rgba(255,255,255,.65)">Node.js</span>
+          <span style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-pill);padding:4px 13px;font-size:.72rem;font-weight:700;color:rgba(255,255,255,.65)">PostgreSQL</span>
+          <span style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-pill);padding:4px 13px;font-size:.72rem;font-weight:700;color:rgba(255,255,255,.65)">React</span>
+          <span style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-pill);padding:4px 13px;font-size:.72rem;font-weight:700;color:rgba(255,255,255,.65)">Deploy ☁️</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap" aria-hidden="true">
+  <div class="marquee-track">
+    <span class="marquee-item">💻 HTML &amp; CSS <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">⚡ JavaScript ES6+ <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">⚛️ React <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🟩 Node.js &amp; Express <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🗄️ PostgreSQL <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🔐 Auth &amp; Security <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">☁️ Cloud Deployment <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🔀 Git &amp; GitHub <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">📦 REST APIs <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🎓 Certificate <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">💻 HTML &amp; CSS <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">⚡ JavaScript ES6+ <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">⚛️ React <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🟩 Node.js &amp; Express <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🗄️ PostgreSQL <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">☁️ Cloud Deployment <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">🔐 Auth &amp; Security <span class="marquee-sep">·</span></span>
+    <span class="marquee-item">📦 REST APIs <span class="marquee-sep">·</span></span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     WHAT YOU'LL BUILD
+════════════════════════════════ -->
+<section class="section-py" style="background:#fff" id="projects">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:52px">
+      <div class="section-kicker teal">Portfolio Projects</div>
+      <h2 class="section-title">3 Real Apps You'll <span class="g-fs">Ship</span></h2>
+      <p class="section-body" style="margin:0 auto">These aren't tutorial exercises. By the time you graduate, you'll have three production-deployed applications in your portfolio.</p>
+    </div>
+    <div class="build-grid">
+
+      <!-- Project 1 -->
+      <div class="build-card">
+        <div class="bc-thumb">
+          <div class="bc-thumb-placeholder bc-th-1">🛒</div>
+          <span class="bc-num">Project 01</span>
+          <div class="bc-stack">
+            <span class="bc-tag">HTML</span>
+            <span class="bc-tag">CSS</span>
+            <span class="bc-tag">JS</span>
+          </div>
+        </div>
+        <div class="bc-body">
+          <div class="bc-title">E-Commerce Storefront</div>
+          <p class="bc-desc">A fully responsive online store with product listings, cart functionality, search, and a checkout flow. Vanilla JS + local storage — no frameworks.</p>
+        </div>
+      </div>
+
+      <!-- Project 2 -->
+      <div class="build-card">
+        <div class="bc-thumb">
+          <div class="bc-thumb-placeholder bc-th-2">📋</div>
+          <span class="bc-num">Project 02</span>
+          <div class="bc-stack">
+            <span class="bc-tag">Node.js</span>
+            <span class="bc-tag">PostgreSQL</span>
+            <span class="bc-tag">REST API</span>
+          </div>
+        </div>
+        <div class="bc-body">
+          <div class="bc-title">Task Management API</div>
+          <p class="bc-desc">A production REST API with user authentication, JWT tokens, CRUD operations, and a PostgreSQL database. Deployed live on Render.</p>
+        </div>
+      </div>
+
+      <!-- Project 3 -->
+      <div class="build-card">
+        <div class="bc-thumb">
+          <div class="bc-thumb-placeholder bc-th-3">🚀</div>
+          <span class="bc-num">Project 03</span>
+          <div class="bc-stack">
+            <span class="bc-tag">React</span>
+            <span class="bc-tag">Node.js</span>
+            <span class="bc-tag">Full Stack</span>
+          </div>
+        </div>
+        <div class="bc-body">
+          <div class="bc-title">Full Stack SaaS App</div>
+          <p class="bc-desc">A complete software-as-a-service application with React front-end, Node/Express API, PostgreSQL database, auth, and cloud deployment. Your capstone.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     CURRICULUM
+════════════════════════════════ -->
+<section class="section-py" style="background:var(--ghost)" id="curriculum">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:52px">
+      <div class="section-kicker">Curriculum</div>
+      <h2 class="section-title">5 Modules · <span class="g-blue">80+ Lessons</span></h2>
+      <p class="section-body" style="margin:0 auto">A structured path from zero to full-stack. Click any module to see what's inside.</p>
+    </div>
+
+    <div class="curriculum-wrap" id="curriculumWrap">
+
+      <!-- Module 1 -->
+      <div class="module-card open" data-module="1">
+        <div class="module-head">
+          <div class="module-num mn-1">01</div>
+          <div class="module-info">
+            <div class="module-title">Front-End Foundations</div>
+            <div class="module-subtitle">
+              <span><i class="fas fa-play-circle"></i> 18 lessons</span>
+              <span><i class="fas fa-clock"></i> ~3 weeks</span>
+              <span><i class="fas fa-briefcase"></i> Project 01</span>
+            </div>
+          </div>
+          <div class="module-icon"><i class="fas fa-chevron-up"></i></div>
+        </div>
+        <div class="module-body">
+          <div class="module-lessons">
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> HTML5 structure &amp; semantics</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> CSS fundamentals &amp; the box model</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Flexbox &amp; CSS Grid layouts</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Responsive design &amp; media queries</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> CSS animations &amp; transitions</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Git basics &amp; GitHub</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Accessibility &amp; best practices</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> ▶ Build: E-Commerce Storefront</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Module 2 -->
+      <div class="module-card" data-module="2">
+        <div class="module-head">
+          <div class="module-num mn-2">02</div>
+          <div class="module-info">
+            <div class="module-title">JavaScript — Core to Advanced</div>
+            <div class="module-subtitle">
+              <span><i class="fas fa-play-circle"></i> 20 lessons</span>
+              <span><i class="fas fa-clock"></i> ~3.5 weeks</span>
+            </div>
+          </div>
+          <div class="module-icon"><i class="fas fa-chevron-down"></i></div>
+        </div>
+        <div class="module-body">
+          <div class="module-lessons">
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Variables, data types, operators</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Functions, scope &amp; closures</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Arrays, objects &amp; destructuring</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> DOM manipulation</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Async JS — callbacks, promises, async/await</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Fetch API &amp; REST calls</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> ES6+ modules, classes, spread</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Error handling &amp; debugging</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Module 3 -->
+      <div class="module-card" data-module="3">
+        <div class="module-head">
+          <div class="module-num mn-3">03</div>
+          <div class="module-info">
+            <div class="module-title">Back-End with Node.js &amp; Express</div>
+            <div class="module-subtitle">
+              <span><i class="fas fa-play-circle"></i> 16 lessons</span>
+              <span><i class="fas fa-clock"></i> ~3 weeks</span>
+              <span><i class="fas fa-briefcase"></i> Project 02</span>
+            </div>
+          </div>
+          <div class="module-icon"><i class="fas fa-chevron-down"></i></div>
+        </div>
+        <div class="module-body">
+          <div class="module-lessons">
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Node.js runtime &amp; npm</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Express framework &amp; routing</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Middleware &amp; request/response cycle</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> REST API design</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Authentication with JWT</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Environment variables &amp; security</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Error handling patterns</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> ▶ Build: Task Management API</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Module 4 -->
+      <div class="module-card" data-module="4">
+        <div class="module-head">
+          <div class="module-num mn-4">04</div>
+          <div class="module-info">
+            <div class="module-title">Databases — PostgreSQL &amp; SQL</div>
+            <div class="module-subtitle">
+              <span><i class="fas fa-play-circle"></i> 14 lessons</span>
+              <span><i class="fas fa-clock"></i> ~2.5 weeks</span>
+            </div>
+          </div>
+          <div class="module-icon"><i class="fas fa-chevron-down"></i></div>
+        </div>
+        <div class="module-body">
+          <div class="module-lessons">
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Relational databases &amp; SQL basics</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> PostgreSQL setup &amp; Neon cloud DB</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Tables, constraints &amp; data types</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Joins, aggregates &amp; subqueries</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Connecting Node.js to PostgreSQL</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Migrations &amp; seeding</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Database design &amp; normalisation</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Module 5 -->
+      <div class="module-card" data-module="5">
+        <div class="module-head">
+          <div class="module-num mn-5">05</div>
+          <div class="module-info">
+            <div class="module-title">React, Deployment &amp; Capstone</div>
+            <div class="module-subtitle">
+              <span><i class="fas fa-play-circle"></i> 14 lessons</span>
+              <span><i class="fas fa-clock"></i> ~3 weeks</span>
+              <span><i class="fas fa-briefcase"></i> Project 03 — Capstone</span>
+            </div>
+          </div>
+          <div class="module-icon"><i class="fas fa-chevron-down"></i></div>
+        </div>
+        <div class="module-body">
+          <div class="module-lessons">
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> React fundamentals &amp; JSX</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Components, props &amp; state</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Hooks — useState, useEffect, useContext</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> React Router &amp; SPA navigation</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Connecting React to your Node API</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> Deploying to Render &amp; Vercel</div>
+            <div class="lesson-row"><i class="fas fa-play-circle"></i> ▶ Build: Full Stack SaaS Capstone</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     TECH STACK
+════════════════════════════════ -->
+<section class="section-py" style="background:#fff">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:44px">
+      <div class="section-kicker orange">Tools You'll Master</div>
+      <h2 class="section-title">The <span class="g-orange">Tech Stack</span></h2>
+      <p class="section-body" style="margin:0 auto">Industry-standard tools used by professional engineering teams worldwide.</p>
+    </div>
+    <div class="stack-grid">
+      <div class="stack-item"><span class="stack-icon">🌐</span><div class="stack-name">HTML5</div></div>
+      <div class="stack-item"><span class="stack-icon">🎨</span><div class="stack-name">CSS3</div></div>
+      <div class="stack-item"><span class="stack-icon">⚡</span><div class="stack-name">JavaScript</div></div>
+      <div class="stack-item"><span class="stack-icon">⚛️</span><div class="stack-name">React</div></div>
+      <div class="stack-item"><span class="stack-icon">🟩</span><div class="stack-name">Node.js</div></div>
+      <div class="stack-item"><span class="stack-icon">🚂</span><div class="stack-name">Express</div></div>
+      <div class="stack-item"><span class="stack-icon">🐘</span><div class="stack-name">PostgreSQL</div></div>
+      <div class="stack-item"><span class="stack-icon">🔀</span><div class="stack-name">Git &amp; GitHub</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     WHO IT'S FOR
+════════════════════════════════ -->
+<section class="section-py" style="background:var(--ghost)">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:48px">
+      <div class="section-kicker">Who It's For</div>
+      <h2 class="section-title">Built for <span class="g-blue">Serious Learners</span></h2>
+      <p class="section-body" style="margin:0 auto">This is a real engineering programme — not a quick crash course. It rewards commitment.</p>
+    </div>
+    <div class="who-grid" style="max-width:860px;margin:0 auto">
+      <div class="who-card">
+        <div class="who-icon wi-a">🎓</div>
+        <div class="who-text">
+          <h5>Complete Beginners</h5>
+          <p>Zero experience needed. We start from the very first HTML tag and build up systematically. If you can use a browser, you can start today.</p>
+        </div>
+      </div>
+      <div class="who-card">
+        <div class="who-icon wi-b">🔄</div>
+        <div class="who-text">
+          <h5>Career Changers</h5>
+          <p>Transitioning from another field into tech? This programme gives you the full picture — not just front-end or back-end, but both — so you're immediately hireable.</p>
+        </div>
+      </div>
+      <div class="who-card">
+        <div class="who-icon wi-c">🧑‍💻</div>
+        <div class="who-text">
+          <h5>Self-Taught Devs Filling Gaps</h5>
+          <p>Know a bit of HTML or JavaScript but have gaps in your knowledge? The structured curriculum identifies and fills every blind spot in your skillset.</p>
+        </div>
+      </div>
+      <div class="who-card">
+        <div class="who-icon wi-d">🚀</div>
+        <div class="who-text">
+          <h5>Entrepreneurs Building Products</h5>
+          <p>Want to build your own startup or SaaS without depending on external developers? This gives you the technical foundation to prototype and ship your ideas.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     INSTRUCTOR
+════════════════════════════════ -->
+<section class="section-py" style="background:#fff">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:40px">
+      <div class="section-kicker teal">Your Instructor</div>
+      <h2 class="section-title">Learn from Someone <span class="g-fs">Who Ships</span></h2>
+    </div>
+    <div class="instructor-strip">
+      <div class="instr-avatar-wrap">
+        <div class="instr-ring" aria-hidden="true"></div>
+        <div class="instr-avatar">SK</div>
+      </div>
+      <div class="instr-content">
+        <div class="instr-name">Stephen Kingori</div>
+        <div class="instr-role">Lead Instructor · Full Stack Engineer · NeurowexTech</div>
+        <p class="instr-bio">Stephen is a practicing full-stack engineer and the founder of NeurowexTech. He's built production applications for clients across Kenya and East Africa — from e-commerce platforms to custom SaaS tools. His teaching philosophy is simple: every lesson should produce something real.</p>
+        <div class="instr-stats">
+          <div class="is-stat"><i class="fas fa-users"></i> <span><strong>500+</strong> students taught</span></div>
+          <div class="is-stat"><i class="fas fa-star" style="color:var(--yellow)"></i> <span><strong>4.7</strong> avg rating</span></div>
+          <div class="is-stat"><i class="fas fa-code"></i> <span><strong>80+</strong> lessons created</span></div>
+          <div class="is-stat"><i class="fas fa-map-marker-alt"></i> <span>Nairobi, Kenya</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     TESTIMONIALS
+════════════════════════════════ -->
+<section class="section-py" style="background:var(--ghost)">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:48px">
+      <div class="section-kicker orange">Student Outcomes</div>
+      <h2 class="section-title">From <span class="g-orange">Learner to Builder</span></h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="t-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"I went from a complete beginner to deploying a live full-stack app in four months. The curriculum is incredibly well-structured — every module builds on the last. Stephen's explanations are clear and practical."</p>
+        <div class="t-author">
+          <div class="t-ava" style="background:#dbeafe">👨‍💻</div>
+          <div>
+            <div class="t-name">Brian Omondi</div>
+            <div class="t-role">Junior Developer, Nairobi</div>
+          </div>
+        </div>
+        <div class="t-outcome"><i class="fas fa-briefcase"></i> Landed first dev job</div>
+      </div>
+      <div class="t-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"I'd been self-teaching for 2 years but always hit a wall with back-end. This course finally made Node.js, databases and APIs click. The Task Manager project alone was worth the tuition."</p>
+        <div class="t-author">
+          <div class="t-ava" style="background:#d1fae5">👩‍💻</div>
+          <div>
+            <div class="t-name">Faith Wanjiku</div>
+            <div class="t-role">Freelance Developer, Remote</div>
+          </div>
+        </div>
+        <div class="t-outcome"><i class="fas fa-star"></i> Now freelancing full-time</div>
+      </div>
+      <div class="t-card">
+        <div class="t-stars">★★★★★</div>
+        <p class="t-quote">"The capstone project is a real SaaS app that I'm now charging clients to use. I built a subscription-based project management tool for small businesses. The programme gave me every skill I needed."</p>
+        <div class="t-author">
+          <div class="t-ava" style="background:#fef3c7">👨‍🚀</div>
+          <div>
+            <div class="t-name">Kevin Maina</div>
+            <div class="t-role">Founder &amp; Developer, Mombasa</div>
+          </div>
+        </div>
+        <div class="t-outcome"><i class="fas fa-rocket"></i> Built &amp; launched SaaS</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     PRICING
+════════════════════════════════ -->
+<section class="section-py" style="background:#fff" id="enrol">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:48px">
+      <div class="section-kicker">Pricing</div>
+      <h2 class="section-title">Choose Your <span class="g-blue">Pathway</span></h2>
+      <p class="section-body" style="margin:0 auto">All plans include lifetime access, the certificate, and all 3 portfolio projects. The difference is support and pace.</p>
+    </div>
+
+    <div class="pricing-wrap">
+
+      <!-- Self-paced -->
+      <div class="price-card">
+        <div class="price-label">Self-Paced</div>
+        <div class="price-amount">
+          <span class="price-currency">Ksh</span>
+          <span class="price-val">12,500</span>
+        </div>
+        <div class="price-sub">One-time payment · Lifetime access</div>
+        <div class="price-features">
+          <div class="pf"><i class="fas fa-check-circle ok"></i> 80+ video lessons</div>
+          <div class="pf"><i class="fas fa-check-circle ok"></i> 3 portfolio projects</div>
+          <div class="pf"><i class="fas fa-check-circle ok"></i> Completion certificate</div>
+          <div class="pf"><i class="fas fa-check-circle ok"></i> Community forum access</div>
+          <div class="pf"><i class="fas fa-check-circle ok"></i> Lifetime access &amp; updates</div>
+          <div class="pf dim"><i class="fas fa-times-circle no"></i> 1-on-1 mentor sessions</div>
+          <div class="pf dim"><i class="fas fa-times-circle no"></i> Code review sessions</div>
+        </div>
+        <a href="https://wa.me/254769329340?text=I'd%20like%20to%20enrol%20in%20Full%20Stack%20Self-Paced%20(Ksh%2012,500)" target="_blank" rel="noopener" class="btn btn-outline" style="width:100%;justify-content:center">Enrol Self-Paced <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+      <!-- Mentored -->
+      <div class="price-card featured">
+        <div class="featured-chip">⭐ Most popular</div>
+        <div class="price-label">Mentored</div>
+        <div class="price-amount">
+          <span class="price-currency">Ksh</span>
+          <span class="price-val">22,500</span>
+        </div>
+        <div class="price-sub">One-time payment · Lifetime access</div>
+        <div class="price-features">
+          <div class="pf"><i class="fas fa-check-circle ok"></i> Everything in Self-Paced</div>
+          <div class="pf"><i class="fas fa-check-circle ok"></i> 4× 1-on-1 mentor sessions</div>
+          <div class="pf"><i class="fas fa-check-circle ok"></i> Weekly code reviews</div>
+          <div class="pf"><i class="fas fa-check-circle ok"></i> Priority WhatsApp support</div>
+          <div class="pf"><i class="fas fa-check-circle ok"></i> CV &amp; LinkedIn review</div>
+          <div class="pf"><i class="fas fa-check-circle ok"></i> Job referral assistance</div>
+          <div class="pf"><i class="fas fa-check-circle ok"></i> Private cohort group</div>
+        </div>
+        <a href="https://wa.me/254769329340?text=I'd%20like%20to%20enrol%20in%20Full%20Stack%20Mentored%20(Ksh%2022,500)" target="_blank" rel="noopener" class="btn btn-primary" style="width:100%;justify-content:center">Enrol Mentored <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+    </div>
+
+    <!-- Payment note -->
+    <p style="text-align:center;font-size:.78rem;color:var(--slate);margin-top:20px">
+      <i class="fas fa-lock" style="color:var(--emerald)"></i> Secure payment via M-Pesa, bank transfer, or card.
+      &nbsp;|&nbsp; <i class="fas fa-undo" style="color:var(--emerald)"></i> 7-day money-back guarantee.
+      &nbsp;|&nbsp; <i class="fab fa-whatsapp" style="color:var(--emerald)"></i> Questions? <a href="https://wa.me/254769329340" target="_blank" rel="noopener" style="color:var(--blue);font-weight:600">Chat with us</a>
+    </p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     FAQ
+════════════════════════════════ -->
+<section class="section-py" style="background:var(--ghost)">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:48px">
+      <div class="section-kicker">FAQ</div>
+      <h2 class="section-title">Common <span class="g-blue">Questions</span></h2>
+      <p class="section-body" style="margin:0 auto">Everything you need to know before enrolling.</p>
+    </div>
+    <div class="faq-grid" style="max-width:920px;margin:0 auto">
+      <div class="faq-item">
+        <div class="faq-q">Do I need prior coding experience? <span class="faq-icon"><i class="fas fa-plus"></i></span></div>
+        <div class="faq-a">No. The programme starts from scratch — we begin with your first HTML tag. As long as you're comfortable using a computer and browser, you're ready to start.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How long does the programme take? <span class="faq-icon"><i class="fas fa-plus"></i></span></div>
+        <div class="faq-a">Most students complete it in 14–18 weeks at 10–15 hours per week. It's fully self-paced so you can go faster or take more time. There's no expiry on your access.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What equipment do I need? <span class="faq-icon"><i class="fas fa-plus"></i></span></div>
+        <div class="faq-a">A laptop or desktop running Windows, Mac, or Linux. A stable internet connection. Everything else — VS Code, Node.js, Git — is free software we'll walk you through installing.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Is the certificate recognised? <span class="faq-icon"><i class="fas fa-plus"></i></span></div>
+        <div class="faq-a">The NeurowexTech Academy certificate is shareable on LinkedIn and respected by employers in Kenya and beyond. Your portfolio of 3 deployed apps is what truly speaks to employers.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I pay in instalments? <span class="faq-icon"><i class="fas fa-plus"></i></span></div>
+        <div class="faq-a">Yes — chat with us on WhatsApp and we'll set up a 2–3 instalment payment plan that works for you. We want access to be as easy as possible.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What's your refund policy? <span class="faq-icon"><i class="fas fa-plus"></i></span></div>
+        <div class="faq-a">We offer a full 7-day refund from the date of enrolment, no questions asked. We believe in the programme — but if it's not right for you, we'd rather refund you.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     CTA BAND
+════════════════════════════════ -->
+<div style="padding:72px 0;background:var(--ghost)">
+  <div class="container">
+    <div class="cta-band">
+      <div class="cta-inner">
+        <div class="section-kicker" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.2);margin-bottom:18px;display:inline-flex">🚀 Start Today</div>
+        <h2>Your Next Career<br><em>Starts with One Decision</em></h2>
+        <p>Join 340+ learners who chose to build something real. The Full Stack programme gives you every skill, every project, and every tool you need to become a developer.</p>
+        <div class="cta-actions">
+          <a href="https://wa.me/254769329340?text=I'd%20like%20to%20enrol%20in%20the%20Full%20Stack%20Software%20Engineering%20programme" target="_blank" rel="noopener" class="btn-cta-white"><i class="fas fa-rocket"></i> Enrol via WhatsApp</a>
+          <a href="/contact" class="btn-cta-ghost"><i class="fas fa-envelope"></i> Ask a Question</a>
+        </div>
+        <div class="cta-trust">
+          <span class="cta-trust-item"><i class="fas fa-shield-alt"></i> 7-day refund guarantee</span>
+          <span class="cta-trust-item"><i class="fas fa-certificate"></i> Completion certificate</span>
+          <span class="cta-trust-item"><i class="fas fa-infinity"></i> Lifetime access</span>
+          <span class="cta-trust-item"><i class="fas fa-map-marker-alt"></i> Nairobi-based support</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     NEWSLETTER
+════════════════════════════════ -->
+<section class="newsletter-section section-py-sm">
+  <div class="container">
+    <div class="newsletter-box">
+      <div class="nl-grid">
+        <div>
+          <div class="nl-icon"><i class="fas fa-envelope-open-text"></i></div>
+          <h3 style="font-size:clamp(1.2rem,3.5vw,1.7rem);margin-bottom:8px">Stay in the <span class="g-blue">Loop</span> 📬</h3>
+          <p style="color:var(--slate);margin:0 0 13px">Get notified when new modules drop, cohorts open, and free resources are published.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:14px;font-size:.74rem;color:var(--slate)">
+            <span><i class="fas fa-check-circle" style="color:var(--emerald)"></i> New module alerts</span>
+            <span><i class="fas fa-check-circle" style="color:var(--emerald)"></i> Cohort openings</span>
+            <span><i class="fas fa-check-circle" style="color:var(--emerald)"></i> Free resources</span>
+          </div>
+        </div>
+        <div>
+          <form id="nlForm">
+            <div class="nl-form">
+              <i class="fas fa-envelope nl-ico"></i>
+              <input type="email" id="nlEmail" class="nl-form-inp" placeholder="Enter your email address" required aria-label="Email for newsletter" />
+              <button type="submit" id="nlBtn" class="nl-submit">Subscribe <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
+              <input type="checkbox" id="nlConsent" checked style="cursor:pointer;width:15px;height:15px;accent-color:var(--blue)">
+              <label for="nlConsent" style="font-size:.71rem;color:var(--slate);cursor:pointer">I agree to receive emails from NeurowexTech</label>
+            </div>
+            <p id="nlMsg" style="font-size:.78rem;margin-top:8px" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-accent-bar"></div>
+  <div class="footer-cta-strip">
+    <div class="container">
+      <div class="footer-cta-inner">
+        <div class="footer-cta-text">
+          <h4>Ready to become a full-stack developer? 🚀</h4>
+          <p>Sign up free and start the first module today — no credit card required.</p>
+        </div>
+        <div class="footer-cta-btns">
+          <a href="/sign_up" class="btn btn-primary" style="padding:10px 20px;font-size:.83rem">Sign Up Free <i class="fas fa-arrow-right"></i></a>
+          <a href="/contact" class="btn btn-orange" style="padding:10px 18px;font-size:.83rem"><i class="fas fa-envelope"></i> Contact Us</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-body">
+    <div class="container">
+      <div class="footer-cols">
+        <div class="footer-col-brand">
+          <div class="footer-brand-name"><span class="footer-bmark">N</span>Neurowex<em>Tech</em></div>
+          <p class="footer-tagline">Practical full-stack engineering education — real projects, real deployments, job-ready outcomes.</p>
+          <div class="footer-socials">
+            <a href="#" class="fsoc tw" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="fsoc li" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="fsoc gh" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="#" class="fsoc ig" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="fsoc yt" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://wa.me/254769329340" target="_blank" rel="noopener noreferrer" class="fsoc wa" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span style="background:rgba(26,79,214,.1);color:#93c5fd;border:1px solid rgba(26,79,214,.2);border-radius:6px;padding:3px 9px;font-size:.64rem;font-weight:700">💻 Front-End</span>
+            <span style="background:rgba(13,148,136,.1);color:#5eead4;border:1px solid rgba(13,148,136,.2);border-radius:6px;padding:3px 9px;font-size:.64rem;font-weight:700">🟩 Back-End</span>
+            <span style="background:rgba(5,150,105,.1);color:#6ee7b7;border:1px solid rgba(5,150,105,.2);border-radius:6px;padding:3px 9px;font-size:.64rem;font-weight:700">🗄️ Databases</span>
+            <span style="background:rgba(124,58,237,.1);color:#c4b5fd;border:1px solid rgba(124,58,237,.2);border-radius:6px;padding:3px 9px;font-size:.64rem;font-weight:700">☁️ Deploy</span>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Programme</div>
+          <ul class="footer-links">
+            <li><a href="#curriculum"><i class="fas fa-map"></i> Curriculum</a></li>
+            <li><a href="#projects"><i class="fas fa-briefcase"></i> Projects</a></li>
+            <li><a href="#enrol"><i class="fas fa-rocket"></i> Pricing</a></li>
+            <li><a href="/learn" class="acad"><i class="fas fa-graduation-cap"></i> All Courses</a></li>
+            <li><a href="/kids-coding"><i class="fas fa-child"></i> Kids Academy</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-links">
+            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="/about"><i class="fas fa-info-circle"></i> About Us</a></li>
+            <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+            <li><a href="/become-instructor"><i class="fas fa-chalkboard-teacher"></i> Teach Here</a></li>
+            <li><a href="/login"><i class="fas fa-sign-in-alt"></i> Log In</a></li>
+          </ul>
+        </div>
+        <div class="footer-col-contact">
+          <div class="footer-col-title">Contact</div>
+          <div class="fci"><div class="fci-ic"><i class="fas fa-envelope"></i></div><div><div class="fci-label">Email</div><div class="fci-val"><a href="mailto:techneurowex@gmail.com">techneurowex@gmail.com</a></div></div></div>
+          <div class="fci"><div class="fci-ic"><i class="fab fa-whatsapp"></i></div><div><div class="fci-label">WhatsApp</div><div class="fci-val"><a href="https://wa.me/254769329340" target="_blank" rel="noopener noreferrer">+254 769 329 340</a></div></div></div>
+          <div class="fci"><div class="fci-ic"><i class="fas fa-map-marker-alt"></i></div><div><div class="fci-label">Location</div><div class="fci-val">Nairobi, Kenya 🇰🇪</div></div></div>
+          <div class="footer-hours"><span class="hdot"></span> Mon – Fri · 9 am – 6 pm EAT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr class="footer-divider">
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="footer-copy">© {{currentYear}} NeurowexTech Academy. All rights reserved.</p>
+        <nav class="footer-legal" aria-label="Legal">
+          <a href="/about">About</a>
+          <a href="/privacy-policy">Privacy</a>
+          <a href="/terms-of-service">Terms</a>
+          <a href="/cookie-policy">Cookies</a>
+        </nav>
+        <p class="footer-made">Made with <span>♥</span> in Nairobi</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── THEME ── */
+var dark = localStorage.getItem('nw-theme')==='dark' || (!localStorage.getItem('nw-theme') && window.matchMedia('(prefers-color-scheme:dark)').matches);
+var MOON = '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>';
+var SUN  = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+function applyTheme() {
+  document.body.classList.toggle('dark', dark);
+  document.getElementById('theme-toggle').innerHTML = dark ? SUN : MOON;
+  var tn = document.getElementById('theme-toggle-nav');
+  var mt = document.getElementById('mobThemeBtn');
+  if (tn) tn.innerHTML = dark ? '<i class="fas fa-sun" style="font-size:.82rem"></i>' : '<i class="fas fa-moon" style="font-size:.82rem"></i>';
+  if (mt) mt.innerHTML = dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+}
+applyTheme();
+function toggleTheme() { dark = !dark; localStorage.setItem('nw-theme', dark ? 'dark' : 'light'); applyTheme(); }
+document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+var ttn = document.getElementById('theme-toggle-nav'); if (ttn) ttn.addEventListener('click', toggleTheme);
+var mtb = document.getElementById('mobThemeBtn');      if (mtb) mtb.addEventListener('click', toggleTheme);
+
+/* ── SCROLL ── */
+var navbar = document.getElementById('mainNav');
+var btt    = document.getElementById('back-to-top');
+var sp     = document.getElementById('scroll-progress');
+window.addEventListener('scroll', function() {
+  var s = window.pageYOffset, d = document.documentElement.scrollHeight - window.innerHeight;
+  sp.style.width = (d > 0 ? s / d * 100 : 0) + '%';
+  navbar.classList.toggle('scrolled', s > 40);
+  btt.classList.toggle('visible', s > 400);
+}, { passive: true });
+btt.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+/* ── MOBILE NAV ── */
+var ov = document.getElementById('mobOverlay'), pan = document.getElementById('mobPanel'),
+    ham = document.getElementById('hamBtn'),    mc  = document.getElementById('mobClose');
+function openM()  { ov.classList.add('open');    pan.classList.add('open');    ham.classList.add('open');    ham.setAttribute('aria-expanded','true');  document.body.style.overflow = 'hidden'; mc.focus(); }
+function closeM() { ov.classList.remove('open'); pan.classList.remove('open'); ham.classList.remove('open'); ham.setAttribute('aria-expanded','false'); document.body.style.overflow = ''; }
+ham.addEventListener('click', openM); mc.addEventListener('click', closeM); ov.addEventListener('click', closeM);
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && pan.classList.contains('open')) closeM(); });
+
+/* ── COOKIE ── */
+var cb = document.getElementById('cookie-bar');
+if (!localStorage.getItem('nw-cookie')) setTimeout(function() { cb.classList.add('show'); }, 2800);
+document.getElementById('cookie-accept').addEventListener('click', function() { localStorage.setItem('nw-cookie','1'); cb.classList.remove('show'); });
+
+/* ── TOAST ── */
+function toast(msg) {
+  var t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 3600);
+}
+
+/* ── CURRICULUM ACCORDION ── */
+document.querySelectorAll('.module-head').forEach(function(head) {
+  head.addEventListener('click', function() {
+    var card  = head.parentElement;
+    var isOpen = card.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.module-card').forEach(function(c) { c.classList.remove('open'); });
+    // Toggle clicked
+    if (!isOpen) card.classList.add('open');
+  });
+});
+
+/* ── FAQ ── */
+document.querySelectorAll('.faq-q').forEach(function(q) {
+  q.addEventListener('click', function() {
+    var item = q.parentElement, isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(function(i) { i.classList.remove('open'); });
+    if (!isOpen) item.classList.add('open');
+  });
+});
+
+/* ── NEWSLETTER ── */
+document.getElementById('nlForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  var email   = document.getElementById('nlEmail').value.trim();
+  var consent = document.getElementById('nlConsent').checked;
+  var btn     = document.getElementById('nlBtn');
+  var msg     = document.getElementById('nlMsg');
+  if (!email || !/^\S+@\S+\.\S+$/.test(email)) { msg.innerHTML = '<span style="color:var(--rose)"><i class="fas fa-exclamation-circle"></i> Please enter a valid email.</span>'; return; }
+  if (!consent) { msg.innerHTML = '<span style="color:var(--rose)"><i class="fas fa-exclamation-circle"></i> Please agree to receive emails.</span>'; return; }
+  var orig = btn.innerHTML; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subscribing…'; btn.disabled = true;
+  try {
+    var res  = await fetch('/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) });
+    var data = await res.json();
+    if (data.success) { msg.innerHTML = '<span style="color:var(--emerald)"><i class="fas fa-check-circle"></i> 🎉 Subscribed!</span>'; document.getElementById('nlForm').reset(); document.getElementById('nlConsent').checked = true; toast('Subscribed! Welcome aboard 🎉'); }
+    else { msg.innerHTML = '<span style="color:var(--rose)">' + (data.message || 'Failed. Please try again.') + '</span>'; }
+  } catch(err) { msg.innerHTML = '<span style="color:var(--rose)">Network error. Please try again.</span>'; }
+  finally { btn.innerHTML = orig; btn.disabled = false; setTimeout(function() { msg.innerHTML = ''; }, 5500); }
+});
+
+/* ── SMOOTH SCROLL ── */
+document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+  a.addEventListener('click', function(e) {
+    var href = a.getAttribute('href');
+    if (href.length < 2) return;
+    var target = document.querySelector(href);
+    if (target) {
+      e.preventDefault();
+      var offset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 72;
+      window.scrollTo({ top: target.offsetTop - offset - 12, behavior: 'smooth' });
+      if (pan.classList.contains('open')) closeM();
+    }
+  });
+});
+
+/* ── STACK ITEM TOOLTIPS (lightweight) ── */
+document.querySelectorAll('.stack-item').forEach(function(item) {
+  item.title = item.querySelector('.stack-name').textContent;
+});
+</script>
+</body>
+</html>
+

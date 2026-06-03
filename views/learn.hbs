@@ -521,6 +521,149 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
   .footer-col-brand{grid-column:1/-1}
 }
 @media print{.navbar,#wa-float,#theme-toggle,#back-to-top,#scroll-progress,#cookie-bar{display:none!important}}
+
+/* ══════════════════════════════════
+   REDESIGNED COURSE SECTIONS
+══════════════════════════════════ */
+
+/* ── SECTION WRAPPER ── */
+.lp-section{padding:72px 0}
+.lp-section.alt{background:#fff}
+body.dark .lp-section.alt{background:var(--ink-2)}
+.lp-head{margin-bottom:52px;text-align:center}
+.lp-head h2{font-size:clamp(1.7rem,4.5vw,2.8rem);font-weight:700;margin-bottom:10px}
+.lp-head p{color:var(--slate);font-size:clamp(.88rem,2.2vw,1.02rem);max-width:520px;margin:0 auto}
+
+/* ── TAB PILLS ── */
+.tab-bar{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:40px}
+.tab-pill{padding:8px 22px;border-radius:var(--r-pill);font-size:.82rem;font-weight:700;cursor:pointer;border:2px solid var(--mist);color:var(--slate);background:#fff;transition:var(--t);font-family:'Plus Jakarta Sans',sans-serif}
+.tab-pill:hover{border-color:var(--blue);color:var(--blue)}
+.tab-pill.active{background:var(--g-blue);border-color:transparent;color:#fff;box-shadow:var(--sh-blue)}
+body.dark .tab-pill{background:var(--ink-2);border-color:rgba(255,255,255,.1);color:rgba(255,255,255,.6)}
+body.dark .tab-pill.active{background:var(--g-blue);color:#fff;border-color:transparent}
+
+/* ── FREE COURSE CARDS ── */
+.free-grid{display:grid;grid-template-columns:1fr;gap:24px}
+@media(min-width:600px){.free-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1100px){.free-grid{grid-template-columns:repeat(4,1fr)}}
+
+.fc-card{background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);overflow:hidden;display:flex;flex-direction:column;transition:var(--t);box-shadow:var(--sh-sm);position:relative}
+body.dark .fc-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.fc-card:hover{transform:translateY(-6px);box-shadow:var(--sh-lg);border-color:rgba(26,79,214,.2)}
+.fc-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;background:linear-gradient(90deg,var(--blue),var(--orange));transform:scaleX(0);transform-origin:left;transition:transform .38s}
+.fc-card:hover::after{transform:scaleX(1)}
+
+.fc-img{position:relative;overflow:hidden;height:178px;flex-shrink:0;background:var(--mist)}
+.fc-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.fc-card:hover .fc-img img{transform:scale(1.07)}
+.fc-badges{position:absolute;top:10px;left:10px;display:flex;gap:5px;flex-wrap:wrap}
+.fc-badge{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:var(--r-pill);font-size:.64rem;font-weight:800;backdrop-filter:blur(8px)}
+.fc-badge.free{background:linear-gradient(135deg,var(--emerald),#10b981);color:#fff}
+.fc-badge.level{background:rgba(8,12,24,.72);color:#fff;border:1px solid rgba(255,255,255,.2)}
+.fc-badge.trending{background:var(--g-orange);color:#fff}
+
+.fc-body{padding:18px 18px 20px;flex:1;display:flex;flex-direction:column}
+.fc-cat{font-size:.65rem;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--blue);margin-bottom:6px}
+.fc-title{font-family:'Fraunces',serif;font-size:.97rem;font-weight:700;line-height:1.35;margin-bottom:8px;color:var(--ink)}
+body.dark .fc-title{color:rgba(255,255,255,.88)}
+.fc-instr{display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.fc-av{width:24px;height:24px;border-radius:50%;background:var(--g-blue);display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:#fff;flex-shrink:0}
+.fc-instr-name{font-size:.73rem;color:var(--slate);font-weight:600}
+.fc-meta{display:flex;align-items:center;gap:12px;font-size:.72rem;color:var(--slate);margin-bottom:14px;flex-wrap:wrap}
+.fc-meta .stars{color:var(--yellow);font-size:.72rem;letter-spacing:.3px}
+.fc-meta span{display:flex;align-items:center;gap:4px}
+.fc-meta i{color:var(--slate-l);font-size:.68rem}
+.fc-footer{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.fc-price{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:700;color:var(--emerald)}
+.fc-enroll{display:inline-flex;align-items:center;gap:5px;background:var(--g-blue);color:#fff;padding:8px 16px;border-radius:var(--r-pill);font-size:.76rem;font-weight:700;border:none;cursor:pointer;transition:var(--t);font-family:'Plus Jakarta Sans',sans-serif;box-shadow:var(--sh-blue);text-decoration:none}
+.fc-enroll:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(26,79,214,.36)}
+.fc-enroll.locked{background:var(--ghost);color:var(--slate);border:1.5px solid var(--mist);box-shadow:none}
+body.dark .fc-enroll.locked{background:var(--ink-3);color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.09)}
+.fc-enroll.locked:hover{background:var(--g-blue);color:#fff;border-color:transparent;box-shadow:var(--sh-blue)}
+
+/* ── PAID PATH CARDS ── */
+.paid-grid{display:grid;grid-template-columns:1fr;gap:24px}
+@media(min-width:768px){.paid-grid{grid-template-columns:repeat(3,1fr)}}
+
+.pp-card{background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);overflow:hidden;transition:var(--t);display:flex;flex-direction:column;box-shadow:var(--sh-sm);position:relative}
+body.dark .pp-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+.pp-card:hover{transform:translateY(-6px);box-shadow:var(--sh-lg)}
+
+.pp-img{position:relative;overflow:hidden;height:200px;flex-shrink:0;background:var(--mist)}
+.pp-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.pp-card:hover .pp-img img{transform:scale(1.05)}
+.pp-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,12,24,.72) 0%,transparent 55%)}
+.pp-cat-chip{position:absolute;top:12px;left:12px;background:var(--g-blue);color:#fff;padding:4px 12px;border-radius:var(--r-pill);font-size:.67rem;font-weight:800}
+.pp-price-chip{position:absolute;top:12px;right:12px;background:var(--g-orange);color:#fff;padding:4px 12px;border-radius:var(--r-pill);font-size:.67rem;font-weight:800}
+.pp-img-title{position:absolute;bottom:12px;left:14px;right:14px;color:#fff;font-family:'Fraunces',serif;font-size:1.05rem;font-weight:700;line-height:1.25;text-shadow:0 2px 8px rgba(0,0,0,.4)}
+
+.pp-body{padding:20px 20px 22px;flex:1;display:flex;flex-direction:column}
+.pp-desc{font-size:.81rem;color:var(--slate);line-height:1.66;margin-bottom:14px;flex:1}
+body.dark .pp-desc{color:rgba(255,255,255,.52)}
+.pp-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.pp-tag{background:var(--blue-pale);color:var(--blue);padding:3px 10px;border-radius:var(--r-pill);font-size:.67rem;font-weight:700}
+body.dark .pp-tag{background:rgba(26,79,214,.15);color:var(--blue-l)}
+.pp-action{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pp-learn-btn{display:inline-flex;align-items:center;gap:6px;background:var(--g-blue);color:#fff;padding:9px 20px;border-radius:var(--r-pill);font-size:.79rem;font-weight:700;transition:var(--t);text-decoration:none;box-shadow:var(--sh-blue)}
+.pp-learn-btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(26,79,214,.36)}
+.pp-enroll-note{font-size:.69rem;color:var(--slate-l);display:flex;align-items:center;gap:4px}
+.pp-enroll-note i{font-size:.64rem}
+
+/* ── KIDS SPECIAL CARD ── */
+.kids-band{background:linear-gradient(135deg,#0c1630,#101f40);border-radius:var(--r-2xl);overflow:hidden;display:grid;grid-template-columns:1fr;position:relative;margin-top:36px}
+@media(min-width:768px){.kids-band{grid-template-columns:1fr 400px}}
+.kids-band::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:36px 36px}
+.kids-content{position:relative;z-index:1;padding:40px 36px}
+.kids-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:var(--r-pill);padding:4px 13px;font-size:.67rem;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:14px}
+.kids-content h3{font-size:clamp(1.4rem,4vw,2rem);font-weight:700;color:#fff;margin-bottom:10px}
+.kids-content p{color:rgba(255,255,255,.58);font-size:.9rem;line-height:1.72;max-width:420px;margin-bottom:22px}
+.kids-badges{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:24px}
+.kids-badge{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:var(--r-pill);padding:5px 13px;font-size:.73rem;font-weight:600;color:rgba(255,255,255,.72)}
+.kids-cta{display:inline-flex;align-items:center;gap:7px;background:#fff;color:var(--blue);padding:11px 26px;border-radius:var(--r-pill);font-size:.87rem;font-weight:800;transition:var(--t);text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.kids-cta:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.25)}
+.kids-img{position:relative;overflow:hidden;min-height:240px}
+.kids-img img{width:100%;height:100%;object-fit:cover;opacity:.85}
+.kids-img::before{content:'';position:absolute;inset:0;background:linear-gradient(to right,#0c1630 0%,transparent 30%);z-index:1}
+
+/* ── STATS STRIP ── */
+.stats-strip{background:linear-gradient(135deg,var(--blue),var(--blue-d));padding:36px 0}
+.stats-strip-inner{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 40px}
+.ssi{text-align:center;padding:8px 20px}
+.ssi-val{font-family:'Fraunces',serif;font-size:clamp(1.8rem,5vw,2.6rem);font-weight:700;color:#fff;line-height:1;margin-bottom:4px}
+.ssi-label{font-size:.72rem;color:rgba(255,255,255,.62);font-weight:600;text-transform:uppercase;letter-spacing:.8px}
+.ssi-divider{width:1px;background:rgba(255,255,255,.18);align-self:stretch;margin:4px 0;display:none}
+@media(min-width:600px){.ssi-divider{display:block}}
+
+/* ── LOGIN PROMPT MODAL ── */
+.enroll-modal-bg{position:fixed;inset:0;background:rgba(8,12,24,.6);backdrop-filter:blur(8px);z-index:3000;display:none;align-items:center;justify-content:center;padding:16px}
+.enroll-modal-bg.open{display:flex}
+.enroll-modal{background:#fff;border-radius:var(--r-2xl);width:100%;max-width:420px;box-shadow:0 28px 72px rgba(0,0,0,.4);overflow:hidden;animation:modal-in .3s var(--spring) both}
+body.dark .enroll-modal{background:var(--ink-2)}
+@keyframes modal-in{from{transform:scale(.92) translateY(12px);opacity:0}to{transform:none;opacity:1}}
+.em-top{background:var(--g-blue);padding:28px 28px 22px;text-align:center;position:relative}
+.em-icon{width:56px;height:56px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:1.4rem;color:#fff}
+.em-top h3{font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:4px}
+.em-top p{font-size:.8rem;color:rgba(255,255,255,.7);margin:0}
+.em-body{padding:24px 28px 28px;display:flex;flex-direction:column;gap:10px}
+.em-course-name{background:var(--blue-pale);border-radius:var(--r-md);padding:10px 14px;font-size:.8rem;font-weight:600;color:var(--blue);text-align:center}
+body.dark .em-course-name{background:rgba(26,79,214,.15);color:var(--blue-l)}
+.em-btn-primary{display:flex;align-items:center;justify-content:center;gap:7px;background:var(--g-blue);color:#fff;padding:12px;border-radius:var(--r-pill);font-weight:700;font-size:.87rem;text-decoration:none;transition:var(--t);box-shadow:var(--sh-blue)}
+.em-btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(26,79,214,.36)}
+.em-btn-secondary{display:flex;align-items:center;justify-content:center;gap:7px;background:transparent;color:var(--blue);padding:11px;border-radius:var(--r-pill);font-weight:700;font-size:.87rem;text-decoration:none;border:1.5px solid var(--blue);transition:var(--t)}
+.em-btn-secondary:hover{background:var(--g-blue);color:#fff}
+.em-dismiss{background:none;border:none;color:var(--slate);font-size:.76rem;cursor:pointer;margin-top:2px;font-family:'Plus Jakarta Sans',sans-serif;transition:var(--t)}
+.em-dismiss:hover{color:var(--rose)}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
 </style>
 </head>
 <body>
@@ -733,257 +876,333 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
   </div>
 </div>
 
-<!-- FEATURED COURSE BANNER -->
-{{#if featuredCourse}}
-<div class="featured-banner">
+<!-- ══════════════════════════════════
+     LIVE STATS STRIP (from DB)
+══════════════════════════════════ -->
+<div class="stats-strip">
   <div class="container">
-    <div class="featured-inner">
-      <div>
-        <div class="feat-label"><i class="fas fa-star"></i> Featured Course</div>
-        <h3>{{featuredCourse.title}}</h3>
-        <p>{{featuredCourse.description}}</p>
+    <div class="stats-strip-inner">
+      <div class="ssi">
+        <div class="ssi-val" id="statCourses">{{stats.total_courses}}</div>
+        <div class="ssi-label">Courses Available</div>
       </div>
-      <div class="feat-right">
-        <div class="feat-price">{{#if (eq featuredCourse.price 0)}}Free{{else}}Kshs {{featuredCourse.price}}{{/if}}</div>
-        <a href="/learn/course/{{featuredCourse.id}}" class="btn btn-primary">Enrol Now <i class="fas fa-arrow-right"></i></a>
+      <div class="ssi-divider"></div>
+      <div class="ssi">
+        <div class="ssi-val" id="statEnrolled">{{stats.total_enrollments}}</div>
+        <div class="ssi-label">Students Enrolled</div>
+      </div>
+      <div class="ssi-divider"></div>
+      <div class="ssi">
+        <div class="ssi-val">4.7★</div>
+        <div class="ssi-label">Average Rating</div>
+      </div>
+      <div class="ssi-divider"></div>
+      <div class="ssi">
+        <div class="ssi-val" id="statInstructors">{{stats.total_instructors}}</div>
+        <div class="ssi-label">Instructors</div>
       </div>
     </div>
   </div>
 </div>
-{{/if}}
 
-<!-- MAIN CONTENT: FILTER + COURSES -->
-<div class="main-wrap" id="courses">
+<!-- ══════════════════════════════════
+     FREE COURSES
+══════════════════════════════════ -->
+<section class="lp-section" id="courses">
   <div class="container">
-    <div class="main-grid">
+    <div class="lp-head">
+      <div class="section-kicker">Free Courses</div>
+      <h2>Popular <span class="g-blue">Learning Paths</span></h2>
+      <p>Explore practical courses with clear outcomes, hands-on lessons, and instructor support.</p>
+    </div>
 
-      <!-- FILTER SIDEBAR -->
-      <aside>
-        <div class="filter-card">
-          <div class="filter-header">
-            <h5>Filter by</h5>
-            <button class="filter-clear" id="clearFilters">Clear all</button>
-          </div>
-          <div class="filter-section">
-            <div class="filter-section-title">Category</div>
-            {{#each categories}}
-            <div class="filter-opt">
-              <input type="checkbox" id="cat-{{@index}}" value="{{lowercase this.category}}" class="category-filter">
-              <label for="cat-{{@index}}">{{this.category}}</label>
-              <span class="filter-badge-count">{{this.course_count}}</span>
-            </div>
-            {{/each}}
-          </div>
-          <div class="filter-section">
-            <div class="filter-section-title">Level</div>
-            <div class="filter-opt"><input type="checkbox" id="lv-beg" value="beginner" class="level-filter"><label for="lv-beg">Beginner</label><span class="filter-badge-count">{{beginnerCount}}</span></div>
-            <div class="filter-opt"><input type="checkbox" id="lv-int" value="intermediate" class="level-filter"><label for="lv-int">Intermediate</label><span class="filter-badge-count">{{intermediateCount}}</span></div>
-            <div class="filter-opt"><input type="checkbox" id="lv-adv" value="advanced" class="level-filter"><label for="lv-adv">Advanced</label><span class="filter-badge-count">{{advancedCount}}</span></div>
-          </div>
-          <div class="filter-section">
-            <div class="filter-section-title">Price</div>
-            <div class="filter-opt"><input type="checkbox" id="pr-free" value="free" class="price-filter"><label for="pr-free">Free</label><span class="filter-badge-count">{{freeCoursesCount}}</span></div>
-            <div class="filter-opt"><input type="checkbox" id="pr-paid" value="paid" class="price-filter"><label for="pr-paid">Paid</label><span class="filter-badge-count">{{paidCoursesCount}}</span></div>
+    <!-- Tab pills -->
+    <div class="tab-bar" id="tabBar">
+      <button class="tab-pill active" data-tab="popular">Most popular</button>
+      <button class="tab-pill" data-tab="new">New</button>
+      <button class="tab-pill" data-tab="career">Career focused</button>
+    </div>
+
+    <div class="free-grid" id="freeGrid">
+
+      <!-- Card 1: Adobe Photoshop Masterclass -->
+      <div class="fc-card" data-tab="popular career">
+        <div class="fc-img">
+          <img src="/images/course-photoshop.jpg" alt="Adobe Photoshop Masterclass"
+               onerror="this.src='https://placehold.co/600x360/1a4fd6/white?text=Photoshop'">
+          <div class="fc-badges">
+            <span class="fc-badge free"><i class="fas fa-gift"></i> Free</span>
+            <span class="fc-badge level">Intermediate</span>
+            <span class="fc-badge trending"><i class="fas fa-fire"></i> Trending</span>
           </div>
         </div>
-      </aside>
-
-      <!-- COURSES COLUMN -->
-      <div>
-        <div class="courses-header">
-          <h4>Courses to get you started</h4>
-          <div class="sort-wrap">
-            <button class="sort-btn active" id="sortPopular">Most popular</button>
-            <button class="sort-btn" id="sortNew">Newest</button>
+        <div class="fc-body">
+          <div class="fc-cat">Graphic Design</div>
+          <div class="fc-title">Adobe Photoshop Masterclass</div>
+          <div class="fc-instr">
+            <div class="fc-av">K</div>
+            <span class="fc-instr-name">Kings Creation Admin</span>
           </div>
-        </div>
-
-        <div class="courses-grid" id="coursesContainer">
-          {{#each courses}}
-          <div class="course-item"
-               data-category="{{lowercase this.category}}"
-               data-level="{{this.level}}"
-               data-price="{{#if (eq this.price 0)}}free{{else}}paid{{/if}}"
-               data-popular="{{this.popular}}"
-               data-new="{{this.new}}">
-            <div class="course-card">
-              <div class="course-img-wrap">
-                <img src="{{this.image_url}}" alt="{{this.title}}" class="course-img"
-                     onerror="this.src='https://placehold.co/600x360/1a4fd6/white?text={{this.title}}'">
-                <div class="course-badges">
-                  {{#if (eq this.price 0)}}<span class="c-badge free"><i class="fas fa-gift"></i> Free</span>{{/if}}
-                  {{#if this.bestseller}}<span class="c-badge bestseller"><i class="fas fa-fire"></i> Bestseller</span>{{/if}}
-                  {{#if this.new}}<span class="c-badge new"><i class="fas fa-sparkles"></i> New</span>{{/if}}
-                </div>
-              </div>
-              <div class="course-body">
-                <div class="course-cat">{{this.category}}</div>
-                <h3 class="course-title"><a href="/learn/course/{{this.id}}">{{this.title}}</a></h3>
-                <p class="course-desc">{{this.description}}</p>
-                <div class="course-instructor">
-                  <div class="c-avatar">{{this.instructor_initial}}</div>
-                  <span class="c-instr-name">{{this.instructor_name}}</span>
-                </div>
-                <div class="course-rating">
-                  <div class="c-stars">{{{starRating this.rating}}}</div>
-                  <span class="c-rating-count">({{this.enrolled_count}} enrolled)</span>
-                </div>
-                <div class="course-meta">
-                  <span><i class="far fa-clock"></i> {{this.total_modules}} modules</span>
-                  <span><i class="far fa-file-alt"></i> {{this.total_lessons}} lessons</span>
-                  <span><i class="far fa-hourglass"></i> {{this.total_duration}}</span>
-                </div>
-                <div class="course-footer">
-                  <div class="course-price {{#if (eq this.price 0)}}free{{/if}}">
-                    {{#if (eq this.price 0)}}Free{{else}}Kshs {{this.price}}{{/if}}
-                  </div>
-                  <a href="/learn/course/{{this.id}}" class="btn-enroll {{#if (eq this.price 0)}}free-enroll{{/if}}">
-                    <i class="fas fa-graduation-cap"></i>
-                    {{#if (eq this.price 0)}}Enrol Free{{else}}Enrol Now{{/if}}
-                  </a>
-                </div>
-              </div>
-            </div>
+          <div class="fc-meta">
+            <span><span class="stars">★★★★★</span> 4.6</span>
+            <span><i class="fas fa-users"></i> 322 enrolled</span>
+            <span><i class="fas fa-play-circle"></i> 29 lessons</span>
           </div>
-          {{/each}}
-        </div>
-
-        <div class="no-results" id="noResults">
-          <i class="fas fa-search"></i>
-          <h5>No courses found</h5>
-          <p>Try adjusting your filters or search terms.</p>
-          <button class="btn btn-outline" id="clearFilters2" style="margin-top:14px">Clear filters</button>
+          <div class="fc-footer">
+            <div class="fc-price">Free</div>
+            {{#if isAuthenticated}}
+            <button class="fc-enroll" onclick="enrollFree('6a0c681fd4d767f5087907f5','Adobe Photoshop Masterclass','https://kings-learn.vercel.app/courses/6a0c681fd4d767f5087907f5',this)">
+              <i class="fas fa-graduation-cap"></i> Enrol Free
+            </button>
+            {{else}}
+            <button class="fc-enroll locked" onclick="showLoginPrompt('Adobe Photoshop Masterclass','https://kings-learn.vercel.app/courses/6a0c681fd4d767f5087907f5')">
+              <i class="fas fa-lock"></i> Log In to Enrol
+            </button>
+            {{/if}}
+          </div>
         </div>
       </div>
 
+      <!-- Card 2: Canva Mastery -->
+      <div class="fc-card" data-tab="popular new">
+        <div class="fc-img">
+          <img src="/images/course-canva.jpg" alt="Complete Canva Mastery"
+               onerror="this.src='https://placehold.co/600x360/e8620a/white?text=Canva'">
+          <div class="fc-badges">
+            <span class="fc-badge free"><i class="fas fa-gift"></i> Free</span>
+            <span class="fc-badge level">Beginner</span>
+            <span class="fc-badge trending"><i class="fas fa-fire"></i> Trending</span>
+          </div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-cat">Graphic Design</div>
+          <div class="fc-title">Complete Canva Mastery — Design Like a Pro</div>
+          <div class="fc-instr">
+            <div class="fc-av">S</div>
+            <span class="fc-instr-name">Stephen Kingori</span>
+          </div>
+          <div class="fc-meta">
+            <span><span class="stars">★★★★★</span> 4.7</span>
+            <span><i class="fas fa-users"></i> 68 enrolled</span>
+            <span><i class="fas fa-play-circle"></i> 24 lessons</span>
+          </div>
+          <div class="fc-footer">
+            <div class="fc-price">Free</div>
+            {{#if isAuthenticated}}
+            <button class="fc-enroll" onclick="enrollFree('6a08299865abb0a9acbeaf25','Complete Canva Mastery','https://kings-learn.vercel.app/courses/6a08299865abb0a9acbeaf25',this)">
+              <i class="fas fa-graduation-cap"></i> Enrol Free
+            </button>
+            {{else}}
+            <button class="fc-enroll locked" onclick="showLoginPrompt('Complete Canva Mastery','https://kings-learn.vercel.app/courses/6a08299865abb0a9acbeaf25')">
+              <i class="fas fa-lock"></i> Log In to Enrol
+            </button>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Web Dev Bootcamp -->
+      <div class="fc-card" data-tab="popular career">
+        <div class="fc-img">
+          <img src="/images/course-webdev.jpg" alt="Web Development Boot Camp"
+               onerror="this.src='https://placehold.co/600x360/059669/white?text=Web+Dev'">
+          <div class="fc-badges">
+            <span class="fc-badge free"><i class="fas fa-gift"></i> Free</span>
+            <span class="fc-badge level">Beginner</span>
+          </div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-cat">Web Development</div>
+          <div class="fc-title">Web Development Boot Camp — Build Real Websites in 3 Weeks</div>
+          <div class="fc-instr">
+            <div class="fc-av">S</div>
+            <span class="fc-instr-name">Stephen Kingori</span>
+          </div>
+          <div class="fc-meta">
+            <span><span class="stars">★★★★★</span> 4.7</span>
+            <span><i class="fas fa-users"></i> 61 enrolled</span>
+            <span><i class="fas fa-play-circle"></i> 24 lessons</span>
+          </div>
+          <div class="fc-footer">
+            <div class="fc-price">Free</div>
+            {{#if isAuthenticated}}
+            <button class="fc-enroll" onclick="enrollFree('6a081bffbc5f3fbed1629b00','Web Development Boot Camp','https://kings-learn.vercel.app/courses/6a081bffbc5f3fbed1629b00',this)">
+              <i class="fas fa-graduation-cap"></i> Enrol Free
+            </button>
+            {{else}}
+            <button class="fc-enroll locked" onclick="showLoginPrompt('Web Development Boot Camp','https://kings-learn.vercel.app/courses/6a081bffbc5f3fbed1629b00')">
+              <i class="fas fa-lock"></i> Log In to Enrol
+            </button>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4: JavaScript Fundamentals -->
+      <div class="fc-card" data-tab="new career">
+        <div class="fc-img">
+          <img src="/images/course-javascript.jpg" alt="JavaScript Fundamentals"
+               onerror="this.src='https://placehold.co/600x360/f59e0b/white?text=JavaScript'">
+          <div class="fc-badges">
+            <span class="fc-badge free"><i class="fas fa-gift"></i> Free</span>
+            <span class="fc-badge level">Beginner</span>
+          </div>
+        </div>
+        <div class="fc-body">
+          <div class="fc-cat">Technology</div>
+          <div class="fc-title">JavaScript Fundamentals — Master the Logic Behind Modern Web Apps</div>
+          <div class="fc-instr">
+            <div class="fc-av">S</div>
+            <span class="fc-instr-name">Stephen Kingori</span>
+          </div>
+          <div class="fc-meta">
+            <span><span class="stars">★★★★★</span> 4.6</span>
+            <span><i class="fas fa-users"></i> 34 enrolled</span>
+            <span><i class="fas fa-play-circle"></i> 27 lessons</span>
+          </div>
+          <div class="fc-footer">
+            <div class="fc-price">Free</div>
+            {{#if isAuthenticated}}
+            <button class="fc-enroll" onclick="enrollFree('6a082c0daa34957ac5a8cd35','JavaScript Fundamentals','https://kings-learn.vercel.app/courses/6a082c0daa34957ac5a8cd35',this)">
+              <i class="fas fa-graduation-cap"></i> Enrol Free
+            </button>
+            {{else}}
+            <button class="fc-enroll locked" onclick="showLoginPrompt('JavaScript Fundamentals','https://kings-learn.vercel.app/courses/6a082c0daa34957ac5a8cd35')">
+              <i class="fas fa-lock"></i> Log In to Enrol
+            </button>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /free-grid -->
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     PAID LEARNING PATHS
+══════════════════════════════════ -->
+<section class="lp-section alt">
+  <div class="container">
+    <div class="lp-head">
+      <div class="section-kicker orange">Premium Programmes</div>
+      <h2>Full <span class="g-orange">Learning Paths</span></h2>
+      <p>Structured, career-ready programmes taught by industry practitioners. Enrol in the full path or individual units.</p>
+    </div>
+
+    <div class="paid-grid">
+
+      <!-- Full Stack -->
+      <div class="pp-card">
+        <div class="pp-img">
+          <img src="/images/course-fullstack.jpg" alt="Full Stack Software Engineering"
+               onerror="this.src='https://placehold.co/600x400/1a4fd6/white?text=Full+Stack'">
+          <div class="pp-overlay"></div>
+          <span class="pp-cat-chip">Software Development</span>
+          <span class="pp-price-chip"><i class="fas fa-gem"></i> Premium</span>
+          <div class="pp-img-title">Full Stack Software Engineering</div>
+        </div>
+        <div class="pp-body">
+          <p class="pp-desc">Build complete websites and applications — from front end to back end. Gain skills in design, development, and databases to become job-ready.</p>
+          <div class="pp-tags">
+            <span class="pp-tag">Full Stack</span>
+            <span class="pp-tag">Front-End</span>
+            <span class="pp-tag">Back-End</span>
+          </div>
+          <div class="pp-action">
+            <a href="/learn/fullstack" class="pp-learn-btn">Learn More <i class="fas fa-arrow-right"></i></a>
+            <div class="pp-enroll-note"><i class="fas fa-lock"></i> Login required</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Graphic Design -->
+      <div class="pp-card">
+        <div class="pp-img">
+          <img src="/images/course-graphic-design.jpg" alt="Professional Graphic Design"
+               onerror="this.src='https://placehold.co/600x400/e8620a/white?text=Graphic+Design'">
+          <div class="pp-overlay"></div>
+          <span class="pp-cat-chip">Graphics Design</span>
+          <span class="pp-price-chip">Ksh 7,500</span>
+          <div class="pp-img-title">Professional Graphic Design</div>
+        </div>
+        <div class="pp-body">
+          <p class="pp-desc">Master CorelDRAW, Adobe Photoshop, InDesign, Illustrator, and Canva. Enroll in the full program or individual units at Ksh 7,500 each.</p>
+          <div class="pp-tags">
+            <span class="pp-tag">Graphics Design</span>
+          </div>
+          <div class="pp-action">
+            <a href="/learn/graphic-design" class="pp-learn-btn">Learn More <i class="fas fa-arrow-right"></i></a>
+            <div class="pp-enroll-note"><i class="fas fa-lock"></i> Login required</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI -->
+      <div class="pp-card">
+        <div class="pp-img">
+          <img src="/images/course-ai.jpg" alt="Artificial Intelligence"
+               onerror="this.src='https://placehold.co/600x400/0d9488/white?text=AI+%26+ML'">
+          <div class="pp-overlay"></div>
+          <span class="pp-cat-chip">Agentic AI</span>
+          <span class="pp-price-chip"><i class="fas fa-gem"></i> Premium</span>
+          <div class="pp-img-title">Artificial Intelligence (AI)</div>
+        </div>
+        <div class="pp-body">
+          <p class="pp-desc">Explore Agentic AI — building intelligent systems that think, plan, and act. Automate tasks and solve real-world problems with modern tools.</p>
+          <div class="pp-tags">
+            <span class="pp-tag">Agentic AI</span>
+          </div>
+          <div class="pp-action">
+            <a href="/learn/ai" class="pp-learn-btn">Learn More <i class="fas fa-arrow-right"></i></a>
+            <div class="pp-enroll-note"><i class="fas fa-lock"></i> Login required</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /paid-grid -->
+
+    <!-- Kids special band -->
+    <div class="kids-band">
+      <div class="kids-content">
+        <div class="kids-tag"><i class="fas fa-child"></i> Kids Academy</div>
+        <h3>Kids &amp; Teen Tech Academy</h3>
+        <p>Discover structured coding pathways from Scratch logic blocks up to core HTML &amp; CSS website building. Features separate, isolated high school labs.</p>
+        <div class="kids-badges">
+          <span class="kids-badge">🧩 Scratch &amp; Logic Blocks</span>
+          <span class="kids-badge">🌐 HTML &amp; CSS</span>
+          <span class="kids-badge">🏫 HS Labs</span>
+          <span class="kids-badge">👧 Ages 8–17</span>
+        </div>
+        <a href="/kids-coding" class="kids-cta"><i class="fas fa-rocket"></i> Explore Kids Academy</a>
+      </div>
+      <div class="kids-img">
+        <img src="/images/course-kids.jpg" alt="Kids Coding Bootcamp"
+             onerror="this.src='https://placehold.co/600x400/1a4fd6/white?text=Kids+Academy'">
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════
+     LOGIN PROMPT MODAL
+══════════════════════════════════ -->
+<div class="enroll-modal-bg" id="enrollModal" onclick="if(event.target===this)closeEnrollModal()">
+  <div class="enroll-modal">
+    <div class="em-top">
+      <div class="em-icon"><i class="fas fa-graduation-cap"></i></div>
+      <h3>Ready to enrol?</h3>
+      <p>Create a free account or log in to access this course.</p>
+    </div>
+    <div class="em-body">
+      <div class="em-course-name" id="modalCourseName">Course Name</div>
+      <a href="/sign_up" class="em-btn-primary"><i class="fas fa-user-plus"></i> Sign Up Free — It's Quick</a>
+      <a href="/login"   class="em-btn-secondary"><i class="fas fa-sign-in-alt"></i> Already have an account? Log In</a>
+      <button class="em-dismiss" onclick="closeEnrollModal()">Maybe later</button>
     </div>
   </div>
 </div>
-
-<!-- POPULAR TOPICS -->
-<section class="section-py bg-white-sec" style="background:#fff">
-  <div class="container">
-    <div class="text-center" style="margin-bottom:48px">
-      <div class="section-kicker">Browse by Topic</div>
-      <h2 class="section-title">Popular <span class="g-blue">Topics</span></h2>
-      <p class="section-body" style="margin:0 auto">Jump straight into the skills learners are browsing most right now.</p>
-    </div>
-    <div class="topics-grid">
-      {{#each topics}}
-      <div class="topic-card" data-category="{{lowercase this.name}}">
-        <div class="topic-icon-wrap"><i class="{{this.icon}}"></i></div>
-        <h4>{{this.name}}</h4>
-        <div class="topic-count">{{this.count}} courses</div>
-      </div>
-      {{/each}}
-    </div>
-  </div>
-</section>
-
-<!-- INSTRUCTORS -->
-<section class="section-py bg-ghost-sec">
-  <div class="container">
-    <div class="text-center" style="margin-bottom:48px">
-      <div class="section-kicker orange">The People</div>
-      <h2 class="section-title">Meet Our <span class="g-orange">Instructors</span></h2>
-      <p class="section-body" style="margin:0 auto">Learn from practitioners who build and ship real products — not just teach theory.</p>
-    </div>
-    <div class="instructors-grid">
-      {{#each instructors}}
-      <div class="instructor-card">
-        <div class="instr-avatar">{{this.initials}}</div>
-        <h4>{{this.name}}</h4>
-        <div class="instr-title">{{this.title}}</div>
-        <div class="instr-rating"><i class="fas fa-star"></i> {{this.rating}} rating</div>
-        <div class="instr-stats">
-          <span><i class="fas fa-book"></i> {{this.courses}} courses</span>
-          <span><i class="fas fa-video"></i> {{this.lessons}} lessons</span>
-        </div>
-      </div>
-      {{/each}}
-    </div>
-  </div>
-</section>
-
-<!-- TESTIMONIALS -->
-<section class="section-py" style="background:#fff">
-  <div class="container">
-    <div class="text-center" style="margin-bottom:48px">
-      <div class="section-kicker orange">Student Love</div>
-      <h2 class="section-title">What <span class="g-orange">Students Say</span></h2>
-    </div>
-    <div class="testimonials-grid">
-      <div class="t-card">
-        <div class="t-stars">★★★★★</div>
-        <p class="t-quote">"The Web Dev course was exactly what I needed. Practical, well-paced, and the instructor explains everything in a way that actually sticks. Got my first client two weeks after finishing."</p>
-        <div class="t-author"><div class="t-ava" style="background:#dbeafe">👨‍💻</div><div><div class="t-name">James Kariuki</div><div class="t-role">Freelance Developer, Nairobi</div></div></div>
-      </div>
-      <div class="t-card">
-        <div class="t-stars">★★★★★</div>
-        <p class="t-quote">"I completed the UI/UX Design course in three weeks and landed a remote internship. The Figma projects in the curriculum are genuinely portfolio-ready — exactly what employers want to see."</p>
-        <div class="t-author"><div class="t-ava" style="background:#d1fae5">👩‍🎨</div><div><div class="t-name">Amina Hassan</div><div class="t-role">UI Designer, Remote</div></div></div>
-      </div>
-      <div class="t-card">
-        <div class="t-stars">★★★★★</div>
-        <p class="t-quote">"The AI & ML course is outstanding. Complex topics broken down simply, with real datasets and deployment walkthroughs. Best Kshs I've ever spent on education."</p>
-        <div class="t-author"><div class="t-ava" style="background:#fef3c7">👨‍🔬</div><div><div class="t-name">Michael Oduya</div><div class="t-role">Data Analyst, Mombasa</div></div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FAQ -->
-<section class="section-py bg-ghost-sec">
-  <div class="container">
-    <div class="text-center" style="margin-bottom:48px">
-      <div class="section-kicker">FAQ</div>
-      <h2 class="section-title">Common <span class="g-blue">Questions</span></h2>
-      <p class="section-body" style="margin:0 auto">Everything you need to know before you enrol.</p>
-    </div>
-    <div class="faq-grid" style="max-width:900px;margin:0 auto">
-      <div class="faq-item"><div class="faq-q">Are the courses self-paced? <span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">Yes — all pre-recorded courses are 100% self-paced. You can start, pause, and continue on your own schedule with lifetime access once enrolled.</div></div>
-      <div class="faq-item"><div class="faq-q">Will I get a certificate? <span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">Yes. Every course issues a NeurowexTech completion certificate once you finish all lessons and pass the final assessment. You can share it on LinkedIn.</div></div>
-      <div class="faq-item"><div class="faq-q">How do I pay for a course? <span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">We accept M-Pesa, card payments, and bank transfer. All transactions are secured. Free courses require only a free account signup.</div></div>
-      <div class="faq-item"><div class="faq-q">Can I get a refund? <span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">Yes — we offer a 7-day money-back guarantee for paid courses. If you're not satisfied, email us within 7 days of purchase for a full refund, no questions asked.</div></div>
-      <div class="faq-item"><div class="faq-q">Is mentorship included? <span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">Some courses include optional mentorship add-ons. You can also book a standalone 1-on-1 session with any instructor via the mentorship section.</div></div>
-      <div class="faq-item"><div class="faq-q">Can I access courses on mobile? <span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">Yes — the Academy is fully responsive and works on all devices. We also have a mobile app in development — sign up to be notified when it launches.</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- NEWSLETTER -->
-<section class="newsletter-section section-py-sm">
-  <div class="container">
-    <div class="newsletter-box">
-      <div class="nl-grid">
-        <div>
-          <div class="nl-icon"><i class="fas fa-envelope-open-text"></i></div>
-          <h3 style="font-size:clamp(1.3rem,4vw,1.8rem);margin-bottom:8px">Stay in the <span class="g-blue">Loop</span> 📬</h3>
-          <p class="text-muted" style="margin:0 0 13px">Get new course alerts, free resources, and tech career tips. Zero spam.</p>
-          <div style="display:flex;flex-wrap:wrap;gap:14px;font-size:.74rem;color:var(--slate)">
-            <span><i class="fas fa-check-circle" style="color:var(--emerald)"></i> New course drops</span>
-            <span><i class="fas fa-check-circle" style="color:var(--emerald)"></i> Free resources</span>
-            <span><i class="fas fa-check-circle" style="color:var(--emerald)"></i> Early access</span>
-          </div>
-        </div>
-        <div>
-          <form id="nlForm">
-            <div class="nl-form">
-              <i class="fas fa-envelope nl-ico"></i>
-              <input type="email" id="nlEmail" class="nl-form-inp" placeholder="Enter your email address" required aria-label="Email for newsletter" />
-              <button type="submit" id="nlBtn" class="nl-submit">Subscribe <i class="fas fa-arrow-right"></i></button>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
-              <input type="checkbox" id="nlConsent" checked style="cursor:pointer;width:15px;height:15px;accent-color:var(--blue)">
-              <label for="nlConsent" style="font-size:.71rem;color:var(--slate);cursor:pointer">I agree to receive emails from NeurowexTech</label>
-            </div>
-            <p id="nlMsg" style="font-size:.78rem;margin-top:8px" role="status" aria-live="polite"></p>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- CTA — TEACH  (/become-instructor updated per doc) -->
 <div class="cta-teach-section">
@@ -1092,6 +1311,174 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
 var dark = localStorage.getItem('nw-theme')==='dark' || (!localStorage.getItem('nw-theme') && window.matchMedia('(prefers-color-scheme:dark)').matches);
 var MOON = '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>';
 var SUN  = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+
+/* ── TAB FILTER ── */
+function initTabs() {
+  var pills = document.querySelectorAll('.tab-pill');
+  var cards = document.querySelectorAll('.fc-card');
+  pills.forEach(function(pill) {
+    pill.addEventListener('click', function() {
+      pills.forEach(function(p) { p.classList.remove('active'); });
+      pill.classList.add('active');
+      var tab = pill.dataset.tab;
+      var visible = 0;
+      cards.forEach(function(card) {
+        var tabs = card.dataset.tab || '';
+        if (tab === 'popular' || tabs.includes(tab)) {
+          card.style.display = '';
+          card.style.animation = 'fadeUp .36s ease both';
+          visible++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+}
+
+/* ── LOGIN PROMPT MODAL ── */
+var _pendingUrl = '';
+function showLoginPrompt(courseName, url) {
+  _pendingUrl = url || '';
+  var el = document.getElementById('modalCourseName');
+  if (el) el.textContent = courseName || 'this course';
+  var modal = document.getElementById('enrollModal');
+  if (modal) { modal.classList.add('open'); document.body.style.overflow = 'hidden'; }
+}
+function closeEnrollModal() {
+  var modal = document.getElementById('enrollModal');
+  if (modal) { modal.classList.remove('open'); document.body.style.overflow = ''; }
+  _pendingUrl = '';
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeEnrollModal();
+});
+
+/* ── LIVE STATS from DB ── */
+async function loadLiveStats() {
+  try {
+    var res  = await fetch('/api/dashboard/public-stats').catch(function() { return null; });
+    // Fallback: use values already in DOM from server-side HBS render
+    // If we have a public stats endpoint, update; otherwise keep HBS values
+    if (!res || !res.ok) return;
+    var data = await res.json();
+    var stats = data.stats || {};
+    function animateNum(el, target) {
+      if (!el || isNaN(target) || target === 0) return;
+      var start = 0, step = target / 60;
+      (function tick() {
+        start = Math.min(start + step, target);
+        el.textContent = Math.floor(start);
+        if (start < target) requestAnimationFrame(tick);
+      })();
+    }
+    if (stats.total_courses)     animateNum(document.getElementById('statCourses'),     parseInt(stats.total_courses));
+    if (stats.total_enrollments) animateNum(document.getElementById('statEnrolled'),    parseInt(stats.total_enrollments));
+    if (stats.total_instructors) animateNum(document.getElementById('statInstructors'), parseInt(stats.total_instructors));
+  } catch(e) { /* silently keep server-rendered values */ }
+}
+
+/* ── ENROLL FREE — records enrollment in DB, updates stat strip, opens kings-learn ── */
+async function enrollFree(courseId, courseTitle, externalUrl, btnEl) {
+  if (!btnEl) return;
+  // Already enrolled state
+  if (btnEl.dataset.enrolled === '1') {
+    window.open(externalUrl, '_blank', 'noopener');
+    return;
+  }
+  // Loading state
+  var origHtml = btnEl.innerHTML;
+  btnEl.disabled = true;
+  btnEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enrolling…';
+
+  try {
+    var res = await fetch('/api/enroll/free', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ courseId: courseId, courseTitle: courseTitle, externalUrl: externalUrl })
+    });
+    var data = await res.json();
+
+    if (data.success) {
+      // Mark button as enrolled
+      btnEl.innerHTML = '<i class="fas fa-check-circle"></i> Enrolled! Go to Course';
+      btnEl.dataset.enrolled = '1';
+      btnEl.style.background = 'linear-gradient(135deg,#059669,#10b981)';
+      btnEl.disabled = false;
+
+      // Update the enrolled counter in the same fc-card
+      var card = btnEl.closest('.fc-card');
+      if (card) {
+        var metaSpans = card.querySelectorAll('.fc-meta span');
+        metaSpans.forEach(function(span) {
+          if (span.textContent.includes('enrolled')) {
+            var m = span.textContent.match(/(\d+)/);
+            if (m) {
+              var newCount = parseInt(m[1]) + 1;
+              span.innerHTML = '<i class="fas fa-users"></i> ' + newCount + ' enrolled';
+            }
+          }
+        });
+      }
+
+      // Update global stat strip counter
+      var statEl = document.getElementById('statEnrolled');
+      if (statEl && data.totalEnrollments) {
+        statEl.textContent = data.totalEnrollments;
+      } else if (statEl) {
+        var cur = parseInt(statEl.textContent) || 0;
+        statEl.textContent = cur + 1;
+      }
+
+      // Also bump hero stat if present
+      var heroEnrolled = document.querySelector('.h-stat-num');
+      // (just refresh stats silently)
+      loadLiveStats();
+
+      // Show toast
+      var toast = document.getElementById('toast');
+      if (toast) {
+        toast.querySelector('#toast-msg') && (toast.querySelector('#toast-msg').textContent = 'Enrolled! Opening course…');
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 3500);
+      }
+
+      // Open external course after short delay
+      setTimeout(function() {
+        window.open(externalUrl, '_blank', 'noopener');
+      }, 800);
+
+    } else if (data.alreadyEnrolled) {
+      btnEl.innerHTML = '<i class="fas fa-check-circle"></i> Go to Course';
+      btnEl.dataset.enrolled = '1';
+      btnEl.style.background = 'linear-gradient(135deg,#059669,#10b981)';
+      btnEl.disabled = false;
+      window.open(externalUrl, '_blank', 'noopener');
+    } else {
+      btnEl.innerHTML = origHtml;
+      btnEl.disabled = false;
+      alert(data.message || 'Enrollment failed. Please try again.');
+    }
+  } catch (err) {
+    btnEl.innerHTML = origHtml;
+    btnEl.disabled = false;
+    console.error('enrollFree error:', err);
+    // Still open external URL as fallback
+    window.open(externalUrl, '_blank', 'noopener');
+  }
+}
+
+
+
+/* Add fadeUp keyframe if not already present */
+(function() {
+  if (!document.getElementById('learnKf')) {
+    var s = document.createElement('style');
+    s.id = 'learnKf';
+    s.textContent = '@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}';
+    document.head.appendChild(s);
+  }
+})();
 function applyTheme() {
   document.body.classList.toggle('dark', dark);
   document.getElementById('theme-toggle').innerHTML = dark ? SUN : MOON;
@@ -1269,6 +1656,12 @@ var statsObs = new IntersectionObserver(function(entries) {
 }, { threshold: 0.4 });
 var statsSection = document.querySelector('.hero-stats');
 if (statsSection) statsObs.observe(statsSection);
+
+/* ── INIT ── */
+document.addEventListener('DOMContentLoaded', function() {
+  initTabs();
+  loadLiveStats();
+});
 </script>
 </body>
 </html>

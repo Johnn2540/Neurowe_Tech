@@ -361,9 +361,48 @@ app.post('/api/reset-password', async (req, res) => {
 // ── DASHBOARDS ───────────────────────────────────────────────
 app.get('/user_dashboard', isAuthenticated, async (req, res) => {
     try {
-        const user = await db.query('SELECT id, username, email, role, created_at, last_login FROM users WHERE id=$1', [req.session.userId]);
-        if (!user.rows.length) { req.session.destroy(); return res.redirect('/login'); }
-        res.render('user_dashboard', { title: 'Dashboard – NeurowexTech', user: user.rows[0] });
+        const uid = req.session.userId;
+        const [userR, statsR, enrollmentsR, recentR] = await Promise.all([
+            db.query('SELECT id, username, email, role, created_at, last_login FROM users WHERE id=$1', [uid]),
+            db.query(`
+                SELECT
+                    (SELECT COUNT(*) FROM projects    WHERE user_id=$1)                        AS total_projects,
+                    (SELECT COUNT(*) FROM projects    WHERE user_id=$1 AND status='Completed') AS completed_projects,
+                    (SELECT COUNT(*) FROM projects    WHERE user_id=$1 AND status='In Progress') AS active_projects,
+                    (SELECT COUNT(*) FROM enrollments WHERE user_id=$1)                        AS total_enrollments,
+                    (SELECT COUNT(*) FROM enrollments WHERE user_id=$1 AND status='active')    AS active_enrollments,
+                    (SELECT COALESCE(AVG(progress),0) FROM enrollments WHERE user_id=$1)       AS avg_progress
+            `, [uid]),
+            db.query(`
+                SELECT e.id, e.enrolled_at, e.progress, e.status,
+                       c.id AS course_id, c.title, c.category, c.level, c.image_url,
+                       c.price, c.total_duration,
+                       u.username AS instructor_name
+                FROM enrollments e
+                JOIN courses c ON e.course_id = c.id
+                JOIN users   u ON c.instructor_id = u.id
+                WHERE e.user_id=$1 ORDER BY e.enrolled_at DESC
+            `, [uid]).catch(() => ({ rows: [] })),
+            db.query(`
+                SELECT * FROM user_activities WHERE user_id=$1 ORDER BY created_at DESC LIMIT 8
+            `, [uid]).catch(() => ({ rows: [] })),
+        ]);
+        if (!userR.rows.length) { req.session.destroy(); return res.redirect('/login'); }
+        const stats = statsR.rows[0] || {};
+        res.render('user_dashboard', {
+            title: 'Dashboard – NeurowexTech',
+            user: userR.rows[0],
+            stats: {
+                totalProjects:      parseInt(stats.total_projects)      || 0,
+                completedProjects:  parseInt(stats.completed_projects)  || 0,
+                activeProjects:     parseInt(stats.active_projects)     || 0,
+                totalEnrollments:   parseInt(stats.total_enrollments)   || 0,
+                activeEnrollments:  parseInt(stats.active_enrollments)  || 0,
+                avgProgress:        Math.round(parseFloat(stats.avg_progress) || 0),
+            },
+            enrollments:    enrollmentsR.rows,
+            recentActivity: recentR.rows,
+        });
     } catch (err) {
         console.error('User dashboard error:', err);
         res.status(500).render('error', { title: 'Error', message: err.message });
@@ -395,15 +434,148 @@ app.get('/admin_dashboard', isAuthenticated, isAdmin, async (req, res) => {
 // ── USER API ─────────────────────────────────────────────────
 app.get('/api/user/stats', isAuthenticated, async (req, res) => {
     try {
+        const uid = req.session.userId;
         const r = await db.query(`
             SELECT
-                (SELECT COUNT(*) FROM projects WHERE user_id=$1)                          AS total,
-                (SELECT COUNT(*) FROM projects WHERE user_id=$1 AND status='Completed')   AS completed,
-                (SELECT COUNT(*) FROM projects WHERE user_id=$1 AND status='In Progress') AS active
-        `, [req.session.userId]);
+                (SELECT COUNT(*) FROM projects    WHERE user_id=$1)                          AS total,
+                (SELECT COUNT(*) FROM projects    WHERE user_id=$1 AND status='Completed')   AS completed,
+                (SELECT COUNT(*) FROM projects    WHERE user_id=$1 AND status='In Progress') AS active,
+                (SELECT COUNT(*) FROM enrollments WHERE user_id=$1)                          AS total_enrollments,
+                (SELECT COUNT(*) FROM enrollments WHERE user_id=$1 AND status='active')      AS active_enrollments,
+                (SELECT COALESCE(ROUND(AVG(progress)),0) FROM enrollments WHERE user_id=$1) AS avg_progress
+        `, [uid]);
         const row = r.rows[0];
-        res.json({ success: true, totalProjects: parseInt(row.total)||0, completedProjects: parseInt(row.completed)||0, activeProjects: parseInt(row.active)||0 });
-    } catch { res.json({ success: true, totalProjects: 0, completedProjects: 0, activeProjects: 0 }); }
+        res.json({
+            success:            true,
+            totalProjects:      parseInt(row.total)              || 0,
+            completedProjects:  parseInt(row.completed)          || 0,
+            activeProjects:     parseInt(row.active)             || 0,
+            totalEnrollments:   parseInt(row.total_enrollments)  || 0,
+            activeEnrollments:  parseInt(row.active_enrollments) || 0,
+            avgProgress:        parseInt(row.avg_progress)       || 0,
+        });
+    } catch { res.json({ success: true, totalProjects: 0, completedProjects: 0, activeProjects: 0, totalEnrollments: 0, activeEnrollments: 0, avgProgress: 0 }); }
+});
+
+// ── USER ENROLLMENTS (real data) ────────────────────────────────────────
+app.get('/api/user/enrollments', isAuthenticated, async (req, res) => {
+    try {
+        const r = await db.query(`
+            SELECT e.id, e.enrolled_at, e.progress, e.status,
+                   c.id AS course_id, c.title, c.category, c.level,
+                   c.image_url, c.price, c.total_duration,
+                   u.username AS instructor_name
+            FROM enrollments e
+            JOIN courses c ON e.course_id = c.id
+            JOIN users   u ON c.instructor_id = u.id
+            WHERE e.user_id=$1 ORDER BY e.enrolled_at DESC
+        `, [req.session.userId]);
+        res.json({ success: true, enrollments: r.rows });
+    } catch (err) { res.json({ success: true, enrollments: [] }); }
+});
+
+// ── ENROLL IN FREE / EXTERNAL COURSE (records enrollment in DB + returns updated count) ──
+// Used by learn.hbs when a logged-in user clicks "Enrol Free" on a kings-learn course
+app.post('/api/enroll/free', isAuthenticated, async (req, res) => {
+    try {
+        const { courseId, courseTitle, externalUrl } = req.body;
+        if (!courseId) return res.status(400).json({ success: false, message: 'courseId required' });
+
+        // Check if an internal DB course with this id or external reference exists
+        let internalCourseId = null;
+
+        // Try matching by external_id or kings-learn id stored in courses table
+        const extR = await db.query(
+            `SELECT id FROM courses WHERE (external_id=$1 OR id::text=$1) AND published=true LIMIT 1`,
+            [String(courseId)]
+        ).catch(() => ({ rows: [] }));
+
+        if (extR.rows.length) {
+            internalCourseId = extR.rows[0].id;
+        } else {
+            // Course not in our DB — create a lightweight record so we can track it
+            // Find or create a system instructor user
+            const sysUser = await db.query(
+                `SELECT id FROM users WHERE role='admin' LIMIT 1`
+            );
+            const instructorId = sysUser.rows[0]?.id || 1;
+
+            const newCourse = await db.query(`
+                INSERT INTO courses (title, category, level, price, image_url, published,
+                                     instructor_id, instructor_name, external_id, created_at)
+                VALUES ($1, $2, 'Beginner', 0, $3, true, $4, 'NeurowexTech', $5, NOW())
+                ON CONFLICT (external_id) DO UPDATE SET title=EXCLUDED.title
+                RETURNING id
+            `, [
+                courseTitle || 'Free Course',
+                'Design',
+                '/images/course-placeholder.jpg',
+                instructorId,
+                String(courseId)
+            ]).catch(async () => {
+                // If external_id column doesn't exist yet, just find/create differently
+                const existing = await db.query(
+                    `SELECT id FROM courses WHERE title=$1 AND price=0 LIMIT 1`, [courseTitle || 'Free Course']
+                );
+                if (existing.rows.length) return existing;
+                return db.query(`
+                    INSERT INTO courses (title, category, level, price, image_url, published,
+                                         instructor_id, instructor_name, created_at)
+                    VALUES ($1, 'Design', 'Beginner', 0, '/images/course-placeholder.jpg', true, $2, 'NeurowexTech', NOW())
+                    RETURNING id
+                `, [courseTitle || 'Free Course', instructorId]);
+            });
+            internalCourseId = newCourse.rows[0]?.id;
+        }
+
+        if (!internalCourseId) {
+            return res.json({ success: false, message: 'Could not locate course record' });
+        }
+
+        // Check if already enrolled
+        const existing = await db.query(
+            'SELECT id FROM enrollments WHERE user_id=$1 AND course_id=$2',
+            [req.session.userId, internalCourseId]
+        );
+        if (existing.rows.length) {
+            return res.json({ success: true, alreadyEnrolled: true, message: 'Already enrolled', redirect: externalUrl });
+        }
+
+        // Record enrollment
+        await db.query(
+            `INSERT INTO enrollments (user_id, course_id, enrolled_at, progress, status)
+             VALUES ($1, $2, NOW(), 0, 'active')`,
+            [req.session.userId, internalCourseId]
+        );
+
+        // Bump enrolled_count on course
+        await db.query(
+            'UPDATE courses SET enrolled_count = COALESCE(enrolled_count,0)+1 WHERE id=$1',
+            [internalCourseId]
+        );
+
+        // Log activity
+        await db.query(
+            `INSERT INTO user_activities (user_id, title, description, created_at)
+             VALUES ($1, 'Enrolled in course', $2, NOW())`,
+            [req.session.userId, `Enrolled in "${courseTitle || 'Free Course'}"`]
+        ).catch(() => {}); // activity table may not exist — ignore
+
+        // Return fresh public stats so learn.hbs card counters update
+        const statsR = await db.query(`
+            SELECT COUNT(*) AS total_enrollments FROM enrollments
+        `);
+
+        res.json({
+            success:           true,
+            message:           'Enrolled successfully!',
+            redirect:          externalUrl,
+            totalEnrollments:  parseInt(statsR.rows[0].total_enrollments) || 0,
+        });
+    } catch (err) {
+        console.error('Free enroll error:', err);
+        res.status(500).json({ success: false, message: 'Enrollment failed. Please try again.' });
+    }
 });
 
 app.get('/api/user/projects', isAuthenticated, async (req, res) => {
@@ -897,6 +1069,19 @@ app.get('/api/dashboard/stats', isAuthenticated, isAdmin, async (req, res) => {
     }});
 });
 
+// Public stats for learn.hbs live counters (no auth required)
+app.get('/api/dashboard/public-stats', async (req, res) => {
+    const safeCount = async (sql) => {
+        try { const r = await db.query(sql); return parseInt(r.rows[0].count) || 0; }
+        catch { return 0; }
+    };
+    res.json({ success: true, stats: {
+        total_courses:     await safeCount("SELECT COUNT(*) as count FROM courses WHERE published=true"),
+        total_enrollments: await safeCount("SELECT COUNT(*) as count FROM enrollments"),
+        total_instructors: await safeCount("SELECT COUNT(DISTINCT instructor_id) as count FROM courses WHERE published=true"),
+    }});
+});
+
 // ── PUBLIC ROUTES ────────────────────────────────────────────
 app.get('/', async (req, res) => {
     try {
@@ -934,6 +1119,10 @@ app.get('/portfolio/:id', async (req, res) => {
 app.get('/services', (req, res) => res.render('services', { title: 'Services – NeurowexTech' }));
 app.get('/contact',  (req, res) => res.render('contact',  { title: 'Contact – NeurowexTech' }));
 app.get('/become-instructor', (req, res) => res.render('become_instructor', { title: 'Become an Instructor – NeurowexTech Academy' }));
+app.get('/kids-coding',      (req, res) => res.render('kids-coding',  { title: 'Kids & Teen Coding Academy – NeurowexTech' }));
+app.get('/learn/fullstack',  (req, res) => res.render('fullstack',    { title: 'Full Stack Software Engineering – NeurowexTech Academy' }));
+app.get('/learn/graphic-design', (req, res) => res.render('graphic-design', { title: 'Professional Graphic Design – NeurowexTech Academy' }));
+app.get('/learn/ai',         (req, res) => res.render('ai-course',    { title: 'Artificial Intelligence (AI) – NeurowexTech Academy' }));
 
 app.post('/contact', async (req, res) => {
     try {
@@ -1174,6 +1363,77 @@ app.post('/api/lesson/complete', isAuthenticated, async (req, res) => {
         );
         res.json({ success: true, message: 'Lesson marked complete' });
     } catch (err) { res.status(500).json({ success: false, message: 'Failed to update progress' }); }
+});
+
+app.post('/api/enroll/free', isAuthenticated, async (req, res) => {
+    try {
+        const { courseId, courseTitle, externalUrl } = req.body;
+        if (!courseId) return res.status(400).json({ success: false, message: 'courseId required' });
+
+        // Try to find existing course by external_id
+        let result = await db.query(
+            'SELECT id FROM courses WHERE external_id = $1 LIMIT 1',
+            [String(courseId)]
+        );
+        
+        let internalCourseId = result.rows[0]?.id;
+
+        // If not found, create a new course
+        if (!internalCourseId) {
+            const adminUser = await db.query(`SELECT id FROM users WHERE role = 'admin' LIMIT 1`);
+            const instructorId = adminUser.rows[0]?.id || 1;
+            
+            const slug = courseTitle ? courseTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') : 'free-course';
+            
+            // Insert without ON CONFLICT (unique constraint handles it)
+            const newCourse = await db.query(`
+                INSERT INTO courses (title, slug, category, level, price, image_url, published, 
+                                     instructor_id, instructor_name, external_id, created_at)
+                VALUES ($1, $2, 'Design', 'Beginner', 0, $3, true, $4, $5, $6, NOW())
+                ON CONFLICT (external_id) DO UPDATE SET title = EXCLUDED.title
+                RETURNING id
+            `, [courseTitle || 'Free Course', slug, '/images/course-placeholder.jpg', instructorId, 'NeurowexTech Instructor', String(courseId)]);
+            
+            internalCourseId = newCourse.rows[0]?.id;
+        }
+
+        if (!internalCourseId) {
+            return res.json({ success: false, message: 'Could not create course record' });
+        }
+
+        // Check if already enrolled
+        const existing = await db.query(
+            'SELECT id FROM enrollments WHERE user_id = $1 AND course_id = $2',
+            [req.session.userId, internalCourseId]
+        );
+
+        if (existing.rows.length) {
+            return res.json({ success: true, alreadyEnrolled: true, message: 'Already enrolled', redirect: externalUrl });
+        }
+
+        // Record enrollment
+        await db.query(
+            `INSERT INTO enrollments (user_id, course_id, enrolled_at, progress, status)
+             VALUES ($1, $2, NOW(), 0, 'active')`,
+            [req.session.userId, internalCourseId]
+        );
+
+        // Update enrolled count
+        await db.query('UPDATE courses SET enrolled_count = COALESCE(enrolled_count, 0) + 1 WHERE id = $1', [internalCourseId]);
+
+        // Get total enrollments
+        const statsR = await db.query('SELECT COUNT(*) AS total FROM enrollments');
+
+        res.json({
+            success: true,
+            message: 'Enrolled successfully!',
+            redirect: externalUrl,
+            totalEnrollments: parseInt(statsR.rows[0].total) || 0,
+        });
+    } catch (err) {
+        console.error('Free enroll error:', err);
+        res.status(500).json({ success: false, message: 'Enrollment failed. Please try again.' });
+    }
 });
 
 app.get('/api/courses/search', async (req, res) => {
