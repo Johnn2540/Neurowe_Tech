@@ -686,33 +686,60 @@ body.dark #theme-toggle svg{stroke:rgba(255,255,255,.8)}
 .faq-item.open .faq-a{max-height:220px;padding:0 18px 14px}
 .faq-item.open .faq-icon{transform:rotate(45deg)}
 
-/* CONTACT */
-.contact-section{background:var(--g-dark);position:relative;overflow:hidden}
-.contact-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 60% 30%,rgba(26,86,232,.1) 0%,transparent 55%),radial-gradient(ellipse at 20% 80%,rgba(240,112,32,.06) 0%,transparent 50%)}
-.contact-form-wrap{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:var(--r-xl);padding:24px 18px;backdrop-filter:blur(12px);transition:border-color .28s;position:relative;z-index:1}
-.contact-form-wrap:hover{border-color:rgba(255,255,255,.16)}
-.f-label{font-size:.78rem;font-weight:600;color:rgba(255,255,255,.7);display:block;margin-bottom:6px}
-.f-input{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:var(--r-md);color:#fff;padding:12px 14px;font-size:16px;font-family:'Satoshi',sans-serif;transition:var(--t);outline:none}
-.f-input:focus{background:rgba(255,255,255,.1);border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,232,.2)}
-.f-input::placeholder{color:rgba(255,255,255,.3)}
-select.f-input option{background:var(--ink-2);color:#fff}
-.svc-checks{display:flex;gap:7px;flex-wrap:wrap}
-.svc-chk{display:inline-flex;align-items:center;gap:5px;cursor:pointer}
-.svc-chk input{display:none}
-.svc-chk span{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);color:rgba(255,255,255,.6);border-radius:var(--r-pill);padding:6px 13px;font-size:.74rem;font-weight:600;transition:var(--t);cursor:pointer;touch-action:manipulation;min-height:34px;display:flex;align-items:center}
-.svc-chk input:checked+span{background:var(--blue);border-color:var(--blue);color:#fff}
-.svc-chk:hover span{background:rgba(255,255,255,.12)}
-.or-div{text-align:center;position:relative;margin:16px 0}
-.or-div::before,.or-div::after{content:'';position:absolute;top:50%;width:calc(50% - 55px);height:1px;background:rgba(255,255,255,.12)}
-.or-div::before{left:0}.or-div::after{right:0}
-.or-div span{background:rgba(255,255,255,.04);padding:5px 12px;border-radius:var(--r-pill);font-size:.74rem;color:rgba(255,255,255,.4)}
-.contact-info-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:var(--r-lg);padding:15px 12px;text-align:center;transition:var(--t)}
-.contact-info-card:hover{background:rgba(255,255,255,.08);transform:translateY(-3px)}
-.ci-icon{width:40px;height:40px;background:rgba(26,86,232,.18);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 9px;color:var(--orange);font-size:1rem;transition:var(--t)}
-.contact-info-card:hover .ci-icon{background:var(--g-blue);color:#fff}
-.contact-info-card h6{color:#fff;font-size:.79rem;font-weight:700;margin-bottom:3px}
-.contact-info-card a,.contact-info-card span{font-size:.74rem;color:rgba(255,255,255,.48);word-break:break-all}
-.contact-info-card a:hover{color:var(--orange)}
+/* WHY CHOOSE US */
+.why-section{}
+.why-grid{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:600px){.why-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:992px){.why-grid{grid-template-columns:repeat(3,1fr)}}
+
+.why-card{background:#fff;border-radius:var(--r-xl);padding:28px 22px;border:1px solid var(--mist);transition:var(--t);position:relative;overflow:hidden}
+.why-card:hover{transform:translateY(-5px);box-shadow:var(--sh-card-h);border-color:rgba(26,86,232,.16)}
+.why-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;background:linear-gradient(90deg,var(--blue),var(--orange));transform:scaleX(0);transform-origin:left;transition:transform .38s}
+.why-card:hover::before{transform:scaleX(1)}
+.why-card-num{font-family:'Clash Display',sans-serif;font-size:2.6rem;font-weight:700;background:var(--g-blue);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:.18;line-height:1;position:absolute;top:14px;right:18px}
+.why-card-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:14px}
+.why-card h3{font-size:1.05rem;font-weight:700;margin-bottom:8px;color:var(--ink)}
+.why-card p{font-size:.82rem;color:var(--slate);line-height:1.68;margin-bottom:14px}
+.why-card-badge{display:inline-flex;align-items:center;gap:5px;border-radius:var(--r-pill);padding:4px 12px;font-size:.68rem;font-weight:700}
+.why-card-badge.blue{background:var(--blue-pale);color:var(--blue);border:1px solid rgba(26,86,232,.18)}
+.why-card-badge.orange{background:var(--orange-pale);color:var(--orange);border:1px solid rgba(240,112,32,.18)}
+.why-card-badge.green{background:rgba(13,191,126,.1);color:var(--emerald);border:1px solid rgba(13,191,126,.2)}
+.why-card-badge.purple{background:rgba(124,58,237,.1);color:#7c3aed;border:1px solid rgba(124,58,237,.2)}
+
+/* Featured why card */
+.featured-why{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-d) 100%);border:none;display:flex;align-items:center;justify-content:center}
+.featured-why::before{background:linear-gradient(90deg,rgba(255,255,255,.2),rgba(255,255,255,.05))}
+.why-feat-inner{text-align:center}
+.why-feat-icon{width:56px;height:56px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--orange-l);margin:0 auto 12px}
+.why-feat-val{font-family:'Clash Display',sans-serif;font-size:2.8rem;font-weight:700;color:#fff;line-height:1;margin-bottom:4px}
+.why-feat-label{font-size:.78rem;font-weight:700;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px}
+.why-feat-sub{font-size:.8rem;color:rgba(255,255,255,.55);line-height:1.6;max-width:220px;margin:0 auto}
+body.dark .why-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+body.dark .why-card h3{color:rgba(255,255,255,.9)}
+
+/* STATS sub-label */
+.stat-sub{font-size:.7rem;color:var(--slate-l, #7a8ea8);margin-top:3px;font-weight:400;opacity:.7}
+body.dark .stat-sub{color:rgba(255,255,255,.3)}
+
+/* TESTIMONIALS featured quote */
+.test-featured{background:linear-gradient(135deg,var(--ink) 0%,var(--ink-2) 100%);border-radius:var(--r-xl);padding:36px 32px;position:relative;overflow:hidden;margin-bottom:8px}
+.test-featured::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(180deg,var(--blue),var(--orange))}
+.test-featured::after{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(26,86,232,.12) 0%,transparent 70%);border-radius:50%}
+.tf-quote-mark{font-family:'Clash Display',sans-serif;font-size:7rem;line-height:.7;color:var(--blue);opacity:.25;margin-bottom:-14px;display:block}
+blockquote.tf-quote{font-size:clamp(1.05rem,2.8vw,1.35rem);font-weight:500;color:rgba(255,255,255,.9);line-height:1.72;font-style:italic;margin-bottom:22px;position:relative;z-index:1}
+.tf-author{display:flex;align-items:center;gap:14px;position:relative;z-index:1;flex-wrap:wrap}
+.tf-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Clash Display',sans-serif;font-weight:700;font-size:1.1rem;color:#fff;flex-shrink:0}
+.tf-name{font-family:'Clash Display',sans-serif;font-weight:700;font-size:.92rem;color:#fff;margin-bottom:2px}
+.tf-role{font-size:.74rem;color:rgba(255,255,255,.5)}
+.tf-stars{margin-left:auto;color:var(--orange);font-size:1rem;letter-spacing:2px}
+@media(max-width:599px){.tf-stars{display:none}}
+
+/* NEWSLETTER additions */
+.btn-hero-ghost{color:var(--blue);border-color:var(--blue)}
+.btn-hero-ghost:hover{background:var(--g-blue);color:#fff;border-color:transparent}
+
+/* STATS section */
+.stats-section{}
 
 /* NEWSLETTER */
 .newsletter-section{background:linear-gradient(135deg,#eef2ff,#ecfdf5)}
@@ -874,7 +901,6 @@ body.dark .footer-cta-strip{background:linear-gradient(135deg,#090e1f,#0d1530)}
   .process-arrow{display:flex;position:absolute;top:50%;right:-13px;transform:translateY(-50%);width:26px;height:26px;background:var(--blue);border-radius:50%;align-items:center;justify-content:center;color:#fff;font-size:.65rem;z-index:2;box-shadow:var(--sh-blue)}
   .learn-inner{grid-template-columns:1fr 1fr;gap:56px}
   .faq-grid{grid-template-columns:1fr 1fr}
-  .contact-form-wrap{padding:40px}
   .nl-grid{grid-template-columns:1fr 1fr;align-items:center}
   .nl-form{flex-wrap:nowrap}
   .nl-form-inp{padding:13px 140px 13px 42px;border-radius:var(--r-pill)}
@@ -952,18 +978,18 @@ body.dark .footer-cta-strip{background:linear-gradient(135deg,#090e1f,#0d1530)}
       <i class="fas fa-chevron-down chev"></i>
     </div>
     <div class="mob-sub" id="mobSvcSub">
-      <a href="#contact"><i class="fas fa-laptop-code"></i> Web Development</a>
-      <a href="#contact"><i class="fas fa-mobile-alt"></i> Mobile Apps</a>
-      <a href="#contact"><i class="fas fa-shopping-cart"></i> E-commerce</a>
-      <a href="#contact"><i class="fas fa-rocket"></i> MVP Development</a>
-      <a href="#contact"><i class="fas fa-cloud-upload-alt"></i> Cloud Solutions</a>
-      <a href="#contact"><i class="fas fa-shield-alt"></i> Cyber Security</a>
-      <a href="#contact"><i class="fas fa-robot"></i> AI Integration</a>
+      <a href="/contact"><i class="fas fa-laptop-code"></i> Web Development</a>
+      <a href="/contact"><i class="fas fa-mobile-alt"></i> Mobile Apps</a>
+      <a href="/contact"><i class="fas fa-shopping-cart"></i> E-commerce</a>
+      <a href="/contact"><i class="fas fa-rocket"></i> MVP Development</a>
+      <a href="/contact"><i class="fas fa-cloud-upload-alt"></i> Cloud Solutions</a>
+      <a href="/contact"><i class="fas fa-shield-alt"></i> Cyber Security</a>
+      <a href="/contact"><i class="fas fa-robot"></i> AI Integration</a>
       <a href="#graphic"><i class="fas fa-palette"></i> Graphic Design</a>
-      <a href="#contact"><i class="fas fa-chart-line"></i> Analytics & BI</a>
-      <a href="#contact"><i class="fas fa-headset"></i> IT Consulting</a>
-      <a href="#contact"><i class="fas fa-database"></i> Database Design</a>
-      <a href="#contact"><i class="fas fa-search"></i> SEO Optimization</a>
+      <a href="/contact"><i class="fas fa-chart-line"></i> Analytics & BI</a>
+      <a href="/contact"><i class="fas fa-headset"></i> IT Consulting</a>
+      <a href="/contact"><i class="fas fa-database"></i> Database Design</a>
+      <a href="/contact"><i class="fas fa-search"></i> SEO Optimization</a>
     </div>
     <a href="#process"   class="mob-link"><i class="fas fa-sitemap"></i> Process</a>
     <a href="#portfolio" class="mob-link"><i class="fas fa-briefcase"></i> Portfolio</a>
@@ -971,7 +997,7 @@ body.dark .footer-cta-strip{background:linear-gradient(135deg,#090e1f,#0d1530)}
     <a href="#pricing"   class="mob-link"><i class="fas fa-tags"></i> Pricing</a>
     <a href="#blog"      class="mob-link"><i class="fas fa-rss"></i> Blog</a>
     <a href="#faq"       class="mob-link"><i class="fas fa-question-circle"></i> FAQ</a>
-    <a href="#contact"   class="mob-link"><i class="fas fa-envelope"></i> Contact</a>
+    <a href="/contact"   class="mob-link"><i class="fas fa-envelope"></i> Contact</a>
     <hr class="mob-hr">
     <a href="/learn" class="mob-link" style="color:var(--teal)"><i class="fas fa-graduation-cap" style="color:var(--teal)"></i> Learn</a>
     <hr class="mob-hr">
@@ -979,7 +1005,7 @@ body.dark .footer-cta-strip{background:linear-gradient(135deg,#090e1f,#0d1530)}
   <div class="mob-footer">
     <a href="/login"   class="btn-outline"   style="text-align:center;justify-content:center;">Sign In</a>
     <a href="/learn"   class="btn-orange"    style="text-align:center;justify-content:center;"><i class="fas fa-graduation-cap"></i> Learn</a>
-    <a href="#contact" class="btn-primary"   style="text-align:center;justify-content:center;">Start Project <i class="fas fa-arrow-right"></i></a>
+    <a href="/contact" class="btn-primary"   style="text-align:center;justify-content:center;">Start Project <i class="fas fa-arrow-right"></i></a>
   </div>
 </div>
 
@@ -997,24 +1023,24 @@ body.dark .footer-cta-strip{background:linear-gradient(135deg,#090e1f,#0d1530)}
           <div class="mega-grid">
             <div>
               <span class="mega-col-label">Development</span>
-              <a class="mega-link" href="#contact" data-service="Web Development"><i class="fas fa-laptop-code"></i> Web Dev</a>
-              <a class="mega-link" href="#contact" data-service="Mobile Apps"><i class="fas fa-mobile-alt"></i> Mobile Apps</a>
-              <a class="mega-link" href="#contact" data-service="E-commerce"><i class="fas fa-shopping-cart"></i> E-commerce</a>
-              <a class="mega-link" href="#contact" data-service="MVP Development"><i class="fas fa-rocket"></i> MVP Dev</a>
+              <a class="mega-link" href="/contact" data-service="Web Development"><i class="fas fa-laptop-code"></i> Web Dev</a>
+              <a class="mega-link" href="/contact" data-service="Mobile Apps"><i class="fas fa-mobile-alt"></i> Mobile Apps</a>
+              <a class="mega-link" href="/contact" data-service="E-commerce"><i class="fas fa-shopping-cart"></i> E-commerce</a>
+              <a class="mega-link" href="/contact" data-service="MVP Development"><i class="fas fa-rocket"></i> MVP Dev</a>
             </div>
             <div>
               <span class="mega-col-label">Cloud & Security</span>
-              <a class="mega-link" href="#contact" data-service="Cloud Solutions"><i class="fas fa-cloud-upload-alt"></i> Cloud</a>
-              <a class="mega-link" href="#contact" data-service="Cyber Security"><i class="fas fa-shield-alt"></i> Cyber Security</a>
-              <a class="mega-link" href="#contact" data-service="AI Integration"><i class="fas fa-robot"></i> AI Integration</a>
+              <a class="mega-link" href="/contact" data-service="Cloud Solutions"><i class="fas fa-cloud-upload-alt"></i> Cloud</a>
+              <a class="mega-link" href="/contact" data-service="Cyber Security"><i class="fas fa-shield-alt"></i> Cyber Security</a>
+              <a class="mega-link" href="/contact" data-service="AI Integration"><i class="fas fa-robot"></i> AI Integration</a>
               <a class="mega-link" href="#graphic"><i class="fas fa-palette"></i> Graphic Design</a>
             </div>
             <div>
               <span class="mega-col-label">Data & Support</span>
-              <a class="mega-link" href="#contact" data-service="Analytics & BI"><i class="fas fa-chart-line"></i> Analytics</a>
-              <a class="mega-link" href="#contact" data-service="IT Consulting"><i class="fas fa-headset"></i> IT Consulting</a>
-              <a class="mega-link" href="#contact" data-service="Database Design"><i class="fas fa-database"></i> Database</a>
-              <a class="mega-link" href="#contact" data-service="SEO Optimization"><i class="fas fa-search"></i> SEO</a>
+              <a class="mega-link" href="/contact" data-service="Analytics & BI"><i class="fas fa-chart-line"></i> Analytics</a>
+              <a class="mega-link" href="/contact" data-service="IT Consulting"><i class="fas fa-headset"></i> IT Consulting</a>
+              <a class="mega-link" href="/contact" data-service="Database Design"><i class="fas fa-database"></i> Database</a>
+              <a class="mega-link" href="/contact" data-service="SEO Optimization"><i class="fas fa-search"></i> SEO</a>
             </div>
           </div>
         </div>
@@ -1025,12 +1051,12 @@ body.dark .footer-cta-strip{background:linear-gradient(135deg,#090e1f,#0d1530)}
       <li class="nl-item"><a href="#pricing"   class="nl-a">Pricing</a></li>
       <li class="nl-item"><a href="#blog"      class="nl-a">Blog</a></li>
       <li class="nl-item"><a href="#faq"       class="nl-a">FAQ</a></li>
-      <li class="nl-item"><a href="#contact"   class="nl-a">Contact</a></li>
+      <li class="nl-item"><a href="/contact"   class="nl-a">Contact</a></li>
     </ul>
     <div class="nav-cta">
       <a href="/login"   class="btn-nav-signin">Sign In</a>
       <a href="/learn"   class="btn-nav-orange"><i class="fas fa-graduation-cap"></i> Learn</a>
-      <a href="#contact" class="btn-nav-start">Start Project <i class="fas fa-arrow-right" style="font-size:.72rem"></i></a>
+      <a href="/contact" class="btn-nav-start">Start Project <i class="fas fa-arrow-right" style="font-size:.72rem"></i></a>
     </div>
     <div class="mob-quick" id="mobQuick">
       <button class="mob-quick-btn" id="mobThemeBtn" title="Toggle theme" aria-label="Toggle dark mode">
@@ -1358,49 +1384,49 @@ body.dark .footer-cta-strip{background:linear-gradient(135deg,#090e1f,#0d1530)}
       <p class="section-sub" style="margin:0 auto;">Comprehensive digital solutions engineered for growth, scale, and impact.</p>
     </div>
     <div class="services-grid">
-      <a href="#contact" class="service-card card-white" data-service="Web Development" data-aos="zoom-in" data-aos-delay="40">
+      <a href="/contact" class="service-card card-white" data-service="Web Development" data-aos="zoom-in" data-aos-delay="40">
         <div class="svc-overlay"><div class="svc-ov-icon"><i class="fas fa-laptop-code"></i></div><div class="svc-ov-title">Web Development</div><div class="svc-ov-sub">Get a free quote today</div><span class="svc-ov-btn">Start Project <i class="fas fa-arrow-right"></i></span></div>
         <div class="svc-img-wrap"><img src="/images/web_development.jpg" alt="" class="svc-img" onerror="this.style.display='none'" loading="lazy"></div>
         <div class="svc-icon-wrap"><i class="fas fa-laptop-code fa-lg" style="color:var(--blue)"></i></div>
         <div class="svc-body"><h3>Web Development</h3><p>React, Next.js, Vue, Angular — blazing-fast modern apps.</p><span class="svc-pill"><i class="fas fa-arrow-right" style="font-size:.58rem"></i> Get Quote</span></div>
       </a>
-      <a href="#contact" class="service-card card-white" data-service="Mobile Apps" data-aos="zoom-in" data-aos-delay="80">
+      <a href="/contact" class="service-card card-white" data-service="Mobile Apps" data-aos="zoom-in" data-aos-delay="80">
         <div class="svc-overlay"><div class="svc-ov-icon"><i class="fas fa-mobile-alt"></i></div><div class="svc-ov-title">Mobile Apps</div><div class="svc-ov-sub">iOS & Android experts</div><span class="svc-ov-btn">Start Project <i class="fas fa-arrow-right"></i></span></div>
         <div class="svc-img-wrap"><img src="/images/mobile_app.jpg" alt="" class="svc-img" onerror="this.style.display='none'" loading="lazy"></div>
         <div class="svc-icon-wrap"><i class="fas fa-mobile-alt fa-lg" style="color:var(--orange)"></i></div>
         <div class="svc-body"><h3>Mobile Apps</h3><p>iOS & Android with React Native, Flutter & Swift.</p><span class="svc-pill"><i class="fas fa-arrow-right" style="font-size:.58rem"></i> Get Quote</span></div>
       </a>
-      <a href="#contact" class="service-card card-white" data-service="E-commerce" data-aos="zoom-in" data-aos-delay="120">
+      <a href="/contact" class="service-card card-white" data-service="E-commerce" data-aos="zoom-in" data-aos-delay="120">
         <div class="svc-overlay"><div class="svc-ov-icon"><i class="fas fa-shopping-cart"></i></div><div class="svc-ov-title">E-commerce</div><div class="svc-ov-sub">Sell more with great UX</div><span class="svc-ov-btn">Start Project <i class="fas fa-arrow-right"></i></span></div>
         <div class="svc-img-wrap"><img src="/images/ecommerce.jpg" alt="" class="svc-img" onerror="this.style.display='none'" loading="lazy"></div>
         <div class="svc-icon-wrap"><i class="fas fa-shopping-cart fa-lg" style="color:var(--emerald)"></i></div>
         <div class="svc-body"><h3>E-commerce</h3><p>Shopify, WooCommerce & custom storefronts.</p><span class="svc-pill"><i class="fas fa-arrow-right" style="font-size:.58rem"></i> Get Quote</span></div>
       </a>
-      <a href="#contact" class="service-card card-white" data-service="MVP Development" data-aos="zoom-in" data-aos-delay="160">
+      <a href="/contact" class="service-card card-white" data-service="MVP Development" data-aos="zoom-in" data-aos-delay="160">
         <div class="svc-overlay"><div class="svc-ov-icon"><i class="fas fa-rocket"></i></div><div class="svc-ov-title">MVP Development</div><div class="svc-ov-sub">Launch in 3–6 weeks</div><span class="svc-ov-btn">Start Project <i class="fas fa-arrow-right"></i></span></div>
         <div class="svc-img-wrap"><img src="/images/mvp.jpg" alt="" class="svc-img" onerror="this.style.display='none'" loading="lazy"></div>
         <div class="svc-icon-wrap"><i class="fas fa-rocket fa-lg" style="color:var(--blue)"></i></div>
         <div class="svc-body"><h3>MVP Development</h3><p>Launch your idea in 3 weeks, validated & ready.</p><span class="svc-pill"><i class="fas fa-arrow-right" style="font-size:.58rem"></i> Get Quote</span></div>
       </a>
-      <a href="#contact" class="service-card card-white" data-service="Cloud Solutions" data-aos="zoom-in" data-aos-delay="200">
+      <a href="/contact" class="service-card card-white" data-service="Cloud Solutions" data-aos="zoom-in" data-aos-delay="200">
         <div class="svc-overlay"><div class="svc-ov-icon"><i class="fas fa-cloud-upload-alt"></i></div><div class="svc-ov-title">Cloud Solutions</div><div class="svc-ov-sub">AWS, Azure & GCP experts</div><span class="svc-ov-btn">Start Project <i class="fas fa-arrow-right"></i></span></div>
         <div class="svc-img-wrap"><img src="/images/cloud_solution.jpg" alt="" class="svc-img" onerror="this.style.display='none'" loading="lazy"></div>
         <div class="svc-icon-wrap"><i class="fas fa-cloud-upload-alt fa-lg" style="color:var(--blue)"></i></div>
         <div class="svc-body"><h3>Cloud Solutions</h3><p>AWS, Azure, Google Cloud — scalable infrastructure.</p><span class="svc-pill"><i class="fas fa-arrow-right" style="font-size:.58rem"></i> Get Quote</span></div>
       </a>
-      <a href="#contact" class="service-card card-white" data-service="Cyber Security" data-aos="zoom-in" data-aos-delay="240">
+      <a href="/contact" class="service-card card-white" data-service="Cyber Security" data-aos="zoom-in" data-aos-delay="240">
         <div class="svc-overlay"><div class="svc-ov-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626)"><i class="fas fa-shield-alt"></i></div><div class="svc-ov-title">Cyber Security</div><div class="svc-ov-sub">Protect your business</div><span class="svc-ov-btn">Start Project <i class="fas fa-arrow-right"></i></span></div>
         <div class="svc-img-wrap"><img src="/images/cyber_security.jpg" alt="" class="svc-img" onerror="this.style.display='none'" loading="lazy"></div>
         <div class="svc-icon-wrap"><i class="fas fa-shield-alt fa-lg" style="color:#ef4444"></i></div>
         <div class="svc-body"><h3>Cyber Security</h3><p>Penetration testing, audits & hardening.</p><span class="svc-pill"><i class="fas fa-arrow-right" style="font-size:.58rem"></i> Get Quote</span></div>
       </a>
-      <a href="#contact" class="service-card card-white" data-service="AI Integration" data-aos="zoom-in" data-aos-delay="280">
+      <a href="/contact" class="service-card card-white" data-service="AI Integration" data-aos="zoom-in" data-aos-delay="280">
         <div class="svc-overlay"><div class="svc-ov-icon" style="background:linear-gradient(135deg,#6c3df5,#4c22d4)"><i class="fas fa-robot"></i></div><div class="svc-ov-title">AI Integration</div><div class="svc-ov-sub">LLMs, ML & smart features</div><span class="svc-ov-btn">Start Project <i class="fas fa-arrow-right"></i></span></div>
         <div class="svc-img-wrap"><img src="/images/ai_integration.jpg" alt="" class="svc-img" onerror="this.style.display='none'" loading="lazy"></div>
         <div class="svc-icon-wrap"><i class="fas fa-robot fa-lg" style="color:#6c3df5"></i></div>
         <div class="svc-body"><h3>AI Integration</h3><p>LLM integration, ML pipelines & intelligent features.</p><span class="svc-pill"><i class="fas fa-arrow-right" style="font-size:.58rem"></i> Get Quote</span></div>
       </a>
-      <a href="#contact" class="service-card card-white" data-service="Analytics & BI" data-aos="zoom-in" data-aos-delay="320">
+      <a href="/contact" class="service-card card-white" data-service="Analytics & BI" data-aos="zoom-in" data-aos-delay="320">
         <div class="svc-overlay"><div class="svc-ov-icon" style="background:var(--g-orange)"><i class="fas fa-chart-line"></i></div><div class="svc-ov-title">Analytics & BI</div><div class="svc-ov-sub">Data-driven decisions</div><span class="svc-ov-btn">Start Project <i class="fas fa-arrow-right"></i></span></div>
         <div class="svc-img-wrap"><img src="/images/dashboard_analytics.jpg" alt="" class="svc-img" onerror="this.style.display='none'" loading="lazy"></div>
         <div class="svc-icon-wrap"><i class="fas fa-chart-line fa-lg" style="color:var(--orange)"></i></div>
@@ -1411,13 +1437,34 @@ body.dark .footer-cta-strip{background:linear-gradient(135deg,#090e1f,#0d1530)}
 </section>
 
 <!-- STATS -->
-<section style="padding:48px 0;" class="bg-white-section">
+<section class="stats-section section-py-sm bg-white-section">
   <div class="container">
+    <div class="text-center" style="margin-bottom:36px;" data-aos="fade-up">
+      <div class="section-tag">By The Numbers</div>
+      <h2 class="section-title" style="margin-bottom:6px;">Results That <span class="g-orange">Speak</span></h2>
+      <p class="section-sub" style="margin:0 auto;">Numbers don't lie — here's what we've delivered since 2020.</p>
+    </div>
     <div class="stats-grid">
-      <div class="stat-card card-white" data-aos="fade-up"><div class="stat-num g-blue"><span class="counter" data-target="500">0</span>+</div><div class="stat-label">Projects Completed</div></div>
-      <div class="stat-card card-white" data-aos="fade-up" data-aos-delay="60"><div class="stat-num g-orange"><span class="counter" data-target="98">0</span>%</div><div class="stat-label">Client Satisfaction</div></div>
-      <div class="stat-card card-white" data-aos="fade-up" data-aos-delay="120"><div class="stat-num g-blue"><span class="counter" data-target="50">0</span>+</div><div class="stat-label">Expert Developers</div></div>
-      <div class="stat-card card-white" data-aos="fade-up" data-aos-delay="180"><div class="stat-num g-orange"><span class="counter" data-target="20">0</span>+</div><div class="stat-label">Countries Served</div></div>
+      <div class="stat-card card-white" data-aos="fade-up">
+        <div class="stat-num g-blue"><span class="counter" data-target="500">0</span>+</div>
+        <div class="stat-label">Projects Completed</div>
+        <div class="stat-sub">Across web, mobile & AI</div>
+      </div>
+      <div class="stat-card card-white" data-aos="fade-up" data-aos-delay="60">
+        <div class="stat-num g-orange"><span class="counter" data-target="98">0</span>%</div>
+        <div class="stat-label">Client Satisfaction</div>
+        <div class="stat-sub">Based on post-project reviews</div>
+      </div>
+      <div class="stat-card card-white" data-aos="fade-up" data-aos-delay="120">
+        <div class="stat-num g-blue"><span class="counter" data-target="50">0</span>+</div>
+        <div class="stat-label">Expert Engineers</div>
+        <div class="stat-sub">Senior devs, 5+ years each</div>
+      </div>
+      <div class="stat-card card-white" data-aos="fade-up" data-aos-delay="180">
+        <div class="stat-num g-orange"><span class="counter" data-target="20">0</span>+</div>
+        <div class="stat-label">Countries Served</div>
+        <div class="stat-sub">From Nairobi to New York</div>
+      </div>
     </div>
   </div>
 </section>
@@ -1453,6 +1500,70 @@ body.dark .footer-cta-strip{background:linear-gradient(135deg,#090e1f,#0d1530)}
     </div>
   </div>
 </section>
+<!-- WHY CHOOSE US -->
+<section id="why-us" class="why-section section-py bg-white-section">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:52px;" data-aos="fade-up">
+      <div class="section-tag">Why NeurowexTech</div>
+      <h2 class="section-title">Built Different.<br><span class="g-blue">Delivers Different.</span></h2>
+      <p class="section-sub" style="margin:0 auto;">We don't just write code. We partner with you from idea to scale — with accountability built in at every stage.</p>
+    </div>
+    <div class="why-grid" data-aos="fade-up" data-aos-delay="60">
+
+      <div class="why-card">
+        <div class="why-card-num">01</div>
+        <div class="why-card-icon" style="background:rgba(26,86,232,.1)"><i class="fas fa-bolt" style="color:var(--blue)"></i></div>
+        <h3>Ship in 6 Weeks</h3>
+        <p>Most agencies take 3–6 months. We guarantee your MVP in 6 weeks — or your deposit back. Sprint-based delivery with daily visibility.</p>
+        <div class="why-card-badge blue">🚀 MVP Guarantee</div>
+      </div>
+
+      <div class="why-card">
+        <div class="why-card-num">02</div>
+        <div class="why-card-icon" style="background:rgba(240,112,32,.1)"><i class="fas fa-shield-alt" style="color:var(--orange)"></i></div>
+        <h3>NDA From Day One</h3>
+        <p>Your idea is your competitive edge. We sign NDAs before any conversation — no exceptions. Confidentiality is non-negotiable here.</p>
+        <div class="why-card-badge orange">🔒 Protected Always</div>
+      </div>
+
+      <div class="why-card">
+        <div class="why-card-num">03</div>
+        <div class="why-card-icon" style="background:rgba(13,191,126,.1)"><i class="fas fa-headset" style="color:var(--emerald)"></i></div>
+        <h3>3 Months Free Support</h3>
+        <p>Post-launch bugs, small tweaks, performance tuning — included free for 3 months after every delivery. We don't disappear after launch.</p>
+        <div class="why-card-badge green">✅ Always Available</div>
+      </div>
+
+      <div class="why-card">
+        <div class="why-card-num">04</div>
+        <div class="why-card-icon" style="background:rgba(124,58,237,.1)"><i class="fas fa-code-branch" style="color:#7c3aed"></i></div>
+        <h3>Senior Devs Only</h3>
+        <p>Your project is never handed to a junior dev. Every build is led by senior engineers with 5+ years of production experience.</p>
+        <div class="why-card-badge purple">👨‍💻 Senior Team</div>
+      </div>
+
+      <div class="why-card">
+        <div class="why-card-num">05</div>
+        <div class="why-card-icon" style="background:rgba(26,86,232,.1)"><i class="fas fa-chart-line" style="color:var(--blue)"></i></div>
+        <h3>Fixed Pricing</h3>
+        <p>No surprise invoices. We scope your project fully upfront and lock in the price before we write a single line of code.</p>
+        <div class="why-card-badge blue">💰 No Surprises</div>
+      </div>
+
+      <div class="why-card featured-why">
+        <div class="why-feat-inner">
+          <div class="why-feat-icon"><i class="fas fa-star"></i></div>
+          <div class="why-feat-val">4.9 / 5</div>
+          <div class="why-feat-label">Average Client Rating</div>
+          <p class="why-feat-sub">Across 500+ delivered projects — from Nairobi startups to Fortune-listed companies in 20+ countries.</p>
+          <a href="/contact" class="btn-hero-primary" style="margin-top:18px;font-size:.84rem;padding:11px 22px;">Start Your Project <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 
 <!-- LEARN SECTION -->
 <section class="learn-section section-py">
@@ -1638,7 +1749,7 @@ body.dark .footer-cta-strip{background:linear-gradient(135deg,#090e1f,#0d1530)}
           <li><i class="fas fa-times no"></i> CMS Integration</li>
           <li><i class="fas fa-times no"></i> API Integration</li>
         </ul>
-        <div style="margin-top:18px;"><a href="#contact" class="btn-outline" style="width:100%;justify-content:center;" data-service="Web Development">Get Started</a></div>
+        <div style="margin-top:18px;"><a href="/contact" class="btn-outline" style="width:100%;justify-content:center;" data-service="Web Development">Get Started</a></div>
       </div>
       <div class="pricing-card featured" data-aos="fade-up" data-aos-delay="60">
         <span class="badge-hot">Most Popular</span>
@@ -1653,7 +1764,7 @@ body.dark .footer-cta-strip{background:linear-gradient(135deg,#090e1f,#0d1530)}
           <li><i class="fas fa-check ok"></i> API Integration</li>
           <li><i class="fas fa-check ok"></i> Analytics Dashboard</li>
         </ul>
-        <div style="margin-top:18px;"><a href="#contact" class="btn-orange" style="width:100%;justify-content:center;" data-service="Web Development">Get Started</a></div>
+        <div style="margin-top:18px;"><a href="/contact" class="btn-orange" style="width:100%;justify-content:center;" data-service="Web Development">Get Started</a></div>
       </div>
       <div class="pricing-card card-white" data-aos="fade-up" data-aos-delay="120">
         <div class="price-tier">Business · For established companies</div>
@@ -1667,7 +1778,7 @@ body.dark .footer-cta-strip{background:linear-gradient(135deg,#090e1f,#0d1530)}
           <li><i class="fas fa-check ok"></i> DevOps Setup</li>
           <li><i class="fas fa-check ok"></i> AI Features</li>
         </ul>
-        <div style="margin-top:18px;"><a href="#contact" class="btn-outline" style="width:100%;justify-content:center;" data-service="Web Development">Get Started</a></div>
+        <div style="margin-top:18px;"><a href="/contact" class="btn-outline" style="width:100%;justify-content:center;" data-service="Web Development">Get Started</a></div>
       </div>
       <div class="pricing-card card-white" data-aos="fade-up" data-aos-delay="180">
         <div class="price-tier">Enterprise · For large organisations</div>
@@ -1681,7 +1792,7 @@ body.dark .footer-cta-strip{background:linear-gradient(135deg,#090e1f,#0d1530)}
           <li><i class="fas fa-check ok"></i> Security Audit</li>
           <li><i class="fas fa-check ok"></i> Training Sessions</li>
         </ul>
-        <div style="margin-top:18px;"><a href="#contact" class="btn-outline" style="width:100%;justify-content:center;">Contact Us</a></div>
+        <div style="margin-top:18px;"><a href="/contact" class="btn-outline" style="width:100%;justify-content:center;">Contact Us</a></div>
       </div>
     </div>
   </div>
@@ -1693,8 +1804,24 @@ body.dark .footer-cta-strip{background:linear-gradient(135deg,#090e1f,#0d1530)}
     <div class="text-center" style="margin-bottom:44px;" data-aos="fade-up">
       <div class="section-tag orange">Client Love</div>
       <h2 class="section-title">What <span class="g-orange">Clients Say</span></h2>
+      <p class="section-sub" style="margin:0 auto;">Don't take our word for it — here's what real clients say after we've shipped for them.</p>
     </div>
-    <div class="testimonial-grid">
+
+    <!-- Featured pull quote -->
+    <div class="test-featured" data-aos="fade-up" data-aos-delay="40">
+      <div class="tf-quote-mark">"</div>
+      <blockquote class="tf-quote">Our revenue doubled within 90 days of launch. NeurowexTech didn't just build a product — they built a growth machine. Worth every shilling.</blockquote>
+      <div class="tf-author">
+        <div class="tf-avatar" style="background:linear-gradient(135deg,#1a56e8,#0e3aa8)">M</div>
+        <div>
+          <div class="tf-name">Michael Brown</div>
+          <div class="tf-role">Founder, EcoShop · Nairobi</div>
+        </div>
+        <div class="tf-stars">★★★★★</div>
+      </div>
+    </div>
+
+    <div class="testimonial-grid" style="margin-top:28px;">
       <div class="testimonial-card card-white" data-aos="fade-up">
         <div class="t-stars">★★★★★</div>
         <p class="t-quote">"They delivered our MVP in just 5 weeks. The team is incredibly responsive and the code quality is exceptional. Highly recommend NeurowexTech."</p>
@@ -1806,61 +1933,7 @@ body.dark .footer-cta-strip{background:linear-gradient(135deg,#090e1f,#0d1530)}
   </div>
 </section>
 
-<!-- CONTACT -->
-<section id="contact" class="contact-section section-py">
-  <div class="container">
-    <div class="text-center" style="margin-bottom:44px;" data-aos="fade-up">
-      <div class="section-tag" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.12);">Let's Build</div>
-      <h2 class="section-title" style="color:#fff;">Start Your <span style="color:var(--orange-l)">Project</span></h2>
-      <p style="color:rgba(255,255,255,.48);max-width:440px;margin:0 auto;">Tell us about your idea and we'll get back to you within 24 hours.</p>
-    </div>
-    <div style="max-width:760px;margin:0 auto;" data-aos="fade-up" data-aos-delay="60">
-      <div class="contact-form-wrap">
-        <form id="contactForm" novalidate>
-          <div class="form-row cols-2">
-            <div class="form-group"><label class="f-label" for="cName">Your Name <span style="color:#ef4444">*</span></label><input type="text" id="cName" class="f-input" placeholder="John Doe" required autocomplete="name"></div>
-            <div class="form-group"><label class="f-label" for="cEmail">Email Address <span style="color:#ef4444">*</span></label><input type="email" id="cEmail" class="f-input" placeholder="hello@company.com" required autocomplete="email"></div>
-          </div>
-          <div class="form-row cols-2 mt-16">
-            <div class="form-group"><label class="f-label" for="cCompany">Company</label><input type="text" id="cCompany" class="f-input" placeholder="Acme Inc." autocomplete="organization"></div>
-            <div class="form-group"><label class="f-label" for="cBudget">Budget Range (Kshs)</label>
-              <select id="cBudget" class="f-input">
-                <option value="">Select budget...</option>
-                <option>Kshs 10,000 – Kshs 15,000</option>
-                <option>Kshs 15,000 – Kshs 20,000</option>
-                <option>Kshs 20,000 – Kshs 25,000</option>
-                <option>Kshs 25,000+</option>
-              </select>
-            </div>
-          </div>
-          <div class="mt-16">
-            <label class="f-label">Service Needed</label>
-            <div class="svc-checks" id="svcChecks">
-              <label class="svc-chk"><input type="checkbox" value="Web Dev"><span>Web Dev</span></label>
-              <label class="svc-chk"><input type="checkbox" value="Mobile App"><span>Mobile App</span></label>
-              <label class="svc-chk"><input type="checkbox" value="UI/UX Design"><span>UI/UX Design</span></label>
-              <label class="svc-chk"><input type="checkbox" value="AI Integration"><span>AI Integration</span></label>
-              <label class="svc-chk"><input type="checkbox" value="E-commerce"><span>E-commerce</span></label>
-              <label class="svc-chk"><input type="checkbox" value="Graphic Design"><span>Graphic Design</span></label>
-            </div>
-          </div>
-          <div class="mt-16 form-group"><label class="f-label" for="cMessage">Project Description <span style="color:#ef4444">*</span></label><textarea id="cMessage" class="f-input" rows="5" placeholder="Tell us about your project, goals, and requirements..." required></textarea></div>
-          <div class="mt-20"><button type="submit" id="cSubmit" class="btn-primary" style="width:100%;justify-content:center;padding:14px;font-size:.93rem;"><i class="fas fa-paper-plane"></i> Send Message</button></div>
-          <div class="or-div mt-20"><span>or reach us instantly</span></div>
-          <a href="https://wa.me/254769329340?text=Hello%20NeurowexTech!%20I%20would%20like%20to%20discuss%20a%20project." target="_blank" rel="noopener noreferrer" class="btn-wa" style="width:100%;justify-content:center;padding:13px 24px;">
-            <i class="fab fa-whatsapp"></i> Message us on WhatsApp &nbsp;<span style="font-size:.76rem;opacity:.82;">📱 +254 769 329 340</span>
-          </a>
-        </form>
-        <div id="contactMsg" style="text-align:center;margin-top:10px;font-size:.85rem;" role="status" aria-live="polite"></div>
-      </div>
-      <div class="grid-contact-info mt-20">
-        <div class="contact-info-card"><div class="ci-icon"><i class="fas fa-envelope"></i></div><h6>Email Us</h6><a href="mailto:techneurowex@gmail.com">techneurowex@gmail.com</a></div>
-        <div class="contact-info-card"><div class="ci-icon"><i class="fas fa-phone-alt"></i></div><h6>Call Us</h6><a href="tel:+254769329340">+254 769 329 340</a></div>
-        <div class="contact-info-card"><div class="ci-icon"><i class="fas fa-map-marker-alt"></i></div><h6>Visit Us</h6><span>Nairobi, Kenya</span></div>
-      </div>
-    </div>
-  </div>
-</section>
+
 
 <!-- NEWSLETTER -->
 <section class="newsletter-section section-py-sm">
@@ -1870,11 +1943,15 @@ body.dark .footer-cta-strip{background:linear-gradient(135deg,#090e1f,#0d1530)}
         <div>
           <div class="nl-icon"><i class="fas fa-envelope-open-text"></i></div>
           <h3 style="font-size:clamp(1.3rem,4vw,1.75rem);margin-bottom:8px;">Stay in the <span class="g-blue">Loop</span> 📬</h3>
-          <p class="text-muted mb-0">Get weekly insights on tech, design & startup growth. Zero spam, ever.</p>
+          <p class="text-muted mb-0">Weekly insights on tech, design & startup growth. Zero spam, unsubscribe anytime.</p>
           <div class="flex flex-wrap gap-16 mt-12" style="font-size:.76rem;color:var(--slate);">
-            <span><i class="fas fa-check-circle" style="color:var(--emerald)"></i> Weekly updates</span>
-            <span><i class="fas fa-check-circle" style="color:var(--emerald)"></i> Exclusive tips</span>
-            <span><i class="fas fa-check-circle" style="color:var(--emerald)"></i> Early access</span>
+            <span><i class="fas fa-check-circle" style="color:var(--emerald)"></i> Weekly digest</span>
+            <span><i class="fas fa-check-circle" style="color:var(--emerald)"></i> Build tips &amp; tutorials</span>
+            <span><i class="fas fa-check-circle" style="color:var(--emerald)"></i> Early access to courses</span>
+          </div>
+          <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
+            <a href="/contact" class="btn-hero-primary" style="font-size:.83rem;padding:10px 20px;text-decoration:none;">Start a Project <i class="fas fa-arrow-right"></i></a>
+            <a href="/learn" class="btn-hero-ghost" style="font-size:.83rem;padding:10px 18px;text-decoration:none;color:var(--blue);border-color:var(--blue)">Browse Academy</a>
           </div>
         </div>
         <div>
@@ -1897,14 +1974,27 @@ body.dark .footer-cta-strip{background:linear-gradient(135deg,#090e1f,#0d1530)}
 </section>
 
 <!-- CTA BAND -->
-<section class="cta-section section-py">
-  <div class="container text-center">
-    <h2 style="font-weight:800;color:#fff;font-size:clamp(1.6rem,5vw,3rem);margin-bottom:12px;" data-aos="zoom-in">Ready to Build Something Great?</h2>
-    <p style="color:rgba(255,255,255,.82);font-size:clamp(.88rem,2.5vw,1.08rem);margin-bottom:28px;" data-aos="zoom-in" data-aos-delay="60">Turn your idea into a product. Get a free consultation today.</p>
-    <div class="cta-actions" data-aos="zoom-in" data-aos-delay="120">
-      <a href="#contact" class="cta-btn-white">Start Your Project →</a>
+<section class="cta-section section-py" style="position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:44px 44px;pointer-events:none"></div>
+  <div style="position:absolute;top:-80px;right:-80px;width:320px;height:320px;background:radial-gradient(circle,rgba(255,255,255,.06) 0%,transparent 70%);border-radius:50%;pointer-events:none"></div>
+  <div class="container text-center" style="position:relative;z-index:1;">
+    <div class="section-tag" style="background:rgba(255,255,255,.12);color:rgba(255,255,255,.75);border-color:rgba(255,255,255,.18);display:inline-flex;margin-bottom:20px;" data-aos="zoom-in">Let's Build Together</div>
+    <h2 style="font-weight:800;color:#fff;font-size:clamp(1.8rem,5vw,3.4rem);margin-bottom:14px;line-height:1.08;" data-aos="zoom-in" data-aos-delay="40">
+      Your Next Big Product<br>
+      <span style="font-style:italic;color:rgba(255,255,255,.65);font-weight:400;font-size:clamp(1.2rem,3.5vw,2.2rem);">starts with a conversation.</span>
+    </h2>
+    <p style="color:rgba(255,255,255,.7);font-size:clamp(.9rem,2.5vw,1.1rem);margin-bottom:32px;max-width:540px;margin-left:auto;margin-right:auto;line-height:1.72;" data-aos="zoom-in" data-aos-delay="80">Free 30-minute consultation. We'll scope your project, answer every question, and give you a realistic plan — no strings attached.</p>
+    <div class="cta-actions" style="margin-bottom:32px;" data-aos="zoom-in" data-aos-delay="120">
+      <a href="/contact" class="cta-btn-white">Start Your Project <i class="fas fa-arrow-right"></i></a>
       <a href="/learn"   class="cta-btn-orange"><i class="fas fa-graduation-cap"></i> Explore Academy</a>
-      <a href="https://wa.me/254769329340?text=Hello%20NeurowexTech!%20I%20am%20interested%20in%20a%20free%20consultation." target="_blank" rel="noopener noreferrer" class="btn-wa" style="padding:13px 22px;font-size:.9rem;"><i class="fab fa-whatsapp"></i> WhatsApp Consultation</a>
+      <a href="https://wa.me/254769329340?text=Hello%20NeurowexTech!%20I%20am%20interested%20in%20a%20free%20consultation." target="_blank" rel="noopener noreferrer" class="btn-wa" style="padding:13px 22px;font-size:.9rem;"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</a>
+    </div>
+    <!-- Trust badges -->
+    <div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;padding-top:24px;border-top:1px solid rgba(255,255,255,.1);" data-aos="fade-up" data-aos-delay="160">
+      <div style="display:flex;align-items:center;gap:6px;font-size:.78rem;color:rgba(255,255,255,.55);font-weight:600;"><i class="fas fa-check-circle" style="color:#34d399"></i> No upfront cost to consult</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:.78rem;color:rgba(255,255,255,.55);font-weight:600;"><i class="fas fa-check-circle" style="color:#34d399"></i> NDA signed on request</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:.78rem;color:rgba(255,255,255,.55);font-weight:600;"><i class="fas fa-check-circle" style="color:#34d399"></i> Response within 2 hours</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:.78rem;color:rgba(255,255,255,.55);font-weight:600;"><i class="fas fa-check-circle" style="color:#34d399"></i> Fixed price, no surprises</div>
     </div>
   </div>
 </section>
@@ -1922,7 +2012,7 @@ body.dark .footer-cta-strip{background:linear-gradient(135deg,#090e1f,#0d1530)}
           <p>Free 30-min consultation — no strings attached.</p>
         </div>
         <div class="footer-cta-actions">
-          <a href="#contact" class="btn-primary" style="padding:11px 22px;font-size:.84rem;">Start a Project <i class="fas fa-arrow-right"></i></a>
+          <a href="/contact" class="btn-primary" style="padding:11px 22px;font-size:.84rem;">Start a Project <i class="fas fa-arrow-right"></i></a>
           <a href="https://wa.me/254769329340?text=Hello%20NeurowexTech!" target="_blank" rel="noopener noreferrer" class="btn-wa" style="padding:11px 20px;font-size:.84rem;"><i class="fab fa-whatsapp"></i> WhatsApp Us</a>
         </div>
       </div>
@@ -1963,7 +2053,7 @@ body.dark .footer-cta-strip{background:linear-gradient(135deg,#090e1f,#0d1530)}
             <li><a href="#services"><i class="fas fa-th-large"></i> Services</a></li>
             <li><a href="#portfolio"><i class="fas fa-briefcase"></i> Portfolio</a></li>
             <li><a href="#team"><i class="fas fa-users"></i> Team</a></li>
-            <li><a href="#contact"><i class="fas fa-envelope"></i> Contact</a></li>
+            <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
             <li><a href="/learn" class="academy-link"><i class="fas fa-graduation-cap"></i> Academy 🎓</a></li>
           </ul>
         </div>
@@ -2135,7 +2225,7 @@ document.addEventListener('click',function(e){
   e.preventDefault();
   closeMob();
   var svc=link.dataset.service||(link.closest('[data-service]')&&link.closest('[data-service]').dataset.service);
-  if(svc)preSelectService(svc);
+  if(svc)if(href.startsWith('/contact'))return;preSelectService(svc);
   var delay=window.innerWidth<992?320:0;
   setTimeout(function(){smoothTo(href)},delay);
 });
