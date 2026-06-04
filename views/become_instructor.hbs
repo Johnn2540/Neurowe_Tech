@@ -3,40 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{title}}</title>
-  <meta name="description" content="Share your expertise on NeurowexTech Academy. Teach thousands of learners across Kenya and beyond — set your own schedule, earn on your terms." />
+  <title>{{title}} | Teach on NeurowexTech Academy</title>
+  <meta name="description" content="Share your expertise. Earn up to 70% revenue share. Reach thousands of learners across Kenya and beyond — apply to become an instructor today." />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <style>
-/* ─── DESIGN TOKENS — identical to learn.hbs / contact.hbs ─── */
 :root {
-  --blue:       #1a4fd6;
-  --blue-d:     #1340b0;
-  --blue-l:     #4a7aee;
-  --blue-pale:  rgba(26,79,214,.08);
-  --blue-pale2: rgba(26,79,214,.14);
-  --orange:     #e8620a;
-  --orange-d:   #c94f05;
-  --orange-l:   #f28840;
+  --blue:#1a4fd6;--blue-d:#1340b0;--blue-l:#4a7aee;
+  --blue-pale:rgba(26,79,214,.08);--blue-pale2:rgba(26,79,214,.14);
+  --orange:#e8620a;--orange-d:#c94f05;--orange-l:#f28840;
   --orange-pale:rgba(232,98,10,.08);
-  --black:      #050810;
-  --ink:        #0c1220;
-  --ink-2:      #141c30;
-  --ink-3:      #1c2840;
-  --slate:      #5a6880;
-  --slate-l:    #7a8ea8;
-  --mist:       #e2e8f5;
-  --ghost:      #f5f7fd;
-  --emerald:    #059669;
-  --teal:       #0d9488;
-  --yellow:     #f59e0b;
-  --rose:       #e11d48;
-  --g-blue:     linear-gradient(135deg,#1a4fd6,#1340b0);
-  --g-orange:   linear-gradient(135deg,#e8620a,#c94f05);
-  --g-hero:     linear-gradient(168deg,#030610 0%,#07102a 50%,#0b1535 100%);
-  --nav-h:      68px;
+  --black:#050810;--ink:#0c1220;--ink-2:#141c30;--ink-3:#1c2840;
+  --slate:#5a6880;--slate-l:#7a8ea8;
+  --mist:#e2e8f5;--ghost:#f5f7fd;--white:#fff;
+  --emerald:#059669;--teal:#0d9488;--yellow:#f59e0b;--rose:#e11d48;
+  --g-blue:linear-gradient(135deg,#1a4fd6,#1340b0);
+  --g-orange:linear-gradient(135deg,#e8620a,#c94f05);
+  --g-hero:linear-gradient(168deg,#030610 0%,#07102a 50%,#0b1535 100%);
+  --nav-h:68px;
   --r-sm:10px;--r-md:14px;--r-lg:18px;--r-xl:24px;--r-2xl:32px;--r-pill:999px;
-  --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);--t:.26s var(--ease);
+  --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);--t:.24s var(--ease);
   --sh-sm:0 1px 4px rgba(8,12,24,.06),0 4px 12px rgba(8,12,24,.06);
   --sh-md:0 4px 16px rgba(8,12,24,.08),0 12px 36px rgba(8,12,24,.08);
   --sh-lg:0 12px 40px rgba(8,12,24,.12),0 4px 12px rgba(8,12,24,.06);
@@ -46,31 +32,33 @@
 
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--ghost);color:var(--ink);overflow-x:hidden;line-height:1.65}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--ghost);color:var(--ink);overflow-x:hidden;line-height:1.65;font-size:16px}
 h1,h2,h3,h4,h5{font-family:'Fraunces',serif;line-height:1.1;letter-spacing:-.02em}
 a{text-decoration:none;color:inherit}
 img{max-width:100%;display:block}
 button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif}
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--ink)}::-webkit-scrollbar-thumb{background:var(--blue);border-radius:4px}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--ink)}
+::-webkit-scrollbar-thumb{background:var(--blue);border-radius:4px}
 
 /* SCROLL PROGRESS */
 #scroll-progress{position:fixed;top:0;left:0;height:2px;width:0%;background:linear-gradient(90deg,var(--blue),var(--orange));z-index:9999;transition:width .08s linear}
 
-/* ─── NAVBAR ─── */
-.navbar{position:fixed;top:0;left:0;right:0;z-index:1040;height:var(--nav-h);background:rgba(255,255,255,.96);backdrop-filter:blur(24px) saturate(2);border-bottom:1px solid rgba(8,12,24,.06);transition:var(--t)}
-.navbar.scrolled{box-shadow:0 2px 24px rgba(8,12,24,.07)}
-.nav-inner{max-width:1320px;margin:0 auto;padding:0 24px;height:100%;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.nav-brand{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:7px;flex-shrink:0;letter-spacing:-.04em}
+/* ── NAVBAR ── */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1040;height:var(--nav-h);background:rgba(255,255,255,.97);backdrop-filter:blur(24px) saturate(2);border-bottom:1px solid rgba(8,12,24,.06);transition:var(--t)}
+.navbar.scrolled{box-shadow:0 2px 20px rgba(8,12,24,.07)}
+.nav-inner{max-width:1280px;margin:0 auto;padding:0 24px;height:100%;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.nav-brand{font-family:'Fraunces',serif;font-size:1.18rem;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:7px;flex-shrink:0;letter-spacing:-.04em}
 .brand-mark{width:30px;height:30px;background:var(--g-blue);border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:.85rem;color:#fff;flex-shrink:0}
 .nav-brand em{font-style:italic;color:var(--orange)}
 .nav-links{display:none;align-items:center;gap:2px;list-style:none;flex:1;justify-content:center}
 .nl-a{font-size:.82rem;font-weight:600;color:var(--slate);padding:7px 12px;border-radius:var(--r-sm);transition:var(--t);display:inline-flex;align-items:center;gap:5px}
 .nl-a:hover,.nl-a.active{color:var(--blue);background:var(--blue-pale)}
 .nav-cta{display:none;align-items:center;gap:8px;flex-shrink:0}
-.btn-nav-signin{font-size:.79rem;font-weight:600;color:var(--slate);padding:7px 15px;border:1.5px solid var(--mist);border-radius:var(--r-pill);background:#fff;cursor:pointer;transition:var(--t)}
-.btn-nav-signin:hover{color:var(--blue);border-color:var(--blue)}
-.btn-nav-start{font-size:.79rem;font-weight:700;color:#fff;padding:8px 19px;border:none;border-radius:var(--r-pill);background:var(--g-blue);cursor:pointer;box-shadow:var(--sh-blue);display:inline-flex;align-items:center;gap:5px;transition:var(--t)}
-.btn-nav-start:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(26,79,214,.36)}
+.btn-nav-ghost{font-size:.79rem;font-weight:600;color:var(--slate);padding:7px 15px;border:1.5px solid var(--mist);border-radius:var(--r-pill);background:#fff;cursor:pointer;transition:var(--t);display:inline-flex;align-items:center;gap:5px}
+.btn-nav-ghost:hover{color:var(--blue);border-color:var(--blue)}
+.btn-nav-cta{font-size:.79rem;font-weight:700;color:#fff;padding:8px 20px;border:none;border-radius:var(--r-pill);background:var(--g-orange);cursor:pointer;box-shadow:var(--sh-orange);display:inline-flex;align-items:center;gap:5px;transition:var(--t)}
+.btn-nav-cta:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(232,98,10,.38)}
 .ham-btn{display:flex;flex-direction:column;gap:5px;align-items:center;justify-content:center;width:44px;height:44px;background:none;border:none;cursor:pointer;border-radius:var(--r-sm);transition:var(--t);flex-shrink:0}
 .ham-btn:hover{background:var(--blue-pale)}
 .ham-line{display:block;width:20px;height:1.5px;background:var(--ink);border-radius:2px;transition:all .24s var(--ease);transform-origin:center}
@@ -79,6 +67,8 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif}
 .ham-btn.open .ham-line:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
 .mob-quick{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .mob-quick-btn{width:38px;height:38px;border-radius:var(--r-sm);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:var(--t);background:var(--blue-pale);color:var(--blue)}
+
+/* Mobile panel */
 .mob-overlay{position:fixed;inset:0;background:rgba(8,12,24,.55);backdrop-filter:blur(6px);z-index:1038;opacity:0;visibility:hidden;transition:opacity .28s,visibility .28s}
 .mob-overlay.open{opacity:1;visibility:visible}
 .mob-panel{position:fixed;top:0;right:0;width:min(340px,88vw);height:100dvh;background:#fff;z-index:1039;overflow-y:auto;transform:translateX(100%);transition:transform .3s var(--ease);box-shadow:-12px 0 48px rgba(8,12,24,.18);display:flex;flex-direction:column}
@@ -93,10 +83,9 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif}
 .mob-hr{border:none;border-top:1px solid var(--mist);margin:6px 18px}
 .mob-footer{padding:14px 18px 30px;border-top:1px solid var(--mist);display:flex;flex-direction:column;gap:9px}
 
-/* DARK */
+/* DARK MODE */
 body.dark{background:var(--black);color:rgba(255,255,255,.84)}
 body.dark .navbar{background:rgba(8,12,24,.97);border-bottom-color:rgba(255,255,255,.05)}
-body.dark .navbar.scrolled{background:rgba(8,12,24,.99)}
 body.dark .nl-a{color:rgba(255,255,255,.52)}
 body.dark .nl-a:hover{color:var(--blue-l);background:rgba(26,79,214,.1)}
 body.dark .ham-line{background:rgba(255,255,255,.85)}
@@ -106,37 +95,45 @@ body.dark .mob-link{color:rgba(255,255,255,.82)}
 body.dark .mob-close{background:rgba(255,255,255,.07);color:rgba(255,255,255,.7)}
 body.dark .mob-hr{border-color:rgba(255,255,255,.07)}
 body.dark .mob-footer{border-color:rgba(255,255,255,.07)}
-body.dark .btn-nav-signin{color:rgba(255,255,255,.52);border-color:rgba(255,255,255,.1);background:transparent}
+body.dark .btn-nav-ghost{color:rgba(255,255,255,.52);border-color:rgba(255,255,255,.1);background:transparent}
 body.dark #theme-toggle{background:var(--ink-2);border-color:rgba(255,255,255,.09)}
 body.dark #theme-toggle svg{stroke:rgba(255,255,255,.72)}
-body.dark .card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+body.dark .benefit-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+body.dark .step-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+body.dark .calc-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+body.dark .calc-results{background:var(--ink-3)}
+body.dark .calc-range{background:var(--ink-3)}
+body.dark .faq-item{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+body.dark .faq-q{color:rgba(255,255,255,.85)}
+body.dark .form-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
+body.dark .form-top{border-bottom-color:rgba(255,255,255,.07)}
 body.dark .f-input{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:rgba(255,255,255,.85)}
 body.dark .f-input::placeholder{color:rgba(255,255,255,.26)}
 body.dark .f-input:focus{background:rgba(255,255,255,.08);border-color:var(--blue-l)}
 body.dark select.f-input option{background:var(--ink-2)}
-body.dark .faq-item{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
-body.dark .faq-q{color:rgba(255,255,255,.85)}
-body.dark .step-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
-body.dark .benefit-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
-body.dark .stat-strip{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
-body.dark .calc-card{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
-body.dark .or-div::before,body.dark .or-div::after{background:rgba(255,255,255,.07)}
+body.dark .exp-tag{background:var(--ink-3);border-color:rgba(255,255,255,.1);color:rgba(255,255,255,.6)}
+body.dark .agree-row{background:rgba(26,79,214,.1);border-color:rgba(26,79,214,.2)}
+body.dark .agree-row label{color:rgba(255,255,255,.6)}
+body.dark .agree-row label strong{color:rgba(255,255,255,.85)}
+body.dark .form-section{background:var(--ink)}
+body.dark .stat-strip{background:var(--ink-2);border-color:rgba(255,255,255,.06)}
 
 /* UTILS */
-.container{max-width:1200px;margin:0 auto;padding:0 24px}
+.container{max-width:1240px;margin:0 auto;padding:0 24px}
+.container-sm{max-width:860px;margin:0 auto;padding:0 24px}
 .section-py{padding:80px 0}
 .section-py-sm{padding:56px 0}
+.text-center{text-align:center}
 .g-blue{background:var(--g-blue);-webkit-background-clip:text;background-clip:text;color:transparent}
 .g-orange{background:var(--g-orange);-webkit-background-clip:text;background-clip:text;color:transparent}
-.text-center{text-align:center}
-.section-kicker{display:inline-flex;align-items:center;gap:6px;border-radius:var(--r-pill);padding:5px 14px;font-size:.67rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;margin-bottom:14px;border:1px solid rgba(26,79,214,.15);background:var(--blue-pale);color:var(--blue)}
-.section-kicker::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--blue);flex-shrink:0}
-.section-kicker.orange{background:var(--orange-pale);color:var(--orange);border-color:rgba(232,98,10,.15)}
-.section-kicker.orange::before{background:var(--orange)}
-.section-kicker.teal{background:rgba(13,148,136,.08);color:var(--teal);border-color:rgba(13,148,136,.15)}
-.section-kicker.teal::before{background:var(--teal)}
+.kicker{display:inline-flex;align-items:center;gap:6px;border-radius:var(--r-pill);padding:5px 14px;font-size:.67rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;margin-bottom:14px;border:1px solid rgba(26,79,214,.15);background:var(--blue-pale);color:var(--blue)}
+.kicker::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--blue);flex-shrink:0}
+.kicker.orange{background:var(--orange-pale);color:var(--orange);border-color:rgba(232,98,10,.15)}
+.kicker.orange::before{background:var(--orange)}
+.kicker.teal{background:rgba(13,148,136,.08);color:var(--teal);border-color:rgba(13,148,136,.15)}
+.kicker.teal::before{background:var(--teal)}
 
-/* FIXED WIDGETS */
+/* FIXED */
 #theme-toggle{position:fixed;bottom:22px;left:22px;z-index:10000;width:44px;height:44px;background:#fff;border:1.5px solid rgba(8,12,24,.08);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 18px rgba(8,12,24,.1);transition:var(--t)}
 #theme-toggle svg{width:16px;height:16px;stroke:var(--slate);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
 #theme-toggle:hover{background:var(--blue);border-color:var(--blue);transform:rotate(20deg) scale(1.07)}
@@ -148,7 +145,7 @@ body.dark .or-div::before,body.dark .or-div::after{background:rgba(255,255,255,.
 .wa-ring{position:absolute;inset:0;border-radius:999px;border:2px solid #25D366;opacity:0;animation:wa-r 2.8s ease-out infinite;pointer-events:none}
 .wa-ring:nth-child(2){animation-delay:1.2s}
 @keyframes wa-r{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.95);opacity:0}}
-.wa-pill{display:flex;align-items:center;gap:9px;background:linear-gradient(135deg,#128C7E,#075E54);border-radius:999px;padding:8px 17px 8px 8px;box-shadow:0 6px 26px rgba(18,140,126,.42);transition:transform .3s var(--spring),box-shadow .28s;white-space:nowrap}
+.wa-pill{display:flex;align-items:center;gap:9px;background:linear-gradient(135deg,#128C7E,#075E54);border-radius:999px;padding:8px 17px 8px 8px;box-shadow:0 6px 26px rgba(18,140,126,.42);transition:transform .3s var(--spring);white-space:nowrap}
 #wa-float:hover .wa-pill{transform:translateY(-3px) scale(1.02)}
 .wa-ico{width:36px;height:36px;flex-shrink:0;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.15rem;color:#fff;position:relative}
 .wa-dot{position:absolute;top:1px;right:1px;width:9px;height:9px;background:#a8ff78;border:2px solid #128C7E;border-radius:50%;animation:dp 2.4s ease-in-out infinite}
@@ -158,6 +155,15 @@ body.dark .or-div::before,body.dark .or-div::after{background:rgba(255,255,255,.
 .wa-cta{font-size:.88rem;color:#fff;font-weight:800;font-family:'Fraunces',serif}
 .wa-arr{color:rgba(255,255,255,.6);font-size:.68rem;margin-left:2px;transition:transform .2s}
 #wa-float:hover .wa-arr{transform:translateX(3px)}
+#toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--ink-2);color:#fff;border-radius:var(--r-md);padding:11px 17px;font-size:.82rem;display:flex;align-items:center;gap:8px;z-index:10002;opacity:0;transition:var(--t);border-left:3px solid var(--emerald);min-width:210px;max-width:calc(100vw - 40px)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.err{border-left-color:#ef4444}
+#cookie-bar{position:fixed;bottom:0;left:0;right:0;background:var(--ink-2);color:rgba(255,255,255,.8);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:9998;transform:translateY(100%);transition:transform .38s;border-top:1px solid rgba(255,255,255,.06);flex-wrap:wrap}
+#cookie-bar.show{transform:translateY(0)}
+#cookie-bar p{font-size:.77rem;margin:0;flex:1;min-width:180px}
+#cookie-accept{background:var(--blue);color:#fff;border:none;padding:7px 18px;border-radius:var(--r-pill);font-size:.79rem;cursor:pointer;font-weight:700;transition:var(--t)}
+#cookie-accept:hover{background:var(--blue-d)}
+
 @media(max-width:767px){
   #wa-float{bottom:74px;right:14px}
   .wa-text,.wa-arr{display:none}
@@ -166,185 +172,216 @@ body.dark .or-div::before,body.dark .or-div::after{background:rgba(255,255,255,.
   #theme-toggle{bottom:14px;left:14px;width:40px;height:40px}
   #back-to-top{bottom:12px;width:46px;height:46px}
 }
-#toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--ink-2);color:#fff;border-radius:var(--r-md);padding:11px 17px;font-size:.82rem;display:flex;align-items:center;gap:8px;z-index:10002;opacity:0;transition:var(--t);border-left:3px solid var(--emerald);min-width:210px;max-width:calc(100vw - 40px)}
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-#toast.err{border-left-color:#ef4444}
-#cookie-bar{position:fixed;bottom:0;left:0;right:0;background:var(--ink-2);color:rgba(255,255,255,.8);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:9998;transform:translateY(100%);transition:transform .38s;border-top:1px solid rgba(255,255,255,.06);flex-wrap:wrap}
-#cookie-bar.show{transform:translateY(0)}
-#cookie-bar p{font-size:.77rem;margin:0;flex:1;min-width:180px}
-#cookie-accept{background:var(--blue);color:#fff;border:none;padding:7px 18px;border-radius:var(--r-pill);font-size:.79rem;cursor:pointer;font-weight:700;transition:var(--t)}
 
-/* ─── HERO ─── */
-.page-hero{background:var(--g-hero);padding-top:var(--nav-h);position:relative;overflow:hidden}
-.page-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(26,79,214,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(26,79,214,.05) 1px,transparent 1px);background-size:44px 44px}
-.hero-orb{position:absolute;border-radius:50%;pointer-events:none}
-.hero-orb-1{width:560px;height:560px;background:radial-gradient(circle,rgba(26,79,214,.2) 0%,transparent 68%);top:-160px;right:-100px}
-.hero-orb-2{width:340px;height:340px;background:radial-gradient(circle,rgba(232,98,10,.12) 0%,transparent 70%);bottom:-80px;left:-30px}
-.hero-inner{position:relative;z-index:1;padding:72px 0 80px;display:grid;grid-template-columns:1fr;gap:48px}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:var(--r-pill);padding:6px 15px;color:rgba(255,255,255,.75);font-size:.73rem;font-weight:700;margin-bottom:18px;backdrop-filter:blur(8px)}
-.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:#34d399;animation:dp 2s infinite;flex-shrink:0}
-.hero-inner h1{font-size:clamp(2.2rem,6vw,4rem);font-weight:700;color:#fff;margin-bottom:16px;line-height:1.06}
-.hero-inner h1 em{font-style:italic;color:var(--orange-l)}
-.hero-inner p{color:rgba(255,255,255,.55);font-size:clamp(.9rem,2.5vw,1.06rem);line-height:1.78;max-width:520px;margin-bottom:32px}
-.hero-pills{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:32px}
-.hero-pill{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);border-radius:var(--r-pill);padding:6px 14px;font-size:.75rem;font-weight:600;color:rgba(255,255,255,.72);backdrop-filter:blur(6px)}
-.hero-pill i{font-size:.72rem}
-.hero-actions{display:flex;gap:10px;flex-wrap:wrap}
-
-/* hero stat cards */
-.hero-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.h-stat{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-lg);padding:20px 16px;text-align:center;backdrop-filter:blur(8px)}
-.h-stat-num{font-family:'Fraunces',serif;font-size:clamp(1.7rem,5vw,2.4rem);font-weight:700;color:#fff;line-height:1;margin-bottom:5px}
-.h-stat-label{font-size:.72rem;color:rgba(255,255,255,.5);font-weight:600}
-
-/* ─── BUTTONS ─── */
+/* ── BTNs ── */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:.87rem;border-radius:var(--r-pill);transition:var(--t);cursor:pointer;border:none;letter-spacing:.01em;white-space:nowrap}
 .btn-primary{background:var(--g-blue);color:#fff;padding:13px 28px;box-shadow:var(--sh-blue)}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(26,79,214,.38)}
-.btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none}
 .btn-orange{background:var(--g-orange);color:#fff;padding:13px 28px;box-shadow:var(--sh-orange)}
 .btn-orange:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(232,98,10,.38)}
 .btn-outline{background:transparent;color:var(--blue);padding:11px 24px;border:1.5px solid var(--blue)}
 .btn-outline:hover{background:var(--g-blue);color:#fff;transform:translateY(-2px)}
-.btn-ghost{background:rgba(255,255,255,.1);color:#fff;padding:12px 24px;border:1.5px solid rgba(255,255,255,.25);backdrop-filter:blur(8px)}
-.btn-ghost:hover{background:rgba(255,255,255,.18);transform:translateY(-2px)}
+.btn-ghost-dark{background:rgba(255,255,255,.08);color:#fff;padding:12px 24px;border:1.5px solid rgba(255,255,255,.2);backdrop-filter:blur(8px);display:inline-flex;align-items:center;gap:7px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:.87rem;border-radius:var(--r-pill);transition:var(--t);cursor:pointer}
+.btn-ghost-dark:hover{background:rgba(255,255,255,.14);transform:translateY(-2px)}
 .btn-lg{padding:15px 34px;font-size:.95rem}
+.btn-xl{padding:16px 40px;font-size:1rem}
 
-/* ─── STAT STRIP ─── */
+/* ══════════════════════════
+   HERO — SPLIT LAYOUT
+══════════════════════════ */
+.hero{background:var(--g-hero);padding-top:var(--nav-h);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(26,79,214,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(26,79,214,.05) 1px,transparent 1px);background-size:44px 44px;pointer-events:none}
+.hero-orb-1{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(26,79,214,.18) 0%,transparent 68%);top:-160px;right:-100px;pointer-events:none}
+.hero-orb-2{position:absolute;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(232,98,10,.1) 0%,transparent 70%);bottom:-80px;left:-40px;pointer-events:none}
+.hero-inner{position:relative;z-index:1;padding:72px 0 80px;display:grid;grid-template-columns:1fr;gap:48px;align-items:center}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:var(--r-pill);padding:6px 15px;color:rgba(255,255,255,.75);font-size:.73rem;font-weight:700;margin-bottom:20px;backdrop-filter:blur(8px);align-self:flex-start}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:#34d399;animation:dp 2s infinite;flex-shrink:0}
+.hero h1{font-size:clamp(2.2rem,5.5vw,3.8rem);font-weight:700;color:#fff;margin-bottom:16px;line-height:1.05}
+.hero h1 em{font-style:italic;color:var(--orange-l)}
+.hero-sub{color:rgba(255,255,255,.55);font-size:clamp(.9rem,2.5vw,1.06rem);line-height:1.78;max-width:500px;margin-bottom:32px}
+.hero-checklist{display:grid;gap:10px;margin-bottom:34px}
+.hero-check-item{display:flex;align-items:center;gap:10px;font-size:.88rem;font-weight:600;color:rgba(255,255,255,.75)}
+.hci-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;flex-shrink:0}
+.hci-icon.g{background:rgba(5,150,105,.25);color:#34d399}
+.hci-icon.b{background:rgba(26,79,214,.25);color:#7ea8f8}
+.hci-icon.o{background:rgba(232,98,10,.22);color:var(--orange-l)}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+/* Trust row */
+.hero-trust{display:flex;flex-wrap:wrap;gap:18px;margin-top:28px;padding-top:24px;border-top:1px solid rgba(255,255,255,.08)}
+.ht-item{display:flex;align-items:center;gap:6px;font-size:.75rem;font-weight:600;color:rgba(255,255,255,.5)}
+.ht-item i{font-size:.72rem}
+
+/* Right card */
+.hero-card{background:rgba(255,255,255,.06);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-2xl);padding:28px 26px;position:relative;overflow:hidden}
+.hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--orange))}
+.hc-title{font-size:.65rem;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,255,255,.38);margin-bottom:18px}
+.hc-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.hc-stat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:var(--r-lg);padding:16px 14px;text-align:center}
+.hc-stat-val{font-family:'Fraunces',serif;font-size:1.7rem;font-weight:700;color:#fff;line-height:1;margin-bottom:4px}
+.hc-stat-lbl{font-size:.67rem;font-weight:600;color:rgba(255,255,255,.42);text-transform:uppercase;letter-spacing:.8px}
+.hc-divider{border:none;border-top:1px solid rgba(255,255,255,.08);margin:18px 0}
+.hc-instructor-list{display:flex;flex-direction:column;gap:10px}
+.hci-row{display:flex;align-items:center;gap:10px}
+.hci-ava{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:.84rem;color:#fff;flex-shrink:0}
+.hci-info{flex:1;min-width:0}
+.hci-name{font-size:.8rem;font-weight:700;color:rgba(255,255,255,.88);line-height:1;margin-bottom:2px}
+.hci-role{font-size:.68rem;color:rgba(255,255,255,.38)}
+.hci-earn{font-size:.74rem;font-weight:700;color:#34d399;white-space:nowrap}
+
+/* ══════════════════════════
+   STAT STRIP
+══════════════════════════ */
 .stat-strip{background:#fff;border-top:1px solid var(--mist);border-bottom:1px solid var(--mist);padding:22px 0}
-.stat-strip-inner{display:flex;flex-wrap:wrap;justify-content:center;gap:16px 40px}
-.ss-item{display:flex;align-items:center;gap:9px}
-.ss-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.88rem;flex-shrink:0}
+.stat-strip-inner{display:flex;flex-wrap:wrap;justify-content:center;gap:14px 36px}
+.ss-item{display:flex;align-items:center;gap:10px}
+.ss-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
 .ss-icon.b{background:var(--blue-pale);color:var(--blue)}
 .ss-icon.o{background:var(--orange-pale);color:var(--orange)}
 .ss-icon.g{background:rgba(5,150,105,.1);color:var(--emerald)}
 .ss-icon.t{background:rgba(13,148,136,.08);color:var(--teal)}
-.ss-val{font-family:'Fraunces',serif;font-size:1.22rem;font-weight:700;color:var(--ink);line-height:1}
-.ss-label{font-size:.7rem;color:var(--slate);font-weight:600}
+.ss-val{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;color:var(--ink);line-height:1;margin-bottom:2px}
+.ss-label{font-size:.69rem;color:var(--slate);font-weight:600}
 
-/* ─── BENEFITS ─── */
-.benefits-grid{display:grid;grid-template-columns:1fr;gap:18px}
-.benefit-card{background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);padding:26px 22px;transition:var(--t);box-shadow:var(--sh-sm);position:relative;overflow:hidden}
-.benefit-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;transform:scaleX(0);transform-origin:left;transition:transform .36s}
-.benefit-card:hover::before{transform:scaleX(1)}
-.benefit-card.c-b::before{background:linear-gradient(90deg,var(--blue),var(--blue-l))}
-.benefit-card.c-o::before{background:var(--g-orange)}
-.benefit-card.c-g::before{background:linear-gradient(90deg,var(--emerald),#34d399)}
-.benefit-card.c-t::before{background:linear-gradient(90deg,var(--teal),#5eead4)}
-.benefit-card.c-p::before{background:linear-gradient(90deg,#8b5cf6,#c084fc)}
-.benefit-card.c-y::before{background:linear-gradient(90deg,var(--yellow),#fcd34d)}
-.benefit-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg)}
-.benefit-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:14px;flex-shrink:0}
-.c-b .benefit-icon{background:var(--blue-pale);color:var(--blue)}
-.c-o .benefit-icon{background:var(--orange-pale);color:var(--orange)}
-.c-g .benefit-icon{background:rgba(5,150,105,.1);color:var(--emerald)}
-.c-t .benefit-icon{background:rgba(13,148,136,.08);color:var(--teal)}
-.c-p .benefit-icon{background:rgba(139,92,246,.1);color:#8b5cf6}
-.c-y .benefit-icon{background:rgba(245,158,11,.1);color:var(--yellow)}
-.benefit-card h4{font-size:1rem;font-weight:700;margin-bottom:7px;font-family:'Plus Jakarta Sans',sans-serif}
-.benefit-card p{font-size:.81rem;color:var(--slate);line-height:1.66}
+/* ══════════════════════════
+   BENEFITS
+══════════════════════════ */
+.benefits-grid{display:grid;grid-template-columns:1fr;gap:16px}
+.benefit-card{background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);padding:24px 20px;transition:var(--t);box-shadow:var(--sh-sm);position:relative;overflow:hidden}
+.benefit-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;transform:scaleX(0);transform-origin:left;transition:transform .34s}
+.benefit-card:hover::after{transform:scaleX(1)}
+.bc-b::after{background:var(--g-blue)}
+.bc-o::after{background:var(--g-orange)}
+.bc-g::after{background:linear-gradient(90deg,var(--emerald),#34d399)}
+.bc-t::after{background:linear-gradient(90deg,var(--teal),#5eead4)}
+.bc-p::after{background:linear-gradient(90deg,#8b5cf6,#c084fc)}
+.bc-y::after{background:linear-gradient(90deg,var(--yellow),#fcd34d)}
+.benefit-card:hover{transform:translateY(-3px);box-shadow:var(--sh-lg)}
+.b-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;margin-bottom:13px}
+.bc-b .b-icon{background:var(--blue-pale);color:var(--blue)}
+.bc-o .b-icon{background:var(--orange-pale);color:var(--orange)}
+.bc-g .b-icon{background:rgba(5,150,105,.1);color:var(--emerald)}
+.bc-t .b-icon{background:rgba(13,148,136,.08);color:var(--teal)}
+.bc-p .b-icon{background:rgba(139,92,246,.1);color:#8b5cf6}
+.bc-y .b-icon{background:rgba(245,158,11,.1);color:var(--yellow)}
+.benefit-card h4{font-size:.96rem;font-weight:700;margin-bottom:6px;font-family:'Plus Jakarta Sans',sans-serif}
+.benefit-card p{font-size:.8rem;color:var(--slate);line-height:1.65}
 
-/* ─── HOW IT WORKS ─── */
-.steps-wrap{display:grid;grid-template-columns:1fr;gap:0}
-.step-card{background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);padding:28px 24px;box-shadow:var(--sh-sm);position:relative;display:flex;gap:20px;align-items:flex-start}
-.step-card + .step-card{margin-top:14px}
-.step-num{width:44px;height:44px;min-width:44px;border-radius:50%;background:var(--g-blue);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:1.1rem;color:#fff;box-shadow:var(--sh-blue);flex-shrink:0}
-.step-num.o{background:var(--g-orange);box-shadow:var(--sh-orange)}
-.step-num.g{background:linear-gradient(135deg,var(--emerald),#10b981);box-shadow:0 6px 18px rgba(5,150,105,.28)}
-.step-card h4{font-size:1.02rem;font-weight:700;margin-bottom:6px;font-family:'Plus Jakarta Sans',sans-serif}
-.step-card p{font-size:.81rem;color:var(--slate);line-height:1.66}
+/* ══════════════════════════
+   HOW IT WORKS — Timeline
+══════════════════════════ */
+.timeline{display:flex;flex-direction:column;gap:0;position:relative}
+.timeline::before{content:'';position:absolute;left:21px;top:44px;bottom:44px;width:2px;background:linear-gradient(180deg,var(--blue),var(--orange),#8b5cf6,var(--emerald));border-radius:2px;opacity:.25}
+.tl-step{display:flex;gap:20px;align-items:flex-start;padding:20px 0}
+.tl-num{width:44px;height:44px;min-width:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:1rem;color:#fff;flex-shrink:0;position:relative;z-index:1}
+.tl-n1{background:var(--g-blue);box-shadow:var(--sh-blue)}
+.tl-n2{background:var(--g-orange);box-shadow:var(--sh-orange)}
+.tl-n3{background:linear-gradient(135deg,var(--emerald),#10b981);box-shadow:0 6px 18px rgba(5,150,105,.28)}
+.tl-n4{background:linear-gradient(135deg,#8b5cf6,#6d28d9);box-shadow:0 6px 18px rgba(139,92,246,.28)}
+.tl-content{flex:1;padding-top:10px}
+.tl-label{font-size:.62rem;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--slate-l);margin-bottom:5px}
+.tl-content h4{font-size:1.02rem;font-weight:700;margin-bottom:6px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--ink)}
+.tl-content p{font-size:.8rem;color:var(--slate);line-height:1.66}
+body.dark .tl-content h4{color:rgba(255,255,255,.88)}
 
-/* ─── EARNINGS CALCULATOR ─── */
-.calc-card{background:#fff;border-radius:var(--r-2xl);border:1px solid var(--mist);box-shadow:var(--sh-md);overflow:hidden}
-.calc-top{background:linear-gradient(135deg,var(--blue),var(--blue-d));padding:28px 32px;position:relative;overflow:hidden}
-.calc-top::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:32px 32px}
-.calc-top h3{position:relative;z-index:1;font-size:1.25rem;font-weight:700;color:#fff;margin-bottom:4px}
-.calc-top p{position:relative;z-index:1;font-size:.81rem;color:rgba(255,255,255,.6)}
-.calc-body{padding:28px 32px;display:grid;grid-template-columns:1fr;gap:20px}
-.calc-label{font-size:.75rem;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:.6px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.calc-label span{font-size:.88rem;font-weight:800;color:var(--blue);text-transform:none;letter-spacing:0}
+/* ══════════════════════════
+   EARNINGS CALCULATOR
+══════════════════════════ */
+.calc-card{background:#fff;border-radius:var(--r-2xl);border:1px solid var(--mist);box-shadow:var(--sh-md);overflow:hidden;max-width:800px;margin:0 auto}
+.calc-head{background:linear-gradient(135deg,var(--blue),var(--blue-d));padding:26px 32px;position:relative;overflow:hidden}
+.calc-head::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:32px 32px}
+.calc-head h3{position:relative;z-index:1;font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:3px}
+.calc-head p{position:relative;z-index:1;font-size:.79rem;color:rgba(255,255,255,.55)}
+.calc-body{padding:28px 32px}
+.calc-sliders{display:flex;flex-direction:column;gap:20px}
+.calc-lbl{font-size:.74rem;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:.6px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.calc-lbl span{font-size:.9rem;font-weight:800;color:var(--blue);text-transform:none;letter-spacing:0}
 .calc-range{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:3px;background:var(--mist);outline:none;cursor:pointer}
 .calc-range::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--blue);cursor:pointer;box-shadow:0 2px 8px rgba(26,79,214,.3)}
 .calc-range::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--blue);cursor:pointer;border:none}
-.calc-results{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;background:var(--ghost);border-radius:var(--r-lg);padding:20px}
-.calc-result-item{text-align:center}
-.calc-result-val{font-family:'Fraunces',serif;font-size:1.45rem;font-weight:700;color:var(--emerald);margin-bottom:3px}
-.calc-result-label{font-size:.7rem;color:var(--slate);font-weight:600}
-.calc-note{font-size:.71rem;color:var(--slate-l);text-align:center;margin-top:4px}
+.calc-results-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;background:var(--ghost);border-radius:var(--r-lg);padding:22px;margin-top:24px}
+.cr-item{text-align:center}
+.cr-val{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:700;color:var(--emerald);line-height:1;margin-bottom:4px}
+.cr-lbl{font-size:.69rem;color:var(--slate);font-weight:600}
+.calc-note{font-size:.7rem;color:var(--slate-l);text-align:center;margin-top:12px;line-height:1.6}
 
-/* ─── APPLICATION FORM ─── */
-.form-section{background:linear-gradient(135deg,#edf1ff,#f0fdf4);padding:80px 0}
-body.dark .form-section{background:linear-gradient(135deg,var(--ink),var(--ink-2))}
-.form-card{background:#fff;border-radius:var(--r-2xl);border:1px solid var(--mist);box-shadow:var(--sh-md);overflow:hidden;max-width:720px;margin:0 auto}
-.form-top{padding:32px 36px 24px;border-bottom:1px solid var(--mist);position:relative}
-.form-top::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--orange))}
-.form-top h2{font-size:1.45rem;font-weight:700;margin-bottom:5px}
+/* ══════════════════════════
+   APPLICATION FORM — Hero-quality
+══════════════════════════ */
+.form-section{background:linear-gradient(158deg,#f0f4ff 0%,#f5fff8 100%);padding:80px 0}
+body.dark .form-section{background:linear-gradient(158deg,var(--ink),var(--ink-2))}
+.form-wrap{max-width:740px;margin:0 auto}
+.form-card{background:#fff;border-radius:var(--r-2xl);border:1px solid var(--mist);box-shadow:0 0 0 1px rgba(26,79,214,.04),var(--sh-lg);overflow:hidden}
+.form-top{padding:34px 38px 26px;border-bottom:1px solid var(--mist);position:relative}
+.form-top-bar{position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--orange),#8b5cf6)}
+.form-top h2{font-size:1.5rem;font-weight:700;margin-bottom:5px}
 .form-top p{font-size:.82rem;color:var(--slate);line-height:1.6}
-.form-body{padding:32px 36px 36px}
+.form-top-meta{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px}
+.ftm-item{display:inline-flex;align-items:center;gap:5px;font-size:.74rem;font-weight:600;color:var(--slate)}
+.ftm-item i{color:var(--emerald);font-size:.72rem}
+.form-body{padding:32px 38px 38px}
 .f-label{font-size:.77rem;font-weight:700;color:var(--slate);display:block;margin-bottom:6px}
 .f-label .req{color:var(--rose)}
 .field-wrap{position:relative}
 .field-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--slate-l);font-size:.8rem;pointer-events:none;transition:color .2s}
 .field-wrap:focus-within .field-icon{color:var(--blue)}
-.textarea-wrap .field-icon{top:14px;transform:none}
-.f-input{width:100%;background:var(--ghost);border:1.5px solid var(--mist);border-radius:var(--r-md);color:var(--ink);padding:11px 14px;font-size:15px;transition:var(--t);outline:none;-webkit-appearance:none}
+.textarea-wrap .field-icon{top:13px;transform:none}
+.f-input{width:100%;background:var(--ghost);border:1.5px solid var(--mist);border-radius:var(--r-md);color:var(--ink);padding:11px 14px;font-size:15px;transition:var(--t);outline:none;-webkit-appearance:none;line-height:1.5}
 .f-input.has-icon{padding-left:38px}
 .f-input:focus{background:#fff;border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,79,214,.08)}
-.f-input.error{border-color:var(--rose);box-shadow:0 0 0 3px rgba(225,29,72,.08)}
+.f-input.error{border-color:var(--rose);box-shadow:0 0 0 3px rgba(225,29,72,.07)}
 .f-input::placeholder{color:var(--slate-l)}
 textarea.f-input{resize:vertical;min-height:110px}
 select.f-input{cursor:pointer}
-.f-error{font-size:.7rem;color:var(--rose);margin-top:4px;display:none;align-items:center;gap:4px}
+.f-error{font-size:.7rem;color:var(--rose);margin-top:5px;display:none;align-items:center;gap:4px}
 .f-input.error~.f-error{display:flex}
-.row2{display:grid;grid-template-columns:1fr;gap:16px}
 .fg{display:flex;flex-direction:column;gap:0}
+.row2{display:grid;grid-template-columns:1fr;gap:16px}
 .mt16{margin-top:16px}
 .mt24{margin-top:24px}
 
-/* checkboxes for expertise areas */
+/* Section divider inside form */
+.form-divider{margin:26px 0 22px;display:flex;align-items:center;gap:12px}
+.form-divider-line{flex:1;height:1px;background:var(--mist)}
+.form-divider-lbl{font-size:.65rem;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--slate-l);white-space:nowrap}
+body.dark .form-divider-line{background:rgba(255,255,255,.08)}
+
+/* Expertise chips */
 .expertise-wrap{display:flex;flex-wrap:wrap;gap:7px}
 .exp-chk{display:none}
-.exp-tag{display:inline-flex;align-items:center;gap:5px;background:#fff;border:1.5px solid var(--mist);color:var(--slate);border-radius:var(--r-pill);padding:6px 13px;font-size:.76rem;font-weight:600;transition:var(--t);cursor:pointer;user-select:none}
+.exp-tag{display:inline-flex;align-items:center;gap:5px;background:#fff;border:1.5px solid var(--mist);color:var(--slate);border-radius:var(--r-pill);padding:6px 14px;font-size:.76rem;font-weight:600;transition:var(--t);cursor:pointer;user-select:none;line-height:1}
 .exp-tag i{font-size:.7rem}
 .exp-tag:hover{border-color:var(--blue);color:var(--blue)}
 .exp-chk:checked+.exp-tag{background:var(--g-blue);border-color:transparent;color:#fff;box-shadow:var(--sh-blue)}
 
-/* agreement */
-.agree-row{display:flex;align-items:flex-start;gap:9px;background:var(--blue-pale);border:1px solid rgba(26,79,214,.14);border-radius:var(--r-md);padding:13px 14px;margin-top:20px;cursor:pointer}
-.agree-row input[type="checkbox"]{width:16px;height:16px;flex-shrink:0;margin-top:1px;accent-color:var(--blue);cursor:pointer}
+/* Agreement */
+.agree-row{display:flex;align-items:flex-start;gap:10px;background:var(--blue-pale);border:1px solid rgba(26,79,214,.14);border-radius:var(--r-md);padding:14px;margin-top:22px;cursor:pointer}
+.agree-row input[type="checkbox"]{width:16px;height:16px;flex-shrink:0;margin-top:2px;accent-color:var(--blue);cursor:pointer}
 .agree-row label{font-size:.78rem;color:var(--slate);line-height:1.58;cursor:pointer}
 .agree-row label strong{color:var(--ink)}
 
+/* Submit btn */
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinner{display:none;width:17px;height:17px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
-.btn-submit{width:100%;padding:14px;font-size:.92rem;border-radius:var(--r-lg);margin-top:24px}
-.btn-submit.loading .btn-txt{display:none}
-.btn-submit.loading .spinner{display:block}
+#iSubmit{width:100%;padding:15px;font-size:.94rem;border-radius:var(--r-lg);margin-top:26px;background:var(--g-orange);box-shadow:var(--sh-orange);display:flex;align-items:center;justify-content:center;gap:8px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;color:#fff;border:none;cursor:pointer;transition:var(--t)}
+#iSubmit:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(232,98,10,.4)}
+#iSubmit:disabled{opacity:.65;cursor:not-allowed;transform:none}
+#iSubmit.loading .btn-txt{display:none}
+#iSubmit.loading .spinner{display:block}
 
-/* success */
+/* Success */
 @keyframes scale-in{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
 @keyframes check-draw{to{stroke-dashoffset:0}}
-.form-success{display:none;padding:52px 36px;text-align:center;animation:scale-in .45s cubic-bezier(.34,1.56,.64,1) both}
-.success-circle{width:72px;height:72px;background:linear-gradient(135deg,var(--emerald),#10b981);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 8px 28px rgba(5,150,105,.28)}
-.success-circle svg{width:36px;height:36px}
+.form-success{display:none;padding:56px 36px;text-align:center;animation:scale-in .45s cubic-bezier(.34,1.56,.64,1) both}
+.success-circle{width:76px;height:76px;background:linear-gradient(135deg,var(--emerald),#10b981);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;box-shadow:0 8px 28px rgba(5,150,105,.28)}
+.success-circle svg{width:38px;height:38px}
 .check-path{stroke-dasharray:34;stroke-dashoffset:34;animation:check-draw .5s .28s ease forwards}
-.form-success h3{font-size:1.5rem;font-weight:700;margin-bottom:8px}
-.form-success p{font-size:.85rem;color:var(--slate);line-height:1.72;max-width:380px;margin:0 auto 24px}
+.form-success h3{font-size:1.6rem;font-weight:700;margin-bottom:10px}
+.form-success p{font-size:.86rem;color:var(--slate);line-height:1.72;max-width:380px;margin:0 auto 26px}
 
-/* ─── INSTRUCTOR TESTIMONIALS ─── */
-.instructor-quotes{display:grid;grid-template-columns:1fr;gap:16px}
-.iq-card{background:#fff;border-radius:var(--r-xl);padding:26px 22px;border:1px solid var(--mist);box-shadow:var(--sh-sm);transition:var(--t);position:relative;overflow:hidden}
-.iq-card::before{content:'"';position:absolute;top:-10px;left:16px;font-family:'Fraunces',serif;font-size:7rem;color:var(--blue-pale);line-height:1;pointer-events:none}
-.iq-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg)}
-.iq-stars{color:var(--yellow);letter-spacing:1px;margin-bottom:10px;font-size:.9rem}
-.iq-quote{font-style:italic;color:var(--slate);line-height:1.78;font-size:.84rem;margin-bottom:16px;position:relative;z-index:1}
-.iq-author{display:flex;align-items:center;gap:11px}
-.iq-ava{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;background:var(--g-blue);font-weight:700;color:#fff}
-.iq-name{font-weight:700;font-size:.84rem;font-family:'Fraunces',serif}
-.iq-role{font-size:.7rem;color:var(--slate)}
-.iq-earnings{display:inline-flex;align-items:center;gap:5px;background:rgba(5,150,105,.09);color:var(--emerald);border:1px solid rgba(5,150,105,.2);border-radius:var(--r-pill);padding:3px 10px;font-size:.68rem;font-weight:800;margin-top:8px}
-
-/* ─── FAQ ─── */
+/* ══════════════════════════
+   FAQ
+══════════════════════════ */
 .faq-item{background:#fff;border-radius:var(--r-lg);border:1px solid var(--mist);overflow:hidden;transition:border-color .22s;box-shadow:var(--sh-sm)}
 .faq-item:hover{border-color:var(--blue)}
 .faq-item.open{border-color:var(--blue-l)}
@@ -352,25 +389,27 @@ select.f-input{cursor:pointer}
 .faq-icon{width:20px;height:20px;flex-shrink:0;background:var(--blue-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:.62rem;transition:transform .24s,background .22s}
 .faq-item.open .faq-icon{transform:rotate(45deg);background:var(--blue);color:#fff}
 .faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;color:var(--slate);font-size:.82rem;line-height:1.76}
-.faq-item.open .faq-a{max-height:220px;padding:0 18px 15px}
+.faq-item.open .faq-a{max-height:240px;padding:0 18px 15px}
 
-/* ─── FOOTER ─── */
+/* ══════════════════════════
+   FOOTER
+══════════════════════════ */
 @keyframes bar-shift{0%{background-position:0%}100%{background-position:200%}}
 @keyframes dot-p{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.45);opacity:.5}}
 footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-top:1px solid rgba(255,255,255,.05)}
 .footer-bar{height:2px;background:linear-gradient(90deg,#1a4fd6,#e8620a,#1a4fd6);background-size:200% 100%;animation:bar-shift 6s linear infinite}
-.footer-cta-strip{background:linear-gradient(135deg,#0c1630,#101f40);border-bottom:1px solid rgba(255,255,255,.05);padding:30px 0}
+.footer-cta-strip{background:linear-gradient(135deg,#0c1630,#101f40);border-bottom:1px solid rgba(255,255,255,.05);padding:28px 0}
 .footer-cta-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
-.footer-cta-text h4{font-family:'Fraunces',serif;font-size:clamp(.98rem,2.8vw,1.35rem);font-weight:700;color:#fff;margin-bottom:3px;line-height:1.2}
+.footer-cta-text h4{font-family:'Fraunces',serif;font-size:clamp(.98rem,2.8vw,1.3rem);font-weight:700;color:#fff;margin-bottom:3px;line-height:1.2}
 .footer-cta-text p{font-size:.76rem;color:rgba(255,255,255,.36);margin:0}
 .footer-cta-btns{display:flex;gap:9px;flex-wrap:wrap;flex-shrink:0}
-.footer-body{padding:52px 0 36px}
+.footer-body{padding:48px 0 32px}
 .footer-cols{display:grid;grid-template-columns:2fr 1fr 1fr 1.6fr;gap:34px 28px}
-.footer-brand-name{font-family:'Fraunces',serif;font-size:1.14rem;font-weight:700;color:#fff;letter-spacing:-.04em;display:flex;align-items:center;gap:7px;margin-bottom:9px}
+.footer-brand-name{font-family:'Fraunces',serif;font-size:1.12rem;font-weight:700;color:#fff;letter-spacing:-.04em;display:flex;align-items:center;gap:7px;margin-bottom:9px}
 .footer-brand-name em{font-style:italic;color:#e8620a}
-.footer-bmark{width:27px;height:27px;background:var(--g-blue);border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:.8rem;color:#fff;flex-shrink:0}
+.footer-bmark{width:26px;height:26px;background:var(--g-blue);border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:.8rem;color:#fff;flex-shrink:0}
 .footer-tagline{font-size:.77rem;color:rgba(255,255,255,.34);line-height:1.74;max-width:270px;margin-bottom:16px}
-.footer-socials{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.footer-socials{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
 .fsoc{width:32px;height:32px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);color:rgba(255,255,255,.48);font-size:.78rem;transition:all .2s;text-decoration:none}
 .fsoc:hover{transform:translateY(-2px)}
 .fsoc.tw:hover{background:#1da1f2;color:#fff}
@@ -379,7 +418,7 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
 .fsoc.ig:hover{background:linear-gradient(135deg,#fd5949,#d6249f,#285aeb);color:#fff}
 .fsoc.yt:hover{background:#ff0000;color:#fff}
 .fsoc.wa:hover{background:#25D366;color:#fff}
-.footer-col-title{font-size:.62rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,.26);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.footer-col-title{font-size:.61rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,.26);margin-bottom:14px;display:flex;align-items:center;gap:6px}
 .footer-col-title::before{content:'';width:10px;height:1.5px;background:var(--blue);border-radius:2px;flex-shrink:0}
 .footer-links{list-style:none;padding:0;margin:0}
 .footer-links li{margin-bottom:9px}
@@ -405,26 +444,28 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
 .footer-made{font-size:.69rem;color:rgba(255,255,255,.18);display:flex;align-items:center;gap:3px}
 .footer-made span{color:var(--orange-l)}
 
-/* RESPONSIVE */
+/* ══════════════════════════
+   RESPONSIVE
+══════════════════════════ */
 @media(min-width:600px){
   .container{padding:0 28px}
+  .container-sm{padding:0 28px}
   .row2{grid-template-columns:1fr 1fr}
-  .hero-stats{grid-template-columns:repeat(4,1fr)}
   .benefits-grid{grid-template-columns:repeat(2,1fr)}
-  .instructor-quotes{grid-template-columns:repeat(2,1fr)}
 }
 @media(min-width:992px){
   :root{--nav-h:72px}
   .container{padding:0 32px}
+  .container-sm{padding:0 32px}
   .nav-inner{padding:0 32px}
   .nav-links{display:flex}
   .nav-cta{display:flex}
   .ham-btn{display:none!important}
   .mob-quick{display:none!important}
-  .hero-inner{grid-template-columns:1fr 420px;gap:60px;align-items:center}
+  .hero-inner{grid-template-columns:1fr 400px;gap:56px;padding:88px 0 96px}
   .benefits-grid{grid-template-columns:repeat(3,1fr)}
-  .instructor-quotes{grid-template-columns:repeat(3,1fr)}
-  .calc-body{grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+  .calc-body{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+  .calc-results-grid{margin-top:0}
 }
 @media(max-width:539px){
   .footer-cols{grid-template-columns:1fr 1fr;gap:22px 14px}
@@ -434,7 +475,7 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
   .footer-cta-btns a{flex:1;justify-content:center}
   .footer-bottom-inner{flex-direction:column;align-items:center;text-align:center;gap:8px}
   .footer-legal{justify-content:center;gap:10px}
-  .form-top,.form-body{padding-left:18px;padding-right:18px}
+  .form-top,.form-body{padding-left:20px;padding-right:20px}
 }
 @media(max-width:1023px){
   .footer-cols{grid-template-columns:1fr 1fr;gap:26px 22px}
@@ -453,20 +494,15 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
 <button id="back-to-top" aria-label="Back to top">
   <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
 </button>
-
 <a id="wa-float" href="https://wa.me/254769329340?text=Hello%20NeurowexTech!%20I%20want%20to%20become%20an%20instructor." target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
   <span class="wa-ring" aria-hidden="true"></span>
   <span class="wa-ring" aria-hidden="true"></span>
   <div class="wa-pill">
     <div class="wa-ico"><i class="fab fa-whatsapp"></i><span class="wa-dot"></span></div>
-    <div class="wa-text">
-      <span class="wa-label">Online · Replies in mins</span>
-      <span class="wa-cta">Chat with us</span>
-    </div>
+    <div class="wa-text"><span class="wa-label">Online · Replies in mins</span><span class="wa-cta">Chat with us</span></div>
     <i class="fas fa-arrow-right wa-arr"></i>
   </div>
 </a>
-
 <div id="toast" role="status" aria-live="polite">
   <i class="fas fa-check-circle" id="toastIcon" style="color:#34d399;flex-shrink:0"></i>
   <span id="toast-msg">Done!</span>
@@ -476,9 +512,9 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
   <button id="cookie-accept">Accept</button>
 </div>
 
-<!-- Mobile nav -->
+<!-- MOBILE NAV -->
 <div class="mob-overlay" id="mobOverlay" aria-hidden="true"></div>
-<div class="mob-panel" id="mobPanel" role="dialog" aria-modal="true" aria-label="Navigation menu">
+<div class="mob-panel" id="mobPanel" role="dialog" aria-modal="true" aria-label="Navigation">
   <div class="mob-head">
     <a href="/" class="nav-brand" style="font-size:1.1rem;" aria-label="NeurowexTech">
       <span class="brand-mark">N</span>Neurowex<em>Tech</em>
@@ -489,22 +525,21 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
     <a href="/"                  class="mob-link"><i class="fas fa-home"></i> Home</a>
     <a href="/learn"             class="mob-link"><i class="fas fa-graduation-cap"></i> Academy</a>
     <a href="/#services"         class="mob-link"><i class="fas fa-th-large"></i> Services</a>
-    <a href="/#portfolio"        class="mob-link"><i class="fas fa-briefcase"></i> Portfolio</a>
     <a href="/contact"           class="mob-link"><i class="fas fa-envelope"></i> Contact</a>
     <a href="/become-instructor" class="mob-link cur"><i class="fas fa-chalkboard-teacher"></i> Teach Here</a>
     <hr class="mob-hr">
     {{#if isAuthenticated}}
     <a href="/my-learning"    class="mob-link"><i class="fas fa-book-open"></i> My Learning</a>
     <a href="/user_dashboard" class="mob-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-    <a href="/logout"         class="mob-link" style="color:var(--rose)"><i class="fas fa-sign-out-alt" style="color:var(--rose)"></i> Sign Out</a>
+    <a href="/logout"         class="mob-link" style="color:#e11d48"><i class="fas fa-sign-out-alt" style="color:#e11d48"></i> Sign Out</a>
     {{else}}
     <a href="/login"   class="mob-link"><i class="fas fa-sign-in-alt"></i> Log In</a>
     <a href="/sign_up" class="mob-link"><i class="fas fa-user-plus"></i> Sign Up</a>
     {{/if}}
   </nav>
   <div class="mob-footer">
-    <a href="#apply" class="btn btn-primary" style="justify-content:center;">Apply Now <i class="fas fa-arrow-right"></i></a>
-    <a href="/learn" class="btn btn-outline" style="justify-content:center;">Browse Courses</a>
+    <a href="#apply" class="btn btn-orange" style="justify-content:center;border-radius:var(--r-pill)">Apply to Teach <i class="fas fa-arrow-right"></i></a>
+    <a href="/learn" class="btn btn-outline" style="justify-content:center;border-radius:var(--r-pill)">Browse Courses</a>
   </div>
 </div>
 
@@ -518,17 +553,16 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
       <li><a href="/"                  class="nl-a">Home</a></li>
       <li><a href="/learn"             class="nl-a">Academy</a></li>
       <li><a href="/#services"         class="nl-a">Services</a></li>
-      <li><a href="/#portfolio"        class="nl-a">Portfolio</a></li>
       <li><a href="/contact"           class="nl-a">Contact</a></li>
       <li><a href="/become-instructor" class="nl-a active">Teach Here</a></li>
     </ul>
     <div class="nav-cta">
       {{#if isAuthenticated}}
-      <a href="/my-learning" class="btn-nav-signin">{{userName}}</a>
+      <a href="/my-learning" class="btn-nav-ghost"><i class="fas fa-user"></i> {{userName}}</a>
       {{else}}
-      <a href="/login"         class="btn-nav-signin">Log In</a>
+      <a href="/login" class="btn-nav-ghost"><i class="fas fa-sign-in-alt"></i> Log In</a>
       {{/if}}
-      <a href="#apply" class="btn-nav-start">Apply Now <i class="fas fa-arrow-right" style="font-size:.68rem"></i></a>
+      <a href="#apply" class="btn-nav-cta"><i class="fas fa-chalkboard-teacher"></i> Apply Now</a>
     </div>
     <div class="mob-quick" id="mobQuick">
       <button class="mob-quick-btn" id="mobThemeBtn" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
@@ -539,57 +573,98 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
   </div>
 </nav>
 
-<!-- ══════════════════════════════════
+<!-- ══════════════════════════
      HERO
-══════════════════════════════════ -->
-<section class="page-hero">
-  <div class="hero-orb hero-orb-1" aria-hidden="true"></div>
-  <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
+══════════════════════════ -->
+<section class="hero" aria-label="Become an instructor">
+  <div class="hero-orb-1" aria-hidden="true"></div>
+  <div class="hero-orb-2" aria-hidden="true"></div>
   <div class="container">
     <div class="hero-inner">
-      <!-- Left -->
+
+      <!-- LEFT -->
       <div>
         <div class="hero-badge"><span class="dot"></span> NeurowexTech Academy · Instructors</div>
-        <h1>Share Your Skills.<br><em>Earn on Your Terms.</em></h1>
-        <p>Join our growing team of instructors. Publish hands-on courses, reach thousands of learners across Kenya and beyond, and build a passive income stream — on your schedule.</p>
-        <div class="hero-pills">
-          <div class="hero-pill"><i class="fas fa-money-bill-wave" style="color:#34d399"></i> Earn up to 70% revenue share</div>
-          <div class="hero-pill"><i class="fas fa-clock" style="color:var(--orange-l)"></i> Teach on your schedule</div>
-          <div class="hero-pill"><i class="fas fa-users" style="color:var(--blue-l)"></i> 1,000+ active learners</div>
+        <h1>Teach What You Know.<br><em>Earn What You Deserve.</em></h1>
+        <p class="hero-sub">Join NeurowexTech Academy, publish hands-on courses, and reach thousands of learners across Kenya and beyond — on your own schedule.</p>
+
+        <div class="hero-checklist">
+          <div class="hero-check-item">
+            <span class="hci-icon g"><i class="fas fa-check"></i></span>
+            Earn up to <strong style="color:rgba(255,255,255,.88)">&nbsp;70% revenue share</strong>&nbsp;— paid monthly via M-Pesa
+          </div>
+          <div class="hero-check-item">
+            <span class="hci-icon b"><i class="fas fa-check"></i></span>
+            Teach on your own schedule&nbsp;— no live commitments required
+          </div>
+          <div class="hero-check-item">
+            <span class="hci-icon o"><i class="fas fa-check"></i></span>
+            We handle marketing, payments, and support&nbsp;— you just teach
+          </div>
+          <div class="hero-check-item">
+            <span class="hci-icon g"><i class="fas fa-check"></i></span>
+            Go live in as little as&nbsp;<strong style="color:rgba(255,255,255,.88)">2 weeks</strong>&nbsp;from application
+          </div>
         </div>
+
         <div class="hero-actions">
-          <a href="#apply" class="btn btn-orange btn-lg"><i class="fas fa-chalkboard-teacher"></i> Apply to Teach</a>
-          <a href="/learn" class="btn btn-ghost btn-lg"><i class="fas fa-graduation-cap"></i> Browse Courses</a>
+          <a href="#apply"  class="btn btn-orange btn-lg"><i class="fas fa-paper-plane"></i> Apply to Teach</a>
+          <a href="#calculator" class="btn-ghost-dark"><i class="fas fa-calculator"></i> Estimate Earnings</a>
+        </div>
+
+        <div class="hero-trust">
+          <div class="ht-item"><i class="fas fa-shield-alt" style="color:#34d399"></i> Instructor support team</div>
+          <div class="ht-item"><i class="fas fa-chart-line" style="color:var(--blue-l)"></i> Real-time analytics</div>
+          <div class="ht-item"><i class="fas fa-mobile-alt" style="color:var(--orange-l)"></i> M-Pesa payouts</div>
+          <div class="ht-item"><i class="fas fa-certificate" style="color:#f59e0b"></i> Branded certificates</div>
         </div>
       </div>
-      <!-- Right: stats -->
-      <div>
-        <div class="hero-stats">
-          <div class="h-stat">
-            <div class="h-stat-num">70%</div>
-            <div class="h-stat-label">Revenue Share</div>
+
+      <!-- RIGHT: mini dashboard card -->
+      <div class="hero-card">
+        <div class="hc-title">Academy at a glance</div>
+        <div class="hc-stat-grid">
+          <div class="hc-stat">
+            <div class="hc-stat-val">70%</div>
+            <div class="hc-stat-lbl">Revenue Share</div>
           </div>
-          <div class="h-stat">
-            <div class="h-stat-num">1K+</div>
-            <div class="h-stat-label">Active Learners</div>
+          <div class="hc-stat">
+            <div class="hc-stat-val">1K+</div>
+            <div class="hc-stat-lbl">Learners</div>
           </div>
-          <div class="h-stat">
-            <div class="h-stat-num">48h</div>
-            <div class="h-stat-label">Review Time</div>
+          <div class="hc-stat">
+            <div class="hc-stat-val">48h</div>
+            <div class="hc-stat-lbl">Review SLA</div>
           </div>
-          <div class="h-stat">
-            <div class="h-stat-num">Free</div>
-            <div class="h-stat-label">To Publish</div>
+          <div class="hc-stat">
+            <div class="hc-stat-val">Free</div>
+            <div class="hc-stat-lbl">To Publish</div>
           </div>
         </div>
-        <!-- mini trust indicators -->
-        <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:8px">
-          <span style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:5px 12px;font-size:.72rem;font-weight:600;color:rgba(255,255,255,.65)">🛡️ Instructor support team</span>
-          <span style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:5px 12px;font-size:.72rem;font-weight:600;color:rgba(255,255,255,.65)">📈 Real-time analytics</span>
-          <span style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:5px 12px;font-size:.72rem;font-weight:600;color:rgba(255,255,255,.65)">💬 M-Pesa payouts</span>
-          <span style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:5px 12px;font-size:.72rem;font-weight:600;color:rgba(255,255,255,.65)">🎓 Certificate branding</span>
+        <div class="hc-divider"></div>
+        <div class="hc-title" style="margin-bottom:14px">Instructor earnings this month</div>
+        <div class="hc-instructor-list">
+          <div class="hci-row">
+            <div class="hci-ava" style="background:linear-gradient(135deg,#1a4fd6,#1340b0)">J</div>
+            <div class="hci-info"><div class="hci-name">Johnstone K.</div><div class="hci-role">Web Development</div></div>
+            <div class="hci-earn">Kshs 142K</div>
+          </div>
+          <div class="hci-row">
+            <div class="hci-ava" style="background:linear-gradient(135deg,#e8620a,#c94f05)">F</div>
+            <div class="hci-info"><div class="hci-name">Faith W.</div><div class="hci-role">UI/UX Design</div></div>
+            <div class="hci-earn">Kshs 98K</div>
+          </div>
+          <div class="hci-row">
+            <div class="hci-ava" style="background:linear-gradient(135deg,#0d9488,#065f46)">D</div>
+            <div class="hci-info"><div class="hci-name">David O.</div><div class="hci-role">Data Science</div></div>
+            <div class="hci-earn">Kshs 89K</div>
+          </div>
+        </div>
+        <div style="margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)">
+          <a href="#apply" style="display:flex;align-items:center;justify-content:center;gap:7px;background:var(--g-orange);color:#fff;font-weight:700;font-size:.82rem;padding:11px 18px;border-radius:var(--r-pill);transition:var(--t);font-family:'Plus Jakarta Sans',sans-serif;box-shadow:var(--sh-orange)"><i class="fas fa-chalkboard-teacher"></i> Join These Instructors</a>
         </div>
       </div>
+
     </div>
   </div>
 </section>
@@ -604,10 +679,10 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
       </div>
       <div class="ss-item">
         <div class="ss-icon o"><i class="fas fa-star"></i></div>
-        <div><div class="ss-val">4.8/5</div><div class="ss-label">Avg course rating</div></div>
+        <div><div class="ss-val">4.8 / 5</div><div class="ss-label">Avg course rating</div></div>
       </div>
       <div class="ss-item">
-        <div class="ss-icon g"><i class="fas fa-money-bill-wave"></i></div>
+        <div class="ss-icon g"><i class="fas fa-coins"></i></div>
         <div><div class="ss-val">70%</div><div class="ss-label">Revenue to you</div></div>
       </div>
       <div class="ss-item">
@@ -618,417 +693,361 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
   </div>
 </div>
 
-<!-- ══════════════════════════════════
+<!-- ══════════════════════════
      WHY TEACH WITH US
-══════════════════════════════════ -->
+══════════════════════════ -->
 <section class="section-py" style="background:#fff">
   <div class="container">
     <div class="text-center" style="margin-bottom:52px">
-      <div class="section-kicker">Why NeurowexTech</div>
-      <h2 style="font-size:clamp(1.7rem,5vw,2.8rem);font-weight:700;margin-bottom:12px">Everything you need to <span class="g-blue">teach and earn</span></h2>
-      <p style="color:var(--slate);font-size:clamp(.88rem,2.5vw,1.02rem);max-width:520px;margin:0 auto;line-height:1.76">We handle marketing, hosting, and payments — you focus on creating great content.</p>
+      <div class="kicker">Why NeurowexTech</div>
+      <h2 style="font-size:clamp(1.7rem,5vw,2.7rem);font-weight:700;margin-bottom:12px">Everything you need to <span class="g-blue">teach and earn</span></h2>
+      <p style="color:var(--slate);font-size:clamp(.88rem,2.5vw,1.02rem);max-width:500px;margin:0 auto;line-height:1.76">We handle marketing, hosting, and payments. You focus on creating great content.</p>
     </div>
     <div class="benefits-grid">
-      <div class="benefit-card c-g">
-        <div class="benefit-icon"><i class="fas fa-money-bill-wave"></i></div>
+      <div class="benefit-card bc-g">
+        <div class="b-icon"><i class="fas fa-coins"></i></div>
         <h4>Earn up to 70% Revenue</h4>
-        <p>Keep the majority of every sale. Paid out monthly via M-Pesa or bank transfer. No hidden fees or payout minimums.</p>
+        <p>Keep the majority of every sale. Paid monthly via M-Pesa or bank transfer — no hidden fees, no payout minimums.</p>
       </div>
-      <div class="benefit-card c-b">
-        <div class="benefit-icon"><i class="fas fa-clock"></i></div>
+      <div class="benefit-card bc-b">
+        <div class="b-icon"><i class="fas fa-clock"></i></div>
         <h4>Teach on Your Schedule</h4>
-        <p>Pre-record your lessons at your own pace. No live commitments required. Update your content anytime with no re-approval needed for minor edits.</p>
+        <p>Pre-record your lessons at your own pace. No live commitments required. Update content anytime without re-approval for minor edits.</p>
       </div>
-      <div class="benefit-card c-o">
-        <div class="benefit-icon"><i class="fas fa-bullhorn"></i></div>
-        <h4>We Handle Marketing</h4>
-        <p>Your course is promoted across our site, newsletter, and social channels. We drive learners to you — you just teach.</p>
+      <div class="benefit-card bc-o">
+        <div class="b-icon"><i class="fas fa-bullhorn"></i></div>
+        <h4>We Handle All Marketing</h4>
+        <p>Your course is promoted across our platform, newsletter (5,000+ subscribers), and social channels. We drive learners to you.</p>
       </div>
-      <div class="benefit-card c-t">
-        <div class="benefit-icon"><i class="fas fa-chart-line"></i></div>
+      <div class="benefit-card bc-t">
+        <div class="b-icon"><i class="fas fa-chart-bar"></i></div>
         <h4>Real-Time Analytics</h4>
-        <p>Track enrollments, completions, ratings, and earnings from a clean instructor dashboard. Know exactly how your courses are performing.</p>
+        <p>Track enrollments, completions, ratings, and earnings in a clean instructor dashboard. Know exactly how your courses perform.</p>
       </div>
-      <div class="benefit-card c-p">
-        <div class="benefit-icon"><i class="fas fa-headset"></i></div>
+      <div class="benefit-card bc-p">
+        <div class="b-icon"><i class="fas fa-headset"></i></div>
         <h4>Dedicated Instructor Support</h4>
-        <p>A dedicated onboarding specialist helps you launch your first course. Ongoing support via WhatsApp and email — response within 4 hours.</p>
+        <p>An onboarding specialist helps you launch your first course. Ongoing support via WhatsApp with a 4-hour response guarantee.</p>
       </div>
-      <div class="benefit-card c-y">
-        <div class="benefit-icon"><i class="fas fa-certificate"></i></div>
+      <div class="benefit-card bc-y">
+        <div class="b-icon"><i class="fas fa-certificate"></i></div>
         <h4>Your Brand on Certificates</h4>
-        <p>Students receive NeurowexTech-branded certificates that include your name as instructor — building your personal reputation with every graduation.</p>
+        <p>Students receive NeurowexTech-branded certificates featuring your name — building your reputation with every graduation.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════
+<!-- ══════════════════════════
      HOW IT WORKS
-══════════════════════════════════ -->
+══════════════════════════ -->
 <section class="section-py" style="background:var(--ghost)">
-  <div class="container">
-    <div style="display:grid;grid-template-columns:1fr;gap:48px">
-      <div>
-        <div class="section-kicker teal">The Process</div>
-        <h2 style="font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:700;margin-bottom:12px">From application to <span class="g-orange">live course</span></h2>
-        <p style="color:var(--slate);font-size:clamp(.88rem,2vw,1rem);line-height:1.76;max-width:460px;margin-bottom:32px">Most instructors go live within 2 weeks of applying. Here's exactly how it works.</p>
+  <div class="container-sm">
+    <div class="text-center" style="margin-bottom:52px">
+      <div class="kicker teal">The Process</div>
+      <h2 style="font-size:clamp(1.6rem,4.5vw,2.6rem);font-weight:700;margin-bottom:12px">From application to <span class="g-orange">live course</span></h2>
+      <p style="color:var(--slate);font-size:clamp(.88rem,2vw,1rem);line-height:1.76;max-width:440px;margin:0 auto">Most instructors go live within 2 weeks of applying. Here's exactly how it works.</p>
+    </div>
+    <div class="timeline">
+      <div class="tl-step">
+        <div class="tl-num tl-n1">1</div>
+        <div class="tl-content">
+          <div class="tl-label">Step One · 5 minutes</div>
+          <h4>Submit Your Application</h4>
+          <p>Fill in the form below with your area of expertise, a brief bio, and an idea for your first course. We review every application personally within 48 hours.</p>
+        </div>
       </div>
-      <div class="steps-wrap">
-        <div class="step-card">
-          <div class="step-num">1</div>
-          <div>
-            <h4>Submit Your Application</h4>
-            <p>Fill in the form below with your area of expertise, a brief bio, and ideas for your first course. Takes less than 5 minutes. We review every application within 48 hours.</p>
-          </div>
+      <div class="tl-step">
+        <div class="tl-num tl-n2">2</div>
+        <div class="tl-content">
+          <div class="tl-label">Step Two · 20 minutes</div>
+          <h4>Onboarding Call</h4>
+          <p>A short call with our Academy team to align on curriculum structure, recording requirements, and answer your questions before you start filming.</p>
         </div>
-        <div class="step-card">
-          <div class="step-num o">2</div>
-          <div>
-            <h4>Onboarding Call</h4>
-            <p>A short 20-minute call with our Academy team to align on curriculum, technical requirements for recording, and answer any questions you have before you start filming.</p>
-          </div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-num tl-n3">3</div>
+        <div class="tl-content">
+          <div class="tl-label">Step Three · 1–2 weeks</div>
+          <h4>Create & Publish</h4>
+          <p>Record your lessons and upload to our platform. Our quality team reviews within 48 hours, then your course goes live to thousands of learners.</p>
         </div>
-        <div class="step-card">
-          <div class="step-num g">3</div>
-          <div>
-            <h4>Create & Publish</h4>
-            <p>Record your lessons, upload them to our platform, and set your price. Our team does a quality review (typically 24–48 hours), then your course goes live to thousands of learners.</p>
-          </div>
-        </div>
-        <div class="step-card">
-          <div class="step-num" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);box-shadow:0 6px 18px rgba(139,92,246,.28)">4</div>
-          <div>
-            <h4>Earn & Grow</h4>
-            <p>Watch enrollments and ratings grow. Receive your revenue share every month via M-Pesa or bank transfer. Add more courses, or update existing ones — you're in control.</p>
-          </div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-num tl-n4">4</div>
+        <div class="tl-content">
+          <div class="tl-label">Step Four · Ongoing</div>
+          <h4>Earn & Grow</h4>
+          <p>Watch enrollments and ratings grow. Receive your revenue share every month via M-Pesa or bank transfer. Add more courses anytime — you're in control.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════
+<!-- ══════════════════════════
      EARNINGS CALCULATOR
-══════════════════════════════════ -->
+══════════════════════════ -->
 <section class="section-py" style="background:#fff" id="calculator">
   <div class="container">
     <div class="text-center" style="margin-bottom:44px">
-      <div class="section-kicker orange">Earnings</div>
+      <div class="kicker orange">Earnings Estimator</div>
       <h2 style="font-size:clamp(1.6rem,4.5vw,2.5rem);font-weight:700;margin-bottom:10px">See what you could <span class="g-orange">earn</span></h2>
       <p style="color:var(--slate);font-size:.94rem;max-width:440px;margin:0 auto">Adjust the sliders to estimate your monthly income as a NeurowexTech instructor.</p>
     </div>
-    <div class="calc-card" style="max-width:780px;margin:0 auto">
-      <div class="calc-top">
+    <div class="calc-card">
+      <div class="calc-head">
         <h3>Earnings Estimator</h3>
-        <p>Based on 70% revenue share on paid courses</p>
+        <p>Based on 70% revenue share on paid course enrollments</p>
       </div>
       <div class="calc-body">
-        <!-- Sliders -->
-        <div>
-          <div class="calc-label">
-            Monthly students enrolled
-            <span id="studentsVal">50</span>
+        <div class="calc-sliders">
+          <div>
+            <div class="calc-lbl">Monthly students enrolled <span id="studentsVal">50</span></div>
+            <input type="range" class="calc-range" id="studentsRange" min="10" max="500" value="50" step="10">
           </div>
-          <input type="range" class="calc-range" id="studentsRange" min="10" max="500" value="50" step="10">
-
-          <div class="calc-label" style="margin-top:20px">
-            Course price (Kshs)
-            <span id="priceVal">3,500</span>
+          <div>
+            <div class="calc-lbl">Course price (Kshs) <span id="priceVal">3,500</span></div>
+            <input type="range" class="calc-range" id="priceRange" min="500" max="15000" value="3500" step="500">
           </div>
-          <input type="range" class="calc-range" id="priceRange" min="500" max="15000" value="3500" step="500">
-
-          <div class="calc-label" style="margin-top:20px">
-            Number of courses
-            <span id="coursesVal">2</span>
+          <div>
+            <div class="calc-lbl">Number of courses <span id="coursesVal">2</span></div>
+            <input type="range" class="calc-range" id="coursesRange" min="1" max="10" value="2" step="1">
           </div>
-          <input type="range" class="calc-range" id="coursesRange" min="1" max="10" value="2" step="1">
+          <a href="#apply" class="btn btn-orange" style="margin-top:8px;width:100%;border-radius:var(--r-lg)"><i class="fas fa-chalkboard-teacher"></i> Start Teaching Today</a>
         </div>
-        <!-- Results -->
         <div>
-          <div class="calc-results">
-            <div class="calc-result-item">
-              <div class="calc-result-val" id="monthlyEarnings">Kshs 245K</div>
-              <div class="calc-result-label">Monthly earnings</div>
-            </div>
-            <div class="calc-result-item">
-              <div class="calc-result-val" id="annualEarnings">Kshs 2.9M</div>
-              <div class="calc-result-label">Annual earnings</div>
-            </div>
-            <div class="calc-result-item">
-              <div class="calc-result-val" id="perCourse">Kshs 122K</div>
-              <div class="calc-result-label">Per course / month</div>
-            </div>
-            <div class="calc-result-item">
-              <div class="calc-result-val" id="totalStudents">100</div>
-              <div class="calc-result-label">Total students</div>
-            </div>
+          <div class="calc-results-grid">
+            <div class="cr-item"><div class="cr-val" id="monthlyEarnings">Kshs 245K</div><div class="cr-lbl">Monthly earnings</div></div>
+            <div class="cr-item"><div class="cr-val" id="annualEarnings">Kshs 2.9M</div><div class="cr-lbl">Annual earnings</div></div>
+            <div class="cr-item"><div class="cr-val" id="perCourse">Kshs 122K</div><div class="cr-lbl">Per course / month</div></div>
+            <div class="cr-item"><div class="cr-val" id="totalStudents">100</div><div class="cr-lbl">Total students</div></div>
           </div>
-          <p class="calc-note">* Estimates assume 70% revenue share. Actual earnings depend on course quality, pricing, and market demand.</p>
-          <a href="#apply" class="btn btn-orange" style="width:100%;margin-top:16px;border-radius:var(--r-lg)"><i class="fas fa-chalkboard-teacher"></i> Start Teaching Today</a>
+          <p class="calc-note">* Estimates assume 70% revenue share. Actual earnings depend on course quality, pricing, and demand.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════
-     INSTRUCTOR TESTIMONIALS
-══════════════════════════════════ -->
-<section class="section-py" style="background:var(--ghost)">
-  <div class="container">
-    <div class="text-center" style="margin-bottom:48px">
-      <div class="section-kicker orange">Instructor Stories</div>
-      <h2 style="font-size:clamp(1.6rem,4.5vw,2.5rem);font-weight:700;margin-bottom:10px">What our <span class="g-orange">instructors say</span></h2>
-    </div>
-    <div class="instructor-quotes">
-      <div class="iq-card">
-        <div class="iq-stars">★★★★★</div>
-        <p class="iq-quote">"Publishing my Web Dev course on NeurowexTech was the best professional decision I've made. The platform handles everything — I just focus on teaching. My first month I enrolled 86 students."</p>
-        <div class="iq-author">
-          <div class="iq-ava">J</div>
-          <div>
-            <div class="iq-name">Johnstone Kamau</div>
-            <div class="iq-role">Full-Stack Developer, Nairobi</div>
-            <div class="iq-earnings"><i class="fas fa-coins"></i> Kshs 142,000 in first month</div>
-          </div>
-        </div>
-      </div>
-      <div class="iq-card">
-        <div class="iq-stars">★★★★★</div>
-        <p class="iq-quote">"The onboarding team helped me structure my UI/UX Design course from scratch. I had no experience with online teaching, but their guidance made the whole process smooth. Now I have 3 courses live."</p>
-        <div class="iq-author">
-          <div class="iq-ava" style="background:var(--g-orange)">F</div>
-          <div>
-            <div class="iq-name">Faith Wanjiku</div>
-            <div class="iq-role">UI/UX Designer, Remote</div>
-            <div class="iq-earnings"><i class="fas fa-coins"></i> 3 courses · 400+ students</div>
-          </div>
-        </div>
-      </div>
-      <div class="iq-card">
-        <div class="iq-stars">★★★★★</div>
-        <p class="iq-quote">"M-Pesa payouts are seamless — I receive my share every month without any chasing. The analytics dashboard is excellent. I can see exactly which lessons students are rewatching and where they drop off."</p>
-        <div class="iq-author">
-          <div class="iq-ava" style="background:linear-gradient(135deg,var(--teal),#0891b2)">D</div>
-          <div>
-            <div class="iq-name">David Otieno</div>
-            <div class="iq-role">Data Scientist, Mombasa</div>
-            <div class="iq-earnings"><i class="fas fa-coins"></i> Kshs 89,000 avg/month</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════
+<!-- ══════════════════════════
      APPLICATION FORM
-══════════════════════════════════ -->
+══════════════════════════ -->
 <section class="form-section" id="apply">
   <div class="container">
     <div class="text-center" style="margin-bottom:44px">
-      <div class="section-kicker">Apply Now</div>
-      <h2 style="font-size:clamp(1.7rem,5vw,2.8rem);font-weight:700;margin-bottom:10px">Ready to start <span class="g-blue">teaching?</span></h2>
-      <p style="color:var(--slate);font-size:.94rem;max-width:440px;margin:0 auto;line-height:1.76">Fill in the form below and our Academy team will get back to you within 48 hours.</p>
+      <div class="kicker">Apply Now</div>
+      <h2 style="font-size:clamp(1.8rem,5vw,2.8rem);font-weight:700;margin-bottom:10px">Ready to start <span class="g-blue">teaching?</span></h2>
+      <p style="color:var(--slate);font-size:.94rem;max-width:440px;margin:0 auto;line-height:1.76">Fill in the form and our Academy team will respond within 48 hours.</p>
     </div>
 
-    <div class="form-card">
-      <div class="form-top">
-        <h2>Instructor Application</h2>
-        <p>All fields marked <span style="color:var(--rose)">*</span> are required. We review every application personally.</p>
-      </div>
-
-      <div class="form-body">
-        <form id="instructorForm" novalidate>
-
-          <!-- Name + Email -->
-          <div class="row2">
-            <div class="fg">
-              <label class="f-label" for="iName">Full Name <span class="req">*</span></label>
-              <div class="field-wrap">
-                <i class="fas fa-user field-icon"></i>
-                <input type="text" id="iName" class="f-input has-icon" placeholder="Jane Wanjiku" required autocomplete="name">
-              </div>
-              <span class="f-error"><i class="fas fa-exclamation-circle"></i> Please enter your full name.</span>
-            </div>
-            <div class="fg">
-              <label class="f-label" for="iEmail">Email Address <span class="req">*</span></label>
-              <div class="field-wrap">
-                <i class="fas fa-envelope field-icon"></i>
-                <input type="email" id="iEmail" class="f-input has-icon" placeholder="jane@example.com" required autocomplete="email">
-              </div>
-              <span class="f-error"><i class="fas fa-exclamation-circle"></i> Enter a valid email address.</span>
-            </div>
-          </div>
-
-          <!-- Phone + LinkedIn -->
-          <div class="row2 mt16">
-            <div class="fg">
-              <label class="f-label" for="iPhone">Phone / WhatsApp <span class="req">*</span></label>
-              <div class="field-wrap">
-                <i class="fas fa-phone field-icon"></i>
-                <input type="tel" id="iPhone" class="f-input has-icon" placeholder="+254 700 000 000" required autocomplete="tel">
-              </div>
-              <span class="f-error"><i class="fas fa-exclamation-circle"></i> Phone number required.</span>
-            </div>
-            <div class="fg">
-              <label class="f-label" for="iLinkedIn">LinkedIn / Portfolio URL</label>
-              <div class="field-wrap">
-                <i class="fas fa-link field-icon"></i>
-                <input type="url" id="iLinkedIn" class="f-input has-icon" placeholder="https://linkedin.com/in/…">
-              </div>
-            </div>
-          </div>
-
-          <!-- Years experience + Proposed course title -->
-          <div class="row2 mt16">
-            <div class="fg">
-              <label class="f-label" for="iExperience">Years of Experience <span class="req">*</span></label>
-              <div class="field-wrap">
-                <i class="fas fa-briefcase field-icon"></i>
-                <select id="iExperience" class="f-input has-icon" required>
-                  <option value="">Select years…</option>
-                  <option value="1-2">1 – 2 years</option>
-                  <option value="3-5">3 – 5 years</option>
-                  <option value="5-10">5 – 10 years</option>
-                  <option value="10+">10+ years</option>
-                </select>
-              </div>
-              <span class="f-error"><i class="fas fa-exclamation-circle"></i> Please select your experience.</span>
-            </div>
-            <div class="fg">
-              <label class="f-label" for="iCourseTitle">Proposed Course Title <span class="req">*</span></label>
-              <div class="field-wrap">
-                <i class="fas fa-graduation-cap field-icon"></i>
-                <input type="text" id="iCourseTitle" class="f-input has-icon" placeholder="e.g. React for Beginners" required>
-              </div>
-              <span class="f-error"><i class="fas fa-exclamation-circle"></i> Please enter a course title idea.</span>
-            </div>
-          </div>
-
-          <!-- Expertise tags -->
-          <div class="fg mt16">
-            <label class="f-label">Area of Expertise <span class="req">*</span></label>
-            <div class="expertise-wrap" id="expertiseWrap">
-              <input type="checkbox" class="exp-chk" id="ex1" value="Web Development"><label class="exp-tag" for="ex1"><i class="fas fa-laptop-code"></i> Web Development</label>
-              <input type="checkbox" class="exp-chk" id="ex2" value="Mobile Apps"><label class="exp-tag" for="ex2"><i class="fas fa-mobile-alt"></i> Mobile Apps</label>
-              <input type="checkbox" class="exp-chk" id="ex3" value="UI/UX Design"><label class="exp-tag" for="ex3"><i class="fas fa-pen-nib"></i> UI/UX Design</label>
-              <input type="checkbox" class="exp-chk" id="ex4" value="AI & Machine Learning"><label class="exp-tag" for="ex4"><i class="fas fa-robot"></i> AI & ML</label>
-              <input type="checkbox" class="exp-chk" id="ex5" value="Data Science"><label class="exp-tag" for="ex5"><i class="fas fa-chart-line"></i> Data Science</label>
-              <input type="checkbox" class="exp-chk" id="ex6" value="Cloud & DevOps"><label class="exp-tag" for="ex6"><i class="fas fa-cloud-upload-alt"></i> Cloud & DevOps</label>
-              <input type="checkbox" class="exp-chk" id="ex7" value="Cyber Security"><label class="exp-tag" for="ex7"><i class="fas fa-shield-alt"></i> Cyber Security</label>
-              <input type="checkbox" class="exp-chk" id="ex8" value="Graphic Design"><label class="exp-tag" for="ex8"><i class="fas fa-palette"></i> Graphic Design</label>
-              <input type="checkbox" class="exp-chk" id="ex9" value="Business & Entrepreneurship"><label class="exp-tag" for="ex9"><i class="fas fa-briefcase"></i> Business</label>
-              <input type="checkbox" class="exp-chk" id="ex10" value="Digital Marketing"><label class="exp-tag" for="ex10"><i class="fas fa-megaphone"></i> Digital Marketing</label>
-            </div>
-            <span class="f-error" id="expertiseErr" style="display:none"><i class="fas fa-exclamation-circle"></i> Please select at least one area.</span>
-          </div>
-
-          <!-- Teaching experience -->
-          <div class="fg mt16">
-            <label class="f-label" for="iTeaching">Previous Teaching / Content Creation Experience</label>
-            <div class="field-wrap textarea-wrap">
-              <i class="fas fa-chalkboard field-icon"></i>
-              <textarea id="iTeaching" class="f-input has-icon" rows="3" placeholder="e.g. YouTube channel, bootcamp instructor, technical blog, conference talks…"></textarea>
-            </div>
-          </div>
-
-          <!-- Bio -->
-          <div class="fg mt16">
-            <label class="f-label" for="iBio">About You & Your Proposed Course <span class="req">*</span></label>
-            <div class="field-wrap textarea-wrap">
-              <i class="fas fa-align-left field-icon"></i>
-              <textarea id="iBio" class="f-input has-icon" rows="5" placeholder="Tell us about your background, what you'd like to teach, who your target student is, and what makes your course unique. The more detail the better!" required maxlength="2000"></textarea>
-            </div>
-            <div style="display:flex;justify-content:flex-end;margin-top:4px">
-              <span style="font-size:.64rem;color:var(--slate-l)"><span id="bioCharNum">0</span>/2000</span>
-            </div>
-            <span class="f-error" id="bioErr"><i class="fas fa-exclamation-circle"></i> Please write a brief description (at least 30 characters).</span>
-          </div>
-
-          <!-- Agreement -->
-          <div class="agree-row">
-            <input type="checkbox" id="iAgree" required>
-            <label for="iAgree"><strong>I agree to the Instructor Terms</strong> — I confirm that the content I will create is my original work and that I agree to NeurowexTech's <a href="/terms-of-service" style="color:var(--blue)">Terms of Service</a> and <a href="/privacy-policy" style="color:var(--blue)">Privacy Policy</a>.</label>
-          </div>
-
-          <!-- Submit -->
-          <button type="submit" id="iSubmit" class="btn btn-orange btn-submit">
-            <span class="btn-txt"><i class="fas fa-paper-plane"></i> Submit Application</span>
-            <span class="spinner"></span>
-          </button>
-
-        </form>
-
-        <!-- Success state -->
-        <div class="form-success" id="formSuccess">
-          <div class="success-circle">
-            <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline class="check-path" points="10,25 20,35 38,15"/>
-            </svg>
-          </div>
-          <h3>Application Submitted! 🎉</h3>
-          <p>Thank you for applying to teach on NeurowexTech Academy. Our team will review your application and reach out within <strong>48 hours</strong>.</p>
-          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-            <a href="/learn" class="btn btn-outline">Browse Courses</a>
-            <a href="https://wa.me/254769329340?text=Hi!%20I%20just%20submitted%20an%20instructor%20application." target="_blank" rel="noopener noreferrer" class="btn btn-orange" style="background:linear-gradient(135deg,#128C7E,#075E54);box-shadow:none"><i class="fab fa-whatsapp"></i> Follow up on WhatsApp</a>
+    <div class="form-wrap">
+      <div class="form-card">
+        <div class="form-top">
+          <div class="form-top-bar"></div>
+          <h2>Instructor Application</h2>
+          <p>All fields marked <span style="color:var(--rose)">*</span> are required. We review every application personally.</p>
+          <div class="form-top-meta">
+            <span class="ftm-item"><i class="fas fa-clock"></i> Takes ~5 minutes</span>
+            <span class="ftm-item"><i class="fas fa-check-circle"></i> Response within 48 hrs</span>
+            <span class="ftm-item"><i class="fas fa-lock"></i> Info kept confidential</span>
           </div>
         </div>
-      </div>
-    </div>
 
-    <p style="font-size:.71rem;color:var(--slate-l);margin-top:14px;text-align:center">
-      <i class="fas fa-lock" style="color:var(--emerald)"></i>
-      Your information is kept strictly confidential and never shared.
-      <a href="/privacy-policy" style="color:var(--blue)">Privacy Policy</a>
-    </p>
+        <div class="form-body">
+          <form id="instructorForm" novalidate>
+
+            <!-- ── Personal Info ── -->
+            <div class="form-divider"><div class="form-divider-line"></div><div class="form-divider-lbl">Personal Info</div><div class="form-divider-line"></div></div>
+
+            <div class="row2">
+              <div class="fg">
+                <label class="f-label" for="iName">Full Name <span class="req">*</span></label>
+                <div class="field-wrap">
+                  <i class="fas fa-user field-icon"></i>
+                  <input type="text" id="iName" class="f-input has-icon" placeholder="Jane Wanjiku" required autocomplete="name">
+                </div>
+                <span class="f-error"><i class="fas fa-exclamation-circle"></i> Please enter your full name.</span>
+              </div>
+              <div class="fg">
+                <label class="f-label" for="iEmail">Email Address <span class="req">*</span></label>
+                <div class="field-wrap">
+                  <i class="fas fa-envelope field-icon"></i>
+                  <input type="email" id="iEmail" class="f-input has-icon" placeholder="jane@example.com" required autocomplete="email">
+                </div>
+                <span class="f-error"><i class="fas fa-exclamation-circle"></i> Enter a valid email address.</span>
+              </div>
+            </div>
+
+            <div class="row2 mt16">
+              <div class="fg">
+                <label class="f-label" for="iPhone">Phone / WhatsApp <span class="req">*</span></label>
+                <div class="field-wrap">
+                  <i class="fas fa-phone field-icon"></i>
+                  <input type="tel" id="iPhone" class="f-input has-icon" placeholder="+254 700 000 000" required autocomplete="tel">
+                </div>
+                <span class="f-error"><i class="fas fa-exclamation-circle"></i> Phone number required.</span>
+              </div>
+              <div class="fg">
+                <label class="f-label" for="iLinkedIn">LinkedIn / Portfolio URL</label>
+                <div class="field-wrap">
+                  <i class="fas fa-link field-icon"></i>
+                  <input type="url" id="iLinkedIn" class="f-input has-icon" placeholder="https://linkedin.com/in/…">
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Course Info ── -->
+            <div class="form-divider" style="margin-top:28px"><div class="form-divider-line"></div><div class="form-divider-lbl">Course Info</div><div class="form-divider-line"></div></div>
+
+            <div class="row2">
+              <div class="fg">
+                <label class="f-label" for="iExperience">Years of Experience <span class="req">*</span></label>
+                <div class="field-wrap">
+                  <i class="fas fa-briefcase field-icon"></i>
+                  <select id="iExperience" class="f-input has-icon" required>
+                    <option value="">Select years…</option>
+                    <option value="1-2">1 – 2 years</option>
+                    <option value="3-5">3 – 5 years</option>
+                    <option value="5-10">5 – 10 years</option>
+                    <option value="10+">10+ years</option>
+                  </select>
+                </div>
+                <span class="f-error"><i class="fas fa-exclamation-circle"></i> Please select your experience.</span>
+              </div>
+              <div class="fg">
+                <label class="f-label" for="iCourseTitle">Proposed Course Title <span class="req">*</span></label>
+                <div class="field-wrap">
+                  <i class="fas fa-graduation-cap field-icon"></i>
+                  <input type="text" id="iCourseTitle" class="f-input has-icon" placeholder="e.g. React for Beginners" required>
+                </div>
+                <span class="f-error"><i class="fas fa-exclamation-circle"></i> Please enter a course title idea.</span>
+              </div>
+            </div>
+
+            <div class="fg mt16">
+              <label class="f-label">Area of Expertise <span class="req">*</span></label>
+              <div class="expertise-wrap" id="expertiseWrap">
+                <input type="checkbox" class="exp-chk" id="ex1" value="Web Development"><label class="exp-tag" for="ex1"><i class="fas fa-laptop-code"></i> Web Development</label>
+                <input type="checkbox" class="exp-chk" id="ex2" value="Mobile Apps"><label class="exp-tag" for="ex2"><i class="fas fa-mobile-alt"></i> Mobile Apps</label>
+                <input type="checkbox" class="exp-chk" id="ex3" value="UI/UX Design"><label class="exp-tag" for="ex3"><i class="fas fa-pen-nib"></i> UI/UX Design</label>
+                <input type="checkbox" class="exp-chk" id="ex4" value="AI & Machine Learning"><label class="exp-tag" for="ex4"><i class="fas fa-robot"></i> AI & ML</label>
+                <input type="checkbox" class="exp-chk" id="ex5" value="Data Science"><label class="exp-tag" for="ex5"><i class="fas fa-chart-line"></i> Data Science</label>
+                <input type="checkbox" class="exp-chk" id="ex6" value="Cloud & DevOps"><label class="exp-tag" for="ex6"><i class="fas fa-cloud-upload-alt"></i> Cloud & DevOps</label>
+                <input type="checkbox" class="exp-chk" id="ex7" value="Cyber Security"><label class="exp-tag" for="ex7"><i class="fas fa-shield-alt"></i> Cyber Security</label>
+                <input type="checkbox" class="exp-chk" id="ex8" value="Graphic Design"><label class="exp-tag" for="ex8"><i class="fas fa-palette"></i> Graphic Design</label>
+                <input type="checkbox" class="exp-chk" id="ex9" value="Business & Entrepreneurship"><label class="exp-tag" for="ex9"><i class="fas fa-briefcase"></i> Business</label>
+                <input type="checkbox" class="exp-chk" id="ex10" value="Digital Marketing"><label class="exp-tag" for="ex10"><i class="fas fa-megaphone"></i> Digital Marketing</label>
+              </div>
+              <span class="f-error" id="expertiseErr" style="display:none;margin-top:6px"><i class="fas fa-exclamation-circle"></i> Please select at least one area.</span>
+            </div>
+
+            <!-- ── About You ── -->
+            <div class="form-divider" style="margin-top:28px"><div class="form-divider-line"></div><div class="form-divider-lbl">About You</div><div class="form-divider-line"></div></div>
+
+            <div class="fg">
+              <label class="f-label" for="iTeaching">Previous Teaching / Content Creation Experience</label>
+              <div class="field-wrap textarea-wrap">
+                <i class="fas fa-chalkboard field-icon"></i>
+                <textarea id="iTeaching" class="f-input has-icon" rows="3" placeholder="e.g. YouTube channel, bootcamp instructor, technical blog, conference talks…"></textarea>
+              </div>
+            </div>
+
+            <div class="fg mt16">
+              <label class="f-label" for="iBio">About You & Your Proposed Course <span class="req">*</span></label>
+              <div class="field-wrap textarea-wrap">
+                <i class="fas fa-align-left field-icon"></i>
+                <textarea id="iBio" class="f-input has-icon" rows="5" placeholder="Tell us about your background, what you'd like to teach, who your target student is, and what makes your course unique." required maxlength="2000"></textarea>
+              </div>
+              <div style="display:flex;justify-content:flex-end;margin-top:5px">
+                <span style="font-size:.65rem;color:var(--slate-l)"><span id="bioCharNum">0</span> / 2000</span>
+              </div>
+              <span class="f-error" id="bioErr" style="display:none"><i class="fas fa-exclamation-circle"></i> Please write a brief description (at least 30 characters).</span>
+            </div>
+
+            <!-- Agreement -->
+            <div class="agree-row">
+              <input type="checkbox" id="iAgree" required>
+              <label for="iAgree">
+                <strong>I agree to the Instructor Terms</strong> — I confirm that the content I will create is my original work and I agree to NeurowexTech's
+                <a href="/terms-of-service" style="color:var(--blue)">Terms of Service</a> and <a href="/privacy-policy" style="color:var(--blue)">Privacy Policy</a>.
+              </label>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" id="iSubmit">
+              <span class="btn-txt"><i class="fas fa-paper-plane"></i> Submit Application</span>
+              <span class="spinner"></span>
+            </button>
+
+          </form>
+
+          <!-- SUCCESS STATE -->
+          <div class="form-success" id="formSuccess">
+            <div class="success-circle">
+              <svg viewBox="0 0 48 48" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline class="check-path" points="10,25 20,35 38,15"/>
+              </svg>
+            </div>
+            <h3>Application Submitted! 🎉</h3>
+            <p>Thank you for applying to teach on NeurowexTech Academy. Our team will review your application and reach out within <strong>48 hours</strong>.</p>
+            <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+              <a href="/learn" class="btn btn-outline" style="border-radius:var(--r-pill)">Browse Courses</a>
+              <a href="https://wa.me/254769329340?text=Hi!%20I%20just%20submitted%20an%20instructor%20application." target="_blank" rel="noopener noreferrer" class="btn" style="background:linear-gradient(135deg,#128C7E,#075E54);color:#fff;padding:11px 22px;border-radius:var(--r-pill)"><i class="fab fa-whatsapp"></i> Follow up on WhatsApp</a>
+            </div>
+          </div>
+        </div><!-- /form-body -->
+      </div><!-- /form-card -->
+      <p style="font-size:.7rem;color:var(--slate-l);margin-top:12px;text-align:center">
+        <i class="fas fa-lock" style="color:var(--emerald)"></i>
+        Your information is kept strictly confidential.
+        <a href="/privacy-policy" style="color:var(--blue)">Privacy Policy</a>
+      </p>
+    </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════
+<!-- ══════════════════════════
      FAQ
-══════════════════════════════════ -->
+══════════════════════════ -->
 <section class="section-py" style="background:#fff">
-  <div class="container">
-    <div class="text-center" style="margin-bottom:48px">
-      <div class="section-kicker">FAQ</div>
-      <h2 style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;margin-bottom:8px">Instructor <span style="background:var(--g-blue);-webkit-background-clip:text;background-clip:text;color:transparent">Questions</span></h2>
-      <p style="color:var(--slate);font-size:.88rem;max-width:400px;margin:0 auto">Everything you need to know before you apply.</p>
+  <div class="container-sm">
+    <div class="text-center" style="margin-bottom:44px">
+      <div class="kicker">FAQ</div>
+      <h2 style="font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;margin-bottom:8px">Instructor <span class="g-blue">Questions</span></h2>
+      <p style="color:var(--slate);font-size:.88rem;max-width:380px;margin:0 auto">Everything you need to know before you apply.</p>
     </div>
-    <div style="display:grid;grid-template-columns:1fr;gap:9px;max-width:860px;margin:0 auto">
-      <div class="faq-item"><div class="faq-q">Do I need prior teaching experience? <span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">No prior teaching experience is required. We look for subject-matter expertise and a clear, structured way of explaining things. Our onboarding team will help you develop your teaching style.</div></div>
-      <div class="faq-item"><div class="faq-q">What equipment do I need to record? <span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">A reasonably good laptop with a webcam and a quiet room is sufficient to start. Many of our top instructors record with basic equipment. We provide guidelines on screen recording, audio, and lighting. A separate mic is recommended but not mandatory.</div></div>
-      <div class="faq-item"><div class="faq-q">How does the revenue share work? <span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">You keep 70% of every paid enrollment. For example, if your course is priced at Kshs 3,500 and 100 students enrol in a month, you earn Kshs 245,000. Payouts are processed monthly via M-Pesa or bank transfer, no minimum required.</div></div>
-      <div class="faq-item"><div class="faq-q">Can I set my own course price? <span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">Yes — you set your own pricing within our suggested range (Kshs 500 – 15,000 for paid courses, or Free). You can also update prices anytime, run promotions, or offer coupon codes to your own audience.</div></div>
-      <div class="faq-item"><div class="faq-q">How long does course review take? <span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">Our quality team reviews new courses within 48 hours. We check video/audio quality, curriculum structure, and content accuracy. We'll send detailed feedback if changes are needed before publishing.</div></div>
-      <div class="faq-item"><div class="faq-q">Can I teach multiple courses? <span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">Absolutely — there's no limit on the number of courses you can publish. Many of our top instructors have 3–5 courses. Each additional course multiplies your earning potential.</div></div>
-      <div class="faq-item"><div class="faq-q">What happens after I submit my application? <span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">Our Academy team reviews your application within 48 hours. If approved, we schedule a 20-minute onboarding call to get you set up. From there, most instructors publish their first course within 2 weeks.</div></div>
-      <div class="faq-item"><div class="faq-q">Can I update my course after publishing? <span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">Yes — you can add or update lessons at any time. Minor updates (fixing errors, adding a new lesson) don't require re-review. Major structural changes go through a quick 24-hour review.</div></div>
+    <div style="display:grid;grid-template-columns:1fr;gap:8px">
+      <div class="faq-item"><div class="faq-q">Do I need prior teaching experience?<span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">No prior teaching experience is required. We look for subject-matter expertise and a clear way of explaining concepts. Our onboarding team helps you develop your teaching style.</div></div>
+      <div class="faq-item"><div class="faq-q">What equipment do I need to record?<span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">A reasonably good laptop with a webcam and a quiet room is sufficient to start. We provide detailed guidelines on screen recording, audio, and lighting. A separate microphone is recommended but not mandatory.</div></div>
+      <div class="faq-item"><div class="faq-q">How does the revenue share work?<span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">You keep 70% of every paid enrollment. For example, if your course is priced at Kshs 3,500 and 100 students enrol in a month, you earn Kshs 245,000. Payouts are processed monthly via M-Pesa or bank transfer with no minimum required.</div></div>
+      <div class="faq-item"><div class="faq-q">Can I set my own course price?<span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">Yes — you set your own pricing within our suggested range (Kshs 500 – 15,000 for paid courses, or Free). You can update prices anytime, run promotions, or share coupon codes with your own audience.</div></div>
+      <div class="faq-item"><div class="faq-q">How long does course review take?<span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">Our quality team reviews new courses within 48 hours. We check video and audio quality, curriculum structure, and content accuracy. We send detailed feedback if changes are needed before publishing.</div></div>
+      <div class="faq-item"><div class="faq-q">Can I teach multiple courses?<span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">Absolutely — there's no limit on the number of courses you can publish. Many of our top instructors have 3–5 courses. Each additional course multiplies your earning potential significantly.</div></div>
+      <div class="faq-item"><div class="faq-q">What happens after I submit my application?<span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">Our Academy team reviews your application within 48 hours. If approved, we schedule a 20-minute onboarding call to get you set up. From there, most instructors publish their first course within 2 weeks.</div></div>
+      <div class="faq-item"><div class="faq-q">Can I update my course after publishing?<span class="faq-icon"><i class="fas fa-plus"></i></span></div><div class="faq-a">Yes — you can add or update lessons at any time. Minor updates don't require re-review. Major structural changes go through a quick 24-hour review to maintain quality standards.</div></div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════
-     FINAL CTA BAND
-══════════════════════════════════ -->
+<!-- ══════════════════════════
+     FINAL CTA
+══════════════════════════ -->
 <section style="padding:72px 0;background:linear-gradient(135deg,var(--blue),var(--blue-d) 45%,#0e2d88);position:relative;overflow:hidden">
-  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px"></div>
-  <div style="position:absolute;top:-80px;right:-80px;width:320px;height:320px;background:radial-gradient(circle,rgba(255,255,255,.06) 0%,transparent 70%);border-radius:50%"></div>
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none"></div>
+  <div style="position:absolute;top:-80px;right:-80px;width:320px;height:320px;background:radial-gradient(circle,rgba(255,255,255,.06) 0%,transparent 70%);border-radius:50%;pointer-events:none"></div>
   <div class="container" style="position:relative;z-index:1;text-align:center">
-    <div class="section-kicker" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.15);margin-bottom:20px">Join the Team</div>
+    <div class="kicker" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.15);margin-bottom:20px">Join the Team</div>
     <h2 style="font-size:clamp(1.8rem,5vw,3rem);font-weight:700;color:#fff;margin-bottom:14px">Your expertise is worth <em style="font-style:italic;color:var(--orange-l)">more</em></h2>
-    <p style="color:rgba(255,255,255,.6);font-size:clamp(.9rem,2vw,1.04rem);max-width:480px;margin:0 auto 32px;line-height:1.76">Stop sharing your knowledge for free. Turn what you know into a course that earns while you sleep.</p>
+    <p style="color:rgba(255,255,255,.6);font-size:clamp(.9rem,2vw,1.04rem);max-width:460px;margin:0 auto 32px;line-height:1.76">Stop sharing your knowledge for free. Turn what you know into a course that earns while you sleep.</p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
       <a href="#apply" style="background:#fff;color:var(--blue);font-weight:800;border-radius:var(--r-pill);padding:14px 32px;font-size:.92rem;font-family:'Plus Jakarta Sans',sans-serif;display:inline-flex;align-items:center;gap:8px;transition:var(--t);box-shadow:0 6px 22px rgba(0,0,0,.15)"><i class="fas fa-chalkboard-teacher"></i> Apply to Teach</a>
-      <a href="https://wa.me/254769329340?text=Hi!%20I'm%20interested%20in%20becoming%20a%20NeurowexTech%20instructor." target="_blank" rel="noopener noreferrer" style="background:linear-gradient(135deg,#128C7E,#075E54);color:#fff;font-weight:800;border-radius:var(--r-pill);padding:14px 28px;font-size:.92rem;font-family:'Plus Jakarta Sans',sans-serif;display:inline-flex;align-items:center;gap:8px;transition:var(--t);box-shadow:0 6px 18px rgba(18,140,126,.3)"><i class="fab fa-whatsapp"></i> Ask on WhatsApp</a>
+      <a href="https://wa.me/254769329340?text=Hi!%20I'm%20interested%20in%20becoming%20a%20NeurowexTech%20instructor." target="_blank" rel="noopener noreferrer" style="background:linear-gradient(135deg,#128C7E,#075E54);color:#fff;font-weight:800;border-radius:var(--r-pill);padding:14px 28px;font-size:.92rem;font-family:'Plus Jakarta Sans',sans-serif;display:inline-flex;align-items:center;gap:8px;box-shadow:0 6px 18px rgba(18,140,126,.3)"><i class="fab fa-whatsapp"></i> Ask on WhatsApp</a>
     </div>
   </div>
 </section>
 
-<!-- ══════════════════════════════════
-     FOOTER
-══════════════════════════════════ -->
+<!-- FOOTER -->
 <footer>
   <div class="footer-bar"></div>
   <div class="footer-cta-strip">
@@ -1036,11 +1055,11 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
       <div class="footer-cta-inner">
         <div class="footer-cta-text">
           <h4>Ready to launch your first course? 🎓</h4>
-          <p>Apply in 5 minutes and go live within 2 weeks.</p>
+          <p>Apply in 5 minutes — go live within 2 weeks.</p>
         </div>
         <div class="footer-cta-btns">
-          <a href="#apply" class="btn btn-primary" style="padding:10px 20px;font-size:.83rem;">Apply to Teach <i class="fas fa-arrow-right"></i></a>
-          <a href="https://wa.me/254769329340" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#128C7E,#075E54);color:#fff;padding:10px 18px;border-radius:var(--r-pill);font-size:.83rem;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;transition:var(--t)"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+          <a href="#apply" class="btn btn-primary" style="padding:10px 20px;font-size:.83rem">Apply to Teach <i class="fas fa-arrow-right"></i></a>
+          <a href="https://wa.me/254769329340" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,#128C7E,#075E54);color:#fff;padding:10px 18px;border-radius:var(--r-pill);font-size:.83rem;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif"><i class="fab fa-whatsapp"></i> WhatsApp</a>
         </div>
       </div>
     </div>
@@ -1065,7 +1084,6 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
           <ul class="footer-links">
             <li><a href="/become-instructor"><i class="fas fa-chalkboard-teacher"></i> Apply to Teach</a></li>
             <li><a href="#calculator"><i class="fas fa-calculator"></i> Earnings Calculator</a></li>
-            <li><a href="#apply"><i class="fas fa-paper-plane"></i> Application Form</a></li>
             <li><a href="/learn" class="acad"><i class="fas fa-graduation-cap"></i> Browse Courses</a></li>
           </ul>
         </div>
@@ -1112,200 +1130,147 @@ var dark = localStorage.getItem('nw-theme') === 'dark' ||
   (!localStorage.getItem('nw-theme') && window.matchMedia('(prefers-color-scheme:dark)').matches);
 var MOON = '<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>';
 var SUN  = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
-function applyTheme() {
-  document.body.classList.toggle('dark', dark);
-  document.getElementById('theme-toggle').innerHTML = dark ? SUN : MOON;
-  var mt = document.getElementById('mobThemeBtn');
-  if (mt) mt.innerHTML = dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-}
+function applyTheme(){document.body.classList.toggle('dark',dark);document.getElementById('theme-toggle').innerHTML=dark?SUN:MOON;var mt=document.getElementById('mobThemeBtn');if(mt)mt.innerHTML=dark?'<i class="fas fa-sun"></i>':'<i class="fas fa-moon"></i>';}
 applyTheme();
-function toggleTheme() { dark = !dark; localStorage.setItem('nw-theme', dark ? 'dark' : 'light'); applyTheme(); }
-document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
-var mtb = document.getElementById('mobThemeBtn'); if (mtb) mtb.addEventListener('click', toggleTheme);
+function toggleTheme(){dark=!dark;localStorage.setItem('nw-theme',dark?'dark':'light');applyTheme();}
+document.getElementById('theme-toggle').addEventListener('click',toggleTheme);
+var mtb=document.getElementById('mobThemeBtn');if(mtb)mtb.addEventListener('click',toggleTheme);
 
 /* ── SCROLL ── */
-var navbar = document.getElementById('mainNav'),
-    btt    = document.getElementById('back-to-top'),
-    sp     = document.getElementById('scroll-progress');
-window.addEventListener('scroll', function() {
-  var s = window.pageYOffset, d = document.documentElement.scrollHeight - window.innerHeight;
-  sp.style.width = (d > 0 ? s / d * 100 : 0) + '%';
-  navbar.classList.toggle('scrolled', s > 40);
-  btt.classList.toggle('visible', s > 400);
-}, { passive: true });
-btt.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+var navbar=document.getElementById('mainNav'),btt=document.getElementById('back-to-top'),sp=document.getElementById('scroll-progress');
+window.addEventListener('scroll',function(){var s=window.pageYOffset,d=document.documentElement.scrollHeight-window.innerHeight;sp.style.width=(d>0?s/d*100:0)+'%';navbar.classList.toggle('scrolled',s>40);btt.classList.toggle('visible',s>400);},{passive:true});
+btt.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+
+/* ── SMOOTH ANCHOR ── */
+document.querySelectorAll('a[href^="#"]').forEach(function(a){
+  a.addEventListener('click',function(e){
+    var href=this.getAttribute('href');
+    if(!href||href==='#')return;
+    var target=document.querySelector(href);
+    if(!target)return;
+    e.preventDefault();
+    var off=document.getElementById('mainNav').offsetHeight;
+    window.scrollTo({top:target.getBoundingClientRect().top+window.pageYOffset-off,behavior:'smooth'});
+  });
+});
 
 /* ── MOBILE NAV ── */
-var ov = document.getElementById('mobOverlay'),
-    panel = document.getElementById('mobPanel'),
-    ham   = document.getElementById('hamBtn'),
-    mc    = document.getElementById('mobClose');
-function openM()  { ov.classList.add('open');    panel.classList.add('open');    ham.classList.add('open');    ham.setAttribute('aria-expanded','true');  document.body.style.overflow = 'hidden'; mc.focus(); }
-function closeM() { ov.classList.remove('open'); panel.classList.remove('open'); ham.classList.remove('open'); ham.setAttribute('aria-expanded','false'); document.body.style.overflow = ''; }
-ham.addEventListener('click', openM); mc.addEventListener('click', closeM); ov.addEventListener('click', closeM);
-document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && panel.classList.contains('open')) closeM(); });
+var ov=document.getElementById('mobOverlay'),panel=document.getElementById('mobPanel'),ham=document.getElementById('hamBtn'),mc=document.getElementById('mobClose');
+function openM(){ov.classList.add('open');panel.classList.add('open');ham.classList.add('open');ham.setAttribute('aria-expanded','true');document.body.style.overflow='hidden';mc.focus();}
+function closeM(){ov.classList.remove('open');panel.classList.remove('open');ham.classList.remove('open');ham.setAttribute('aria-expanded','false');document.body.style.overflow='';}
+ham.addEventListener('click',openM);mc.addEventListener('click',closeM);ov.addEventListener('click',closeM);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&panel.classList.contains('open'))closeM();});
 
 /* ── COOKIE ── */
-var cb = document.getElementById('cookie-bar');
-if (!localStorage.getItem('nw-cookie')) setTimeout(function() { cb.classList.add('show'); }, 2800);
-document.getElementById('cookie-accept').addEventListener('click', function() { localStorage.setItem('nw-cookie','1'); cb.classList.remove('show'); });
+var cb=document.getElementById('cookie-bar');
+if(!localStorage.getItem('nw-cookie'))setTimeout(function(){cb.classList.add('show');},2800);
+document.getElementById('cookie-accept').addEventListener('click',function(){localStorage.setItem('nw-cookie','1');cb.classList.remove('show');});
 
 /* ── TOAST ── */
-function toast(msg, isErr) {
-  var t    = document.getElementById('toast');
-  var icon = document.getElementById('toastIcon');
-  document.getElementById('toast-msg').textContent = msg;
-  if (isErr) { t.classList.add('err'); icon.className = 'fas fa-exclamation-circle'; icon.style.color = '#f87171'; }
-  else       { t.classList.remove('err'); icon.className = 'fas fa-check-circle'; icon.style.color = '#34d399'; }
+function toast(msg,isErr){
+  var t=document.getElementById('toast'),icon=document.getElementById('toastIcon');
+  document.getElementById('toast-msg').textContent=msg;
+  if(isErr){t.classList.add('err');icon.className='fas fa-exclamation-circle';icon.style.color='#f87171';}
+  else{t.classList.remove('err');icon.className='fas fa-check-circle';icon.style.color='#34d399';}
   t.classList.add('show');
-  setTimeout(function() { t.classList.remove('show'); t.classList.remove('err'); }, 4200);
+  setTimeout(function(){t.classList.remove('show');t.classList.remove('err');},4200);
 }
 
-/* ── EARNINGS CALCULATOR ── */
-function fmtKshs(n) {
-  if (n >= 1000000) return 'Kshs ' + (n / 1000000).toFixed(1) + 'M';
-  if (n >= 1000)    return 'Kshs ' + Math.round(n / 1000) + 'K';
-  return 'Kshs ' + n.toLocaleString();
+/* ── CALCULATOR ── */
+function fmtKshs(n){if(n>=1000000)return'Kshs '+(n/1000000).toFixed(1)+'M';if(n>=1000)return'Kshs '+Math.round(n/1000)+'K';return'Kshs '+n.toLocaleString();}
+function updateCalc(){
+  var students=parseInt(document.getElementById('studentsRange').value);
+  var price   =parseInt(document.getElementById('priceRange').value);
+  var courses =parseInt(document.getElementById('coursesRange').value);
+  document.getElementById('studentsVal').textContent=students;
+  document.getElementById('priceVal').textContent=price.toLocaleString();
+  document.getElementById('coursesVal').textContent=courses;
+  var perMonth=students*price*0.70;
+  var total=perMonth*courses;
+  var annual=total*12;
+  document.getElementById('monthlyEarnings').textContent=fmtKshs(total);
+  document.getElementById('annualEarnings').textContent=fmtKshs(annual);
+  document.getElementById('perCourse').textContent=fmtKshs(perMonth);
+  document.getElementById('totalStudents').textContent=(students*courses).toLocaleString();
 }
-function updateCalc() {
-  var students = parseInt(document.getElementById('studentsRange').value);
-  var price    = parseInt(document.getElementById('priceRange').value);
-  var courses  = parseInt(document.getElementById('coursesRange').value);
-  document.getElementById('studentsVal').textContent = students;
-  document.getElementById('priceVal').textContent    = price.toLocaleString();
-  document.getElementById('coursesVal').textContent  = courses;
-  var perCourseMonthly  = students * price * 0.70;
-  var totalMonthly      = perCourseMonthly * courses;
-  var totalAnnual       = totalMonthly * 12;
-  var totalStudents     = students * courses;
-  document.getElementById('monthlyEarnings').textContent = fmtKshs(totalMonthly);
-  document.getElementById('annualEarnings').textContent  = fmtKshs(totalAnnual);
-  document.getElementById('perCourse').textContent       = fmtKshs(perCourseMonthly);
-  document.getElementById('totalStudents').textContent   = totalStudents.toLocaleString();
-}
-['studentsRange','priceRange','coursesRange'].forEach(function(id) {
-  var el = document.getElementById(id);
-  if (el) el.addEventListener('input', updateCalc);
-});
+['studentsRange','priceRange','coursesRange'].forEach(function(id){var el=document.getElementById(id);if(el)el.addEventListener('input',updateCalc);});
 updateCalc();
 
 /* ── BIO CHAR COUNT ── */
-var bioEl = document.getElementById('iBio');
-if (bioEl) {
-  bioEl.addEventListener('input', function() {
-    document.getElementById('bioCharNum').textContent = this.value.length;
-  });
-}
+var bioEl=document.getElementById('iBio');
+if(bioEl)bioEl.addEventListener('input',function(){document.getElementById('bioCharNum').textContent=this.value.length;});
 
 /* ── FORM SUBMIT ── */
-document.getElementById('instructorForm').addEventListener('submit', async function(e) {
+document.getElementById('instructorForm').addEventListener('submit',async function(e){
   e.preventDefault();
+  var name       =document.getElementById('iName');
+  var email      =document.getElementById('iEmail');
+  var phone      =document.getElementById('iPhone');
+  var experience =document.getElementById('iExperience');
+  var courseTitle=document.getElementById('iCourseTitle');
+  var bio        =document.getElementById('iBio');
+  var agree      =document.getElementById('iAgree');
 
-  var name       = document.getElementById('iName');
-  var email      = document.getElementById('iEmail');
-  var phone      = document.getElementById('iPhone');
-  var experience = document.getElementById('iExperience');
-  var courseTitle= document.getElementById('iCourseTitle');
-  var bio        = document.getElementById('iBio');
-  var agree      = document.getElementById('iAgree');
+  [name,email,phone,experience,courseTitle,bio].forEach(function(f){f.classList.remove('error');});
+  document.getElementById('expertiseErr').style.display='none';
+  document.getElementById('bioErr').style.display='none';
+  var ok=true;
 
-  // Clear errors
-  [name, email, phone, experience, courseTitle, bio].forEach(function(f) { f.classList.remove('error'); });
-  document.getElementById('expertiseErr').style.display = 'none';
-  document.getElementById('bioErr').style.display = 'none';
+  if(!name.value.trim()||name.value.trim().length<2)      {name.classList.add('error');ok=false;}
+  if(!email.value.trim()||!/^\S+@\S+\.\S+$/.test(email.value.trim())){email.classList.add('error');ok=false;}
+  if(!phone.value.trim())                                  {phone.classList.add('error');ok=false;}
+  if(!experience.value)                                    {experience.classList.add('error');ok=false;}
+  if(!courseTitle.value.trim())                            {courseTitle.classList.add('error');ok=false;}
+  if(bio.value.trim().length<30)                           {bio.classList.add('error');document.getElementById('bioErr').style.display='flex';ok=false;}
 
-  var ok = true;
+  var expertise=Array.from(document.querySelectorAll('.exp-chk:checked')).map(function(c){return c.value;});
+  if(expertise.length===0){document.getElementById('expertiseErr').style.display='flex';ok=false;}
 
-  if (!name.value.trim() || name.value.trim().length < 2)     { name.classList.add('error');       ok = false; }
-  if (!email.value.trim() || !/^\S+@\S+\.\S+$/.test(email.value.trim())) { email.classList.add('error'); ok = false; }
-  if (!phone.value.trim())                                      { phone.classList.add('error');      ok = false; }
-  if (!experience.value)                                        { experience.classList.add('error'); ok = false; }
-  if (!courseTitle.value.trim())                                { courseTitle.classList.add('error');ok = false; }
-  if (bio.value.trim().length < 30)                             { bio.classList.add('error'); document.getElementById('bioErr').style.display = 'flex'; ok = false; }
+  if(!agree.checked){toast('Please agree to the Instructor Terms to continue.',true);ok=false;}
 
-  var expertise = Array.from(document.querySelectorAll('.exp-chk:checked')).map(function(c) { return c.value; });
-  if (expertise.length === 0) {
-    document.getElementById('expertiseErr').style.display = 'flex';
-    ok = false;
-  }
+  if(!ok){var firstErr=document.querySelector('.f-input.error');if(firstErr)firstErr.scrollIntoView({behavior:'smooth',block:'center'});return;}
 
-  if (!agree.checked) {
-    toast('Please agree to the Instructor Terms to continue.', true);
-    ok = false;
-  }
+  var btn=document.getElementById('iSubmit');
+  btn.classList.add('loading');btn.disabled=true;
 
-  if (!ok) {
-    var firstErr = document.querySelector('.f-input.error');
-    if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    return;
-  }
-
-  var btn = document.getElementById('iSubmit');
-  btn.classList.add('loading');
-  btn.disabled = true;
-
-  // Build message that goes into the contacts table
-  var teaching = document.getElementById('iTeaching').value.trim();
-  var linkedin  = document.getElementById('iLinkedIn').value.trim();
-  var fullMessage = [
+  var teaching=document.getElementById('iTeaching').value.trim();
+  var linkedin =document.getElementById('iLinkedIn').value.trim();
+  var fullMessage=[
     '=== INSTRUCTOR APPLICATION ===',
-    'Proposed Course: ' + courseTitle.value.trim(),
-    'Expertise: ' + expertise.join(', '),
-    'Experience: ' + experience.value,
+    'Proposed Course: '+courseTitle.value.trim(),
+    'Expertise: '+expertise.join(', '),
+    'Experience: '+experience.value,
     '',
     'Bio / Course Description:',
     bio.value.trim(),
-    teaching ? ('\nPrevious Teaching:\n' + teaching) : '',
-    linkedin  ? ('\nLinkedIn/Portfolio: ' + linkedin)  : '',
+    teaching?('\nPrevious Teaching:\n'+teaching):'',
+    linkedin ?('\nLinkedIn/Portfolio: '+linkedin)  :'',
   ].filter(Boolean).join('\n');
 
-  var payload = {
-    name:         name.value.trim(),
-    email:        email.value.trim(),
-    phone:        phone.value.trim(),
-    services:     ['Instructor Application'],   // maps to project_type
-    budget:       'N/A',
-    message:      fullMessage,
-  };
+  var payload={name:name.value.trim(),email:email.value.trim(),phone:phone.value.trim(),services:['Instructor Application'],budget:'N/A',message:fullMessage};
 
-  try {
-    var res  = await fetch('/contact', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify(payload),
-    });
-    var data;
-    try { data = await res.json(); } catch(_) { data = {}; }
-
-    btn.classList.remove('loading');
-    btn.disabled = false;
-
-    if (!res.ok || data.success === false) {
-      toast(data.message || 'Something went wrong. Please try again.', true);
-      return;
-    }
-
-    // Show success
-    document.getElementById('instructorForm').style.display = 'none';
-    var succ = document.getElementById('formSuccess');
-    succ.style.display = 'block';
-    succ.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  try{
+    var res=await fetch('/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    var data;try{data=await res.json();}catch(_){data={};}
+    btn.classList.remove('loading');btn.disabled=false;
+    if(!res.ok||data.success===false){toast(data.message||'Something went wrong. Please try again.',true);return;}
+    document.getElementById('instructorForm').style.display='none';
+    var succ=document.getElementById('formSuccess');
+    succ.style.display='block';
+    succ.scrollIntoView({behavior:'smooth',block:'center'});
     toast('Application sent! We\'ll be in touch within 48 hrs ✅');
-
-  } catch (err) {
-    btn.classList.remove('loading');
-    btn.disabled = false;
-    toast('Network error — please check your connection or reach us on WhatsApp.', true);
-    console.error('Instructor form error:', err);
+  }catch(err){
+    btn.classList.remove('loading');btn.disabled=false;
+    toast('Network error — please check your connection or reach us on WhatsApp.',true);
   }
 });
 
 /* ── FAQ ── */
-document.querySelectorAll('.faq-q').forEach(function(q) {
-  q.addEventListener('click', function() {
-    var item = q.parentElement, wasOpen = item.classList.contains('open');
-    document.querySelectorAll('.faq-item').forEach(function(i) { i.classList.remove('open'); });
-    if (!wasOpen) item.classList.add('open');
+document.querySelectorAll('.faq-q').forEach(function(q){
+  q.addEventListener('click',function(){
+    var item=q.parentElement,wasOpen=item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(function(i){i.classList.remove('open');});
+    if(!wasOpen)item.classList.add('open');
   });
 });
 </script>
