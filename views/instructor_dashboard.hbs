@@ -1,0 +1,1863 @@
+<!DOCTYPE html>
+{{!--
+  ╔══════════════════════════════════════════════════════════════════════════╗
+  ║  instructor.hbs — NeurowexTech Academy Instructor Dashboard             ║
+  ║  Rendered by:  GET /instructor/course/:id  (server.js)                  ║
+  ║  Auth:         isAuthenticated + isInstructor required                   ║
+  ║                                                                          ║
+  ║  Variables from server.js:                                               ║
+  ║  courseId, courseTitle, courseSlug, courseLevel, courseStatus            ║
+  ║  courseDescription, courseThumbnail, totalDuration, totalModules         ║
+  ║  totalLessons, totalEnrolled, totalRevenue, averageRating, totalReviews  ║
+  ║  modules[].{id, title, order, lessons[].{                                ║
+  ║    id, title, duration, video_url, order, isPublished, isFree }}         ║
+  ║  recentEnrollments[].{userName, enrolledAt, progress}                    ║
+  ║  GLOBAL: currentYear, isAuthenticated, userName, instructorId            ║
+  ║                                                                          ║
+  ║  POST /api/instructor/course/update        {courseId, …fields}           ║
+  ║  POST /api/instructor/module/create        {courseId, title}             ║
+  ║  POST /api/instructor/module/update        {moduleId, title, order}      ║
+  ║  POST /api/instructor/module/delete        {moduleId}                    ║
+  ║  POST /api/instructor/lesson/create        {moduleId, title, …}          ║
+  ║  POST /api/instructor/lesson/update        {lessonId, …fields}           ║
+  ║  POST /api/instructor/lesson/delete        {lessonId}                    ║
+  ║  POST /api/instructor/lesson/reorder       {moduleId, lessonIds[]}       ║
+  ║  POST /api/instructor/module/reorder       {courseId, moduleIds[]}       ║
+  ╚══════════════════════════════════════════════════════════════════════════╝
+--}}
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Instructor — {{courseTitle}} | NeurowexTech Academy</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<style>
+/* ══════════════════════════════════════════════════════
+   DESIGN TOKENS — mirrors course-dashboard
+══════════════════════════════════════════════════════ */
+:root{
+  --c-bg:        #0f0f0f;
+  --c-surface:   #1a1a1a;
+  --c-surface2:  #242424;
+  --c-surface3:  #2e2e2e;
+  --c-border:    rgba(255,255,255,.09);
+  --c-border2:   rgba(255,255,255,.15);
+
+  --c-text:      #f1f1f1;
+  --c-text2:     rgba(241,241,241,.65);
+  --c-text3:     rgba(241,241,241,.38);
+
+  --c-blue:      #6b8cff;
+  --c-blue-d:    #4f6fea;
+  --c-blue-dim:  rgba(107,140,255,.14);
+  --c-green:     #5cc678;
+  --c-green-dim: rgba(92,198,120,.12);
+  --c-orange:    #f97316;
+  --c-orange-dim:rgba(249,115,22,.12);
+  --c-red:       #ef4444;
+  --c-red-dim:   rgba(239,68,68,.12);
+  --c-purple:    #a78bfa;
+  --c-yellow:    #fbbf24;
+
+  --g-blue:   linear-gradient(135deg,#6b8cff,#4f6fea);
+  --g-green:  linear-gradient(135deg,#5cc678,#3daf5e);
+  --g-orange: linear-gradient(135deg,#f97316,#ea580c);
+  --g-bar:    linear-gradient(90deg,#6b8cff,#a78bfa,#5cc678);
+
+  --nav-h:    56px;
+  --aside-w:  260px;
+
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 18px;
+
+  --ease:   cubic-bezier(.4,0,.2,1);
+  --spring: cubic-bezier(.34,1.56,.64,1);
+  --t:      .22s var(--ease);
+
+  --sh-card: 0 2px 12px rgba(0,0,0,.4);
+  --sh-pop:  0 8px 32px rgba(0,0,0,.6);
+}
+body.light{
+  --c-bg:#f7f8fa; --c-surface:#fff; --c-surface2:#f0f2f5;
+  --c-surface3:#e4e7ec; --c-border:rgba(0,0,0,.08);
+  --c-border2:rgba(0,0,0,.16); --c-text:#111318;
+  --c-text2:rgba(17,19,24,.62); --c-text3:rgba(17,19,24,.38);
+  --c-blue:#2b5fff; --c-blue-dim:rgba(43,95,255,.1);
+  --c-green:#16a34a; --c-green-dim:rgba(22,163,74,.1);
+  --c-blue-d:#1d4ed8;
+}
+
+/* ══════════════════════════════════════════════════════
+   RESET
+══════════════════════════════════════════════════════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{
+  font-family:'DM Sans',sans-serif;background:var(--c-bg);color:var(--c-text);
+  overflow-x:hidden;line-height:1.6;font-size:15px;
+}
+h1,h2,h3,h4,h5{font-family:'Instrument Serif',serif;line-height:1.15;font-weight:400}
+a{text-decoration:none;color:inherit}
+button,input,select,textarea{font-family:'DM Sans',sans-serif}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--c-surface3);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--c-blue)}
+
+/* ══════════════════════════════════════════════════════
+   TOPBAR
+══════════════════════════════════════════════════════ */
+.topbar{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:1000;
+  background:var(--c-surface);border-bottom:1px solid var(--c-border);
+  display:flex;align-items:center;
+}
+.topbar-left{display:flex;align-items:center;gap:12px;padding:0 16px;flex-shrink:0}
+.tb-back{
+  width:36px;height:36px;border-radius:var(--r-md);
+  background:var(--c-surface2);border:1px solid var(--c-border);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--c-text2);font-size:.82rem;cursor:pointer;transition:var(--t);
+}
+.tb-back:hover{background:var(--c-surface3);color:var(--c-text)}
+.tb-logo{display:flex;align-items:center;gap:8px;font-family:'Instrument Serif',serif;font-size:1.1rem;letter-spacing:-.02em}
+.tb-logo-mark{
+  width:28px;height:28px;border-radius:7px;background:var(--g-blue);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.78rem;font-weight:700;color:#fff;font-family:'DM Sans',sans-serif;
+}
+.tb-logo em{font-style:italic;color:var(--c-orange)}
+.tb-sep{width:1px;height:24px;background:var(--c-border);flex-shrink:0}
+.tb-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 9px;border-radius:20px;
+  font-size:.68rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  background:var(--c-orange-dim);color:var(--c-orange);border:1px solid currentColor;
+  opacity:.75;
+}
+.tb-course-title{
+  font-size:.82rem;font-weight:500;color:var(--c-text2);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  flex:1;min-width:0;padding:0 16px;
+}
+.topbar-right{display:flex;align-items:center;gap:6px;padding:0 16px;margin-left:auto;flex-shrink:0}
+.tb-btn{
+  display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;
+  border-radius:var(--r-md);font-size:.78rem;font-weight:600;cursor:pointer;transition:var(--t);
+  background:var(--c-surface2);border:1px solid var(--c-border);color:var(--c-text2);
+}
+.tb-btn:hover{background:var(--c-surface3);color:var(--c-text)}
+.tb-btn.primary{
+  background:var(--g-blue);color:#fff;border-color:transparent;
+  box-shadow:0 2px 12px rgba(107,140,255,.35);
+}
+.tb-btn.primary:hover{opacity:.9;transform:translateY(-1px)}
+.tb-btn.success{background:var(--g-green);color:#fff;border-color:transparent}
+.tb-icon-btn{
+  width:34px;height:34px;border-radius:var(--r-md);
+  background:var(--c-surface2);border:1px solid var(--c-border);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--c-text2);font-size:.8rem;cursor:pointer;transition:var(--t);
+}
+.tb-icon-btn:hover{background:var(--c-surface3);color:var(--c-text)}
+
+/* ══════════════════════════════════════════════════════
+   LAYOUT — left nav + main content
+══════════════════════════════════════════════════════ */
+.page-wrap{
+  display:flex;margin-top:var(--nav-h);min-height:calc(100vh - var(--nav-h));
+}
+.left-nav{
+  width:var(--aside-w);flex-shrink:0;
+  height:calc(100vh - var(--nav-h));position:sticky;top:var(--nav-h);
+  background:var(--c-surface);border-right:1px solid var(--c-border);
+  display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;
+}
+.nav-section{padding:12px 10px 4px}
+.nav-section-label{
+  font-size:.62rem;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;
+  color:var(--c-text3);padding:0 8px;margin-bottom:4px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:9px;
+  padding:9px 10px;border-radius:var(--r-md);
+  font-size:.83rem;font-weight:500;color:var(--c-text2);
+  cursor:pointer;transition:var(--t);border:1px solid transparent;
+}
+.nav-item:hover{background:var(--c-surface2);color:var(--c-text)}
+.nav-item.active{
+  background:var(--c-blue-dim);color:var(--c-blue);border-color:rgba(107,140,255,.2);
+  font-weight:600;
+}
+.nav-item i{width:16px;text-align:center;font-size:.8rem;flex-shrink:0}
+.nav-divider{height:1px;background:var(--c-border);margin:8px 10px}
+
+/* ── MAIN ── */
+.main-content{flex:1;min-width:0;padding:28px 32px 60px}
+
+/* ══════════════════════════════════════════════════════
+   PAGE HEADER
+══════════════════════════════════════════════════════ */
+.page-header{margin-bottom:28px}
+.page-header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.page-title{font-family:'Instrument Serif',serif;font-size:clamp(1.5rem,3vw,2rem);color:var(--c-text);margin-bottom:5px}
+.page-subtitle{font-size:.84rem;color:var(--c-text3)}
+.header-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex-shrink:0}
+
+/* status pill */
+.status-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 11px;border-radius:20px;
+  font-size:.71rem;font-weight:700;letter-spacing:.4px;text-transform:uppercase;
+}
+.status-pill.published{background:var(--c-green-dim);color:var(--c-green);border:1px solid rgba(92,198,120,.25)}
+.status-pill.draft{background:var(--c-orange-dim);color:var(--c-orange);border:1px solid rgba(249,115,22,.25)}
+.status-pill.archived{background:var(--c-surface3);color:var(--c-text3);border:1px solid var(--c-border)}
+.status-pill::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor}
+
+/* ══════════════════════════════════════════════════════
+   STAT CARDS ROW
+══════════════════════════════════════════════════════ */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-bottom:28px}
+.stat-card{
+  background:var(--c-surface);border:1px solid var(--c-border);
+  border-radius:var(--r-lg);padding:16px 18px;
+  position:relative;overflow:hidden;transition:var(--t);
+}
+.stat-card:hover{border-color:var(--c-border2);transform:translateY(-1px)}
+.stat-card::after{
+  content:'';position:absolute;top:0;right:0;
+  width:60px;height:60px;border-radius:50%;
+  transform:translate(25%,-25%);opacity:.08;
+}
+.stat-card.blue::after{background:var(--c-blue)}
+.stat-card.green::after{background:var(--c-green)}
+.stat-card.orange::after{background:var(--c-orange)}
+.stat-card.purple::after{background:var(--c-purple)}
+.stat-icon{
+  width:30px;height:30px;border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.78rem;margin-bottom:10px;
+}
+.stat-card.blue .stat-icon{background:var(--c-blue-dim);color:var(--c-blue)}
+.stat-card.green .stat-icon{background:var(--c-green-dim);color:var(--c-green)}
+.stat-card.orange .stat-icon{background:var(--c-orange-dim);color:var(--c-orange)}
+.stat-card.purple .stat-icon{background:rgba(167,139,250,.12);color:var(--c-purple)}
+.stat-value{font-family:'Instrument Serif',serif;font-size:1.7rem;color:var(--c-text);line-height:1}
+.stat-label{font-size:.72rem;color:var(--c-text3);margin-top:4px;font-weight:500}
+.stat-delta{font-size:.7rem;color:var(--c-green);margin-top:6px;display:flex;align-items:center;gap:3px}
+.stat-delta.neg{color:var(--c-red)}
+
+/* ══════════════════════════════════════════════════════
+   SECTION PANELS
+══════════════════════════════════════════════════════ */
+.panel{
+  background:var(--c-surface);border:1px solid var(--c-border);
+  border-radius:var(--r-xl);margin-bottom:20px;overflow:hidden;
+}
+.panel-header{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:18px 22px;border-bottom:1px solid var(--c-border);
+}
+.panel-title{font-size:.95rem;font-weight:600;color:var(--c-text);display:flex;align-items:center;gap:8px}
+.panel-title i{color:var(--c-blue);font-size:.82rem}
+.panel-body{padding:22px}
+.panel-body.no-pad{padding:0}
+
+/* ══════════════════════════════════════════════════════
+   FORM ELEMENTS
+══════════════════════════════════════════════════════ */
+.form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.form-grid.full{grid-template-columns:1fr}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-label{font-size:.76rem;font-weight:600;color:var(--c-text2);letter-spacing:.3px}
+.form-label .req{color:var(--c-red);margin-left:2px}
+.form-input,.form-select,.form-textarea{
+  background:var(--c-surface2);border:1.5px solid var(--c-border);
+  border-radius:var(--r-md);padding:9px 12px;
+  font-size:.86rem;color:var(--c-text);outline:none;transition:border-color .18s,box-shadow .18s;
+  width:100%;
+}
+.form-textarea{min-height:100px;resize:vertical;line-height:1.65}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--c-text3)}
+.form-input:focus,.form-select:focus,.form-textarea:focus{
+  border-color:var(--c-blue);box-shadow:0 0 0 3px var(--c-blue-dim);
+}
+.form-select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b8cff'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.form-hint{font-size:.71rem;color:var(--c-text3);margin-top:1px}
+.form-footer{display:flex;align-items:center;justify-content:flex-end;gap:9px;padding-top:16px;border-top:1px solid var(--c-border);margin-top:20px}
+
+/* image upload */
+.img-upload-zone{
+  border:2px dashed var(--c-border2);border-radius:var(--r-lg);
+  padding:28px;text-align:center;cursor:pointer;transition:var(--t);
+  position:relative;background:var(--c-surface2);
+}
+.img-upload-zone:hover,.img-upload-zone.drag{border-color:var(--c-blue);background:var(--c-blue-dim)}
+.img-upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.img-upload-icon{font-size:1.8rem;color:var(--c-text3);margin-bottom:8px}
+.img-upload-text{font-size:.82rem;color:var(--c-text3)}
+.img-upload-text strong{color:var(--c-blue)}
+.img-preview{width:100%;max-height:180px;object-fit:cover;border-radius:var(--r-md);display:none}
+
+/* toggle switch */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}
+.toggle-label{font-size:.85rem;font-weight:500;color:var(--c-text)}
+.toggle-desc{font-size:.74rem;color:var(--c-text3);margin-top:1px}
+.toggle-switch{position:relative;width:42px;height:24px;flex-shrink:0}
+.toggle-switch input{opacity:0;width:0;height:0;position:absolute}
+.toggle-slider{
+  position:absolute;inset:0;border-radius:12px;
+  background:var(--c-surface3);cursor:pointer;transition:var(--t);
+}
+.toggle-slider::before{
+  content:'';position:absolute;left:3px;top:3px;
+  width:18px;height:18px;border-radius:50%;
+  background:#fff;transition:var(--t);box-shadow:0 1px 4px rgba(0,0,0,.3);
+}
+.toggle-switch input:checked + .toggle-slider{background:var(--c-blue)}
+.toggle-switch input:checked + .toggle-slider::before{transform:translateX(18px)}
+
+/* ══════════════════════════════════════════════════════
+   CURRICULUM BUILDER
+══════════════════════════════════════════════════════ */
+.curriculum-wrap{padding:16px}
+.add-module-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:12px;border-radius:var(--r-md);
+  border:2px dashed var(--c-border2);background:none;
+  font-size:.84rem;font-weight:600;color:var(--c-blue);
+  cursor:pointer;transition:var(--t);
+}
+.add-module-btn:hover{background:var(--c-blue-dim);border-color:var(--c-blue)}
+
+/* module block */
+.mod-block{
+  background:var(--c-surface2);border:1px solid var(--c-border);
+  border-radius:var(--r-lg);margin-bottom:12px;overflow:hidden;
+}
+.mod-header{
+  display:flex;align-items:center;gap:10px;
+  padding:13px 16px;cursor:pointer;
+  border-bottom:1px solid var(--c-border);
+  background:var(--c-surface2);transition:var(--t);
+}
+.mod-header:hover{background:var(--c-surface3)}
+.mod-drag{color:var(--c-text3);font-size:.78rem;cursor:grab;flex-shrink:0}
+.mod-drag:active{cursor:grabbing}
+.mod-index{
+  font-size:.66rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  color:var(--c-text3);flex-shrink:0;min-width:60px;
+}
+.mod-title-input{
+  flex:1;background:none;border:none;outline:none;
+  font-size:.92rem;font-weight:600;color:var(--c-text);
+  font-family:'DM Sans',sans-serif;
+}
+.mod-title-input::placeholder{color:var(--c-text3)}
+.mod-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.mod-action-btn{
+  width:28px;height:28px;border-radius:var(--r-sm);
+  background:none;border:1px solid transparent;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--c-text3);font-size:.72rem;cursor:pointer;transition:var(--t);
+}
+.mod-action-btn:hover{background:var(--c-surface3);border-color:var(--c-border);color:var(--c-text)}
+.mod-action-btn.del:hover{background:var(--c-red-dim);border-color:rgba(239,68,68,.25);color:var(--c-red)}
+.mod-chev{
+  color:var(--c-text3);font-size:.62rem;flex-shrink:0;
+  transition:transform .2s;
+}
+.mod-chev.open{transform:rotate(180deg)}
+
+/* lesson list */
+.lesson-list{padding:10px 14px 6px}
+.lesson-item{
+  display:flex;align-items:center;gap:9px;
+  padding:9px 10px;border-radius:var(--r-md);
+  border:1px solid transparent;margin-bottom:4px;
+  cursor:pointer;transition:var(--t);background:var(--c-surface);
+}
+.lesson-item:hover{border-color:var(--c-border);background:var(--c-surface)}
+.lesson-item.active{border-color:var(--c-blue);background:var(--c-blue-dim)}
+.lesson-drag{color:var(--c-text3);font-size:.7rem;cursor:grab;flex-shrink:0}
+.lesson-status-dot{
+  width:18px;height:18px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:.58rem;
+}
+.lesson-status-dot.pub{background:var(--c-green-dim);color:var(--c-green)}
+.lesson-status-dot.draft{background:var(--c-orange-dim);color:var(--c-orange)}
+.lesson-status-dot.free{
+  background:var(--c-blue-dim);color:var(--c-blue);
+  border:1px solid rgba(107,140,255,.3);
+}
+.lesson-name{flex:1;font-size:.83rem;font-weight:500;color:var(--c-text);min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lesson-dur{font-size:.7rem;color:var(--c-text3);flex-shrink:0}
+.lesson-act{display:flex;gap:4px;flex-shrink:0}
+.lesson-act-btn{
+  width:24px;height:24px;border-radius:var(--r-sm);
+  background:none;border:none;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--c-text3);font-size:.66rem;cursor:pointer;transition:var(--t);
+}
+.lesson-act-btn:hover{background:var(--c-surface2);color:var(--c-text)}
+.lesson-act-btn.del:hover{background:var(--c-red-dim);color:var(--c-red)}
+.add-lesson-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 10px;border-radius:var(--r-md);
+  border:1.5px dashed var(--c-border);background:none;
+  font-size:.78rem;font-weight:600;color:var(--c-text3);
+  cursor:pointer;transition:var(--t);width:100%;margin-top:4px;margin-bottom:8px;
+}
+.add-lesson-btn:hover{border-color:var(--c-blue);color:var(--c-blue);background:var(--c-blue-dim)}
+
+/* ══════════════════════════════════════════════════════
+   LESSON EDIT DRAWER (slide-over)
+══════════════════════════════════════════════════════ */
+.drawer-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(3px);
+  z-index:1200;opacity:0;pointer-events:none;transition:opacity .28s;
+}
+.drawer-overlay.open{opacity:1;pointer-events:auto}
+.drawer{
+  position:fixed;top:0;right:0;bottom:0;width:min(540px,95vw);
+  background:var(--c-surface);border-left:1px solid var(--c-border);
+  z-index:1201;display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .3s var(--ease);
+  box-shadow:var(--sh-pop);
+}
+.drawer.open{transform:translateX(0)}
+.drawer-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 22px;border-bottom:1px solid var(--c-border);flex-shrink:0;
+}
+.drawer-title{font-size:1rem;font-weight:600;color:var(--c-text)}
+.drawer-close{
+  width:32px;height:32px;border-radius:var(--r-md);
+  background:var(--c-surface2);border:1px solid var(--c-border);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--c-text3);font-size:.8rem;cursor:pointer;transition:var(--t);
+}
+.drawer-close:hover{background:var(--c-surface3);color:var(--c-text)}
+.drawer-body{flex:1;overflow-y:auto;padding:22px}
+.drawer-footer{
+  padding:16px 22px;border-top:1px solid var(--c-border);
+  display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-shrink:0;
+}
+
+/* video URL preview strip */
+.video-preview-strip{
+  background:var(--c-surface2);border:1px solid var(--c-border);border-radius:var(--r-md);
+  padding:10px 12px;display:flex;align-items:center;gap:10px;margin-top:8px;
+}
+.video-preview-icon{
+  width:32px;height:32px;border-radius:var(--r-sm);background:var(--c-red-dim);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--c-red);font-size:.82rem;flex-shrink:0;
+}
+.video-preview-txt{flex:1;min-width:0}
+.video-preview-name{font-size:.8rem;font-weight:600;color:var(--c-text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.video-preview-url{font-size:.68rem;color:var(--c-text3);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'JetBrains Mono',monospace}
+
+/* ══════════════════════════════════════════════════════
+   CONFIRM MODAL
+══════════════════════════════════════════════════════ */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);
+  z-index:1400;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .22s;padding:16px;
+}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+.modal-box{
+  background:var(--c-surface);border:1px solid var(--c-border);
+  border-radius:var(--r-xl);padding:28px;max-width:400px;width:100%;
+  transform:scale(.95);transition:transform .22s var(--spring);
+}
+.modal-overlay.open .modal-box{transform:scale(1)}
+.modal-icon{
+  width:48px;height:48px;border-radius:50%;
+  background:var(--c-red-dim);color:var(--c-red);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;margin-bottom:14px;
+}
+.modal-heading{font-family:'Instrument Serif',serif;font-size:1.25rem;margin-bottom:8px}
+.modal-text{font-size:.85rem;color:var(--c-text2);margin-bottom:20px;line-height:1.65}
+.modal-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px}
+
+/* ══════════════════════════════════════════════════════
+   STUDENTS TABLE
+══════════════════════════════════════════════════════ */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead tr th{
+  font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  color:var(--c-text3);padding:10px 14px;text-align:left;
+  border-bottom:1px solid var(--c-border);background:var(--c-surface2);
+}
+tbody tr{border-bottom:1px solid var(--c-border);transition:var(--t)}
+tbody tr:hover{background:var(--c-surface2)}
+tbody tr td{padding:11px 14px;font-size:.83rem;color:var(--c-text2)}
+tbody tr td:first-child{color:var(--c-text);font-weight:500}
+.prog-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:.74rem;font-weight:600;
+}
+.prog-mini{width:60px;height:4px;background:var(--c-surface3);border-radius:2px;overflow:hidden}
+.prog-mini-fill{height:100%;border-radius:2px;background:var(--g-blue)}
+.prog-mini-fill.done{background:var(--g-green)}
+.avatar-chip{
+  display:inline-flex;align-items:center;gap:7px;
+}
+.avatar{
+  width:26px;height:26px;border-radius:50%;
+  background:var(--g-blue);display:flex;align-items:center;justify-content:center;
+  font-size:.68rem;font-weight:700;color:#fff;flex-shrink:0;
+  font-family:'DM Sans',sans-serif;
+}
+
+/* ══════════════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════════════ */
+#toast{
+  position:fixed;bottom:28px;left:50%;
+  transform:translateX(-50%) translateY(16px);
+  background:var(--c-surface);color:var(--c-text);
+  border:1px solid var(--c-border2);border-radius:var(--r-md);
+  padding:11px 18px;font-size:.82rem;font-weight:600;
+  display:flex;align-items:center;gap:9px;z-index:9999;
+  opacity:0;transition:all .24s var(--ease);
+  box-shadow:var(--sh-pop);min-width:220px;max-width:420px;
+  border-left:3px solid var(--c-green);
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.error{border-left-color:var(--c-red)}
+#toast i{font-size:.9rem;flex-shrink:0}
+
+/* ══════════════════════════════════════════════════════
+   SECTION TABS (page-level)
+══════════════════════════════════════════════════════ */
+.page-tabs{display:flex;gap:0;border-bottom:1.5px solid var(--c-border);margin-bottom:24px}
+.page-tab{
+  padding:11px 20px;font-size:.85rem;font-weight:600;
+  color:var(--c-text3);background:none;border:none;
+  border-bottom:2.5px solid transparent;cursor:pointer;
+  transition:all .18s;white-space:nowrap;margin-bottom:-1.5px;
+}
+.page-tab:hover{color:var(--c-text)}
+.page-tab.active{color:var(--c-blue);border-bottom-color:var(--c-blue)}
+.page-section{display:none}
+.page-section.active{display:block}
+
+/* ══════════════════════════════════════════════════════
+   UTILS
+══════════════════════════════════════════════════════ */
+.hidden{display:none!important}
+.flex{display:flex}
+.items-center{align-items:center}
+.gap-8{gap:8px}
+.ml-auto{margin-left:auto}
+@keyframes fade-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.fade-in{animation:fade-in .28s var(--ease) both}
+.spinner{animation:spin 1s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ══════════════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════════════ */
+@media(max-width:899px){
+  .left-nav{display:none}
+  .main-content{padding:18px 16px 48px}
+}
+@media(max-width:599px){
+  :root{--nav-h:52px}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .main-content{padding:14px 12px 40px}
+  .page-title{font-size:1.35rem}
+  .tb-btn span{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ── TOAST ── -->
+<div id="toast" role="status" aria-live="polite">
+  <i class="fas fa-check-circle"></i>
+  <span id="toastMsg">Saved!</span>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     LESSON EDIT DRAWER
+══════════════════════════════════════════════════════ -->
+<div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+<div class="drawer" id="lessonDrawer" role="dialog" aria-label="Edit Lesson" aria-modal="true">
+  <div class="drawer-head">
+    <div class="drawer-title" id="drawerTitle">Add Lesson</div>
+    <button class="drawer-close" id="drawerClose" aria-label="Close"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="drawer-body">
+    <input type="hidden" id="drawerLessonId"/>
+    <input type="hidden" id="drawerModuleId"/>
+
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="form-group">
+        <label class="form-label">Lesson Title <span class="req">*</span></label>
+        <input type="text" class="form-input" id="dlTitle" placeholder="e.g. Introduction to Variables"/>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Video URL</label>
+        <input type="url" class="form-input" id="dlVideoUrl" placeholder="https://youtube.com/embed/… or Vimeo embed URL"/>
+        <div class="video-preview-strip" id="videoPreviewStrip" style="display:none">
+          <div class="video-preview-icon"><i class="fas fa-play"></i></div>
+          <div class="video-preview-txt">
+            <div class="video-preview-name" id="vpName">Video attached</div>
+            <div class="video-preview-url" id="vpUrl"></div>
+          </div>
+        </div>
+        <div class="form-hint">Paste a YouTube embed URL, Vimeo embed URL, or direct .mp4 link.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Duration</label>
+        <input type="text" class="form-input" id="dlDuration" placeholder="e.g. 12:45" style="max-width:160px"/>
+        <div class="form-hint">mm:ss format</div>
+      </div>
+
+      <div style="border-top:1px solid var(--c-border);padding-top:14px">
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Published</div>
+            <div class="toggle-desc">Visible to enrolled students</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="dlPublished" checked/>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Free Preview</div>
+            <div class="toggle-desc">Anyone can watch without enrolling</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="dlFree"/>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Lesson Description</label>
+        <textarea class="form-textarea" id="dlDesc" placeholder="Brief description of what this lesson covers…" style="min-height:80px"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-footer">
+    <button class="tb-btn" id="drawerCancel">Cancel</button>
+    <button class="tb-btn primary" id="drawerSave">
+      <i class="fas fa-save"></i> <span>Save Lesson</span>
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     CONFIRM DELETE MODAL
+══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="confirmModal" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <div class="modal-icon"><i class="fas fa-trash-alt"></i></div>
+    <div class="modal-heading" id="confirmHeading">Delete this item?</div>
+    <p class="modal-text" id="confirmText">This action cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="tb-btn" id="confirmCancel">Cancel</button>
+      <button class="tb-btn" id="confirmOk" style="background:var(--c-red);color:#fff;border-color:var(--c-red)">
+        <i class="fas fa-trash"></i> Delete
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     TOPBAR
+══════════════════════════════════════════════════════ -->
+<header class="topbar" role="banner">
+  <div class="topbar-left">
+    <a href="/instructor/dashboard" class="tb-back" title="Instructor Hub" aria-label="Back to Instructor Hub">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+    <a href="/" class="tb-logo" aria-label="NeurowexTech Home">
+      <span class="tb-logo-mark">N</span>Neurowex<em>Tech</em>
+    </a>
+    <div class="tb-sep" aria-hidden="true"></div>
+    <span class="tb-badge"><i class="fas fa-chalkboard-teacher" style="margin-right:4px"></i>Instructor</span>
+  </div>
+
+  <div class="tb-course-title" title="{{courseTitle}}">{{courseTitle}}</div>
+
+  <div class="topbar-right">
+    <button class="tb-icon-btn" id="themeToggle" title="Toggle theme" aria-label="Toggle theme">
+      <i class="fas fa-moon" id="themeIcon"></i>
+    </button>
+    <a href="/learn/course/{{courseId}}/dashboard" target="_blank" class="tb-btn">
+      <i class="fas fa-eye"></i> <span>Preview</span>
+    </a>
+    <button class="tb-btn success" id="publishToggleBtn">
+      {{#if (eq courseStatus 'published')}}
+      <i class="fas fa-toggle-on"></i> <span>Published</span>
+      {{else}}
+      <i class="fas fa-toggle-off"></i> <span>Publish</span>
+      {{/if}}
+    </button>
+    {{#if isAuthenticated}}
+    <div style="position:relative" id="userMenuWrap">
+      <button class="tb-btn" id="userMenuBtn" aria-label="User menu" aria-expanded="false">
+        <i class="fas fa-user-circle"></i>
+        <span>{{userName}}</span>
+        <i class="fas fa-chevron-down" style="font-size:.56rem;opacity:.6"></i>
+      </button>
+      <div id="userMenuDrop" style="position:absolute;top:calc(100% + 8px);right:0;min-width:190px;background:var(--c-surface);border:1px solid var(--c-border);border-radius:var(--r-lg);padding:6px;z-index:200;box-shadow:var(--sh-pop);opacity:0;visibility:hidden;pointer-events:none;transition:all .18s var(--ease);transform:translateY(4px);">
+        <a href="/instructor/dashboard" style="display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:var(--r-sm);font-size:.81rem;color:var(--c-text2);transition:var(--t);" onmouseover="this.style.background='var(--c-surface2)'" onmouseout="this.style.background=''">
+          <i class="fas fa-chalkboard-teacher" style="width:15px;color:var(--c-blue);font-size:.78rem"></i> Instructor Hub
+        </a>
+        <a href="/my-learning" style="display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:var(--r-sm);font-size:.81rem;color:var(--c-text2);transition:var(--t);" onmouseover="this.style.background='var(--c-surface2)'" onmouseout="this.style.background=''">
+          <i class="fas fa-book-open" style="width:15px;color:var(--c-blue);font-size:.78rem"></i> My Learning
+        </a>
+        <hr style="border:none;border-top:1px solid var(--c-border);margin:5px 0"/>
+        <a href="/logout" style="display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:var(--r-sm);font-size:.81rem;color:#ef4444;transition:var(--t);" onmouseover="this.style.background='var(--c-surface2)'" onmouseout="this.style.background=''">
+          <i class="fas fa-sign-out-alt" style="width:15px;font-size:.78rem"></i> Sign Out
+        </a>
+      </div>
+    </div>
+    {{/if}}
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════════════
+     PAGE LAYOUT
+══════════════════════════════════════════════════════ -->
+<div class="page-wrap">
+
+  <!-- ─── LEFT NAV ─── -->
+  <nav class="left-nav" aria-label="Instructor sections">
+    <div class="nav-section">
+      <div class="nav-section-label">Manage</div>
+      <div class="nav-item active" data-section="overview" role="button" tabindex="0">
+        <i class="fas fa-chart-bar"></i> Overview
+      </div>
+      <div class="nav-item" data-section="curriculum" role="button" tabindex="0">
+        <i class="fas fa-list-ul"></i> Curriculum
+      </div>
+      <div class="nav-item" data-section="details" role="button" tabindex="0">
+        <i class="fas fa-info-circle"></i> Course Details
+      </div>
+      <div class="nav-item" data-section="settings" role="button" tabindex="0">
+        <i class="fas fa-cog"></i> Settings
+      </div>
+    </div>
+    <div class="nav-divider"></div>
+    <div class="nav-section">
+      <div class="nav-section-label">Students</div>
+      <div class="nav-item" data-section="students" role="button" tabindex="0">
+        <i class="fas fa-users"></i> Enrollments
+      </div>
+    </div>
+    <div class="nav-divider"></div>
+    <div class="nav-section">
+      <div class="nav-section-label">Quick Actions</div>
+      <div class="nav-item" id="navAddModule" role="button" tabindex="0">
+        <i class="fas fa-plus-circle"></i> Add Module
+      </div>
+    </div>
+  </nav>
+
+  <!-- ─── MAIN CONTENT ─── -->
+  <main class="main-content" id="mainContent">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+      <div class="page-header-top">
+        <div>
+          <h1 class="page-title">{{courseTitle}}</h1>
+          <p class="page-subtitle">
+            <span class="status-pill {{courseStatus}}" id="statusPill">
+              {{courseStatus}}
+            </span>
+            &nbsp;·&nbsp; {{courseLevel}} &nbsp;·&nbsp; {{totalModules}} modules · {{totalLessons}} lessons · {{totalDuration}}
+          </p>
+        </div>
+        <div class="header-actions">
+          <button class="tb-btn" id="headerAddLesson" style="display:none">
+            <i class="fas fa-plus"></i> <span>Add Lesson</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE-LEVEL TABS -->
+    <div class="page-tabs" role="tablist">
+      <button class="page-tab active" data-section="overview" role="tab" aria-selected="true">Overview</button>
+      <button class="page-tab" data-section="curriculum" role="tab" aria-selected="false">Curriculum</button>
+      <button class="page-tab" data-section="details" role="tab" aria-selected="false">Details</button>
+      <button class="page-tab" data-section="settings" role="tab" aria-selected="false">Settings</button>
+      <button class="page-tab" data-section="students" role="tab" aria-selected="false">Students</button>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SECTION: OVERVIEW
+    ══════════════════════════════════════ -->
+    <div class="page-section active fade-in" id="section-overview">
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card blue">
+          <div class="stat-icon"><i class="fas fa-users"></i></div>
+          <div class="stat-value" id="statEnrolled">{{totalEnrolled}}</div>
+          <div class="stat-label">Enrolled Students</div>
+          <div class="stat-delta"><i class="fas fa-arrow-up"></i> Active learners</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+          <div class="stat-value">${{totalRevenue}}</div>
+          <div class="stat-label">Total Revenue</div>
+          <div class="stat-delta"><i class="fas fa-chart-line"></i> Lifetime</div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-icon"><i class="fas fa-star"></i></div>
+          <div class="stat-value">{{averageRating}}</div>
+          <div class="stat-label">Avg Rating ({{totalReviews}} reviews)</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+          <div class="stat-value" id="statModules">{{totalModules}}</div>
+          <div class="stat-label">Modules / <span id="statLessons">{{totalLessons}}</span> Lessons</div>
+        </div>
+      </div>
+
+      <!-- Recent Enrollments -->
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title"><i class="fas fa-user-plus"></i> Recent Enrollments</div>
+          <button class="tb-btn" onclick="switchSection('students')">
+            <i class="fas fa-arrow-right"></i> View All
+          </button>
+        </div>
+        <div class="panel-body no-pad">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Enrolled</th>
+                  <th>Progress</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each recentEnrollments}}
+                <tr>
+                  <td>
+                    <div class="avatar-chip">
+                      <div class="avatar">{{slice this.userName 0 1}}</div>
+                      {{this.userName}}
+                    </div>
+                  </td>
+                  <td>{{this.enrolledAt}}</td>
+                  <td>
+                    <div class="prog-chip">
+                      <div class="prog-mini">
+                        <div class="prog-mini-fill {{#if (eq this.progress 100)}}done{{/if}}" style="width:{{this.progress}}%"></div>
+                      </div>
+                      {{this.progress}}%
+                    </div>
+                  </td>
+                </tr>
+                {{else}}
+                <tr>
+                  <td colspan="3" style="text-align:center;color:var(--c-text3);padding:28px">
+                    No enrollments yet. Share your course to get started!
+                  </td>
+                </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /overview -->
+
+    <!-- ══════════════════════════════════════
+         SECTION: CURRICULUM
+    ══════════════════════════════════════ -->
+    <div class="page-section fade-in" id="section-curriculum">
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title"><i class="fas fa-list-ul"></i> Course Curriculum</div>
+          <div style="display:flex;gap:8px">
+            <button class="tb-btn" id="reorderHint" title="Drag module headers to reorder">
+              <i class="fas fa-arrows-alt-v"></i> <span>Drag to Reorder</span>
+            </button>
+            <button class="tb-btn primary" id="addModuleBtn">
+              <i class="fas fa-plus"></i> Add Module
+            </button>
+          </div>
+        </div>
+
+        <div class="curriculum-wrap">
+          <div id="moduleList">
+
+            {{#each modules}}
+            <div class="mod-block" data-module-id="{{this.id}}" id="modBlock{{this.id}}">
+              <div class="mod-header" data-mod-id="{{this.id}}">
+                <i class="fas fa-grip-vertical mod-drag" title="Drag to reorder"></i>
+                <div class="mod-index">Module {{inc @index}}</div>
+                <input
+                  class="mod-title-input"
+                  value="{{this.title}}"
+                  placeholder="Module title…"
+                  data-mod-id="{{this.id}}"
+                  aria-label="Module title"
+                />
+                <div class="mod-actions">
+                  <button class="mod-action-btn save-mod-btn" data-mod-id="{{this.id}}" title="Save title" aria-label="Save module title">
+                    <i class="fas fa-save"></i>
+                  </button>
+                  <button class="mod-action-btn add-lesson-icon-btn" data-mod-id="{{this.id}}" title="Add lesson" aria-label="Add lesson to module">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                  <button class="mod-action-btn del" data-mod-id="{{this.id}}" title="Delete module" aria-label="Delete module">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                  <i class="fas fa-chevron-down mod-chev open" aria-hidden="true"></i>
+                </div>
+              </div>
+
+              <div class="sb-lessons open" id="lessonList{{this.id}}">
+                <div class="lesson-list">
+                  {{#each this.lessons}}
+                  <div class="lesson-item"
+                       data-lesson-id="{{this.id}}"
+                       data-mod-id="{{../id}}"
+                       id="lessonItem{{this.id}}">
+                    <i class="fas fa-grip-vertical lesson-drag" title="Drag to reorder"></i>
+                    <div class="lesson-status-dot {{#if this.isPublished}}pub{{else}}draft{{/if}}" title="{{#if this.isPublished}}Published{{else}}Draft{{/if}}">
+                      <i class="fas {{#if this.isPublished}}fa-check{{else}}fa-pen{{/if}}"></i>
+                    </div>
+                    {{#if this.isFree}}
+                    <div class="lesson-status-dot free" title="Free Preview" style="margin-left:-4px">
+                      <i class="fas fa-unlock-alt"></i>
+                    </div>
+                    {{/if}}
+                    <div class="lesson-name" title="{{this.title}}">{{this.title}}</div>
+                    <div class="lesson-dur">{{this.duration}}</div>
+                    <div class="lesson-act">
+                      <button class="lesson-act-btn edit-lesson-btn"
+                              data-lesson-id="{{this.id}}"
+                              data-mod-id="{{../id}}"
+                              data-title="{{this.title}}"
+                              data-video-url="{{this.video_url}}"
+                              data-duration="{{this.duration}}"
+                              data-published="{{this.isPublished}}"
+                              data-free="{{this.isFree}}"
+                              title="Edit lesson" aria-label="Edit lesson">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="lesson-act-btn del delete-lesson-btn"
+                              data-lesson-id="{{this.id}}"
+                              data-title="{{this.title}}"
+                              title="Delete lesson" aria-label="Delete lesson">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                  {{/each}}
+                  <button class="add-lesson-btn add-lesson-row-btn" data-mod-id="{{this.id}}">
+                    <i class="fas fa-plus"></i> Add Lesson
+                  </button>
+                </div>
+              </div>
+            </div>
+            {{/each}}
+
+          </div><!-- /moduleList -->
+
+          <button class="add-module-btn" id="addModuleBtnBottom">
+            <i class="fas fa-plus-circle"></i> Add Module
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /curriculum -->
+
+    <!-- ══════════════════════════════════════
+         SECTION: DETAILS
+    ══════════════════════════════════════ -->
+    <div class="page-section fade-in" id="section-details">
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title"><i class="fas fa-info-circle"></i> Course Details</div>
+        </div>
+        <div class="panel-body">
+          <form id="courseDetailsForm" onsubmit="return false">
+            <div class="form-grid">
+              <div class="form-group" style="grid-column:1/-1">
+                <label class="form-label">Course Title <span class="req">*</span></label>
+                <input type="text" class="form-input" id="cdTitle" value="{{courseTitle}}" required/>
+              </div>
+              <div class="form-group" style="grid-column:1/-1">
+                <label class="form-label">Description</label>
+                <textarea class="form-textarea" id="cdDescription" style="min-height:130px">{{courseDescription}}</textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Level</label>
+                <select class="form-select" id="cdLevel">
+                  <option value="Beginner" {{#if (eq courseLevel 'Beginner')}}selected{{/if}}>Beginner</option>
+                  <option value="Intermediate" {{#if (eq courseLevel 'Intermediate')}}selected{{/if}}>Intermediate</option>
+                  <option value="Advanced" {{#if (eq courseLevel 'Advanced')}}selected{{/if}}>Advanced</option>
+                  <option value="All Levels" {{#if (eq courseLevel 'All Levels')}}selected{{/if}}>All Levels</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Course Slug</label>
+                <input type="text" class="form-input" id="cdSlug" value="{{courseSlug}}" placeholder="my-course-slug"/>
+                <div class="form-hint">Used in course URL. Lowercase letters, numbers, hyphens only.</div>
+              </div>
+            </div>
+
+            <div style="margin-top:20px">
+              <label class="form-label" style="margin-bottom:8px;display:block">Course Thumbnail</label>
+              <div class="img-upload-zone" id="thumbUploadZone">
+                <input type="file" id="thumbFileInput" accept="image/*" aria-label="Upload thumbnail"/>
+                {{#if courseThumbnail}}
+                <img src="{{courseThumbnail}}" class="img-preview" id="thumbPreview" style="display:block"/>
+                {{else}}
+                <div class="img-upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                <div class="img-upload-text"><strong>Click to upload</strong> or drag & drop<br><span style="font-size:.72rem">PNG, JPG, WEBP — recommended 1280×720</span></div>
+                <img class="img-preview" id="thumbPreview"/>
+                {{/if}}
+              </div>
+            </div>
+
+            <div class="form-footer">
+              <button type="button" class="tb-btn">Discard</button>
+              <button type="button" class="tb-btn primary" id="saveCourseDetails">
+                <i class="fas fa-save"></i> Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div><!-- /details -->
+
+    <!-- ══════════════════════════════════════
+         SECTION: SETTINGS
+    ══════════════════════════════════════ -->
+    <div class="page-section fade-in" id="section-settings">
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title"><i class="fas fa-cog"></i> Course Settings</div>
+        </div>
+        <div class="panel-body">
+          <div style="border-bottom:1px solid var(--c-border);padding-bottom:20px;margin-bottom:20px">
+            <h3 style="font-size:.9rem;font-weight:600;margin-bottom:14px;color:var(--c-text2)">Visibility</h3>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">Published</div>
+                <div class="toggle-desc">Make this course publicly visible and enrollable</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="stPublished" {{#if (eq courseStatus 'published')}}checked{{/if}}/>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">Allow Free Preview</div>
+                <div class="toggle-desc">Let visitors watch lessons marked as Free Preview</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="stAllowFreePreview" checked/>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">Certificate on Completion</div>
+                <div class="toggle-desc">Award a certificate when students complete 100%</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="stCertificate" checked/>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div style="border-bottom:1px solid var(--c-border);padding-bottom:20px;margin-bottom:20px">
+            <h3 style="font-size:.9rem;font-weight:600;margin-bottom:14px;color:var(--c-text2)">Pricing</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Price (USD)</label>
+                <input type="number" class="form-input" id="stPrice" min="0" step="0.01" placeholder="0.00" style="max-width:160px"/>
+                <div class="form-hint">Set to 0 for a free course.</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Sale Price (optional)</label>
+                <input type="number" class="form-input" id="stSalePrice" min="0" step="0.01" placeholder="0.00" style="max-width:160px"/>
+                <div class="form-hint">If set, this overrides the regular price.</div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 style="font-size:.9rem;font-weight:600;margin-bottom:14px;color:var(--c-text2);color:var(--c-red)">Danger Zone</h3>
+            <div style="background:var(--c-red-dim);border:1px solid rgba(239,68,68,.2);border-radius:var(--r-lg);padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <div>
+                <div style="font-size:.85rem;font-weight:600;color:var(--c-text)">Delete this course</div>
+                <div style="font-size:.76rem;color:var(--c-text3);margin-top:2px">Permanently remove this course and all its content. Cannot be undone.</div>
+              </div>
+              <button class="tb-btn" id="deleteCourseBtn" style="background:var(--c-red);color:#fff;border-color:var(--c-red);flex-shrink:0">
+                <i class="fas fa-trash-alt"></i> Delete Course
+              </button>
+            </div>
+          </div>
+
+          <div class="form-footer">
+            <button class="tb-btn primary" id="saveSettings">
+              <i class="fas fa-save"></i> Save Settings
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /settings -->
+
+    <!-- ══════════════════════════════════════
+         SECTION: STUDENTS
+    ══════════════════════════════════════ -->
+    <div class="page-section fade-in" id="section-students">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title"><i class="fas fa-users"></i> All Enrollments</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="text" class="form-input" id="studentSearch" placeholder="Search students…" style="max-width:220px;height:34px;padding:6px 12px;font-size:.81rem"/>
+          </div>
+        </div>
+        <div class="panel-body no-pad">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Enrolled At</th>
+                  <th>Progress</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="studentsTableBody">
+                {{#each recentEnrollments}}
+                <tr data-student="{{this.userName}}">
+                  <td>
+                    <div class="avatar-chip">
+                      <div class="avatar">{{slice this.userName 0 1}}</div>
+                      {{this.userName}}
+                    </div>
+                  </td>
+                  <td>{{this.enrolledAt}}</td>
+                  <td>
+                    <div class="prog-chip">
+                      <div class="prog-mini">
+                        <div class="prog-mini-fill {{#if (eq this.progress 100)}}done{{/if}}" style="width:{{this.progress}}%"></div>
+                      </div>
+                      {{this.progress}}%
+                    </div>
+                  </td>
+                  <td>
+                    {{#if (eq this.progress 100)}}
+                    <span class="status-pill published">Completed</span>
+                    {{else}}
+                    <span class="status-pill draft">In Progress</span>
+                    {{/if}}
+                  </td>
+                </tr>
+                {{else}}
+                <tr>
+                  <td colspan="4" style="text-align:center;color:var(--c-text3);padding:36px">No students enrolled yet.</td>
+                </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div><!-- /students -->
+
+  </main>
+</div><!-- /page-wrap -->
+
+<!-- ══════════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════════ -->
+<script>
+/* ── STATE seeded from Handlebars ── */
+var STATE = {
+  courseId:     {{{json courseId}}},
+  courseStatus: {{{json courseStatus}}},
+  modules: [
+    {{#each modules}}
+    {
+      id:    {{this.id}},
+      title: {{{json this.title}}},
+      order: {{@index}},
+      lessons: [
+        {{#each this.lessons}}
+        {
+          id:          {{this.id}},
+          title:       {{{json this.title}}},
+          videoUrl:    {{{json this.video_url}}},
+          duration:    {{{json this.duration}}},
+          isPublished: {{#if this.isPublished}}true{{else}}false{{/if}},
+          isFree:      {{#if this.isFree}}true{{else}}false{{/if}},
+          order:       {{@index}}
+        }{{#unless @last}},{{/unless}}
+        {{/each}}
+      ]
+    }{{#unless @last}},{{/unless}}
+    {{/each}}
+  ]
+};
+
+/* ── HELPERS ── */
+function el(id){ return document.getElementById(id); }
+function qs(sel){ return document.querySelector(sel); }
+function qsa(sel){ return document.querySelectorAll(sel); }
+
+/* ══════════════════════════════════════════════════════════════
+   THEME
+═══════════════════════════════════════════════════════════════= */
+var isLight = localStorage.getItem('nw-theme') === 'light';
+function applyTheme(){
+  document.body.classList.toggle('light', isLight);
+  var ic = el('themeIcon');
+  if(ic) ic.className = isLight ? 'fas fa-moon' : 'fas fa-sun';
+}
+applyTheme();
+el('themeToggle') && el('themeToggle').addEventListener('click', function(){
+  isLight = !isLight;
+  localStorage.setItem('nw-theme', isLight ? 'light' : 'dark');
+  applyTheme();
+});
+
+/* ══════════════════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════════════════= */
+function showToast(msg, isError){
+  var t = el('toast'), m = el('toastMsg');
+  if(!t) return;
+  t.className = isError ? 'error show' : 'show';
+  t.querySelector('i').className = isError ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
+  t.querySelector('i').style.color = isError ? 'var(--c-red)' : 'var(--c-green)';
+  m.textContent = msg;
+  clearTimeout(t._timer);
+  t._timer = setTimeout(function(){ t.classList.remove('show'); }, 3400);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   API WRAPPER
+═══════════════════════════════════════════════════════════════= */
+async function api(endpoint, body){
+  try {
+    var res = await fetch(endpoint, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    return await res.json();
+  } catch(e){
+    return { success: false, message: 'Network error.' };
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SECTION / TAB NAVIGATION
+═══════════════════════════════════════════════════════════════= */
+function switchSection(name){
+  qsa('.page-section').forEach(function(s){ s.classList.remove('active'); });
+  qsa('.page-tab').forEach(function(b){ b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+  qsa('.nav-item').forEach(function(n){ n.classList.remove('active'); });
+
+  var sec = el('section-' + name);
+  if(sec) sec.classList.add('active');
+
+  qsa('.page-tab[data-section="' + name + '"]').forEach(function(b){
+    b.classList.add('active'); b.setAttribute('aria-selected','true');
+  });
+  qsa('.nav-item[data-section="' + name + '"]').forEach(function(n){ n.classList.add('active'); });
+
+  /* show/hide add lesson button in header (only on curriculum) */
+  var addBtn = el('headerAddLesson');
+  if(addBtn) addBtn.style.display = (name === 'curriculum') ? 'inline-flex' : 'none';
+}
+
+qsa('.page-tab, .nav-item').forEach(function(el){
+  el.addEventListener('click', function(){
+    var sec = el.dataset.section;
+    if(sec) switchSection(sec);
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════
+   MODULE ACCORDION COLLAPSE
+═══════════════════════════════════════════════════════════════= */
+document.addEventListener('click', function(e){
+  var header = e.target.closest('.mod-header');
+  if(!header) return;
+  /* ignore clicks on inputs / action buttons */
+  if(e.target.closest('.mod-title-input') ||
+     e.target.closest('.mod-actions') ||
+     e.target.closest('.mod-action-btn')) return;
+
+  var modId    = header.dataset.modId;
+  var pane     = el('lessonList' + modId);
+  var chev     = header.querySelector('.mod-chev');
+  var isOpen   = pane && pane.classList.contains('open');
+  if(pane) pane.classList.toggle('open', !isOpen);
+  if(chev) chev.classList.toggle('open', !isOpen);
+});
+
+/* ══════════════════════════════════════════════════════════════
+   MODULE CRUD
+═══════════════════════════════════════════════════════════════= */
+function renderModuleBlock(mod){
+  var div = document.createElement('div');
+  div.className = 'mod-block';
+  div.dataset.moduleId = mod.id;
+  div.id = 'modBlock' + mod.id;
+  div.innerHTML = `
+    <div class="mod-header" data-mod-id="${mod.id}">
+      <i class="fas fa-grip-vertical mod-drag" title="Drag to reorder"></i>
+      <div class="mod-index">Module</div>
+      <input class="mod-title-input" value="${escHtml(mod.title)}" placeholder="Module title…" data-mod-id="${mod.id}" aria-label="Module title"/>
+      <div class="mod-actions">
+        <button class="mod-action-btn save-mod-btn" data-mod-id="${mod.id}" title="Save title"><i class="fas fa-save"></i></button>
+        <button class="mod-action-btn add-lesson-icon-btn" data-mod-id="${mod.id}" title="Add lesson"><i class="fas fa-plus"></i></button>
+        <button class="mod-action-btn del delete-mod-btn" data-mod-id="${mod.id}" title="Delete module"><i class="fas fa-trash"></i></button>
+        <i class="fas fa-chevron-down mod-chev open" aria-hidden="true"></i>
+      </div>
+    </div>
+    <div class="sb-lessons open" id="lessonList${mod.id}">
+      <div class="lesson-list" id="lessonListInner${mod.id}">
+        <button class="add-lesson-btn add-lesson-row-btn" data-mod-id="${mod.id}">
+          <i class="fas fa-plus"></i> Add Lesson
+        </button>
+      </div>
+    </div>
+  `;
+  return div;
+}
+
+async function createModule(){
+  var title = prompt('New module title:');
+  if(!title || !title.trim()) return;
+  var data = await api('/api/instructor/module/create', { courseId: STATE.courseId, title: title.trim() });
+  if(data.success && data.module){
+    STATE.modules.push({ id: data.module.id, title: data.module.title, lessons: [] });
+    var list = el('moduleList');
+    if(list){
+      /* insert before the add-button (which is outside #moduleList) */
+      list.appendChild(renderModuleBlock(data.module));
+    }
+    updateModuleNumbers();
+    showToast('Module created!');
+  } else {
+    showToast(data.message || 'Failed to create module.', true);
+  }
+}
+
+el('addModuleBtn')       && el('addModuleBtn').addEventListener('click', createModule);
+el('addModuleBtnBottom') && el('addModuleBtnBottom').addEventListener('click', createModule);
+el('navAddModule')       && el('navAddModule').addEventListener('click', function(){ switchSection('curriculum'); createModule(); });
+el('headerAddLesson')    && el('headerAddLesson').addEventListener('click', function(){
+  openDrawer(null, null); /* no module pre-selected */
+});
+
+/* save module title */
+document.addEventListener('click', async function(e){
+  var btn = e.target.closest('.save-mod-btn');
+  if(!btn) return;
+  var modId = btn.dataset.modId;
+  var input = document.querySelector('.mod-title-input[data-mod-id="' + modId + '"]');
+  if(!input) return;
+  var title = input.value.trim();
+  if(!title){ showToast('Title cannot be empty.', true); return; }
+  var orig = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-spinner spinner"></i>';
+  var data = await api('/api/instructor/module/update', { moduleId: modId, title: title });
+  btn.innerHTML = orig;
+  if(data.success){ showToast('Module saved!'); } else { showToast(data.message || 'Failed.', true); }
+});
+
+/* add lesson from icon button in module header */
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('.add-lesson-icon-btn');
+  if(!btn) return;
+  openDrawer(null, btn.dataset.modId);
+});
+
+/* delete module */
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('.mod-action-btn.del:not(.delete-lesson-btn)') ||
+            e.target.closest('.delete-mod-btn');
+  if(!btn) return;
+  var modId = btn.dataset.modId;
+  openConfirm(
+    'Delete module?',
+    'All lessons inside this module will also be deleted. This cannot be undone.',
+    async function(){
+      var data = await api('/api/instructor/module/delete', { moduleId: modId });
+      if(data.success){
+        var block = el('modBlock' + modId);
+        if(block) block.remove();
+        STATE.modules = STATE.modules.filter(function(m){ return String(m.id) !== String(modId); });
+        updateModuleNumbers();
+        showToast('Module deleted.');
+      } else {
+        showToast(data.message || 'Failed.', true);
+      }
+    }
+  );
+});
+
+function updateModuleNumbers(){
+  var blocks = qsa('.mod-block');
+  blocks.forEach(function(b, i){
+    var idx = b.querySelector('.mod-index');
+    if(idx) idx.textContent = 'Module ' + (i + 1);
+  });
+  var cnt = el('statModules');
+  if(cnt) cnt.textContent = blocks.length;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   LESSON DRAWER OPEN/CLOSE
+═══════════════════════════════════════════════════════════════= */
+var _drawerCallback = null;
+
+function openDrawer(lessonData, moduleId){
+  var isEdit = !!lessonData;
+  el('drawerTitle').textContent  = isEdit ? 'Edit Lesson' : 'Add Lesson';
+  el('drawerLessonId').value     = isEdit ? lessonData.id : '';
+  el('drawerModuleId').value     = moduleId || '';
+  el('dlTitle').value            = isEdit ? lessonData.title : '';
+  el('dlVideoUrl').value         = isEdit ? (lessonData.videoUrl || '') : '';
+  el('dlDuration').value         = isEdit ? (lessonData.duration || '') : '';
+  el('dlPublished').checked      = isEdit ? lessonData.isPublished : true;
+  el('dlFree').checked           = isEdit ? lessonData.isFree : false;
+  el('dlDesc').value             = '';
+  updateVideoPreview(el('dlVideoUrl').value);
+  el('lessonDrawer').classList.add('open');
+  el('drawerOverlay').classList.add('open');
+  el('dlTitle').focus();
+}
+
+function closeDrawer(){
+  el('lessonDrawer').classList.remove('open');
+  el('drawerOverlay').classList.remove('open');
+}
+
+el('drawerClose')  && el('drawerClose').addEventListener('click', closeDrawer);
+el('drawerCancel') && el('drawerCancel').addEventListener('click', closeDrawer);
+el('drawerOverlay')&& el('drawerOverlay').addEventListener('click', closeDrawer);
+
+/* video URL live preview */
+el('dlVideoUrl') && el('dlVideoUrl').addEventListener('input', function(){
+  updateVideoPreview(this.value);
+});
+function updateVideoPreview(url){
+  var strip = el('videoPreviewStrip');
+  var vpUrl = el('vpUrl');
+  if(!strip) return;
+  if(url && url.trim()){
+    strip.style.display = 'flex';
+    if(vpUrl) vpUrl.textContent = url;
+  } else {
+    strip.style.display = 'none';
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   DRAWER SAVE (create or update lesson)
+═══════════════════════════════════════════════════════════════= */
+el('drawerSave') && el('drawerSave').addEventListener('click', async function(){
+  var title     = el('dlTitle').value.trim();
+  var videoUrl  = el('dlVideoUrl').value.trim();
+  var duration  = el('dlDuration').value.trim();
+  var published = el('dlPublished').checked;
+  var free      = el('dlFree').checked;
+  var lessonId  = el('drawerLessonId').value;
+  var moduleId  = el('drawerModuleId').value;
+
+  if(!title){ showToast('Lesson title is required.', true); el('dlTitle').focus(); return; }
+
+  var btn = el('drawerSave');
+  var orig = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-spinner spinner"></i> <span>Saving…</span>';
+  btn.disabled = true;
+
+  var isEdit = !!lessonId;
+  var endpoint = isEdit ? '/api/instructor/lesson/update' : '/api/instructor/lesson/create';
+  var payload  = isEdit
+    ? { lessonId, title, videoUrl, duration, isPublished: published, isFree: free }
+    : { moduleId, title, videoUrl, duration, isPublished: published, isFree: free };
+
+  var data = await api(endpoint, payload);
+  btn.innerHTML = orig;
+  btn.disabled = false;
+
+  if(data.success){
+    closeDrawer();
+    showToast(isEdit ? 'Lesson updated!' : 'Lesson added!');
+
+    if(isEdit){
+      /* update UI in-place */
+      var item = el('lessonItem' + lessonId);
+      if(item){
+        item.querySelector('.lesson-name').textContent = title;
+        item.querySelector('.lesson-dur').textContent  = duration;
+        var dot = item.querySelector('.lesson-status-dot:first-of-type');
+        if(dot){
+          dot.className = 'lesson-status-dot ' + (published ? 'pub' : 'draft');
+          dot.innerHTML = '<i class="fas ' + (published ? 'fa-check' : 'fa-pen') + '"></i>';
+        }
+        /* update data attrs on edit btn */
+        var editBtn = item.querySelector('.edit-lesson-btn');
+        if(editBtn){
+          editBtn.dataset.title      = title;
+          editBtn.dataset.videoUrl   = videoUrl;
+          editBtn.dataset.duration   = duration;
+          editBtn.dataset.published  = published;
+          editBtn.dataset.free       = free;
+        }
+      }
+    } else if(data.lesson){
+      /* inject new lesson row into correct module */
+      insertLessonRow(data.lesson, moduleId);
+      updateLessonCount();
+    }
+  } else {
+    showToast(data.message || 'Failed to save lesson.', true);
+  }
+});
+
+function insertLessonRow(lesson, moduleId){
+  var inner = el('lessonListInner' + moduleId);
+  if(!inner) return;
+  var addBtn = inner.querySelector('.add-lesson-row-btn');
+  var div = document.createElement('div');
+  div.className = 'lesson-item';
+  div.dataset.lessonId = lesson.id;
+  div.dataset.modId    = moduleId;
+  div.id = 'lessonItem' + lesson.id;
+  div.innerHTML = `
+    <i class="fas fa-grip-vertical lesson-drag" title="Drag to reorder"></i>
+    <div class="lesson-status-dot ${lesson.isPublished ? 'pub' : 'draft'}" title="${lesson.isPublished ? 'Published' : 'Draft'}">
+      <i class="fas ${lesson.isPublished ? 'fa-check' : 'fa-pen'}"></i>
+    </div>
+    <div class="lesson-name" title="${escHtml(lesson.title)}">${escHtml(lesson.title)}</div>
+    <div class="lesson-dur">${escHtml(lesson.duration || '')}</div>
+    <div class="lesson-act">
+      <button class="lesson-act-btn edit-lesson-btn"
+              data-lesson-id="${lesson.id}"
+              data-mod-id="${moduleId}"
+              data-title="${escHtml(lesson.title)}"
+              data-video-url="${escHtml(lesson.videoUrl || '')}"
+              data-duration="${escHtml(lesson.duration || '')}"
+              data-published="${lesson.isPublished}"
+              data-free="${lesson.isFree || false}"
+              title="Edit lesson"><i class="fas fa-edit"></i></button>
+      <button class="lesson-act-btn del delete-lesson-btn"
+              data-lesson-id="${lesson.id}"
+              data-title="${escHtml(lesson.title)}"
+              title="Delete lesson"><i class="fas fa-trash"></i></button>
+    </div>
+  `;
+  if(addBtn) inner.insertBefore(div, addBtn);
+  else inner.appendChild(div);
+}
+
+function updateLessonCount(){
+  var cnt = el('statLessons');
+  if(cnt) cnt.textContent = qsa('.lesson-item').length;
+}
+
+/* ── open edit drawer from lesson row ── */
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('.edit-lesson-btn');
+  if(!btn) return;
+  openDrawer({
+    id:          btn.dataset.lessonId,
+    title:       btn.dataset.title,
+    videoUrl:    btn.dataset.videoUrl,
+    duration:    btn.dataset.duration,
+    isPublished: btn.dataset.published === 'true',
+    isFree:      btn.dataset.free === 'true'
+  }, btn.dataset.modId);
+});
+
+/* ── open add lesson from row button ── */
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('.add-lesson-row-btn');
+  if(!btn) return;
+  openDrawer(null, btn.dataset.modId);
+});
+
+/* ══════════════════════════════════════════════════════════════
+   DELETE LESSON
+═══════════════════════════════════════════════════════════════= */
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('.delete-lesson-btn');
+  if(!btn) return;
+  var lessonId = btn.dataset.lessonId;
+  var title    = btn.dataset.title;
+  openConfirm(
+    'Delete "' + title + '"?',
+    'This lesson will be permanently removed.',
+    async function(){
+      var data = await api('/api/instructor/lesson/delete', { lessonId: lessonId });
+      if(data.success){
+        var item = el('lessonItem' + lessonId);
+        if(item) item.remove();
+        updateLessonCount();
+        showToast('Lesson deleted.');
+      } else {
+        showToast(data.message || 'Failed.', true);
+      }
+    }
+  );
+});
+
+/* ══════════════════════════════════════════════════════════════
+   CONFIRM MODAL
+═══════════════════════════════════════════════════════════════= */
+var _onConfirm = null;
+function openConfirm(heading, text, onOk){
+  el('confirmHeading').textContent = heading;
+  el('confirmText').textContent    = text;
+  _onConfirm = onOk;
+  el('confirmModal').classList.add('open');
+}
+function closeConfirm(){
+  el('confirmModal').classList.remove('open');
+  _onConfirm = null;
+}
+el('confirmCancel') && el('confirmCancel').addEventListener('click', closeConfirm);
+el('confirmModal')  && el('confirmModal').addEventListener('click', function(e){
+  if(e.target === el('confirmModal')) closeConfirm();
+});
+el('confirmOk') && el('confirmOk').addEventListener('click', async function(){
+  var btn  = el('confirmOk');
+  var orig = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-spinner spinner"></i> Deleting…';
+  btn.disabled = true;
+  if(_onConfirm) await _onConfirm();
+  btn.innerHTML = orig;
+  btn.disabled = false;
+  closeConfirm();
+});
+
+/* ══════════════════════════════════════════════════════════════
+   SAVE COURSE DETAILS
+═══════════════════════════════════════════════════════════════= */
+el('saveCourseDetails') && el('saveCourseDetails').addEventListener('click', async function(){
+  var btn  = el('saveCourseDetails');
+  var orig = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-spinner spinner"></i> Saving…';
+  btn.disabled = true;
+
+  var data = await api('/api/instructor/course/update', {
+    courseId:    STATE.courseId,
+    title:       el('cdTitle').value.trim(),
+    description: el('cdDescription').value.trim(),
+    level:       el('cdLevel').value,
+    slug:        el('cdSlug').value.trim()
+  });
+
+  btn.innerHTML = orig;
+  btn.disabled  = false;
+  if(data.success){ showToast('Course details saved!'); }
+  else { showToast(data.message || 'Failed to save.', true); }
+});
+
+/* ══════════════════════════════════════════════════════════════
+   SAVE SETTINGS
+═══════════════════════════════════════════════════════════════= */
+el('saveSettings') && el('saveSettings').addEventListener('click', async function(){
+  var btn  = el('saveSettings');
+  var orig = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-spinner spinner"></i> Saving…';
+  btn.disabled  = true;
+
+  var data = await api('/api/instructor/course/update', {
+    courseId:        STATE.courseId,
+    status:          el('stPublished').checked ? 'published' : 'draft',
+    allowFreePreview:el('stAllowFreePreview').checked,
+    certificate:     el('stCertificate').checked,
+    price:           parseFloat(el('stPrice').value) || 0,
+    salePrice:       parseFloat(el('stSalePrice').value) || 0
+  });
+
+  btn.innerHTML = orig;
+  btn.disabled  = false;
+
+  if(data.success){
+    var newStatus = el('stPublished').checked ? 'published' : 'draft';
+    STATE.courseStatus = newStatus;
+    /* sync publish button in topbar */
+    var pubBtn = el('publishToggleBtn');
+    if(pubBtn){
+      pubBtn.innerHTML = newStatus === 'published'
+        ? '<i class="fas fa-toggle-on"></i> <span>Published</span>'
+        : '<i class="fas fa-toggle-off"></i> <span>Publish</span>';
+    }
+    /* sync pill */
+    var pill = el('statusPill');
+    if(pill){ pill.className = 'status-pill ' + newStatus; pill.textContent = newStatus; }
+    showToast('Settings saved!');
+  } else {
+    showToast(data.message || 'Failed.', true);
+  }
+});
+
+/* ── Topbar quick publish toggle ── */
+el('publishToggleBtn') && el('publishToggleBtn').addEventListener('click', function(){
+  var btn = el('stPublished');
+  if(btn){ btn.checked = !btn.checked; }
+  switchSection('settings');
+  setTimeout(function(){ el('saveSettings') && el('saveSettings').click(); }, 80);
+});
+
+/* ── Delete course ── */
+el('deleteCourseBtn') && el('deleteCourseBtn').addEventListener('click', function(){
+  openConfirm(
+    'Delete this entire course?',
+    'ALL modules, lessons, and enrollment data will be permanently removed. Type your course title to confirm in the next step.',
+    async function(){
+      var data = await api('/api/instructor/course/delete', { courseId: STATE.courseId });
+      if(data.success){
+        showToast('Course deleted. Redirecting…');
+        setTimeout(function(){ window.location.href = '/instructor/dashboard'; }, 1400);
+      } else {
+        showToast(data.message || 'Failed.', true);
+      }
+    }
+  );
+});
+
+/* ══════════════════════════════════════════════════════════════
+   THUMBNAIL UPLOAD PREVIEW
+═══════════════════════════════════════════════════════════════= */
+(function(){
+  var zone  = el('thumbUploadZone');
+  var input = el('thumbFileInput');
+  var prev  = el('thumbPreview');
+  if(!zone || !input || !prev) return;
+
+  input.addEventListener('change', function(){
+    var file = this.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e){
+      prev.src   = e.target.result;
+      prev.style.display = 'block';
+      zone.querySelector('.img-upload-icon') && (zone.querySelector('.img-upload-icon').style.display = 'none');
+      zone.querySelector('.img-upload-text') && (zone.querySelector('.img-upload-text').style.display = 'none');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  zone.addEventListener('dragover', function(e){ e.preventDefault(); zone.classList.add('drag'); });
+  zone.addEventListener('dragleave', function(){ zone.classList.remove('drag'); });
+  zone.addEventListener('drop', function(e){
+    e.preventDefault(); zone.classList.remove('drag');
+    var file = e.dataTransfer.files[0];
+    if(file && file.type.startsWith('image/')){
+      input.files = e.dataTransfer.files;
+      input.dispatchEvent(new Event('change'));
+    }
+  });
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   STUDENT SEARCH FILTER
+═══════════════════════════════════════════════════════════════= */
+el('studentSearch') && el('studentSearch').addEventListener('input', function(){
+  var q = this.value.toLowerCase();
+  qsa('#studentsTableBody tr[data-student]').forEach(function(tr){
+    tr.style.display = tr.dataset.student.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+
+/* ══════════════════════════════════════════════════════════════
+   USER MENU DROPDOWN
+═══════════════════════════════════════════════════════════════= */
+(function(){
+  var btn  = el('userMenuBtn');
+  var drop = el('userMenuDrop');
+  if(!btn || !drop) return;
+  btn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var isOpen = drop.style.opacity === '1';
+    drop.style.opacity = isOpen ? '0' : '1';
+    drop.style.visibility    = isOpen ? 'hidden' : 'visible';
+    drop.style.pointerEvents = isOpen ? 'none' : 'auto';
+    drop.style.transform     = isOpen ? 'translateY(4px)' : 'translateY(0)';
+    btn.setAttribute('aria-expanded', String(!isOpen));
+  });
+  document.addEventListener('click', function(){
+    drop.style.opacity = '0'; drop.style.visibility = 'hidden';
+    drop.style.pointerEvents = 'none'; drop.style.transform = 'translateY(4px)';
+    btn.setAttribute('aria-expanded','false');
+  });
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   KEYBOARD SHORTCUTS
+═══════════════════════════════════════════════════════════════= */
+document.addEventListener('keydown', function(e){
+  if(e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+  if(e.key === 'Escape'){
+    closeDrawer();
+    closeConfirm();
+  }
+});
+
+/* ══════════════════════════════════════════════════════════════
+   UTILITY — HTML escape
+═══════════════════════════════════════════════════════════════= */
+function escHtml(str){
+  if(!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════════════= */
+(function init(){
+  updateModuleNumbers();
+  updateLessonCount();
+})();
+</script>
+</body>
+</html>

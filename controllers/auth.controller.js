@@ -1,0 +1,231 @@
+// controllers/auth.controller.js
+'use strict';
+
+const bcrypt          = require('bcrypt');
+const { OAuth2Client} = require('google-auth-library');
+const db              = require('../db/postgres');
+const { ROLES }       = require('../config/constants');
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+// ─── helpers ────────────────────────────────────────────────────────────────
+
+function redirectForRole(role) {
+    if (role === ROLES.ADMIN)       return '/admin_dashboard';
+    if (role === ROLES.INSTRUCTOR)  return '/instructor/dashboard';
+    return '/user_dashboard';
+}
+
+// ─── register ───────────────────────────────────────────────────────────────
+
+async function register(req, res) {
+    try {
+        const { firstName, lastName, username, email, password, fullname } = req.body;
+        const name  = firstName && lastName ? `${firstName} ${lastName}`.trim() : (fullname || '');
+        const uname = username || name;
+
+        if (!name  || name.length < 2)
+            return res.status(400).json({ success: false, message: 'Please enter your full name' });
+        if (!email || !/^\S+@\S+\.\S+$/.test(email))
+            return res.status(400).json({ success: false, message: 'Please enter a valid email address' });
+        if (!password || password.length < 6)
+            return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+        if (username && !/^[a-zA-Z0-9_]{3,20}$/.test(username))
+            return res.status(400).json({ success: false, message: 'Username must be 3–20 chars (letters, numbers, _)' });
+
+        const existing = await db.query('SELECT id FROM users WHERE email = $1', [email.toLowerCase()]);
+        if (existing.rows.length)
+            return res.status(400).json({ success: false, message: 'Email already registered. Please sign in.' });
+
+        const hashed = await bcrypt.hash(password, 10);
+        const result = await db.query(
+            `INSERT INTO users (username, email, password_hash, role, is_active, created_at)
+             VALUES ($1, $2, $3, 'user', true, NOW())
+             RETURNING id, username, email, role`,
+            [uname, email.toLowerCase(), hashed]
+        );
+
+        return res.json({
+            success: true,
+            message: 'Account created! Please sign in.',
+            redirect: '/login',
+            user: result.rows[0],
+        });
+    } catch (err) {
+        console.error('[auth] register error:', err);
+        return res.status(500).json({ success: false, message: 'Server error. Please try again.' });
+    }
+}
+
+// ─── login ──────────────────────────────────────────────────────────────────
+
+async function login(req, res) {
+    try {
+        const { email, password, rememberMe } = req.body;
+        if (!email || !password)
+            return res.status(400).json({ success: false, message: 'Please enter email and password' });
+
+        const result = await db.query('SELECT * FROM users WHERE email = $1', [email.toLowerCase()]);
+        if (!result.rows.length)
+            return res.status(401).json({ success: false, message: 'Invalid email or password' });
+
+        const user = result.rows[0];
+        if (!user.is_active)
+            return res.status(401).json({ success: false, message: 'Your account has been deactivated' });
+        if (!user.password_hash)
+            return res.status(401).json({
+                success: false,
+                message: 'This account uses Google Sign-In. Please use the Google button.',
+            });
+
+        const valid = await bcrypt.compare(password, user.password_hash);
+        if (!valid)
+            return res.status(401).json({ success: false, message: 'Invalid email or password' });
+
+        req.session.userId    = user.id;
+        req.session.userEmail = user.email;
+        req.session.userName  = user.username;
+        req.session.userRole  = user.role;
+
+        if (rememberMe) req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 30;
+
+        req.session.save(err => {
+            if (err) {
+                console.error('[auth] session save error:', err);
+                return res.status(500).json({ success: false, message: 'Session error' });
+            }
+            db.query('UPDATE users SET last_login = NOW() WHERE id = $1', [user.id]).catch(() => {});
+            return res.json({
+                success: true,
+                message: 'Signed in!',
+                role:     user.role,
+                redirect: redirectForRole(user.role),
+            });
+        });
+    } catch (err) {
+        console.error('[auth] login error:', err);
+        return res.status(500).json({ success: false, message: 'Server error. Please try again.' });
+    }
+}
+
+// ─── Google OAuth ────────────────────────────────────────────────────────────
+
+async function googleAuth(req, res) {
+    try {
+        const { idToken } = req.body;
+        if (!idToken)
+            return res.status(400).json({ success: false, message: 'No ID token provided' });
+
+        const ticket  = await googleClient.verifyIdToken({
+            idToken,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        const { email, name, sub: googleId } = ticket.getPayload();
+        if (!email)
+            return res.status(400).json({ success: false, message: 'No email from Google' });
+
+        const existing = await db.query('SELECT * FROM users WHERE email = $1', [email.toLowerCase()]);
+        let userRow;
+
+        if (!existing.rows.length) {
+            const r = await db.query(
+                `INSERT INTO users (username, email, google_id, role, is_active, created_at)
+                 VALUES ($1,$2,$3,'user',true,NOW())
+                 RETURNING id, username, email, role`,
+                [name, email.toLowerCase(), googleId]
+            );
+            userRow = r.rows[0];
+        } else {
+            userRow = existing.rows[0];
+            if (!userRow.google_id)
+                await db.query('UPDATE users SET google_id=$1 WHERE id=$2', [googleId, userRow.id]);
+            if (!userRow.is_active)
+                return res.status(401).json({ success: false, message: 'Your account has been deactivated.' });
+        }
+
+        req.session.userId    = userRow.id;
+        req.session.userEmail = userRow.email;
+        req.session.userName  = userRow.username;
+        req.session.userRole  = userRow.role;
+
+        req.session.save(err => {
+            if (err) return res.status(500).json({ success: false, message: 'Session error' });
+            db.query('UPDATE users SET last_login = NOW() WHERE id = $1', [userRow.id]).catch(() => {});
+            return res.json({
+                success: true,
+                message: 'Google sign-in successful!',
+                redirect: redirectForRole(userRow.role),
+            });
+        });
+    } catch (err) {
+        console.error('[auth] Google auth error:', err);
+        return res.status(500).json({ success: false, message: 'Authentication failed: ' + err.message });
+    }
+}
+
+// ─── logout ─────────────────────────────────────────────────────────────────
+
+function logout(req, res) {
+    req.session.destroy(err => {
+        if (err) console.error('[auth] logout error:', err);
+        res.redirect('/');
+    });
+}
+
+// ─── password reset ──────────────────────────────────────────────────────────
+
+async function forgotPassword(req, res) {
+    try {
+        const { email } = req.body;
+        if (!email)
+            return res.status(400).json({ success: false, message: 'Please enter your email' });
+
+        const user = await db.query('SELECT id FROM users WHERE email = $1', [email.toLowerCase()]);
+        // Always return the same message to prevent email enumeration
+        if (!user.rows.length)
+            return res.json({ success: true, message: 'If an account exists with that email, a reset link has been sent.' });
+
+        const crypto    = require('crypto');
+        const token     = crypto.randomBytes(32).toString('hex');
+        const expiresAt = new Date(Date.now() + 3_600_000); // 1 hour
+
+        await db.query(
+            `INSERT INTO password_resets (email, token, expires_at) VALUES ($1,$2,$3)
+             ON CONFLICT (email) DO UPDATE SET token=$2, expires_at=$3`,
+            [email.toLowerCase(), token, expiresAt]
+        );
+
+        console.log('[auth] Password reset link:',
+            `${req.protocol}://${req.get('host')}/reset-password?token=${token}`);
+
+        return res.json({ success: true, message: 'If an account exists with that email, a reset link has been sent.' });
+    } catch (err) {
+        console.error('[auth] forgot-password error:', err);
+        return res.status(500).json({ success: false, message: 'Server error' });
+    }
+}
+
+async function resetPassword(req, res) {
+    try {
+        const { token, newPassword } = req.body;
+        if (!token || !newPassword || newPassword.length < 6)
+            return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+
+        const rec = await db.query(
+            'SELECT * FROM password_resets WHERE token=$1 AND expires_at > NOW()', [token]
+        );
+        if (!rec.rows.length)
+            return res.status(400).json({ success: false, message: 'This reset link is invalid or has expired.' });
+
+        const hashed = await bcrypt.hash(newPassword, 10);
+        await db.query('UPDATE users SET password_hash=$1 WHERE email=$2', [hashed, rec.rows[0].email]);
+        await db.query('DELETE FROM password_resets WHERE token=$1', [token]);
+
+        return res.json({ success: true, message: 'Password updated! You can now sign in.' });
+    } catch (err) {
+        console.error('[auth] reset-password error:', err);
+        return res.status(500).json({ success: false, message: 'Server error' });
+    }
+}
+
+module.exports = { register, login, googleAuth, logout, forgotPassword, resetPassword };

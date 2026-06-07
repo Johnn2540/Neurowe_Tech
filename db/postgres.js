@@ -12,18 +12,53 @@ if (!connectionString) {
     process.exit(1);
 }
 
-// Create connection pool optimized for Vercel serverless
+// Create connection pool optimized for Neon PostgreSQL on Vercel
 const pool = new Pool({
     connectionString: connectionString,
     ssl: { 
         rejectUnauthorized: false 
     },
-    max: process.env.VERCEL === '1' ? 1 : 20,     // Vercel: 1 connection per instance
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 10000,
-    allowExitOnIdle: true,     // Allow process to exit when idle
-    maxUses: 7500,              // Close connection after 7500 uses (serverless)
+    max: process.env.VERCEL === '1' ? 2 : 20,     // Increased from 1 to 2 for Vercel
+    idleTimeoutMillis: 60000,                      // Increased from 30s to 60s
+    connectionTimeoutMillis: 30000,                // Increased from 10s to 30s
+    allowExitOnIdle: true,
+    maxUses: 7500,
+    // Add these critical settings for Neon
+    keepAlive: true,
+    keepAliveInitialDelayMillis: 10000,
 });
+
+// Connection health monitoring
+let lastHealthCheck = Date.now();
+let isHealthy = true;
+
+async function checkConnectionHealth() {
+    try {
+        // Only check every 30 seconds
+        if (Date.now() - lastHealthCheck < 30000) return true;
+        
+        const result = await pool.query('SELECT 1 as health');
+        if (result.rows[0]?.health === 1) {
+            if (!isHealthy) {
+                console.log('✅ Database connection restored');
+                isHealthy = true;
+            }
+            lastHealthCheck = Date.now();
+            return true;
+        }
+    } catch (err) {
+        if (isHealthy) {
+            console.error('❌ Database connection unhealthy:', err.message);
+            isHealthy = false;
+        }
+        return false;
+    }
+}
+
+// Run health check periodically (skip on Vercel to avoid extra load)
+if (process.env.VERCEL !== '1') {
+    setInterval(checkConnectionHealth, 30000);
+}
 
 // Test the connection (skip detailed logging on Vercel)
 async function testConnection() {
@@ -58,32 +93,57 @@ if (process.env.VERCEL !== '1') {
     console.log('🚀 Vercel serverless mode - database pool ready');
 }
 
-// Helper function for queries with logging and timeout
+// Helper function for queries with logging, timeout, and retry logic
 async function query(text, params, timeout = 30000) {
     const start = Date.now();
     let client;
+    let retries = 2;
     
-    try {
-        client = await pool.connect();
-        
-        // Set statement timeout
-        await client.query(`SET statement_timeout = ${timeout}`);
-        
-        const res = await client.query(text, params);
-        const duration = Date.now() - start;
-        
-        // Only log slow queries
-        if (duration > 1000) {
-            console.log(`⚠️ Slow query (${duration}ms):`, text.substring(0, 100));
+    while (retries >= 0) {
+        try {
+            client = await pool.connect();
+            
+            // Set statement and lock timeouts
+            await client.query(`SET statement_timeout = ${timeout}`);
+            await client.query(`SET lock_timeout = '10000'`); // 10 second lock timeout
+            
+            const res = await client.query(text, params);
+            const duration = Date.now() - start;
+            
+            // Log slow queries with more detail
+            if (duration > 3000) {
+                console.log(`⚠️ Very slow query (${duration}ms): ${text.substring(0, 100)}`);
+            } else if (duration > 1000) {
+                console.log(`⚠️ Slow query (${duration}ms): ${text.substring(0, 100)}`);
+            } else if (duration > 500) {
+                console.log(`⌛ Moderate query (${duration}ms): ${text.substring(0, 80)}`);
+            }
+            
+            client.release();
+            return res;
+            
+        } catch (err) {
+            if (client) {
+                try { client.release(); } catch(e) {}
+            }
+            
+            // Retry on connection errors
+            if (retries > 0 && (err.code === 'ECONNRESET' || 
+                err.code === '57P01' || // admin_shutdown
+                err.message.includes('timeout') || 
+                err.message.includes('terminated') ||
+                err.message.includes('connection lost'))) {
+                
+                console.log(`🔄 Query retry (${retries} left): ${text.substring(0, 80)}`);
+                retries--;
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                continue;
+            }
+            
+            console.error('❌ Query error:', err.message);
+            console.error('Failed query:', text.substring(0, 200));
+            throw err;
         }
-        
-        return res;
-    } catch (err) {
-        console.error('❌ Query error:', err.message);
-        console.error('Failed query:', text.substring(0, 200));
-        throw err;
-    } finally {
-        if (client) client.release();
     }
 }
 
@@ -431,20 +491,35 @@ async function getStats() {
 
 async function getSystemStats() {
     try {
-        const [users, contacts, subscribers, projects, courses] = await Promise.all([
-            query('SELECT COUNT(*) FROM users'),
-            query('SELECT COUNT(*) FROM contacts'),
-            query('SELECT COUNT(*) FROM subscribers'),
-            query('SELECT COUNT(*) FROM projects'),
-            query('SELECT COUNT(*) FROM courses WHERE published = true')
-        ]);
-        return {
-            users: parseInt(users.rows[0].count),
-            contacts: parseInt(contacts.rows[0].count),
-            subscribers: parseInt(subscribers.rows[0].count),
-            projects: parseInt(projects.rows[0].count),
-            courses: parseInt(courses.rows[0].count)
-        };
+        // Use parallel queries but with individual timeouts and error handling
+        const stats = {};
+        
+        // Run each query with its own timeout to prevent one from blocking others
+        const promises = [
+            { name: 'users', query: 'SELECT COUNT(*) as count FROM users' },
+            { name: 'contacts', query: 'SELECT COUNT(*) as count FROM contacts' },
+            { name: 'subscribers', query: 'SELECT COUNT(*) as count FROM subscribers' },
+            { name: 'projects', query: 'SELECT COUNT(*) as count FROM projects' },
+            { name: 'courses', query: 'SELECT COUNT(*) as count FROM courses WHERE published = true' }
+        ];
+        
+        const results = await Promise.allSettled(
+            promises.map(p => query(p.query, [], 10000).catch(err => {
+                console.error(`Failed to get ${p.name} count:`, err.message);
+                return { rows: [{ count: 0 }] };
+            }))
+        );
+        
+        promises.forEach((p, index) => {
+            const result = results[index];
+            if (result.status === 'fulfilled' && result.value?.rows[0]) {
+                stats[p.name] = parseInt(result.value.rows[0].count) || 0;
+            } else {
+                stats[p.name] = 0;
+            }
+        });
+        
+        return stats;
     } catch (err) {
         console.error('Error getting system stats:', err);
         return { users: 0, contacts: 0, subscribers: 0, projects: 0, courses: 0 };
