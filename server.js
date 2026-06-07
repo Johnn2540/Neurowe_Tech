@@ -10,7 +10,8 @@ const { runStartupMigrations } = require('./config/database');
 const isVercel = process.env.VERCEL === '1';
 if (isVercel) console.log('Running on Vercel — serverless mode');
 
-// Run idempotent DB migrations on startup
+// Migrations run from config/database.js (schema bootstrapping).
+// Keepalive is handled inside db/postgres.js after testConnection() succeeds.
 runStartupMigrations().catch(err =>
     console.error('[startup] Migration error:', err.message)
 );

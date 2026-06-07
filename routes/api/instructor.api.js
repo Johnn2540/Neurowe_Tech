@@ -4,7 +4,7 @@
 const { Router }                         = require('express');
 const { isAuthenticated, isInstructor }  = require('../../middleware/auth');
 const db                                 = require('../../db/postgres');
-const { assertCourseAccess }             = require('../../services/course.service');
+const { assertCourseAccess }             = require('../services/course.service');
 
 const router = Router();
 router.use(isAuthenticated, isInstructor);

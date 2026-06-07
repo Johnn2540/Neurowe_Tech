@@ -1,7 +1,7 @@
 // services/course.service.js — shared course business logic
 'use strict';
 
-const db = require('../db/postgres');
+const db = require('../../db/postgres');
 
 /**
  * Verifies the current user has access to a course.

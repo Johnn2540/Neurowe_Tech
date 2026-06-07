@@ -35,6 +35,18 @@ router.get('/', async (req, res) => {
     }
 });
 
+// ─── Service pages ────────────────────────────────────────────────────────────
+
+router.get('/web_dev',       (req, res) => res.render('web_dev',       { title: 'Web & App Development – NeurowexTech' }));
+router.get('/graphic_design',(req, res) => res.render('graphic_design',{ title: 'Graphic Design & Branding – NeurowexTech' }));
+router.get('/seo',           (req, res) => res.render('seo',           { title: 'SEO & Digital Marketing – NeurowexTech' }));
+router.get('/ai-solutions',  (req, res) => res.render('ai-solutions',  { title: 'AI Solutions – NeurowexTech' }));
+router.get('/cybersecurity', (req, res) => res.render('cybersecurity', { title: 'Cybersecurity Services – NeurowexTech' }));
+router.get('/uiux',          (req, res) => res.render('uiux',          { title: 'UI/UX Design – NeurowexTech' }));
+router.get('/ecommerce',     (req, res) => res.render('ecommerce',     { title: 'E-Commerce Solutions – NeurowexTech' }));
+router.get('/analytics',     (req, res) => res.render('analytics',     { title: 'Data Analytics & BI – NeurowexTech' }));
+router.get('/social-media',  (req, res) => res.render('social-media',  { title: 'Social Media & Content – NeurowexTech' }));
+
 // ─── Static pages ─────────────────────────────────────────────────────────────
 
 router.get('/services',          (req, res) => res.render('services',          { title: 'Services – NeurowexTech' }));
