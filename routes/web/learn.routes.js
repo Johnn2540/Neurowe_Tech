@@ -1,258 +1,146 @@
-// routes/web/learn.routes.js — /learn, /learn/course/:id, /learn/course/:id/dashboard, /my-learning
+// routes/web/services.routes.js
 'use strict';
 
-const { Router }         = require('express');
-const { isAuthenticated} = require('../../middleware/auth');
-const db                 = require('../../db/postgres');
+const express = require('express');
+const router = express.Router();
 
-const router = Router();
+// ========== REDIRECTS for old URLs to maintain backward compatibility ==========
+router.get('/graphic_design', (req, res) => res.redirect(301, '/services/graphic-design'));
+router.get('/web_dev', (req, res) => res.redirect(301, '/services/web-development'));
+router.get('/ai-solutions', (req, res) => res.redirect(301, '/services/ai-solutions'));
+router.get('/cybersecurity', (req, res) => res.redirect(301, '/services/cybersecurity'));
+router.get('/uiux', (req, res) => res.redirect(301, '/services/ui-ux'));
+router.get('/ecommerce', (req, res) => res.redirect(301, '/services/ecommerce'));
+router.get('/analytics', (req, res) => res.redirect(301, '/services/analytics'));
+router.get('/social-media', (req, res) => res.redirect(301, '/services/social-media'));
 
-// ─── Course catalogue ─────────────────────────────────────────────────────────
-
-router.get('/learn', async (req, res) => {
-    try {
-        const [coursesR, categoriesR, statsR] = await Promise.all([
-            db.query(`
-                SELECT c.*,
-                       COALESCE(u.username,'NeurowexTech') AS instructor_name,
-                       0 AS enrolled_count, 0 AS total_lessons, 0 AS total_modules
-                FROM courses c LEFT JOIN users u ON c.instructor_id=u.id
-                WHERE c.published=true
-                ORDER BY c.featured DESC, c.created_at DESC
-            `),
-            db.query(`
-                SELECT category, COUNT(*) AS course_count
-                FROM courses WHERE published=true AND category IS NOT NULL
-                GROUP BY category ORDER BY category
-            `),
-            db.query(`
-                SELECT (SELECT COUNT(*) FROM courses WHERE published=true) AS total_courses,
-                       (SELECT COUNT(DISTINCT category) FROM courses WHERE published=true) AS total_categories,
-                       0 AS total_enrollments, 0 AS total_instructors
-            `),
-        ]);
-
-        const courses    = coursesR.rows    || [];
-        const categories = categoriesR.rows || [];
-        const stats      = statsR.rows[0]   || {};
-        const freeCourses = courses.filter(c => parseFloat(c.price) === 0);
-        const paidCourses = courses.filter(c => parseFloat(c.price) >  0);
-        const levelCounts = { beginner:0, intermediate:0, advanced:0 };
-        courses.forEach(c => {
-            if (c.level) levelCounts[c.level.toLowerCase()] = (levelCounts[c.level.toLowerCase()]||0)+1;
-        });
-
-        let userEnrollments = [];
-        if (req.session.userId) {
-            try {
-                const enrollR = await db.query(
-                    'SELECT course_id FROM enrollments WHERE user_id=$1', [req.session.userId]
-                );
-                userEnrollments = enrollR.rows.map(e => e.course_id);
-            } catch {}
-        }
-
-        return res.render('learn', {
-            title: 'NeurowexTech Learn – Practical Skills, Real Results',
-            freeCourses, paidCourses, categories, stats,
-            featuredCourse:    courses.find(c => c.bestseller) || courses[0] || null,
-            beginnerCount:     levelCounts.beginner,
-            intermediateCount: levelCounts.intermediate,
-            advancedCount:     levelCounts.advanced,
-            freeCoursesCount:  freeCourses.length,
-            paidCoursesCount:  paidCourses.length,
-            userEnrollments,
-        });
-    } catch (err) {
-        console.error('[learn] catalogue error:', err);
-        return res.render('learn', {
-            title: 'NeurowexTech Learn',
-            freeCourses:[], paidCourses:[], categories:[], stats:{}, featuredCourse:null,
-            beginnerCount:0, intermediateCount:0, advancedCount:0,
-            freeCoursesCount:0, paidCoursesCount:0, userEnrollments:[],
-        });
-    }
+// ========== SERVICES INDEX PAGE ==========
+router.get('/services', (req, res) => {
+    const servicesList = [
+        { name: 'Web Development', slug: 'web-development', icon: 'fas fa-laptop-code', description: 'Modern, scalable web applications', color: '#1a56e8' },
+        { name: 'Graphic Design', slug: 'graphic-design', icon: 'fas fa-palette', description: 'Stunning visual identities', color: '#e83a5e' },
+        { name: 'SEO & Marketing', slug: 'seo', icon: 'fas fa-chart-line', description: 'Rank higher on search engines', color: '#0dbf7e' },
+        { name: 'AI Solutions', slug: 'ai-solutions', icon: 'fas fa-brain', description: 'Intelligent automation', color: '#8b5cf6' },
+        { name: 'Cybersecurity', slug: 'cybersecurity', icon: 'fas fa-shield-alt', description: 'Protect your digital assets', color: '#f59e0b' },
+        { name: 'UI/UX Design', slug: 'ui-ux', icon: 'fas fa-pencil-ruler', description: 'User-centered design', color: '#06b6d4' },
+        { name: 'E-commerce', slug: 'ecommerce', icon: 'fas fa-shopping-cart', description: 'Online stores that sell', color: '#ec4899' },
+        { name: 'Data Analytics', slug: 'analytics', icon: 'fas fa-chart-pie', description: 'Data-driven decisions', color: '#6366f1' },
+        { name: 'Social Media', slug: 'social-media', icon: 'fas fa-hashtag', description: 'Grow your audience', color: '#14b8a6' }
+    ];
+    
+    // Create a simple services index page since you don't have a dedicated services/index.hbs
+    res.render('home', {  // Using home as fallback, or create a services page
+        title: 'Our Services – NeurowexTech',
+        services: servicesList,
+        showServicesOnly: true,
+        currentYear: new Date().getFullYear()
+    });
 });
 
-// ─── Course detail ────────────────────────────────────────────────────────────
+// ========== INDIVIDUAL SERVICE PAGES ==========
+// All your .hbs files are directly in /views folder
 
-router.get('/learn/course/:id', async (req, res) => {
-    try {
-        const courseId = parseInt(req.params.id);
-        if (isNaN(courseId)) return res.status(404).render('404', { title: 'Course Not Found' });
-
-        const cR = await db.query(`
-            SELECT c.*, COALESCE(u.username,'NeurowexTech') AS instructor_name,
-                   u.email AS instructor_email,
-                   COALESCE((SELECT COUNT(*) FROM enrollments e WHERE e.course_id=c.id),0) AS total_enrolled
-            FROM courses c LEFT JOIN users u ON c.instructor_id=u.id
-            WHERE c.id=$1 AND c.published=true
-        `, [courseId]);
-        if (!cR.rows.length) return res.status(404).render('404', { title: 'Course Not Found' });
-        const course = cR.rows[0];
-
-        const modulesR = await db.query(`
-            SELECT cm.*,
-                   COALESCE(json_agg(
-                       json_build_object('id',cl.id,'title',cl.title,'duration',cl.duration,
-                           'lesson_order',cl.lesson_order,'is_free',cl.is_free,'video_url',cl.video_url)
-                       ORDER BY cl.lesson_order
-                   ) FILTER (WHERE cl.id IS NOT NULL),'[]') AS lessons
-            FROM course_modules cm LEFT JOIN course_lessons cl ON cm.id=cl.module_id
-            WHERE cm.course_id=$1
-            GROUP BY cm.id ORDER BY cm.module_order
-        `, [courseId]);
-
-        const modules      = modulesR.rows;
-        const totalLessons = modules.reduce((s,m)=>s+(m.lessons?.filter(l=>l&&l.id)?.length||0),0);
-
-        let isEnrolled=false, enrollmentProgress=0, enrollmentId=null;
-        if (req.session.userId) {
-            const eR = await db.query(
-                'SELECT id,progress FROM enrollments WHERE user_id=$1 AND course_id=$2',
-                [req.session.userId, courseId]
-            );
-            if (eR.rows.length) {
-                isEnrolled=true; enrollmentProgress=eR.rows[0].progress||0; enrollmentId=eR.rows[0].id;
-            }
-        }
-
-        const relatedR = await db.query(`
-            SELECT id,title,category,level,rating,image_url,price
-            FROM courses WHERE category=$1 AND id!=$2 AND published=true LIMIT 3
-        `, [course.category, courseId]);
-
-        return res.render('course-detail', {
-            title: `${course.title} – NeurowexTech Learn`,
-            course, modules, totalLessons, isEnrolled, enrollmentProgress, enrollmentId,
-            relatedCourses: relatedR.rows||[],
-        });
-    } catch (err) {
-        console.error('[learn] course detail error:', err);
-        return res.status(500).render('error', { title: 'Error', message: err.message });
-    }
+// Web Development - maps to web_dev.hbs
+router.get('/services/web-development', (req, res) => {
+    res.render('web_dev', {  // Direct file in /views
+        title: 'Web Development Services – NeurowexTech',
+        currentYear: new Date().getFullYear()
+    });
 });
 
-// ─── Course dashboard (enrolled users) ───────────────────────────────────────
-
-router.get('/learn/course/:id/dashboard', isAuthenticated, async (req, res) => {
-    try {
-        const courseId = parseInt(req.params.id);
-        const userId   = req.session.userId;
-        if (isNaN(courseId)) return res.redirect('/learn');
-
-        const eR = await db.query(`
-            SELECT e.*, c.title, c.description, c.image_url, c.category, c.level, c.total_duration
-            FROM enrollments e JOIN courses c ON e.course_id=c.id
-            WHERE e.user_id=$1 AND e.course_id=$2
-        `, [userId, courseId]);
-        if (!eR.rows.length) return res.redirect(`/learn/course/${courseId}`);
-        const enrollment = eR.rows[0];
-
-        const modulesR = await db.query(`
-            SELECT cm.*,
-                   COALESCE(json_agg(
-                       json_build_object('id',cl.id,'title',cl.title,'description','',
-                           'duration',cl.duration,'lesson_order',cl.lesson_order,'video_url',cl.video_url,
-                           'completed',COALESCE(ulp.completed,false))
-                       ORDER BY cl.lesson_order
-                   ) FILTER (WHERE cl.id IS NOT NULL),'[]') AS lessons
-            FROM course_modules cm
-            LEFT JOIN course_lessons cl ON cm.id=cl.module_id
-            LEFT JOIN user_lesson_progress ulp ON cl.id=ulp.lesson_id AND ulp.user_id=$1
-            WHERE cm.course_id=$2
-            GROUP BY cm.id ORDER BY cm.module_order
-        `, [userId, courseId]);
-
-        const modules = modulesR.rows;
-        const allLessons = [];
-        modules.forEach(mod => {
-            (mod.lessons||[]).forEach(lesson => {
-                if (lesson&&lesson.id) allLessons.push({...lesson, moduleTitle:mod.title, moduleId:mod.id});
-            });
-        });
-
-        const totalLessons     = allLessons.length;
-        const completedLessons = allLessons.filter(l=>l.completed).length;
-        const progress         = totalLessons>0 ? Math.round((completedLessons/totalLessons)*100) : 0;
-
-        if (progress !== enrollment.progress)
-            await db.query('UPDATE enrollments SET progress=$1 WHERE id=$2', [progress, enrollment.id]);
-
-        modules.forEach(mod => {
-            const valid = (mod.lessons||[]).filter(l=>l&&l.id);
-            mod.totalLessons     = valid.length;
-            mod.completedLessons = valid.filter(l=>l.completed).length;
-        });
-
-        const currentLesson = allLessons.find(l=>!l.completed) || allLessons[allLessons.length-1];
-        const currentIdx    = currentLesson ? allLessons.indexOf(currentLesson) : -1;
-        modules.forEach(mod => {
-            (mod.lessons||[]).forEach(lesson => {
-                lesson.isCurrent = currentLesson ? lesson.id===currentLesson.id : false;
-            });
-        });
-
-        return res.render('course-dashboard', {
-            title:                   `${enrollment.title} – My Learning`,
-            courseId,
-            courseTitle:             enrollment.title,
-            courseLevel:             enrollment.level        || 'All Levels',
-            totalDuration:           enrollment.total_duration || 'Self-paced',
-            totalModules:            modules.length,
-            modules,
-            progress,
-            completedLessons,
-            totalLessons,
-            currentLessonId:         currentLesson?.id         ?? null,
-            currentLessonTitle:      currentLesson?.title       ?? '',
-            currentLessonDescription:'',
-            currentVideoUrl:         currentLesson?.video_url   ?? '',
-            currentModuleTitle:      currentLesson?.moduleTitle ?? '',
-            currentLessonCompleted:  currentLesson?.completed   ?? false,
-            hasPrevLesson:           currentIdx > 0,
-            hasNextLesson:           currentIdx >= 0 && currentIdx < allLessons.length-1,
-            enrolledAt:              enrollment.enrolled_at,
-        });
-    } catch (err) {
-        console.error('[learn] course dashboard error:', err);
-        return res.status(500).render('error', { title: 'Error', message: err.message });
-    }
+// Graphic Design - maps to graphic_design.hbs
+router.get('/services/graphic-design', (req, res) => {
+    res.render('graphic_design', {  // Direct file in /views
+        title: 'Graphic Design & Branding – NeurowexTech',
+        currentYear: new Date().getFullYear()
+    });
 });
 
-// ─── My Learning ──────────────────────────────────────────────────────────────
+// SEO - maps to seo.hbs
+router.get('/services/seo', (req, res) => {
+    res.render('seo', {  // Direct file in /views
+        title: 'SEO & Digital Marketing – NeurowexTech',
+        currentYear: new Date().getFullYear()
+    });
+});
 
-router.get('/my-learning', isAuthenticated, async (req, res) => {
-    try {
-        const userId = req.session.userId;
-        const r = await db.query(`
-            SELECT e.*, c.id AS course_id, c.title, c.category, c.level, c.image_url,
-                   c.description, c.total_duration,
-                   COALESCE(u.username,'NeurowexTech') AS instructor_name,
-                   COALESCE(ls.lesson_count,0) AS total_lessons
-            FROM enrollments e JOIN courses c ON e.course_id=c.id
-            LEFT JOIN users u ON c.instructor_id=u.id
-            LEFT JOIN (SELECT course_id,COUNT(*) as lesson_count FROM course_lessons GROUP BY course_id) ls
-                ON c.id=ls.course_id
-            WHERE e.user_id=$1 ORDER BY e.enrolled_at DESC
-        `, [userId]);
+// AI Solutions - maps to ai-solutions.hbs (note: filename has hyphen)
+router.get('/services/ai-solutions', (req, res) => {
+    res.render('ai-solutions', {  // Direct file in /views (ai-solutions.hbs)
+        title: 'AI Solutions – NeurowexTech',
+        currentYear: new Date().getFullYear()
+    });
+});
 
-        const enrollments      = r.rows || [];
-        const totalEnrolled    = enrollments.length;
-        const activeCourses    = enrollments.filter(e=>e.status==='active').length;
-        const completedCourses = enrollments.filter(e=>e.progress===100).length;
-        const averageProgress  = totalEnrolled>0
-            ? Math.round(enrollments.reduce((s,e)=>s+(e.progress||0),0)/totalEnrolled) : 0;
+// Cybersecurity - maps to cybersecurity.hbs
+router.get('/services/cybersecurity', (req, res) => {
+    res.render('cybersecurity', {  // Direct file in /views
+        title: 'Cybersecurity Services – NeurowexTech',
+        currentYear: new Date().getFullYear()
+    });
+});
 
-        return res.render('my-learning', {
-            title: 'My Learning – NeurowexTech',
-            enrollments,
-            stats: { totalEnrolled, activeCourses, completedCourses, averageProgress },
-        });
-    } catch (err) {
-        console.error('[learn] my-learning error:', err);
-        return res.status(500).render('error', { title: 'Error', message: err.message });
-    }
+// UI/UX Design - maps to uiux.hbs
+router.get('/services/ui-ux', (req, res) => {
+    res.render('uiux', {  // Direct file in /views (uiux.hbs)
+        title: 'UI/UX Design – NeurowexTech',
+        currentYear: new Date().getFullYear()
+    });
+});
+
+// E-commerce - maps to ecommerce.hbs
+router.get('/services/ecommerce', (req, res) => {
+    res.render('ecommerce', {  // Direct file in /views
+        title: 'E-Commerce Solutions – NeurowexTech',
+        currentYear: new Date().getFullYear()
+    });
+});
+
+// Data Analytics - maps to analytics.hbs
+router.get('/services/analytics', (req, res) => {
+    res.render('analytics', {  // Direct file in /views
+        title: 'Data Analytics & Business Intelligence – NeurowexTech',
+        currentYear: new Date().getFullYear()
+    });
+});
+
+// Social Media - maps to social-media.hbs (note: filename has hyphen)
+router.get('/services/social-media', (req, res) => {
+    res.render('social-media', {  // Direct file in /views (social-media.hbs)
+        title: 'Social Media & Content Creation – NeurowexTech',
+        currentYear: new Date().getFullYear()
+    });
+});
+
+// ========== TEST ROUTE ==========
+router.get('/services-test', (req, res) => {
+    const fs = require('fs');
+    const viewsPath = path.join(__dirname, '../../views');
+    
+    res.json({ 
+        success: true, 
+        message: 'Services routes are loaded!',
+        templateFiles: {
+            web_dev: fs.existsSync(path.join(viewsPath, 'web_dev.hbs')),
+            graphic_design: fs.existsSync(path.join(viewsPath, 'graphic_design.hbs')),
+            seo: fs.existsSync(path.join(viewsPath, 'seo.hbs')),
+            'ai-solutions': fs.existsSync(path.join(viewsPath, 'ai-solutions.hbs')),
+            cybersecurity: fs.existsSync(path.join(viewsPath, 'cybersecurity.hbs')),
+            uiux: fs.existsSync(path.join(viewsPath, 'uiux.hbs')),
+            ecommerce: fs.existsSync(path.join(viewsPath, 'ecommerce.hbs')),
+            analytics: fs.existsSync(path.join(viewsPath, 'analytics.hbs')),
+            'social-media': fs.existsSync(path.join(viewsPath, 'social-media.hbs'))
+        },
+        currentYear: new Date().getFullYear()
+    });
+});
+
+// ========== 404 for undefined service routes ==========
+router.get('/services/*', (req, res) => {
+    res.status(404).render('404', { 
+        title: 'Service Not Found',
+        message: 'The service page you are looking for does not exist.'
+    });
 });
 
 module.exports = router;

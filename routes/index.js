@@ -28,7 +28,6 @@ const homeRoutes       = safeRequire('./web/home.routes');
 const blogRoutes       = safeRequire('./web/blog.routes');
 const portfolioRoutes  = safeRequire('./web/portfolio.routes');
 const learnRoutes      = safeRequire('./web/learn.routes');
-const servicesRoutes   = safeRequire('./web/services.routes');
 
 // API routes
 const userApi          = safeRequire('./api/user.api');
@@ -48,7 +47,6 @@ router.use('/', homeRoutes);
 router.use('/', blogRoutes);
 router.use('/', portfolioRoutes);
 router.use('/', learnRoutes);
-router.use('/', servicesRoutes);        // Service pages (/services, /services/*)
 
 // ── API routes ────────────────────────────────────────────────────────────────
 router.use('/api/user',       userApi);
