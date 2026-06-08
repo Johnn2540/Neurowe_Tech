@@ -93,6 +93,10 @@ function setupHandlebars(app) {
     app.set('view engine', 'hbs');
     app.set('views', path.join(__dirname, '..', 'views'));
 
+    // Our .hbs files are complete standalone HTML — disable the default layout
+    // wrapper so hbs doesn't look for views/layout.hbs on every render call.
+    app.set('view options', { layout: false });
+
     const partialsPath = path.join(__dirname, '..', 'views', 'partials');
     if (fs.existsSync(partialsPath)) hbs.registerPartials(partialsPath);
 
