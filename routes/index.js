@@ -3,40 +3,24 @@
 
 const { Router } = require('express');
 
-// ── Safe require: logs a warning instead of crashing if a module fails ────────
-function safeRequire(path) {
-    try {
-        return require(path);
-    } catch (err) {
-        console.error(`[routes] Failed to load module "${path}": ${err.message}`);
-        // Return a no-op router so the app still starts
-        const r = Router();
-        r.use((req, res, next) => {
-            console.error(`[routes] Route from failed module "${path}" was called`);
-            next();
-        });
-        return r;
-    }
-}
-
-// Auth + dashboards
-const authRoutes       = safeRequire('./auth.routes');
-const dashboardRoutes  = safeRequire('./dashboard.routes');
+// Auth + dashboards (critical — crash fast if broken)
+const authRoutes      = require('./auth.routes');
+const dashboardRoutes = require('./dashboard.routes');
 
 // Web page routes
-const homeRoutes       = safeRequire('./web/home.routes');
-const blogRoutes       = safeRequire('./web/blog.routes');
-const portfolioRoutes  = safeRequire('./web/portfolio.routes');
-const learnRoutes      = safeRequire('./web/learn.routes');
+const homeRoutes      = require('./web/home.routes');
+const blogRoutes      = require('./web/blog.routes');
+const portfolioRoutes = require('./web/portfolio.routes');
+const learnRoutes     = require('./web/learn.routes');
 
 // API routes
-const userApi          = safeRequire('./api/user.api');
-const adminApi         = safeRequire('./api/admin.api');
-const contactsApi      = safeRequire('./api/contacts.api');
-const coursesApi       = safeRequire('./api/courses.api');
-const instructorApi    = safeRequire('./api/instructor.api');
-const uploadApi        = safeRequire('./api/upload.api');
-const publicApi        = safeRequire('./api/public.api');
+const userApi      = require('./api/user.api');
+const adminApi     = require('./api/admin.api');
+const contactsApi  = require('./api/contacts.api');
+const coursesApi   = require('./api/courses.api');
+const instructorApi = require('./api/instructor.api');
+const uploadApi    = require('./api/upload.api');
+const publicApi    = require('./api/public.api');
 
 const router = Router();
 
