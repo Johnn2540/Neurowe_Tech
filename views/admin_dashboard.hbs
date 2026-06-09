@@ -1415,7 +1415,7 @@ document.querySelectorAll('.adm-nav-item[data-page]').forEach(el=>{
 async function loadDashboard(){
   const[statsD,cD,uD,sD]=await Promise.all([
     api('/api/dashboard/stats'),api('/api/contacts'),
-    api('/api/admin/users'),api('/api/subscribers'),
+    api('/api/admin/users'),api('/api/admin/subscribers'),
   ]);
   const stats=statsD?.stats||{},contacts=cD?.contacts||[],users=uD?.users||[],subs=sD?.subscribers||[],unread=cD?.unread||0;
   setEl('sUsers',stats.total_users??users.length);setEl('sProjects',stats.total_projects??'—');
@@ -1519,12 +1519,12 @@ async function deleteContact(id){if(!confirm('Delete this message?'))return;cons
    SUBSCRIBERS
 ──────────────────────────────────── */
 async function loadSubscribers(){
-  const d=await api('/api/subscribers');const arr=d?.subscribers||[];
+  const d=await api('/api/admin/subscribers');const arr=d?.subscribers||[];
   setEl('subCountBadge',arr.length+' subscribers');
   const tb=document.getElementById('subsBody');if(!tb)return;
   tb.innerHTML=arr.length?arr.map((s,i)=>`<tr><td style="color:rgba(255,255,255,.3)">${i+1}</td><td class="td-name">${esc(s.email)}</td><td>${fmt(s.subscribed_at)}</td><td><button class="act-btn act-del" onclick="deleteSub(${s.id})"><i class="fas fa-trash"></i></button></td></tr>`).join(''):`<tr><td colspan="4"><div class="adm-empty"><i class="fas fa-at"></i><p>No subscribers yet</p></div></td></tr>`;
 }
-async function deleteSub(id){if(!confirm('Remove subscriber?'))return;const r=await api(`/api/subscribers/${id}`,{method:'DELETE'});if(r?.success){toast('Removed');loadSubscribers();loadDashboard();}}
+async function deleteSub(id){if(!confirm('Remove subscriber?'))return;const r=await api(`/api/admin/subscribers/${id}`,{method:'DELETE'});if(r?.success){toast('Removed');loadSubscribers();loadDashboard();}}
 
 /* ────────────────────────────────────
    PROJECTS
