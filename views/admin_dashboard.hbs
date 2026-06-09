@@ -216,6 +216,7 @@ body.dark .adm-topbar{background:#070d1a}
 .c-r .adm-stat-icon{background:rgba(239,68,68,.1);color:#f87171}
 .adm-stat-val{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:#fff;line-height:1;margin-bottom:4px}
 .adm-stat-label{font-size:.72rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.6px;font-weight:600}
+.adm-stat-sub{font-size:.72rem;color:rgba(92,198,120,.8);font-weight:600;margin-top:2px}
 .adm-stat-trend{position:absolute;top:18px;right:16px;font-size:.66rem;font-weight:700;padding:3px 8px;border-radius:99px}
 .trend-live{background:rgba(26,86,232,.2);color:var(--blue-l)}
 .trend-up{background:rgba(13,191,126,.15);color:var(--emerald)}
@@ -734,16 +735,16 @@ textarea.adm-input{resize:vertical}
 
 <!-- ─────────── ANALYTICS ─────────── -->
 <div class="adm-page" id="page-analytics">
-  <div class="pg-head"><div><div class="section-tag">Insights</div><h2>Analytics <span class="g-blue">Overview</span></h2><div class="sub">Platform performance metrics</div></div></div>
+  <div class="pg-head"><div><div class="section-tag">Insights</div><h2>Analytics <span class="g-blue">Overview</span></h2><div class="sub">Platform performance metrics — last 30 days</div></div><button class="btn-adm ghost sm" onclick="loadAnalytics()"><i class="fas fa-arrows-rotate"></i> Refresh</button></div>
   <div class="adm-stats">
-    <div class="adm-stat c-b"><div class="adm-stat-icon"><i class="fas fa-eye"></i></div><div class="adm-stat-val">4,820</div><div class="adm-stat-label">Page Views (month)</div></div>
-    <div class="adm-stat c-o"><div class="adm-stat-icon"><i class="fas fa-users"></i></div><div class="adm-stat-val" id="aUsers">—</div><div class="adm-stat-label">Registered Users</div></div>
-    <div class="adm-stat c-g"><div class="adm-stat-icon"><i class="fas fa-percent"></i></div><div class="adm-stat-val">68%</div><div class="adm-stat-label">Conversion Rate</div></div>
-    <div class="adm-stat c-p"><div class="adm-stat-icon"><i class="fas fa-clock"></i></div><div class="adm-stat-val">3m 24s</div><div class="adm-stat-label">Avg Session</div></div>
+    <div class="adm-stat c-b"><div class="adm-stat-icon"><i class="fas fa-users"></i></div><div class="adm-stat-val" id="aUsers">—</div><div class="adm-stat-label">Total Users</div><div class="adm-stat-sub" id="aUsersNew"></div></div>
+    <div class="adm-stat c-o"><div class="adm-stat-icon"><i class="fas fa-graduation-cap"></i></div><div class="adm-stat-val" id="aEnrolls">—</div><div class="adm-stat-label">Total Enrollments</div><div class="adm-stat-sub" id="aEnrollsNew"></div></div>
+    <div class="adm-stat c-g"><div class="adm-stat-icon"><i class="fas fa-at"></i></div><div class="adm-stat-val" id="aSubs">—</div><div class="adm-stat-label">Subscribers</div><div class="adm-stat-sub" id="aSubsNew"></div></div>
+    <div class="adm-stat c-p"><div class="adm-stat-icon"><i class="fas fa-inbox"></i></div><div class="adm-stat-val" id="aContacts">—</div><div class="adm-stat-label">Leads / Messages</div><div class="adm-stat-sub" id="aContactsNew"></div></div>
   </div>
   <div class="grid-2-1">
-    <div class="panel"><div class="panel-head"><div class="panel-title"><i class="fas fa-chart-bar"></i> Weekly Visitors</div></div><div class="panel-body"><canvas id="visitorChart" height="170"></canvas></div></div>
-    <div class="panel"><div class="panel-head"><div class="panel-title"><i class="fas fa-globe"></i> Top Countries</div></div><div class="panel-body" id="countryList"></div></div>
+    <div class="panel"><div class="panel-head"><div class="panel-title"><i class="fas fa-chart-bar"></i> Weekly Growth (8 weeks)</div></div><div class="panel-body"><canvas id="analyticsChart" height="170"></canvas></div></div>
+    <div class="panel"><div class="panel-head"><div class="panel-title"><i class="fas fa-trophy"></i> Top Courses by Enrollment</div></div><div class="panel-body" id="topCoursesList" style="padding:12px 0"></div></div>
   </div>
 </div>
 
@@ -1387,6 +1388,7 @@ const PAGE_META={
   settings:['Settings','Platform configuration'],
 };
 const LOADERS={
+  analytics:loadAnalytics,
   users:loadUsers,contacts:loadContacts,subscribers:loadSubscribers,
   projects:loadProjects,services:loadServices,blog:loadBlog,
   testimonials:loadTestimonials,team:loadTeam,faqs:loadFAQs,
@@ -1414,7 +1416,7 @@ document.querySelectorAll('.adm-nav-item[data-page]').forEach(el=>{
 ──────────────────────────────────── */
 async function loadDashboard(){
   const[statsD,cD,uD,sD]=await Promise.all([
-    api('/api/dashboard/stats'),api('/api/contacts'),
+    api('/api/admin/dashboard-stats'),api('/api/contacts'),
     api('/api/admin/users'),api('/api/admin/subscribers'),
   ]);
   const stats=statsD?.stats||{},contacts=cD?.contacts||[],users=uD?.users||[],subs=sD?.subscribers||[],unread=cD?.unread||0;
@@ -1446,19 +1448,67 @@ async function loadDashboard(){
 }
 
 /* ────────────────────────────────────
+   ANALYTICS
+──────────────────────────────────── */
+let analyticsChart=null;
+async function loadAnalytics(){
+  const d=await api('/api/admin/analytics');
+  if(!d?.success)return;
+  const s=d.stats||{};
+  const newTag=n=>n?`+${n} this month`:'';
+  setEl('aUsers',    s.total_users       ??'—'); setEl('aUsersNew',   newTag(s.new_users_month));
+  setEl('aEnrolls',  s.total_enrollments ??'—'); setEl('aEnrollsNew', newTag(s.new_enrollments_month));
+  setEl('aSubs',     s.total_subscribers ??'—'); setEl('aSubsNew',    newTag(s.new_subscribers_month));
+  setEl('aContacts', s.total_contacts    ??'—'); setEl('aContactsNew',newTag(s.new_contacts_month));
+
+  /* Chart */
+  const weekly=d.weekly||[];
+  const labels=weekly.map(w=>w.week);
+  const uData=weekly.map(w=>parseInt(w.users)||0);
+  const eData=weekly.map(w=>parseInt(w.enrollments)||0);
+  const sData=weekly.map(w=>parseInt(w.subscribers)||0);
+  const ac=document.getElementById('analyticsChart');
+  if(ac){
+    if(analyticsChart){analyticsChart.destroy();analyticsChart=null;}
+    analyticsChart=new Chart(ac,{type:'bar',data:{
+      labels,
+      datasets:[
+        {label:'New Users',data:uData,backgroundColor:'rgba(107,140,255,.7)',borderRadius:4,borderSkipped:false},
+        {label:'Enrollments',data:eData,backgroundColor:'rgba(92,198,120,.7)',borderRadius:4,borderSkipped:false},
+        {label:'Subscribers',data:sData,backgroundColor:'rgba(249,115,22,.6)',borderRadius:4,borderSkipped:false},
+      ]
+    },options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{labels:{color:'rgba(255,255,255,.5)',font:{size:11}}}},scales:{x:{ticks:{color:'rgba(255,255,255,.28)'},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'rgba(255,255,255,.28)',stepSize:1},grid:{color:'rgba(255,255,255,.04)'},beginAtZero:true}}}});
+  }
+
+  /* Top courses list */
+  const cl=document.getElementById('topCoursesList');
+  if(cl){
+    const courses=d.topCourses||[];
+    const max=parseInt(courses[0]?.enrolled_count)||1;
+    cl.innerHTML=courses.length
+      ?courses.map((c,i)=>`<div style="padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.05)">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+            <span style="font-size:.82rem;color:rgba(255,255,255,.8);font-weight:600">${i+1}. ${esc(c.title)}</span>
+            <span style="font-size:.78rem;color:rgba(255,255,255,.4)">${c.enrolled_count} enrolled</span>
+          </div>
+          <div style="height:4px;border-radius:2px;background:rgba(255,255,255,.06)">
+            <div style="height:100%;border-radius:2px;background:linear-gradient(90deg,#6b8cff,#5cc678);width:${Math.round((parseInt(c.enrolled_count)||0)/max*100)}%"></div>
+          </div>
+        </div>`).join('')
+      :`<div class="adm-empty" style="padding:32px"><i class="fas fa-book-open"></i><p>No published courses yet</p></div>`;
+  }
+}
+
+/* ────────────────────────────────────
    CHARTS
 ──────────────────────────────────── */
-let growthChart,donutChart,visitorChart;
+let growthChart,donutChart;
 const cOpts={plugins:{legend:{labels:{color:'rgba(255,255,255,.45)',font:{size:11}}}},scales:{x:{ticks:{color:'rgba(255,255,255,.28)'},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'rgba(255,255,255,.28)'},grid:{color:'rgba(255,255,255,.04)'}}}};
 function initCharts(){
   const gc=document.getElementById('growthChart');
   if(gc)growthChart=new Chart(gc,{type:'line',data:{labels:['Jan','Feb','Mar','Apr','May','Jun'],datasets:[{label:'Users',data:[0,0,0,0,0,0],borderColor:'#1a56e8',backgroundColor:'rgba(26,86,232,.08)',tension:.4,fill:true,pointBackgroundColor:'#1a56e8',pointRadius:4},{label:'Subscribers',data:[0,0,0,0,0,0],borderColor:'#f07020',backgroundColor:'rgba(240,112,32,.06)',tension:.4,fill:true,pointBackgroundColor:'#f07020',pointRadius:4}]},options:{...cOpts,responsive:true,maintainAspectRatio:true}});
   const dc=document.getElementById('donutChart');
   if(dc)donutChart=new Chart(dc,{type:'doughnut',data:{labels:['Direct','WhatsApp','Organic','Referral'],datasets:[{data:[38,28,22,12],backgroundColor:['#1a56e8','#25D366','#0dbf7e','#f07020'],borderWidth:0,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'bottom',labels:{color:'rgba(255,255,255,.45)',font:{size:11},padding:12}}},cutout:'72%'}});
-  const vc=document.getElementById('visitorChart');
-  if(vc)visitorChart=new Chart(vc,{type:'bar',data:{labels:['Week 1','Week 2','Week 3','Week 4'],datasets:[{label:'Page Views',data:[620,890,780,1020],backgroundColor:'rgba(26,86,232,.65)',borderRadius:6,borderSkipped:false}]},options:{...cOpts,responsive:true}});
-  const cl=document.getElementById('countryList');
-  if(cl)cl.innerHTML=[{f:'🇰🇪',n:'Kenya',p:42},{f:'🇺🇸',n:'United States',p:24},{f:'🇬🇧',n:'United Kingdom',p:12},{f:'🇳🇬',n:'Nigeria',p:10},{f:'🇿🇦',n:'South Africa',p:8}].map(c=>`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)"><span style="font-size:1.2rem">${c.f}</span><span style="flex:1;font-size:.82rem;color:rgba(255,255,255,.7)">${c.n}</span><div class="country-bar" style="width:80px"><div class="country-fill" style="width:${c.p}%"></div></div><span style="font-size:.73rem;color:rgba(255,255,255,.35);width:28px;text-align:right">${c.p}%</span></div>`).join('');
 }
 function updateCharts(u,s){
   if(!growthChart)return;

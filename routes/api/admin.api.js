@@ -217,6 +217,66 @@ router.get('/dashboard-stats', async (req, res) => {
     }
 });
 
+// ─── Analytics ────────────────────────────────────────────────────────────────
+
+router.get('/analytics', async (req, res) => {
+    const safe = async (sql, p=[]) => {
+        try { return await db.query(sql, p); } catch (e) { return { rows: [] }; }
+    };
+    try {
+        const [usersR, newUsersR, contactsR, newContactsR,
+               subsR, newSubsR, coursesR, enrollsR, newEnrollsR,
+               weeklyR, topCoursesR] = await Promise.all([
+            safe("SELECT COUNT(*) AS n FROM users"),
+            safe("SELECT COUNT(*) AS n FROM users WHERE created_at >= NOW() - INTERVAL '30 days'"),
+            safe("SELECT COUNT(*) AS n FROM contacts"),
+            safe("SELECT COUNT(*) AS n FROM contacts WHERE created_at >= NOW() - INTERVAL '30 days'"),
+            safe("SELECT COUNT(*) AS n FROM subscribers"),
+            safe("SELECT COUNT(*) AS n FROM subscribers WHERE subscribed_at >= NOW() - INTERVAL '30 days'"),
+            safe("SELECT COUNT(*) AS n FROM courses WHERE published=true"),
+            safe("SELECT COUNT(*) AS n FROM enrollments"),
+            safe("SELECT COUNT(*) AS n FROM enrollments WHERE enrolled_at >= NOW() - INTERVAL '30 days'"),
+            safe(`
+                SELECT TO_CHAR(gs.w, 'Mon DD') AS week,
+                       COALESCE((SELECT COUNT(*) FROM users        WHERE DATE_TRUNC('week',created_at)  = gs.w),0) AS users,
+                       COALESCE((SELECT COUNT(*) FROM enrollments  WHERE DATE_TRUNC('week',enrolled_at) = gs.w),0) AS enrollments,
+                       COALESCE((SELECT COUNT(*) FROM subscribers  WHERE DATE_TRUNC('week',subscribed_at)=gs.w),0) AS subscribers
+                FROM generate_series(
+                    DATE_TRUNC('week', NOW() - INTERVAL '7 weeks'),
+                    DATE_TRUNC('week', NOW()),
+                    INTERVAL '1 week'
+                ) AS gs(w)
+                ORDER BY gs.w
+            `),
+            safe(`
+                SELECT c.title, COALESCE(COUNT(e.id),0) AS enrolled_count
+                FROM courses c LEFT JOIN enrollments e ON e.course_id = c.id
+                WHERE c.published = true
+                GROUP BY c.id, c.title ORDER BY enrolled_count DESC LIMIT 6
+            `),
+        ]);
+        return res.json({
+            success: true,
+            stats: {
+                total_users:           parseInt(usersR.rows[0]?.n)      || 0,
+                new_users_month:       parseInt(newUsersR.rows[0]?.n)   || 0,
+                total_contacts:        parseInt(contactsR.rows[0]?.n)   || 0,
+                new_contacts_month:    parseInt(newContactsR.rows[0]?.n)|| 0,
+                total_subscribers:     parseInt(subsR.rows[0]?.n)       || 0,
+                new_subscribers_month: parseInt(newSubsR.rows[0]?.n)    || 0,
+                total_courses:         parseInt(coursesR.rows[0]?.n)    || 0,
+                total_enrollments:     parseInt(enrollsR.rows[0]?.n)    || 0,
+                new_enrollments_month: parseInt(newEnrollsR.rows[0]?.n) || 0,
+            },
+            weekly: weeklyR.rows,
+            topCourses: topCoursesR.rows,
+        });
+    } catch (err) {
+        console.error('[admin] analytics error:', err);
+        return res.status(500).json({ success: false, message: err.message });
+    }
+});
+
 // ─── Settings ─────────────────────────────────────────────────────────────────
 
 router.get('/settings', async (req, res) => {
