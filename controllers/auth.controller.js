@@ -1,7 +1,7 @@
 // controllers/auth.controller.js
 'use strict';
 
-const bcrypt          = require('bcrypt');
+const bcrypt          = require('bcryptjs');
 const { OAuth2Client} = require('google-auth-library');
 const db              = require('../db/postgres');
 const { ROLES }       = require('../config/constants');
