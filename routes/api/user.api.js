@@ -127,7 +127,7 @@ router.put('/profile', isAuthenticated, async (req, res) => {
 
 router.post('/change-password', isAuthenticated, async (req, res) => {
     try {
-        const bcrypt = require('bcrypt');
+        const bcrypt = require('bcryptjs');
         const { currentPassword, newPassword } = req.body;
         if (!newPassword || newPassword.length < 6)
             return res.status(400).json({ success: false, message: 'New password must be at least 6 characters' });

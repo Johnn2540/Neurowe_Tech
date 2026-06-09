@@ -55,22 +55,24 @@ router.delete('/delete-user/:id', async (req, res) => {
 
 router.get('/instructors', async (req, res) => {
     try {
-        const usersR = await db.query(`
-            SELECT id, username, email, role, is_active, created_at
-            FROM users WHERE role='instructor' ORDER BY created_at DESC
-        `);
-        const instructors = await Promise.all(usersR.rows.map(async (u) => {
-            const coursesR = await db.query(`
-                SELECT c.id, c.title, c.category, c.level, c.published
-                FROM courses c WHERE c.instructor_id=$1
+        const r = await db.query(`
+            SELECT u.id, u.username, u.email, u.role, u.is_active, u.created_at,
+                   COALESCE(json_agg(
+                       DISTINCT jsonb_build_object('id',c.id,'title',c.title,'category',c.category,'level',c.level,'published',c.published)
+                   ) FILTER (WHERE c.id IS NOT NULL), '[]') AS courses
+            FROM users u
+            LEFT JOIN (
+                SELECT c.id, c.title, c.category, c.level, c.published, c.instructor_id AS instructor_id
+                FROM courses c
                 UNION
-                SELECT c.id, c.title, c.category, c.level, c.published
-                FROM courses c JOIN instructor_course_assignments ica ON c.id=ica.course_id
-                WHERE ica.instructor_id=$1
-                ORDER BY title
-            `, [u.id]);
-            return { ...u, courses: coursesR.rows, course_count: coursesR.rows.length };
-        }));
+                SELECT c.id, c.title, c.category, c.level, c.published, ica.instructor_id
+                FROM courses c JOIN instructor_course_assignments ica ON c.id = ica.course_id
+            ) c ON c.instructor_id = u.id
+            WHERE u.role = 'instructor'
+            GROUP BY u.id, u.username, u.email, u.role, u.is_active, u.created_at
+            ORDER BY u.created_at DESC
+        `);
+        const instructors = r.rows.map(u => ({ ...u, course_count: u.courses.length }));
         return res.json({ success: true, instructors });
     } catch (err) {
         console.error('[admin] GET /instructors error:', err);

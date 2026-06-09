@@ -4,7 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>{{title}}</title>
-    
+    <meta name="description" content="{{course.description}}" />
+    <link rel="canonical" href="https://neurowextech.co.ke/learn/course/{{course.id}}" />
+    <!-- Open Graph -->
+    <meta property="og:title"       content="{{title}}" />
+    <meta property="og:description" content="{{course.description}}" />
+    <meta property="og:url"         content="https://neurowextech.co.ke/learn/course/{{course.id}}" />
+    <meta property="og:type"        content="website" />
+    <meta property="og:site_name"   content="NeurowexTech" />
+    {{#if course.image_url}}<meta property="og:image" content="{{course.image_url}}" />{{/if}}
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:site"        content="@neurowextech" />
+    <meta name="twitter:title"       content="{{title}}" />
+    <meta name="twitter:description" content="{{course.description}}" />
+    {{#if course.image_url}}<meta name="twitter:image" content="{{course.image_url}}" />{{/if}}
+    <!-- Course structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      "name": "{{course.title}}",
+      "description": "{{course.description}}",
+      "url": "https://neurowextech.co.ke/learn/course/{{course.id}}",
+      {{#if course.image_url}}"image": "{{course.image_url}}",{{/if}}
+      "provider": {
+        "@type": "Organization",
+        "name": "NeurowexTech",
+        "url": "https://neurowextech.co.ke"
+      },
+      "educationalLevel": "{{course.level}}",
+      "courseMode": "online",
+      "offers": {
+        "@type": "Offer",
+        "price": "{{course.price}}",
+        "priceCurrency": "KES",
+        "availability": "https://schema.org/InStock"
+      }
+    }
+    </script>
+
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->

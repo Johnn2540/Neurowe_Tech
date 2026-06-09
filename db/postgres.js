@@ -4,12 +4,9 @@ const { Pool } = require('pg');
 require('dotenv').config();
 
 const connectionString = process.env.DATABASE_URL;
-console.log('📡 Attempting to connect to PostgreSQL...');
-console.log('🔗 Connection string exists:', !!connectionString);
 
 if (!connectionString) {
-    console.error('❌ DATABASE_URL is not defined in .env file');
-    process.exit(1);
+    throw new Error('DATABASE_URL environment variable must be set');
 }
 
 // ─── Pool ─────────────────────────────────────────────────────────────────────
@@ -24,7 +21,7 @@ const pool = new Pool({
     max:                           process.env.VERCEL === '1' ? 5 : 10,
     idleTimeoutMillis:             30_000,
     connectionTimeoutMillis:       10_000,
-    allowExitOnIdle:               true,
+    allowExitOnIdle:               process.env.VERCEL !== '1',
     maxUses:                       7_500,
     keepAlive:                     true,
     keepAliveInitialDelayMillis:   10_000,

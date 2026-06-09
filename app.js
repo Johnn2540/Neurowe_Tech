@@ -3,8 +3,10 @@
 
 require('dotenv').config();
 
-const express = require('express');
-const path    = require('path');
+const express   = require('express');
+const path      = require('path');
+const helmet    = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 // ── Validate critical imports BEFORE using them ───────────────────────────────
 const { runStartupMigrations } = require('./config/database');
@@ -41,14 +43,23 @@ app.use('/images', express.static(path.join(__dirname, 'views', 'images')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// ── Security headers ──────────────────────────────────────────────────────────
-app.use((req, res, next) => {
-    res.setHeader('X-Content-Type-Options',   'nosniff');
-    res.setHeader('X-Frame-Options',          'SAMEORIGIN');
-    res.setHeader('X-XSS-Protection',         '1; mode=block');
-    res.setHeader('Referrer-Policy',          'strict-origin-when-cross-origin');
-    next();
+// ── Security headers (Helmet) ─────────────────────────────────────────────────
+// CSP disabled — pages load assets from Google Fonts, cdnjs, etc.
+// Enable and configure CSP directives before hardening further.
+app.use(helmet({ contentSecurityPolicy: false }));
+
+// ── Auth rate limiting ────────────────────────────────────────────────────────
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15-minute window
+    max: 20,                   // max 20 attempts per window per IP
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { success: false, message: 'Too many requests, please try again in 15 minutes.' },
+    skip: () => process.env.NODE_ENV === 'test',
 });
+app.use('/api/login',    authLimiter);
+app.use('/api/register', authLimiter);
+app.use('/api/auth',     authLimiter);
 
 // ── Request logging (dev only) ────────────────────────────────────────────────
 if (process.env.NODE_ENV !== 'production') {

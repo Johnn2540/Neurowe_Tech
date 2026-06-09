@@ -117,4 +117,72 @@ router.post('/subscribe', async (req, res) => {
     }
 });
 
+// ─── Sitemap ──────────────────────────────────────────────────────────────────
+
+const SITE = 'https://neurowextech.co.ke';
+
+const STATIC_PAGES = [
+    { loc: '/',                 changefreq: 'weekly',  priority: '1.0' },
+    { loc: '/about',            changefreq: 'monthly', priority: '0.8' },
+    { loc: '/services',         changefreq: 'monthly', priority: '0.8' },
+    { loc: '/contact',          changefreq: 'monthly', priority: '0.7' },
+    { loc: '/blog',             changefreq: 'daily',   priority: '0.9' },
+    { loc: '/learn',            changefreq: 'weekly',  priority: '0.9' },
+    { loc: '/web_dev',          changefreq: 'monthly', priority: '0.7' },
+    { loc: '/graphic_design',   changefreq: 'monthly', priority: '0.7' },
+    { loc: '/seo',              changefreq: 'monthly', priority: '0.7' },
+    { loc: '/ai-solutions',     changefreq: 'monthly', priority: '0.7' },
+    { loc: '/cybersecurity',    changefreq: 'monthly', priority: '0.7' },
+    { loc: '/uiux',             changefreq: 'monthly', priority: '0.7' },
+    { loc: '/ecommerce',        changefreq: 'monthly', priority: '0.7' },
+    { loc: '/analytics',        changefreq: 'monthly', priority: '0.7' },
+    { loc: '/social-media',     changefreq: 'monthly', priority: '0.7' },
+    { loc: '/kids-coding',      changefreq: 'monthly', priority: '0.6' },
+    { loc: '/become-instructor',changefreq: 'monthly', priority: '0.6' },
+    { loc: '/learn/fullstack',  changefreq: 'monthly', priority: '0.7' },
+    { loc: '/learn/ai',         changefreq: 'monthly', priority: '0.7' },
+    { loc: '/portfolio',        changefreq: 'monthly', priority: '0.7' },
+];
+
+router.get('/sitemap.xml', async (req, res) => {
+    try {
+        const [postsR, coursesR] = await Promise.all([
+            db.query("SELECT slug, updated_at, created_at FROM blog_posts WHERE published=true ORDER BY created_at DESC")
+              .catch(() => ({ rows: [] })),
+            db.query("SELECT id, updated_at, created_at FROM courses WHERE published=true ORDER BY created_at DESC")
+              .catch(() => ({ rows: [] })),
+        ]);
+
+        const url = (loc, lastmod, changefreq, priority) =>
+            `  <url>\n    <loc>${SITE}${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
+
+        const today = new Date().toISOString().split('T')[0];
+
+        const staticUrls = STATIC_PAGES.map(p => url(p.loc, today, p.changefreq, p.priority));
+
+        const blogUrls = postsR.rows.map(p => {
+            const d = (p.updated_at || p.created_at || new Date()).toISOString().split('T')[0];
+            return url(`/blog/${p.slug}`, d, 'monthly', '0.8');
+        });
+
+        const courseUrls = coursesR.rows.map(c => {
+            const d = (c.updated_at || c.created_at || new Date()).toISOString().split('T')[0];
+            return url(`/learn/course/${c.id}`, d, 'weekly', '0.8');
+        });
+
+        const xml = [
+            '<?xml version="1.0" encoding="UTF-8"?>',
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+            ...staticUrls, ...blogUrls, ...courseUrls,
+            '</urlset>',
+        ].join('\n');
+
+        res.header('Content-Type', 'application/xml');
+        return res.send(xml);
+    } catch (err) {
+        console.error('[sitemap] error:', err.message);
+        return res.status(500).send('Sitemap generation failed');
+    }
+});
+
 module.exports = router;

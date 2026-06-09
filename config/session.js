@@ -12,23 +12,18 @@ const sessionStore = new pgSession({
     pool,
     tableName: 'session',
     createTableIfMissing: true,
-    // Add timeout for session operations
-    ttl: 24 * 60 * 60, // 24 hours in seconds
-    // Don't let session errors crash the app
-    errorLog: (err) => {
-        console.error('Session store error:', err.message);
-        // Don't throw - just log and continue
-    },
-    // Prune expired sessions every hour
+    ttl: 24 * 60 * 60,
+    errorLog: (err) => { console.error('Session store error:', err.message); },
     pruneSessionInterval: 60,
-    // Disable automatic table creation if connection fails (prevents crash loop)
-    createTableIfMissing: false, // Set to false temporarily if connection fails
 });
 
 // Custom middleware to handle session errors gracefully
 const sessionMiddleware = session({
     store: sessionStore,
-    secret: process.env.SESSION_SECRET || 'neurowex_secret_2024',
+    secret: (() => {
+        if (!process.env.SESSION_SECRET) throw new Error('SESSION_SECRET environment variable must be set');
+        return process.env.SESSION_SECRET;
+    })(),
     resave: false,
     saveUninitialized: false,
     cookie: {

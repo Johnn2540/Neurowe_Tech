@@ -78,5 +78,3 @@ module.exports = {
     getPublicIdFromUrl
 };
 
-// DEBUG: Check the file size limit
-console.log('Upload file size limit:', upload.limits.fileSize / (1024 * 1024), 'MB');

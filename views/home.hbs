@@ -5,9 +5,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Web & App Development in Kenya | NeuroWex Tech</title>
   <meta name="description" content="NeuroWex Tech — professional web development, mobile apps, graphic design, SEO and digital skills training in Kenya." />
+  <meta name="keywords" content="web development Kenya, mobile app development Nairobi, SEO Kenya, graphic design, digital skills training, NeurowexTech" />
   <link rel="canonical" href="https://neurowextech.co.ke/" />
-  <meta property="og:title" content="NeuroWex Tech | Web & App Development Kenya" />
-  <meta property="og:type" content="website" />
+  <!-- Open Graph -->
+  <meta property="og:title"       content="NeuroWex Tech | Web & App Development Kenya" />
+  <meta property="og:description" content="Professional web development, mobile apps, graphic design, SEO and digital skills training in Kenya." />
+  <meta property="og:url"         content="https://neurowextech.co.ke/" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="NeurowexTech" />
+  <meta property="og:locale"      content="en_KE" />
+  <meta property="og:image"       content="https://neurowextech.co.ke/images/og-home.jpg" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@neurowextech" />
+  <meta name="twitter:title"       content="NeuroWex Tech | Web & App Development Kenya" />
+  <meta name="twitter:description" content="Professional web development, mobile apps, graphic design, SEO and digital skills training in Kenya." />
+  <meta name="twitter:image"       content="https://neurowextech.co.ke/images/og-home.jpg" />
+  <!-- Organization + WebSite structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://neurowextech.co.ke/#organization",
+        "name": "NeurowexTech",
+        "url": "https://neurowextech.co.ke",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://neurowextech.co.ke/images/logo.png"
+        },
+        "sameAs": [
+          "https://twitter.com/neurowextech",
+          "https://linkedin.com/company/neurowextech"
+        ],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+254769329340",
+          "contactType": "customer service",
+          "availableLanguage": "English"
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Nairobi",
+          "addressCountry": "KE"
+        }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://neurowextech.co.ke/#website",
+        "url": "https://neurowextech.co.ke",
+        "name": "NeurowexTech",
+        "publisher": { "@id": "https://neurowextech.co.ke/#organization" },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://neurowextech.co.ke/blog?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    ]
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -643,6 +703,49 @@ footer{background:#060d1e;color:rgba(255,255,255,.5);font-size:.82rem;border-top
   .footer-legal{justify-content:center;gap:11px}
 }
 @media print{.navbar,#wa-float,#wa-tooltip,#theme-toggle,#back-to-top,#scroll-progress,#cookie-bar{display:none!important}}
+
+/* PORTFOLIO GRID */
+.port-grid{display:grid;grid-template-columns:1fr;gap:20px}
+.port-card{display:flex;flex-direction:column;background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);overflow:hidden;transition:var(--t);text-decoration:none;color:inherit}
+.port-card:hover{transform:translateY(-6px);box-shadow:var(--sh-lg);border-color:rgba(37,99,235,.15)}
+.port-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--primary),var(--blue),var(--accent));transform:scaleX(0);transform-origin:left;transition:transform .38s;z-index:3}
+.port-card:hover::before{transform:scaleX(1)}
+.port-thumb{position:relative;width:100%;height:190px;overflow:hidden;background:var(--surface);flex-shrink:0}
+.port-img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.port-card:hover .port-img{transform:scale(1.06)}
+.port-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.4rem;background:linear-gradient(135deg,var(--blue-pale),rgba(224,92,42,.06));color:var(--slate)}
+.port-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(6,9,26,.88) 100%);display:flex;align-items:flex-end;padding:16px;opacity:0;transition:opacity .3s}
+.port-card:hover .port-overlay{opacity:1}
+.port-ov-cat{display:inline-block;background:rgba(37,99,235,.4);color:rgba(147,197,253,.95);border-radius:var(--r-pill);padding:2px 10px;font-size:.64rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
+.port-ov-name{font-family:var(--font-body);font-size:.95rem;font-weight:700;color:#fff}
+.port-body{padding:14px 18px 16px;position:relative}
+.port-cat{font-size:.67rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.9px;margin-bottom:5px}
+.port-name{font-family:var(--font-body);font-size:.95rem;font-weight:700;color:var(--ink);margin-bottom:8px;line-height:1.35}
+.port-link{font-size:.78rem;font-weight:700;color:var(--blue);display:inline-flex;align-items:center;gap:5px;transition:gap .18s}
+.port-card:hover .port-link{gap:9px}
+
+/* BLOG GRID */
+.blog-grid{display:grid;grid-template-columns:1fr;gap:20px}
+.blog-card{display:flex;flex-direction:column;background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);overflow:hidden;transition:var(--t);text-decoration:none;color:inherit}
+.blog-card:hover{transform:translateY(-6px);box-shadow:var(--sh-lg);border-color:rgba(37,99,235,.15)}
+.blog-thumb{width:100%;height:174px;overflow:hidden;background:var(--surface);flex-shrink:0}
+.blog-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .45s}
+.blog-card:hover .blog-thumb img{transform:scale(1.05)}
+.blog-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.2rem;background:linear-gradient(135deg,var(--blue-pale),rgba(224,92,42,.06));color:var(--slate)}
+.blog-body{padding:16px 18px 18px;flex:1;display:flex;flex-direction:column;gap:6px}
+.blog-cat{font-size:.67rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.9px}
+.blog-title{font-family:var(--font-body);font-size:.97rem;font-weight:700;color:var(--ink);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.blog-excerpt{font-size:.8rem;color:var(--slate);line-height:1.65;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.blog-meta{display:flex;align-items:center;justify-content:space-between;font-size:.72rem;color:var(--slate-l);gap:8px}
+.blog-meta i{font-size:.64rem}
+.blog-read{margin-top:4px;font-size:.79rem;font-weight:700;color:var(--blue);display:inline-flex;align-items:center;gap:5px;transition:gap .18s}
+.blog-card:hover .blog-read{gap:9px}
+@media(min-width:600px){.blog-grid{grid-template-columns:repeat(2,1fr)}.port-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:992px){.blog-grid{grid-template-columns:repeat(3,1fr)}.port-grid{grid-template-columns:repeat(3,1fr)}}
+body.dark .blog-card,body.dark .port-card{background:#1a2236;border-color:rgba(255,255,255,.07)}
+body.dark .blog-title,body.dark .port-name{color:rgba(255,255,255,.88)}
+body.dark .blog-excerpt,body.dark .port-cat{color:rgba(255,255,255,.45)}
+body.dark .blog-meta{color:rgba(255,255,255,.3)}
 </style>
 </head>
 <body>
@@ -828,7 +931,7 @@ footer{background:#060d1e;color:rgba(255,255,255,.5);font-size:.82rem;border-top
           <div class="proof-divider"></div>
           <div class="proof-stat"><div class="stat-val">500+</div><div class="stat-lbl">Projects</div></div>
           <div class="proof-divider"></div>
-          <div class="proof-stat"><div class="stat-val">6wks</div><div class="stat-lbl">MVP Avg</div></div>
+          <div class="proof-stat"><div class="stat-val">~6 Wks</div><div class="stat-lbl">MVP Avg</div></div>
           <div class="proof-divider"></div>
           <div class="proof-stat"><div class="stat-val">20+</div><div class="stat-lbl">Countries</div></div>
         </div>
@@ -897,7 +1000,7 @@ footer{background:#060d1e;color:rgba(255,255,255,.5);font-size:.82rem;border-top
       <div class="learn-banner-text">
         <div class="learn-banner-icon"><i class="fas fa-graduation-cap"></i></div>
         <div class="learn-banner-content">
-          <h4>🎓 NeuroWex Tech Academy is live!</h4>
+          <h4>NeuroWex Tech Academy is Live</h4>
           <p>Master web dev, mobile apps, UI/UX & AI — designed for Kenyan builders</p>
         </div>
       </div>
@@ -1008,6 +1111,47 @@ footer{background:#060d1e;color:rgba(255,255,255,.5);font-size:.82rem;border-top
     </div>
   </div>
 </section>
+
+<!-- FEATURED PROJECTS -->
+{{#if featuredProjects.length}}
+<section class="section-py bg-ghost" id="portfolio">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:44px;" data-aos="fade-up">
+      <div class="section-tag">Our Work</div>
+      <h2 class="section-title">Featured <span class="g-blue">Projects</span></h2>
+      <p class="section-sub" style="margin:0 auto;">A selection of recent work — from product launches to enterprise platforms built for scale.</p>
+    </div>
+    <div class="port-grid">
+      {{#each featuredProjects}}
+      <a href="/portfolio" class="port-card card-white" data-aos="zoom-in" data-aos-delay="60">
+        <div class="port-thumb">
+          {{#if image_url}}
+          <img src="{{image_url}}" alt="{{name}}" loading="lazy" class="port-img" onerror="this.style.display='none';this.parentElement.querySelector('.port-fallback').style.display='flex'"/>
+          <div class="port-fallback" style="display:none"><i class="fas fa-code"></i></div>
+          {{else}}
+          <div class="port-fallback"><i class="fas fa-code"></i></div>
+          {{/if}}
+          <div class="port-overlay">
+            <div>
+              <div class="port-ov-cat">{{category}}</div>
+              <div class="port-ov-name">{{name}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="port-body">
+          <div class="port-cat">{{category}}{{#if year}} · {{year}}{{/if}}</div>
+          <div class="port-name">{{name}}</div>
+          <div class="port-link"><i class="fas fa-arrow-right"></i> View Project</div>
+        </div>
+      </a>
+      {{/each}}
+    </div>
+    <div style="text-align:center;margin-top:40px;" data-aos="fade-up">
+      <a href="/portfolio" class="btn-outline">See All Projects <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+{{/if}}
 
 <!-- STATS — dark brand section -->
 <section class="stats-section section-py-sm">
@@ -1133,7 +1277,7 @@ footer{background:#060d1e;color:rgba(255,255,255,.5);font-size:.82rem;border-top
     <div class="testimonial-grid" style="margin-top:16px;">
       <div class="testimonial-card card-white" data-aos="fade-up"><div class="t-stars">★★★★★</div><p class="t-quote">"They delivered our MVP in just 5 weeks. The team is incredibly responsive and the code quality is exceptional. Highly recommend NeurowexTech."</p><div class="t-author"><div class="t-avatar" style="background:var(--blue-pale);color:var(--blue)">👨‍💼</div><div><div class="t-name">John Smith</div><div class="t-role">CEO, TechStartup Inc.</div></div></div></div>
       <div class="testimonial-card card-white" data-aos="fade-up" data-aos-delay="60"><div class="t-stars">★★★★★</div><p class="t-quote">"NeurowexTech is professional, responsive, and genuinely talented. They exceeded our expectations in every way. A truly world-class team."</p><div class="t-author"><div class="t-avatar" style="background:rgba(5,150,105,.1);color:var(--emerald)">👩‍💻</div><div><div class="t-name">Sarah Johnson</div><div class="t-role">CTO, GreenScale</div></div></div></div>
-      <div class="testimonial-card card-white" data-aos="fade-up" data-aos-delay="120"><div class="t-stars">★★★★★</div><p class="t-quote">"Our revenue doubled after the new platform launched. The AI features they built are genuinely impressive and our users absolutely love them."</p><div class="t-author"><div class="t-avatar" style="background:var(--accent-pale);color:var(--accent)">👨‍🎨</div><div><div class="t-name">Michael Brown</div><div class="t-role">Founder, EcoShop</div></div></div></div>
+      <div class="testimonial-card card-white" data-aos="fade-up" data-aos-delay="120"><div class="t-stars">★★★★★</div><p class="t-quote">"From brief to launch in just 6 weeks — they brought our vision to life with precision and real polish. We hit 1,000 active users in the first month."</p><div class="t-author"><div class="t-avatar" style="background:rgba(13,148,136,.12);color:var(--teal)">👩‍💼</div><div><div class="t-name">Amina Odhiambo</div><div class="t-role">Co-Founder, PesaFlow · Nairobi</div></div></div></div>
     </div>
   </div>
 </section>
@@ -1157,6 +1301,46 @@ footer{background:#060d1e;color:rgba(255,255,255,.5);font-size:.82rem;border-top
     </div>
   </div>
 </section>
+
+<!-- RECENT BLOG POSTS -->
+{{#if recentBlogs.length}}
+<section class="section-py" id="recent-articles">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:44px;" data-aos="fade-up">
+      <div class="section-tag">Latest Insights</div>
+      <h2 class="section-title">From the <span class="g-blue">Blog</span></h2>
+      <p class="section-sub" style="margin:0 auto;">Practical guides, industry news, and deep dives from the NeurowexTech team.</p>
+    </div>
+    <div class="blog-grid">
+      {{#each recentBlogs}}
+      <a href="/blog/{{slug}}" class="blog-card card-white" data-aos="fade-up" data-aos-delay="60">
+        <div class="blog-thumb">
+          {{#if image_url}}
+          <img src="{{image_url}}" alt="{{title}}" loading="lazy" onerror="this.style.display='none';this.parentElement.querySelector('.blog-fallback').style.display='flex'"/>
+          <div class="blog-fallback" style="display:none"><i class="fas fa-newspaper"></i></div>
+          {{else}}
+          <div class="blog-fallback"><i class="fas fa-newspaper"></i></div>
+          {{/if}}
+        </div>
+        <div class="blog-body">
+          {{#if category}}<div class="blog-cat">{{category}}</div>{{/if}}
+          <div class="blog-title">{{title}}</div>
+          {{#if excerpt}}<p class="blog-excerpt">{{excerpt}}</p>{{/if}}
+          <div class="blog-meta">
+            <span><i class="fas fa-user"></i> {{author}}</span>
+            <span><i class="far fa-calendar-alt"></i> {{created_at}}</span>
+          </div>
+          <div class="blog-read">Read Article <i class="fas fa-arrow-right"></i></div>
+        </div>
+      </a>
+      {{/each}}
+    </div>
+    <div style="text-align:center;margin-top:40px;" data-aos="fade-up">
+      <a href="/blog" class="btn-outline">View All Articles <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+{{/if}}
 
 <!-- NEWSLETTER -->
 <section class="newsletter-section section-py-sm">

@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+
+# Block private/admin paths
+Disallow: /admin_dashboard
+Disallow: /api/
+Disallow: /login
+Disallow: /sign_up
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /user_dashboard
+Disallow: /instructor/
+Disallow: /learn/*/dashboard
+
+# Sitemap
+Sitemap: https://neurowextech.co.ke/sitemap.xml
