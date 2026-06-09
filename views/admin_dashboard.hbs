@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 {{!--
   ╔══════════════════════════════════════════════════════════════════════════╗
   ║  admin_dashboard.hbs — NeurowexTech Admin Panel                         ║
@@ -109,7 +109,7 @@ body.dark .adm-sidebar{background:#070d1a}
 .adm-user-name{font-size:.82rem;font-weight:700;color:#fff;white-space:nowrap}
 .adm-user-role{font-size:.62rem;color:var(--orange-l);font-weight:700;text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
 .adm-sidebar.col .adm-user-card>div:last-child{display:none}
-.adm-nav{flex:1;overflow-y:auto;overflow-x:hidden;padding:10px 0}
+.adm-nav{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:10px 0}
 .adm-nav::-webkit-scrollbar{width:0}
 .adm-sec-label{padding:14px 20px 4px;font-size:.58rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,.22);white-space:nowrap}
 .adm-sidebar.col .adm-sec-label{opacity:0}
@@ -136,7 +136,7 @@ body.dark .adm-sidebar{background:#070d1a}
 }
 .adm-sidebar.col .adm-nav-link:hover::after{opacity:1;transform:translateX(0)}
 .adm-nav-div{border:none;border-top:1px solid rgba(255,255,255,.06);margin:8px 12px}
-.adm-sidebar-foot{padding:10px 8px;border-top:1px solid rgba(255,255,255,.06);flex-shrink:0}
+.adm-sidebar-foot{padding:10px 8px;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0;background:inherit}
 
 /* ══════════════════════════════════════════
    TOPBAR
@@ -1580,111 +1580,111 @@ async function deleteSub(id){if(!confirm('Remove subscriber?'))return;const r=aw
    PROJECTS
 ──────────────────────────────────── */
 async function loadProjects(){
-  const d=await api('/api/projects');const arr=d?.projects||[];
+  const d=await api('/api/admin/projects');const arr=d?.projects||[];
   const tb=document.getElementById('projectsBody');if(!tb)return;
   tb.innerHTML=arr.length?arr.map(p=>`<tr><td class="td-name">${esc(p.name)}</td><td><span class="pill pill-b">${esc(p.category||'Web')}</span></td><td>${esc(p.year||'—')}</td><td style="font-size:.72rem;color:rgba(255,255,255,.4)">${esc(p.tech_stack||'—')}</td><td><span class="pill ${p.featured?'pill-g':'pill-dim'}">${p.featured?'Yes':'No'}</span></td><td>${p.client_url?`<a href="${esc(p.client_url)}" target="_blank" class="pill pill-b">Visit ↗</a>`:'—'}</td><td><button class="act-btn act-del" onclick="deleteProject(${p.id})"><i class="fas fa-trash"></i></button></td></tr>`).join(''):`<tr><td colspan="7"><div class="adm-empty"><i class="fas fa-briefcase"></i><p>No projects yet</p></div></td></tr>`;
 }
 async function createProject(){
   const name=document.getElementById('projName').value.trim();
   if(!name)return toast('Project name required','error');
-  const r=await api('/api/projects',{method:'POST',body:JSON.stringify({name,description:document.getElementById('projDesc').value,category:document.getElementById('projCategory').value,year:parseInt(document.getElementById('projYear').value)||2025,client_url:document.getElementById('projUrl').value,tech_stack:document.getElementById('projTech').value,featured:document.getElementById('projFeatured').checked})});
+  const r=await api('/api/admin/projects',{method:'POST',body:JSON.stringify({name,description:document.getElementById('projDesc').value,category:document.getElementById('projCategory').value,year:parseInt(document.getElementById('projYear').value)||2025,client_url:document.getElementById('projUrl').value,tech_stack:document.getElementById('projTech').value,featured:document.getElementById('projFeatured').checked})});
   if(r?.success){toast('Project added!');closeModal('modal-add-project');document.getElementById('projName').value='';loadProjects();loadDashboard();}
 }
-async function deleteProject(id){if(!confirm('Delete project?'))return;const r=await api(`/api/projects/${id}`,{method:'DELETE'});if(r?.success){toast('Deleted');loadProjects();loadDashboard();}}
+async function deleteProject(id){if(!confirm('Delete project?'))return;const r=await api(`/api/admin/projects/${id}`,{method:'DELETE'});if(r?.success){toast('Deleted');loadProjects();loadDashboard();}}
 
 /* ────────────────────────────────────
    SERVICES
 ──────────────────────────────────── */
 async function loadServices(){
-  const d=await api('/api/services');const arr=d?.services||[];
+  const d=await api('/api/admin/services');const arr=d?.services||[];
   const tb=document.getElementById('servicesBody');if(!tb)return;
   tb.innerHTML=arr.length?arr.map(s=>`<tr><td class="td-name">${esc(s.name)}</td><td><code style="color:var(--blue-l);font-size:.72rem">${esc(s.icon_class||'—')}</code></td><td>${esc(s.price||'—')}</td><td><span class="pill ${s.visible?'pill-g':'pill-dim'}">${s.visible?'Visible':'Hidden'}</span></td><td><button class="act-btn act-del" onclick="deleteService(${s.id})"><i class="fas fa-trash"></i></button></td></tr>`).join(''):`<tr><td colspan="5"><div class="adm-empty"><i class="fas fa-layer-group"></i><p>No services</p></div></td></tr>`;
 }
 async function createService(){
   const name=document.getElementById('svcName').value.trim();if(!name)return toast('Name required','error');
-  const r=await api('/api/services',{method:'POST',body:JSON.stringify({name,description:document.getElementById('svcDesc').value,icon_class:document.getElementById('svcIcon').value,price:document.getElementById('svcPrice').value})});
+  const r=await api('/api/admin/services',{method:'POST',body:JSON.stringify({name,description:document.getElementById('svcDesc').value,icon_class:document.getElementById('svcIcon').value,price:document.getElementById('svcPrice').value})});
   if(r?.success){toast('Service added!');closeModal('modal-add-service');loadServices();}
 }
-async function deleteService(id){if(!confirm('Delete service?'))return;const r=await api(`/api/services/${id}`,{method:'DELETE'});if(r?.success){toast('Deleted');loadServices();}}
+async function deleteService(id){if(!confirm('Delete service?'))return;const r=await api(`/api/admin/services/${id}`,{method:'DELETE'});if(r?.success){toast('Deleted');loadServices();}}
 
 /* ────────────────────────────────────
    BLOG
 ──────────────────────────────────── */
 async function loadBlog(){
-  const d=await api('/api/blog');const arr=d?.posts||[];
+  const d=await api('/api/admin/blog');const arr=d?.posts||[];
   const tb=document.getElementById('blogBody');if(!tb)return;
   tb.innerHTML=arr.length?arr.map(p=>`<tr><td class="td-name">${esc(p.title)}</td><td><span class="pill pill-b">${esc(p.category||'General')}</span></td><td>${esc(p.author||'Admin')}</td><td><span class="pill ${p.published?'pill-g':'pill-dim'}">${p.published?'Live':'Draft'}</span></td><td>${fmt(p.created_at)}</td><td><button class="act-btn act-del" onclick="deleteBlog(${p.id})"><i class="fas fa-trash"></i></button></td></tr>`).join(''):`<tr><td colspan="6"><div class="adm-empty"><i class="fas fa-feather-pointed"></i><p>No posts yet</p></div></td></tr>`;
 }
 async function createBlogPost(){
   const title=document.getElementById('blogTitle').value.trim();if(!title)return toast('Title required','error');
-  const r=await api('/api/blog',{method:'POST',body:JSON.stringify({title,slug:document.getElementById('blogSlug').value,category:document.getElementById('blogCategory').value,author:document.getElementById('blogAuthor').value||'Admin',excerpt:document.getElementById('blogExcerpt').value,external_url:document.getElementById('blogExtUrl').value,published:document.getElementById('blogPublished').checked})});
+  const r=await api('/api/admin/blog',{method:'POST',body:JSON.stringify({title,slug:document.getElementById('blogSlug').value,category:document.getElementById('blogCategory').value,author:document.getElementById('blogAuthor').value||'Admin',excerpt:document.getElementById('blogExcerpt').value,external_url:document.getElementById('blogExtUrl').value,published:document.getElementById('blogPublished').checked})});
   if(r?.success){toast('Post created!');closeModal('modal-add-blog');loadBlog();}
 }
-async function deleteBlog(id){if(!confirm('Delete post?'))return;const r=await api(`/api/blog/${id}`,{method:'DELETE'});if(r?.success){toast('Deleted');loadBlog();}}
+async function deleteBlog(id){if(!confirm('Delete post?'))return;const r=await api(`/api/admin/blog/${id}`,{method:'DELETE'});if(r?.success){toast('Deleted');loadBlog();}}
 
 /* ────────────────────────────────────
    TESTIMONIALS
 ──────────────────────────────────── */
 async function loadTestimonials(){
-  const d=await api('/api/testimonials');const arr=d?.testimonials||[];
+  const d=await api('/api/admin/testimonials');const arr=d?.testimonials||[];
   const tb=document.getElementById('testimonialsBody');if(!tb)return;
   tb.innerHTML=arr.length?arr.map(t=>`<tr><td class="td-name">${esc(t.client_name)}</td><td>${esc(t.client_role||'')}${t.company?' · '+esc(t.company):''}</td><td>${'★'.repeat(t.rating||5)}</td><td><span class="pill ${t.published?'pill-g':'pill-dim'}">${t.published?'Live':'Draft'}</span></td><td><button class="act-btn act-del" onclick="deleteTestimonial(${t.id})"><i class="fas fa-trash"></i></button></td></tr>`).join(''):`<tr><td colspan="5"><div class="adm-empty"><i class="fas fa-star"></i><p>No testimonials yet</p></div></td></tr>`;
 }
 async function createTestimonial(){
   const name=document.getElementById('tName').value.trim(),content=document.getElementById('tContent').value.trim();
   if(!name||!content)return toast('Name and content required','error');
-  const r=await api('/api/testimonials',{method:'POST',body:JSON.stringify({client_name:name,client_role:document.getElementById('tRole').value,company:document.getElementById('tCompany').value,rating:parseInt(document.getElementById('tRating').value),content})});
+  const r=await api('/api/admin/testimonials',{method:'POST',body:JSON.stringify({client_name:name,client_role:document.getElementById('tRole').value,company:document.getElementById('tCompany').value,rating:parseInt(document.getElementById('tRating').value),content})});
   if(r?.success){toast('Testimonial added!');closeModal('modal-add-testimonial');loadTestimonials();}
 }
-async function deleteTestimonial(id){if(!confirm('Delete testimonial?'))return;const r=await api(`/api/testimonials/${id}`,{method:'DELETE'});if(r?.success){toast('Deleted');loadTestimonials();}}
+async function deleteTestimonial(id){if(!confirm('Delete testimonial?'))return;const r=await api(`/api/admin/testimonials/${id}`,{method:'DELETE'});if(r?.success){toast('Deleted');loadTestimonials();}}
 
 /* ────────────────────────────────────
    TEAM
 ──────────────────────────────────── */
 async function loadTeam(){
-  const d=await api('/api/team');const arr=d?.team||[];
+  const d=await api('/api/admin/team');const arr=d?.team||[];
   const tb=document.getElementById('teamBody');if(!tb)return;
   tb.innerHTML=arr.length?arr.map(m=>`<tr><td class="td-name">${esc(m.name)}</td><td><span class="pill pill-p">${esc(m.role)}</span></td><td style="font-size:.75rem;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:rgba(255,255,255,.4)">${esc(m.bio||'—')}</td><td>${m.linkedin_url?`<a href="${esc(m.linkedin_url)}" target="_blank" class="pill pill-b">↗</a>`:'—'}</td><td>${m.github_url?`<a href="${esc(m.github_url)}" target="_blank" class="pill pill-dim">↗</a>`:'—'}</td><td><button class="act-btn act-del" onclick="deleteTeamMember(${m.id})"><i class="fas fa-trash"></i></button></td></tr>`).join(''):`<tr><td colspan="6"><div class="adm-empty"><i class="fas fa-id-badge"></i><p>No team members</p></div></td></tr>`;
 }
 async function createTeamMember(){
   const name=document.getElementById('tmName').value.trim(),role=document.getElementById('tmRole').value.trim();
   if(!name||!role)return toast('Name and role required','error');
-  const r=await api('/api/team',{method:'POST',body:JSON.stringify({name,role,bio:document.getElementById('tmBio').value,linkedin_url:document.getElementById('tmLinkedIn').value,github_url:document.getElementById('tmGitHub').value})});
+  const r=await api('/api/admin/team',{method:'POST',body:JSON.stringify({name,role,bio:document.getElementById('tmBio').value,linkedin_url:document.getElementById('tmLinkedIn').value,github_url:document.getElementById('tmGitHub').value})});
   if(r?.success){toast('Member added!');closeModal('modal-add-team');loadTeam();}
 }
-async function deleteTeamMember(id){if(!confirm('Remove member?'))return;const r=await api(`/api/team/${id}`,{method:'DELETE'});if(r?.success){toast('Removed');loadTeam();}}
+async function deleteTeamMember(id){if(!confirm('Remove member?'))return;const r=await api(`/api/admin/team/${id}`,{method:'DELETE'});if(r?.success){toast('Removed');loadTeam();}}
 
 /* ────────────────────────────────────
    FAQs
 ──────────────────────────────────── */
 async function loadFAQs(){
-  const d=await api('/api/faqs');const arr=d?.faqs||[];
+  const d=await api('/api/admin/faqs');const arr=d?.faqs||[];
   const tb=document.getElementById('faqsBody');if(!tb)return;
   tb.innerHTML=arr.length?arr.map((f,i)=>`<tr><td style="color:rgba(255,255,255,.3)">${i+1}</td><td class="td-name" style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(f.question)}</td><td style="font-size:.74rem;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:rgba(255,255,255,.4)">${esc(f.answer)}</td><td><span class="pill ${f.active?'pill-g':'pill-dim'}">${f.active?'Active':'Hidden'}</span></td><td><button class="act-btn act-del" onclick="deleteFAQ(${f.id})"><i class="fas fa-trash"></i></button></td></tr>`).join(''):`<tr><td colspan="5"><div class="adm-empty"><i class="fas fa-question-circle"></i><p>No FAQs yet</p></div></td></tr>`;
 }
 async function createFAQ(){
   const q=document.getElementById('faqQ').value.trim(),a=document.getElementById('faqA').value.trim();
   if(!q||!a)return toast('Question and answer required','error');
-  const r=await api('/api/faqs',{method:'POST',body:JSON.stringify({question:q,answer:a,order:parseInt(document.getElementById('faqOrder').value)||1,active:document.getElementById('faqActive').checked})});
+  const r=await api('/api/admin/faqs',{method:'POST',body:JSON.stringify({question:q,answer:a,order:parseInt(document.getElementById('faqOrder').value)||1,active:document.getElementById('faqActive').checked})});
   if(r?.success){toast('FAQ added!');closeModal('modal-add-faq');loadFAQs();}
 }
-async function deleteFAQ(id){if(!confirm('Delete FAQ?'))return;const r=await api(`/api/faqs/${id}`,{method:'DELETE'});if(r?.success){toast('Deleted');loadFAQs();}}
+async function deleteFAQ(id){if(!confirm('Delete FAQ?'))return;const r=await api(`/api/admin/faqs/${id}`,{method:'DELETE'});if(r?.success){toast('Deleted');loadFAQs();}}
 
 /* ────────────────────────────────────
    PRICING
 ──────────────────────────────────── */
 async function loadPricing(){
-  const d=await api('/api/pricing');const arr=d?.plans||[];
+  const d=await api('/api/admin/pricing');const arr=d?.plans||[];
   const tb=document.getElementById('pricingBody');if(!tb)return;
   tb.innerHTML=arr.length?arr.map(p=>`<tr><td class="td-name">${esc(p.name)}</td><td style="font-size:.75rem;color:rgba(255,255,255,.4)">${esc(p.tier||'—')}</td><td>${esc(p.price_label||'Custom')}</td><td><span class="pill ${p.popular?'pill-o':'pill-dim'}">${p.popular?'Most Popular':'Standard'}</span></td><td><button class="act-btn act-del" onclick="deletePlan(${p.id})"><i class="fas fa-trash"></i></button></td></tr>`).join(''):`<tr><td colspan="5"><div class="adm-empty"><i class="fas fa-tags"></i><p>No plans yet</p></div></td></tr>`;
 }
 async function createPricingPlan(){
   const name=document.getElementById('planName').value.trim();if(!name)return toast('Plan name required','error');
   const features=document.getElementById('planFeatures').value.split('\n').filter(Boolean);
-  const r=await api('/api/pricing',{method:'POST',body:JSON.stringify({name,tier:document.getElementById('planTier').value,price:parseInt(document.getElementById('planPrice').value)||0,price_label:document.getElementById('planPriceLabel').value,features,popular:document.getElementById('planPopular').checked})});
+  const r=await api('/api/admin/pricing',{method:'POST',body:JSON.stringify({name,tier:document.getElementById('planTier').value,price:parseInt(document.getElementById('planPrice').value)||0,price_label:document.getElementById('planPriceLabel').value,features,popular:document.getElementById('planPopular').checked})});
   if(r?.success){toast('Plan added!');closeModal('modal-add-pricing');loadPricing();}
 }
-async function deletePlan(id){if(!confirm('Delete plan?'))return;const r=await api(`/api/pricing/${id}`,{method:'DELETE'});if(r?.success){toast('Deleted');loadPricing();}}
+async function deletePlan(id){if(!confirm('Delete plan?'))return;const r=await api(`/api/admin/pricing/${id}`,{method:'DELETE'});if(r?.success){toast('Deleted');loadPricing();}}
 
 /* ────────────────────────────────────
    COURSES
@@ -2068,7 +2068,7 @@ async function deleteApp(id){if(!confirm('Delete this instructor application?'))
    SETTINGS
 ──────────────────────────────────── */
 async function saveSettings(){
-  const r=await api('/api/settings',{method:'PUT',body:JSON.stringify({site_name:document.getElementById('cfgSiteName').value,contact_email:document.getElementById('cfgEmail').value,whatsapp_number:document.getElementById('cfgWA').value,location:document.getElementById('cfgLocation').value,tagline:document.getElementById('cfgTagline').value})});
+  const r=await api('/api/admin/settings',{method:'PUT',body:JSON.stringify({site_name:document.getElementById('cfgSiteName').value,contact_email:document.getElementById('cfgEmail').value,whatsapp_number:document.getElementById('cfgWA').value,location:document.getElementById('cfgLocation').value,tagline:document.getElementById('cfgTagline').value})});
   if(r?.success)toast('Settings saved!');
 }
 
