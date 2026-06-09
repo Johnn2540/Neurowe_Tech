@@ -112,7 +112,7 @@ async function login(req, res) {
 
 async function googleAuth(req, res) {
     try {
-        const { idToken } = req.body;
+        const idToken = req.body.credential || req.body.idToken;
         if (!idToken)
             return res.status(400).json({ success: false, message: 'No ID token provided' });
 
@@ -129,8 +129,8 @@ async function googleAuth(req, res) {
 
         if (!existing.rows.length) {
             const r = await db.query(
-                `INSERT INTO users (username, email, google_id, role, is_active, created_at)
-                 VALUES ($1,$2,$3,'user',true,NOW())
+                `INSERT INTO users (username, email, google_id, password_hash, role, is_active, created_at)
+                 VALUES ($1,$2,$3,'','user',true,NOW())
                  RETURNING id, username, email, role`,
                 [name, email.toLowerCase(), googleId]
             );

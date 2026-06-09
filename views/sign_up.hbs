@@ -63,6 +63,7 @@ h1{font-family:var(--font-display);font-size:clamp(1.5rem,4vw,1.9rem);font-weigh
 .form-group{margin-bottom:14px}
 .form-label{display:block;font-size:.8rem;font-weight:700;color:var(--ink);margin-bottom:5px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.form-row{grid-template-columns:1fr}}
 .input-wrap{position:relative}
 .form-input{width:100%;padding:11px 14px 11px 40px;border:1.5px solid var(--mist);border-radius:var(--r-md);font-size:.9rem;font-family:var(--font-body);color:var(--ink);background:#fff;transition:var(--t);outline:none}
 .form-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.08)}
@@ -189,7 +190,7 @@ h1{font-family:var(--font-display);font-size:clamp(1.5rem,4vw,1.9rem);font-weigh
   </div>
 </div>
 <script>
-function showAlert(msg,type){var b=document.getElementById('alertBox');b.className='alert show alert-'+type;document.getElementById('alertMsg').textContent=msg;b.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function showAlert(msg,type){var b=document.getElementById('alertBox');b.className='alert show alert-'+type;document.getElementById('alertMsg').textContent=msg;b.querySelector('i').className=type==='success'?'fas fa-circle-check':'fas fa-exclamation-circle';b.scrollIntoView({behavior:'smooth',block:'nearest'});}
 function hideAlert(){document.getElementById('alertBox').classList.remove('show');}
 function fieldErr(id,msg){var e=document.getElementById(id);if(!e)return;if(msg){e.classList.add('show');e.querySelector('span').textContent=msg;}else{e.classList.remove('show');}}
 function setLoading(on){var b=document.getElementById('submitBtn');b.classList.toggle('loading',on);b.disabled=on;}
@@ -225,7 +226,7 @@ document.getElementById('signupForm').addEventListener('submit',async function(e
   try{
     var res=await fetch('/api/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,email,password:pwd})});
     var data=await res.json();
-    if(res.ok&&data.success){showAlert('Account created! Redirecting…','success');setTimeout(()=>{window.location.href=data.redirectUrl||'/user_dashboard';},900);}
+    if(res.ok&&data.success){showAlert('Account created! Redirecting…','success');setTimeout(()=>{window.location.href=data.redirect||'/user_dashboard';},900);}
     else{showAlert(data.message||'Registration failed. Please try again.','error');}
   }catch(err){showAlert('Network error. Please try again.','error');}
   finally{setLoading(false);}
@@ -242,7 +243,7 @@ async function handleGoogle(response){
   try{
     var res=await fetch('/api/auth/google',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:response.credential})});
     var data=await res.json();
-    if(res.ok&&data.success){window.location.href=data.redirectUrl||'/user_dashboard';}
+    if(res.ok&&data.success){window.location.href=data.redirect||'/user_dashboard';}
     else{showAlert(data.message||'Google Sign-In failed.','error');}
   }catch(err){showAlert('Google error. Please try again.','error');}
   finally{setLoading(false);}

@@ -79,7 +79,9 @@ h1{font-family:var(--font-display);font-size:clamp(1.6rem,4vw,2rem);font-weight:
 .input-action{position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--slate);cursor:pointer;background:none;border:none;font-size:.82rem}
 .field-err{font-size:.73rem;color:var(--rose);margin-top:4px;display:none;align-items:center;gap:4px}
 .field-err.show{display:flex}
-.forgot-row{display:flex;justify-content:flex-end;margin-top:-8px;margin-bottom:16px}
+.forgot-row{display:flex;align-items:center;justify-content:space-between;margin-top:-4px;margin-bottom:16px}
+.remember-label{display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--slate);cursor:pointer;user-select:none}
+.remember-cb{width:15px;height:15px;accent-color:var(--blue);cursor:pointer}
 .forgot-link{font-size:.78rem;color:var(--blue);font-weight:600}
 .forgot-link:hover{text-decoration:underline}
 /* SUBMIT */
@@ -157,7 +159,13 @@ h1{font-family:var(--font-display);font-size:clamp(1.6rem,4vw,2rem);font-weight:
           </div>
           <div class="field-err" id="pwdErr"><i class="fas fa-circle-exclamation"></i><span></span></div>
         </div>
-        <div class="forgot-row"><a href="/forgot-password" class="forgot-link">Forgot password?</a></div>
+        <div class="forgot-row">
+          <label class="remember-label">
+            <input type="checkbox" id="rememberMe" class="remember-cb"/>
+            <span>Remember me</span>
+          </label>
+          <a href="/forgot-password" class="forgot-link">Forgot password?</a>
+        </div>
         <button type="submit" class="btn-submit" id="submitBtn">
           <span class="btn-text"><i class="fas fa-arrow-right-to-bracket"></i> Sign In</span>
           <span class="spinner"></span>
@@ -173,7 +181,7 @@ h1{font-family:var(--font-display);font-size:clamp(1.6rem,4vw,2rem);font-weight:
   </div>
 </div>
 <script>
-function showAlert(msg,type){var b=document.getElementById('alertBox');b.className='alert show alert-'+type;document.getElementById('alertMsg').textContent=msg;}
+function showAlert(msg,type){var b=document.getElementById('alertBox');b.className='alert show alert-'+type;document.getElementById('alertMsg').textContent=msg;b.querySelector('i').className=type==='success'?'fas fa-circle-check':'fas fa-exclamation-circle';}
 function hideAlert(){document.getElementById('alertBox').classList.remove('show');}
 function fieldErr(id,msg){var e=document.getElementById(id);if(msg){e.classList.add('show');e.querySelector('span').textContent=msg;}else{e.classList.remove('show');}}
 function setLoading(on){var b=document.getElementById('submitBtn');b.classList.toggle('loading',on);b.disabled=on;}
@@ -186,9 +194,10 @@ document.getElementById('loginForm').addEventListener('submit',async function(e)
   if(!valid)return;
   setLoading(true);
   try{
-    var res=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+    var rememberMe=document.getElementById('rememberMe').checked;
+    var res=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password,rememberMe})});
     var data=await res.json();
-    if(res.ok&&data.success){showAlert('Signed in! Redirecting…','success');setTimeout(()=>{window.location.href=data.redirectUrl||(data.user?.role==='admin'?'/admin_dashboard':'/user_dashboard');},800);}
+    if(res.ok&&data.success){showAlert('Signed in! Redirecting…','success');setTimeout(()=>{window.location.href=data.redirect||(data.role==='admin'?'/admin_dashboard':'/user_dashboard');},800);}
     else{showAlert(data.message||'Invalid email or password.','error');}
   }catch(err){showAlert('Network error. Please try again.','error');}
   finally{setLoading(false);}
@@ -205,7 +214,7 @@ async function handleGoogle(response){
   try{
     var res=await fetch('/api/auth/google',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:response.credential})});
     var data=await res.json();
-    if(res.ok&&data.success){window.location.href=data.redirectUrl||(data.user?.role==='admin'?'/admin_dashboard':'/user_dashboard');}
+    if(res.ok&&data.success){window.location.href=data.redirect||'/user_dashboard';}
     else{showAlert(data.message||'Google Sign-In failed.','error');}
   }catch(err){showAlert('Google Sign-In error. Please try again.','error');}
   finally{setLoading(false);}
