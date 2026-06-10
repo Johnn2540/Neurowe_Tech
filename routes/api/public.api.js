@@ -24,6 +24,44 @@ router.get('/projects/featured', async (req, res) => {
     } catch { return res.json({ success: true, projects: [] }); }
 });
 
+// ─── Chat widget data ─────────────────────────────────────────────────────────
+// Returns all content the AI chat widget needs (services, pricing, faqs, team,
+// courses, contact). Called once per session by widget.js on first open.
+
+router.get('/widget-data', async (req, res) => {
+    const safe = (r) => (r.status === 'fulfilled' ? r.value.rows : []);
+
+    const [services, pricing, faqs, team, courses, settings] = await Promise.allSettled([
+        db.query(`SELECT name, description, price FROM services
+                  WHERE visible IS NOT FALSE ORDER BY id LIMIT 20`),
+        db.query(`SELECT name, tier, price, features FROM pricing_plans
+                  ORDER BY id LIMIT 10`),
+        db.query(`SELECT question, answer FROM faqs
+                  WHERE active IS NOT FALSE ORDER BY display_order, id LIMIT 40`),
+        db.query(`SELECT name, role, bio FROM team ORDER BY id LIMIT 10`),
+        db.query(`SELECT title, category, level FROM courses
+                  WHERE published = true ORDER BY id LIMIT 30`),
+        db.query(`SELECT contact_email, whatsapp_number FROM settings LIMIT 1`),
+    ]);
+
+    const s = safe(settings)[0] || {};
+
+    return res.json({
+        success: true,
+        data: {
+            services: safe(services),
+            pricing:  safe(pricing),
+            faqs:     safe(faqs),
+            team:     safe(team),
+            courses:  safe(courses),
+            contact: {
+                email:    s.contact_email    || 'info@neurowextech.com',
+                whatsapp: s.whatsapp_number  || '',
+            },
+        },
+    });
+});
+
 // ─── Newsletter subscribe ─────────────────────────────────────────────────────
 
 router.post('/subscribe', async (req, res) => {
