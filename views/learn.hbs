@@ -97,6 +97,8 @@ body.dark .cc-desc{color:rgba(255,255,255,.48)}
 body.dark .cc-instr{color:rgba(255,255,255,.42)}
 body.dark .cc-meta-item{color:rgba(255,255,255,.38)}
 body.dark .cc-price-free{color:#34d399}
+body.dark .cc-rating-val{color:rgba(255,255,255,.85)}
+body.dark .cc-stars-track{color:rgba(255,255,255,.12)}
 body.dark .sort-bar{background:var(--ink-2);border-color:rgba(255,255,255,.07)}
 body.dark .sort-label{color:rgba(255,255,255,.38)}
 body.dark .sort-btn{background:var(--ink-3);border-color:rgba(255,255,255,.1);color:rgba(255,255,255,.55)}
@@ -495,7 +497,7 @@ body.dark .no-results{color:rgba(255,255,255,.38)}
 .fb-title{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:6px;line-height:1.25}
 .fb-desc{font-size:.8rem;color:var(--slate);line-height:1.6;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .fb-meta{display:flex;align-items:center;gap:14px;font-size:.72rem;color:var(--slate)}
-.fb-meta .stars{color:var(--yellow);letter-spacing:.3px}
+.fb-meta .cc-stars-track{font-size:.82rem}
 .fb-meta span{display:flex;align-items:center;gap:4px}
 .fb-cta{flex-shrink:0}
 
@@ -560,9 +562,21 @@ body.dark .no-results{color:rgba(255,255,255,.38)}
 .cc-instr-name{font-size:.71rem;color:var(--slate);font-weight:600}
 /* star row */
 .cc-rating{display:flex;align-items:center;gap:5px;margin-bottom:9px}
-.cc-stars{color:var(--yellow);font-size:.72rem;letter-spacing:.3px}
+.cc-stars-track{
+  position:relative;display:inline-block;
+  color:#d1d5db;font-size:.76rem;letter-spacing:.4px;line-height:1;
+  user-select:none;
+}
+.cc-stars-track::before{
+  content:'★★★★★';
+  position:absolute;left:0;top:0;
+  color:var(--yellow);
+  width:var(--star-pct,100%);
+  overflow:hidden;white-space:nowrap;
+}
 .cc-rating-val{font-size:.74rem;font-weight:700;color:var(--ink)}
 .cc-rating-count{font-size:.68rem;color:var(--slate-l)}
+.cc-rating-new{font-size:.64rem;color:var(--blue);font-weight:700;background:var(--blue-pale);padding:2px 8px;border-radius:var(--r-pill);border:1px solid rgba(26,79,214,.15)}
 /* meta row */
 .cc-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:13px}
 .cc-meta-item{display:flex;align-items:center;gap:4px;font-size:.7rem;color:var(--slate-l)}
@@ -1184,10 +1198,11 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
         <div class="fb-title">{{featuredCourse.title}}</div>
         <div class="fb-desc">{{featuredCourse.description}}</div>
         <div class="fb-meta">
-          <span class="stars">★★★★★</span>
+          <span class="cc-stars-track" style="--star-pct:{{featuredCourse.star_pct}}%">★★★★★</span>
           <span>{{featuredCourse.rating}}</span>
-          <span><i class="fas fa-users"></i> {{featuredCourse.enrolled_count}} students</span>
+          {{#if featuredCourse.enrolled_count}}<span><i class="fas fa-users"></i> {{featuredCourse.enrolled_label}} students</span>{{/if}}
           <span><i class="fas fa-signal"></i> {{featuredCourse.level}}</span>
+          {{#if featuredCourse.total_lessons}}<span><i class="fas fa-film"></i> {{featuredCourse.total_lessons}} lessons</span>{{/if}}
         </div>
       </div>
       <div class="fb-cta">
@@ -1233,7 +1248,7 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
           <div class="cc-badges">
             <span class="cc-badge free"><i class="fas fa-gift"></i> Free</span>
             <span class="cc-badge level">{{this.level}}</span>
-            {{#if this.bestseller}}<span class="cc-badge best"><i class="fas fa-fire"></i> Bestseller</span>{{/if}}
+            {{#if this.bestseller}}<span class="cc-badge best"><i class="fas fa-fire"></i> Bestseller</span>{{else}}{{#if this.is_popular}}<span class="cc-badge best"><i class="fas fa-fire"></i> Popular</span>{{else}}{{#unless this.enrolled_count}}<span class="cc-badge new"><i class="fas fa-star"></i> New</span>{{/unless}}{{/if}}{{/if}}
           </div>
           {{#if ../isAuthenticated}}
             {{#if (contains ../userEnrollments this.id)}}
@@ -1270,14 +1285,14 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
             <span class="cc-instr-name">{{this.instructor_name}}</span>
           </div>
           <div class="cc-rating">
-            <span class="cc-stars">★★★★★</span>
+            <span class="cc-stars-track" style="--star-pct:{{this.star_pct}}%">★★★★★</span>
             <span class="cc-rating-val">{{this.rating}}</span>
-            <span class="cc-rating-count">({{this.enrolled_count}})</span>
+            {{#if this.enrolled_count}}<span class="cc-rating-count">({{this.enrolled_count}})</span>{{else}}<span class="cc-rating-new">New</span>{{/if}}
           </div>
           <div class="cc-meta">
-            <span class="cc-meta-item"><i class="fas fa-users"></i> {{this.enrolled_count}} enrolled</span>
-            <span class="cc-meta-item"><i class="fas fa-film"></i> {{this.total_lessons}} lessons</span>
-            <span class="cc-meta-item"><i class="fas fa-clock"></i> {{this.total_duration}}</span>
+            {{#if this.enrolled_count}}<span class="cc-meta-item"><i class="fas fa-users"></i> {{this.enrolled_label}} enrolled</span>{{/if}}
+            {{#if this.total_lessons}}<span class="cc-meta-item"><i class="fas fa-film"></i> {{this.total_lessons}} lessons</span>{{/if}}
+            {{#if this.total_duration}}<span class="cc-meta-item"><i class="fas fa-clock"></i> {{this.total_duration}}</span>{{/if}}
           </div>
           <div class="cc-footer">
             <div class="cc-price-free">Free</div>
@@ -1316,7 +1331,7 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
           <div class="cc-badges">
             <span class="cc-badge paid">Ksh {{this.price}}</span>
             <span class="cc-badge level">{{this.level}}</span>
-            {{#if this.bestseller}}<span class="cc-badge best"><i class="fas fa-fire"></i> Bestseller</span>{{/if}}
+            {{#if this.bestseller}}<span class="cc-badge best"><i class="fas fa-fire"></i> Bestseller</span>{{else}}{{#if this.is_popular}}<span class="cc-badge best"><i class="fas fa-fire"></i> Popular</span>{{else}}{{#unless this.enrolled_count}}<span class="cc-badge new"><i class="fas fa-star"></i> New</span>{{/unless}}{{/if}}{{/if}}
           </div>
           {{#if ../isAuthenticated}}
             {{#if (contains ../userEnrollments this.id)}}
@@ -1351,13 +1366,14 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
             <span class="cc-instr-name">{{this.instructor_name}}</span>
           </div>
           <div class="cc-rating">
-            <span class="cc-stars">★★★★★</span>
+            <span class="cc-stars-track" style="--star-pct:{{this.star_pct}}%">★★★★★</span>
             <span class="cc-rating-val">{{this.rating}}</span>
-            <span class="cc-rating-count">({{this.enrolled_count}})</span>
+            {{#if this.enrolled_count}}<span class="cc-rating-count">({{this.enrolled_count}})</span>{{else}}<span class="cc-rating-new">New</span>{{/if}}
           </div>
           <div class="cc-meta">
-            <span class="cc-meta-item"><i class="fas fa-users"></i> {{this.enrolled_count}} enrolled</span>
-            <span class="cc-meta-item"><i class="fas fa-film"></i> {{this.total_lessons}} lessons</span>
+            {{#if this.enrolled_count}}<span class="cc-meta-item"><i class="fas fa-users"></i> {{this.enrolled_label}} enrolled</span>{{/if}}
+            {{#if this.total_lessons}}<span class="cc-meta-item"><i class="fas fa-film"></i> {{this.total_lessons}} lessons</span>{{/if}}
+            {{#if this.total_duration}}<span class="cc-meta-item"><i class="fas fa-clock"></i> {{this.total_duration}}</span>{{/if}}
           </div>
           <div class="cc-footer">
             <div class="cc-price-paid">Ksh {{this.price}}</div>

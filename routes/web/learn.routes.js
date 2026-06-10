@@ -15,9 +15,13 @@ router.get('/learn', async (req, res) => {
             db.query(`
                 SELECT c.*,
                        COALESCE(u.username,'NeurowexTech') AS instructor_name,
-                       0 AS enrolled_count, 0 AS total_lessons, 0 AS total_modules
-                FROM courses c LEFT JOIN users u ON c.instructor_id=u.id
-                WHERE c.published=true
+                       COALESCE((SELECT COUNT(*) FROM enrollments e WHERE e.course_id = c.id), 0)::int AS enrolled_count,
+                       COALESCE((SELECT COUNT(cl.id) FROM course_lessons cl
+                                 JOIN course_modules cm ON cl.module_id = cm.id
+                                 WHERE cm.course_id = c.id), 0)::int AS total_lessons,
+                       COALESCE((SELECT COUNT(*) FROM course_modules cm WHERE cm.course_id = c.id), 0)::int AS total_modules
+                FROM courses c LEFT JOIN users u ON c.instructor_id = u.id
+                WHERE c.published = true
                 ORDER BY c.featured DESC, c.created_at DESC
             `),
             db.query(`
@@ -26,13 +30,35 @@ router.get('/learn', async (req, res) => {
                 GROUP BY category ORDER BY category
             `),
             db.query(`
-                SELECT (SELECT COUNT(*) FROM courses WHERE published=true) AS total_courses,
-                       (SELECT COUNT(DISTINCT category) FROM courses WHERE published=true) AS total_categories,
-                       0 AS total_enrollments, 0 AS total_instructors
+                SELECT (SELECT COUNT(*)                   FROM courses    WHERE published=true)                           AS total_courses,
+                       (SELECT COUNT(DISTINCT category)   FROM courses    WHERE published=true)                           AS total_categories,
+                       (SELECT COUNT(*)                   FROM enrollments)                                               AS total_enrollments,
+                       GREATEST((SELECT COUNT(DISTINCT instructor_id) FROM courses WHERE published=true
+                                                                       AND instructor_id IS NOT NULL), 1)                 AS total_instructors
             `),
         ]);
 
-        const courses    = coursesR.rows    || [];
+        const formatEnrolled = n => {
+            if (n >= 1000) return (Math.floor(n / 100) / 10).toFixed(1).replace(/\.0$/, '') + 'k';
+            return String(n);
+        };
+
+        const courses = (coursesR.rows || []).map(p => {
+            const ec   = parseInt(p.enrolled_count) || 0;
+            const tl   = parseInt(p.total_lessons)  || 0;
+            const tm   = parseInt(p.total_modules)  || 0;
+            const rat  = parseFloat(p.rating)       || 4.5;
+            return {
+                ...p,
+                enrolled_count:   ec,
+                total_lessons:    tl,
+                total_modules:    tm,
+                star_pct:         Math.round((rat / 5) * 100),
+                is_popular:       ec >= 50,
+                enrolled_label:   formatEnrolled(ec),
+            };
+        });
+
         const categories = categoriesR.rows || [];
         const stats      = statsR.rows[0]   || {};
         const freeCourses = courses.filter(c => parseFloat(c.price) === 0);
