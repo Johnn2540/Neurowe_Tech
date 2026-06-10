@@ -14,7 +14,8 @@ router.use(isAuthenticated, isInstructor);
 router.post('/course/update', async (req, res) => {
     try {
         const { courseId, title, description, level, slug, status,
-                price, salePrice, allowFreePreview, certificate } = req.body;
+                price, salePrice, allowFreePreview, certificate,
+                imageUrl } = req.body;
         if (!courseId) return res.status(400).json({ success:false, message:'courseId required' });
         await assertCourseAccess(req, courseId);
 
@@ -24,11 +25,12 @@ router.post('/course/update', async (req, res) => {
         set('description',     description);
         set('level',           level);
         set('slug',            slug);
+        set('image_url',       imageUrl);
         set('published',       status==='published'?true:status==='draft'?false:undefined);
         set('price',           price!==undefined?parseFloat(price)||0:undefined);
         set('sale_price',      salePrice!==undefined?parseFloat(salePrice)||0:undefined);
         set('allow_free_preview', allowFreePreview);
-        set('certificate',     certificate);
+        set('certificate_enabled', certificate);
 
         if (!fields.length) return res.json({ success:true, message:'Nothing to update' });
         vals.push(courseId);
@@ -111,7 +113,8 @@ router.post('/module/reorder', async (req, res) => {
 
 router.post('/lesson/create', async (req, res) => {
     try {
-        const { moduleId, title, videoUrl, duration, isPublished, isFree } = req.body;
+        const { moduleId, title, videoUrl, duration, isPublished, isFree,
+                cloudinaryPublicId, attachmentUrl, attachmentName, attachmentPublicId } = req.body;
         if (!moduleId||!title) return res.status(400).json({ success:false, message:'moduleId and title required' });
         const modR = await db.query('SELECT course_id FROM course_modules WHERE id=$1', [moduleId]);
         if (!modR.rows.length) return res.status(404).json({ success:false, message:'Module not found' });
@@ -120,9 +123,13 @@ router.post('/lesson/create', async (req, res) => {
             'SELECT COALESCE(MAX(lesson_order),0)+1 AS next_order FROM course_lessons WHERE module_id=$1', [moduleId]
         );
         const r = await db.query(`
-            INSERT INTO course_lessons (module_id,title,video_url,duration,lesson_order,is_published,is_free,created_at)
-            VALUES ($1,$2,$3,$4,$5,$6,$7,NOW()) RETURNING *
-        `, [moduleId, title.trim(), videoUrl||'', duration||'', orderR.rows[0].next_order, isPublished!==false, isFree||false]);
+            INSERT INTO course_lessons
+              (module_id,title,video_url,duration,lesson_order,is_published,is_free,
+               cloudinary_public_id,attachment_url,attachment_name,attachment_public_id,created_at)
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,NOW()) RETURNING *
+        `, [moduleId, title.trim(), videoUrl||'', duration||'', orderR.rows[0].next_order,
+            isPublished!==false, isFree||false,
+            cloudinaryPublicId||null, attachmentUrl||null, attachmentName||null, attachmentPublicId||null]);
         return res.json({ success:true, message:'Lesson created', lesson:r.rows[0] });
     } catch (err) {
         return res.status(err.status||500).json({ success:false, message:err.message });
@@ -131,7 +138,8 @@ router.post('/lesson/create', async (req, res) => {
 
 router.post('/lesson/update', async (req, res) => {
     try {
-        const { lessonId, title, videoUrl, duration, isPublished, isFree } = req.body;
+        const { lessonId, title, videoUrl, duration, isPublished, isFree,
+                cloudinaryPublicId, attachmentUrl, attachmentName, attachmentPublicId } = req.body;
         if (!lessonId) return res.status(400).json({ success:false, message:'lessonId required' });
         const lesR = await db.query(`
             SELECT cl.*, cm.course_id FROM course_lessons cl JOIN course_modules cm ON cl.module_id=cm.id WHERE cl.id=$1
@@ -139,10 +147,19 @@ router.post('/lesson/update', async (req, res) => {
         if (!lesR.rows.length) return res.status(404).json({ success:false, message:'Lesson not found' });
         await assertCourseAccess(req, lesR.rows[0].course_id);
         const r = await db.query(`
-            UPDATE course_lessons SET title=COALESCE($1,title),video_url=COALESCE($2,video_url),
-             duration=COALESCE($3,duration),is_published=COALESCE($4,is_published),is_free=COALESCE($5,is_free)
-            WHERE id=$6 RETURNING *
-        `, [title?.trim()||null, videoUrl??null, duration??null, isPublished??null, isFree??null, lessonId]);
+            UPDATE course_lessons
+            SET title=COALESCE($1,title), video_url=COALESCE($2,video_url),
+                duration=COALESCE($3,duration), is_published=COALESCE($4,is_published),
+                is_free=COALESCE($5,is_free),
+                cloudinary_public_id=COALESCE($6,cloudinary_public_id),
+                attachment_url=COALESCE($7,attachment_url),
+                attachment_name=COALESCE($8,attachment_name),
+                attachment_public_id=COALESCE($9,attachment_public_id)
+            WHERE id=$10 RETURNING *
+        `, [title?.trim()||null, videoUrl??null, duration??null,
+            isPublished??null, isFree??null,
+            cloudinaryPublicId||null, attachmentUrl||null, attachmentName||null, attachmentPublicId||null,
+            lessonId]);
         return res.json({ success:true, message:'Lesson updated', lesson:r.rows[0] });
     } catch (err) {
         return res.status(err.status||500).json({ success:false, message:err.message });

@@ -1315,7 +1315,7 @@ body.dark .nw-modal-foot { border-color: rgba(255,255,255,.07); }
               <span>{{progress}}% complete</span>
               <span>Enrolled {{enrolled_at}}</span>
             </div>
-            <a href="/learn" style="display:inline-flex;align-items:center;gap:6px;background:var(--g-blue);color:#fff;padding:8px 16px;border-radius:999px;font-size:.78rem;font-weight:700;text-decoration:none;transition:all .2s">
+            <a href="/learn/course/{{course_id}}/dashboard" style="display:inline-flex;align-items:center;gap:6px;background:var(--g-blue);color:#fff;padding:8px 16px;border-radius:999px;font-size:.78rem;font-weight:700;text-decoration:none;transition:all .2s">
               <i class="fas fa-play-circle"></i> Continue Learning
             </a>
           </div>
@@ -1684,7 +1684,7 @@ async function loadUserCourses() {
               <span>${progress}% complete</span>
               <span>Enrolled ${enrolled}</span>
             </div>
-            <a href="/learn/course/${e.course_id}" style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--blue),#1341c4);color:#fff;padding:8px 16px;border-radius:999px;font-size:.78rem;font-weight:700;text-decoration:none;transition:all .2s">
+            <a href="/learn/course/${e.course_id}/dashboard" style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--blue),#1341c4);color:#fff;padding:8px 16px;border-radius:999px;font-size:.78rem;font-weight:700;text-decoration:none;transition:all .2s">
               <i class="fas fa-play-circle"></i> Continue Learning
             </a>
           </div>
@@ -1745,12 +1745,14 @@ async function loadUserActivities() {
     if(!body) return;
     if(d.activities && d.activities.length) {
       body.innerHTML = d.activities.map(function(a) {
-        const statusClass = a.status === 'Completed' ? 'st-completed' : 'st-inprogress';
+        const type = (a.type || 'system').toLowerCase();
+        const typeClass = type === 'enrollment' ? 'st-completed' : type === 'login' ? 'st-inprogress' : 'st-planning';
+        const typeLabel = type.charAt(0).toUpperCase() + type.slice(1);
         return `
         <tr>
-          <td>${new Date(a.date).toLocaleDateString('en-KE')}</td>
-          <td>${a.activity}</td>
-          <td><span class="st-pill ${statusClass}">${a.status || 'In Progress'}</span></td>
+          <td>${new Date(a.created_at).toLocaleDateString('en-KE')}</td>
+          <td>${a.activity || '—'}</td>
+          <td><span class="st-pill ${typeClass}">${typeLabel}</span></td>
         </tr>`;
       }).join('');
     } else {
@@ -1761,24 +1763,25 @@ async function loadUserActivities() {
 
 async function loadFeaturedProjects() {
   try {
-    const res = await fetch('/api/projects/featured');
+    const res = await fetch('/api/user/projects');
     const d = await res.json();
     const grid = document.getElementById('featuredProjectsGrid');
     if(!grid) return;
     if(d.projects && d.projects.length) {
       grid.innerHTML = '<div style="display:grid;gap:12px;">' + d.projects.slice(0,3).map(function(p) {
+        const statusCol = p.status === 'Completed' ? 'var(--emerald)' : p.status === 'In Progress' ? 'var(--blue)' : 'var(--orange)';
         return `
-        <div style="display:flex;align-items:center;gap:12px;background:var(--ghost);border-radius:var(--r-md);padding:10px 12px;transition:var(--t);" class="proj-row">
-          <img src="/images/${p.image || 'web_development.jpg'}" alt="${p.name}" style="width:46px;height:46px;object-fit:cover;border-radius:10px;flex-shrink:0;">
+        <div style="display:flex;align-items:center;gap:12px;background:var(--ghost);border-radius:var(--r-md);padding:10px 12px;" class="proj-row">
+          <div style="width:46px;height:46px;border-radius:10px;flex-shrink:0;background:var(--blue-pale);display:flex;align-items:center;justify-content:center;font-size:1.3rem;">📁</div>
           <div style="flex:1;min-width:0;">
             <div style="font-size:.83rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.name}</div>
-            <div style="font-size:.7rem;color:var(--slate);">${(p.description || '').substring(0,55)}…</div>
+            <div style="font-size:.7rem;color:${statusCol};font-weight:600;">${p.status || 'Planning'}</div>
           </div>
-          <a href="/portfolio/${p.id}" class="btn-outline" style="padding:5px 12px;font-size:.7rem;white-space:nowrap;">View</a>
+          <button onclick="viewProjectDetails(${p.id})" class="btn-outline" style="padding:5px 12px;font-size:.7rem;white-space:nowrap;flex-shrink:0;">View</button>
         </div>`;
       }).join('') + '</div>';
     } else {
-      grid.innerHTML = '<div class="db-empty"><i class="fas fa-star"></i><p>No featured projects yet.</p></div>';
+      grid.innerHTML = '<div class="db-empty"><i class="fas fa-folder-open"></i><p>No projects yet.</p></div>';
     }
   } catch(e) { console.error(e); }
 }
@@ -1791,11 +1794,13 @@ async function loadRecentActivity() {
     if(!timeline) return;
     if(d.activities && d.activities.length) {
       timeline.innerHTML = d.activities.map(function(a) {
-        const dotColor = a.type === 'login' ? 'var(--emerald)' : 'var(--blue)';
+        const type = (a.type || 'system').toLowerCase();
+        const dotColor = type === 'login' ? 'var(--emerald)' : type === 'enrollment' ? 'var(--orange)' : 'var(--blue)';
+        const when = new Date(a.created_at).toLocaleString('en-KE', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
         return `
         <div class="tl-item">
           <div class="tl-dot" style="background:${dotColor}"></div>
-          <div><div class="tl-title">${a.title}</div><div class="tl-meta">${a.description} · ${new Date(a.date).toLocaleString('en-KE')}</div></div>
+          <div><div class="tl-title">${a.activity || 'Activity'}</div><div class="tl-meta">${type} · ${when}</div></div>
         </div>`;
       }).join('');
     } else {

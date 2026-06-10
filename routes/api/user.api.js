@@ -44,10 +44,11 @@ router.get('/enrollments', isAuthenticated, async (req, res) => {
         const r = await db.query(`
             SELECT e.id, e.enrolled_at, e.progress, e.status,
                    c.id AS course_id, c.title, c.category, c.level,
-                   c.image_url, c.price, c.total_duration, u.username AS instructor_name
+                   c.image_url, c.price, c.total_duration,
+                   COALESCE(u.username, 'NeurowexTech') AS instructor_name
             FROM enrollments e
             JOIN courses c ON e.course_id = c.id
-            JOIN users   u ON c.instructor_id = u.id
+            LEFT JOIN users u ON c.instructor_id = u.id
             WHERE e.user_id=$1 ORDER BY e.enrolled_at DESC
         `, [req.session.userId]);
         return res.json({ success: true, enrollments: r.rows });
@@ -98,13 +99,13 @@ router.get('/recent-activity', isAuthenticated, async (req, res) => {
             [req.session.userId]
         );
         const acts = r.rows.length ? r.rows : [{
-            title: 'Account Created', description: 'Your account was set up',
-            date: new Date(), type: 'login',
+            activity: 'Account set up', type: 'system', created_at: new Date(),
         }];
         return res.json({ success: true, activities: acts });
     } catch {
-        return res.json({ success: true, activities: [{ title: 'Account Created',
-            description: 'Your account was set up', date: new Date(), type: 'login' }] });
+        return res.json({ success: true, activities: [{
+            activity: 'Account set up', type: 'system', created_at: new Date(),
+        }] });
     }
 });
 

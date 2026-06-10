@@ -539,4 +539,114 @@ router.delete('/pricing/:id', async (req, res) => {
     } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
 });
 
+// ─── Certificates ─────────────────────────────────────────────────────────────
+
+// GET /api/admin/certificates/eligible?courseId=X
+// Returns users who completed the course (progress=100) but haven't received a certificate yet
+router.get('/certificates/eligible', async (req, res) => {
+    try {
+        const { courseId } = req.query;
+        if (!courseId) return res.status(400).json({ success: false, message: 'courseId required' });
+        const r = await db.query(`
+            SELECT u.id AS user_id, u.username, u.email,
+                   e.id AS enrollment_id, e.progress, e.enrolled_at
+            FROM enrollments e
+            JOIN users u ON e.user_id = u.id
+            WHERE e.course_id = $1
+              AND e.progress = 100
+              AND NOT EXISTS (
+                  SELECT 1 FROM course_certificates cc
+                  WHERE cc.user_id = e.user_id AND cc.course_id = e.course_id
+              )
+            ORDER BY e.enrolled_at DESC
+        `, [courseId]);
+        return res.json({ success: true, eligible: r.rows });
+    } catch (err) {
+        console.error('[admin] certificates/eligible error:', err);
+        return res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// GET /api/admin/certificates?courseId=X (optional filter)
+router.get('/certificates', async (req, res) => {
+    try {
+        const { courseId } = req.query;
+        const params = [];
+        const where  = courseId ? `WHERE cc.course_id = $${params.push(courseId)}` : '';
+        const r = await db.query(`
+            SELECT cc.id, cc.user_id, cc.course_id, cc.certificate_url,
+                   cc.certificate_public_id, cc.issued_at,
+                   u.username, u.email,
+                   c.title AS course_title,
+                   ib.username AS issued_by_name
+            FROM course_certificates cc
+            JOIN users u  ON cc.user_id  = u.id
+            JOIN courses c ON cc.course_id = c.id
+            LEFT JOIN users ib ON cc.issued_by = ib.id
+            ${where}
+            ORDER BY cc.issued_at DESC
+        `, params);
+        return res.json({ success: true, certificates: r.rows });
+    } catch (err) {
+        console.error('[admin] certificates list error:', err);
+        return res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// POST /api/admin/certificates/issue
+// Body: { userId, courseId, certificateUrl, certificatePublicId? }
+router.post('/certificates/issue', async (req, res) => {
+    try {
+        const { userId, courseId, certificateUrl, certificatePublicId } = req.body;
+        if (!userId || !courseId || !certificateUrl)
+            return res.status(400).json({ success: false, message: 'userId, courseId, and certificateUrl are required' });
+
+        // Verify the user has completed the course
+        const enrollR = await db.query(
+            'SELECT progress FROM enrollments WHERE user_id=$1 AND course_id=$2',
+            [userId, courseId]
+        );
+        if (!enrollR.rows.length)
+            return res.status(404).json({ success: false, message: 'Enrollment not found' });
+        if (enrollR.rows[0].progress < 100)
+            return res.status(400).json({ success: false, message: 'Student has not completed this course (progress < 100%)' });
+
+        const r = await db.query(`
+            INSERT INTO course_certificates (user_id, course_id, issued_by, certificate_url, certificate_public_id, issued_at)
+            VALUES ($1, $2, $3, $4, $5, NOW())
+            ON CONFLICT (user_id, course_id) DO UPDATE
+              SET certificate_url       = EXCLUDED.certificate_url,
+                  certificate_public_id = EXCLUDED.certificate_public_id,
+                  issued_by             = EXCLUDED.issued_by,
+                  issued_at             = NOW()
+            RETURNING *
+        `, [userId, courseId, req.session.userId, certificateUrl, certificatePublicId || null]);
+
+        return res.json({ success: true, message: 'Certificate issued', certificate: r.rows[0] });
+    } catch (err) {
+        console.error('[admin] certificates/issue error:', err);
+        return res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// DELETE /api/admin/certificates/:id
+router.delete('/certificates/:id', async (req, res) => {
+    try {
+        const r = await db.query(
+            'DELETE FROM course_certificates WHERE id=$1 RETURNING id, certificate_public_id',
+            [req.params.id]
+        );
+        if (!r.rows.length)
+            return res.status(404).json({ success: false, message: 'Certificate not found' });
+        return res.json({
+            success:   true,
+            message:   'Certificate revoked',
+            publicId:  r.rows[0].certificate_public_id || null,
+        });
+    } catch (err) {
+        console.error('[admin] certificates delete error:', err);
+        return res.status(500).json({ success: false, message: err.message });
+    }
+});
+
 module.exports = router;

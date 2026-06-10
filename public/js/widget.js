@@ -1,7 +1,7 @@
 /* NeurowexTech Support Widget — public/js/widget.js v2
  * Self-contained. No external dependencies or AI API calls.
  * Fetches /api/widget-data lazily on first open for live DB content.
- * Panel opens bottom-right and overlays the WhatsApp float when active.
+ * Panel opens bottom-left; liveness pulse + auto-greeting on first open.
  */
 (function () {
   'use strict';
@@ -63,8 +63,8 @@
 
   // ─── CSS ────────────────────────────────────────────────────────────────────
   var CSS = [
-    /* ── floating button (bottom-right) ─────────────────────────────────── */
-    '.nw-wrap{position:fixed;bottom:20px;right:20px;z-index:10002;}',
+    /* ── floating button (bottom-left) ──────────────────────────────────── */
+    '.nw-wrap{position:fixed;bottom:20px;left:20px;z-index:10002;}',
     '.nw-btn{',
       'position:relative;width:58px;height:58px;border-radius:50%;',
       'background:linear-gradient(135deg,#1c2b4a 0%,#2563eb 100%);',
@@ -117,14 +117,14 @@
 
     /* ── teaser notification ─────────────────────────────────────────────── */
     '.nw-teaser{',
-      'position:fixed;bottom:90px;right:20px;z-index:10003;',
-      'background:#fff;border-radius:14px 14px 4px 14px;',
+      'position:fixed;bottom:90px;left:20px;z-index:10003;',
+      'background:#fff;border-radius:14px 14px 14px 4px;',
       'padding:11px 36px 11px 12px;',
       'box-shadow:0 8px 32px rgba(15,23,42,.14),0 2px 8px rgba(15,23,42,.06);',
       'border:1px solid rgba(37,99,235,.1);',
       'max-width:245px;min-width:190px;',
       'display:flex;align-items:center;gap:9px;',
-      'transform:translateX(18px) scale(.95);opacity:0;',
+      'transform:translateX(-18px) scale(.95);opacity:0;',
       'transition:transform .38s cubic-bezier(.34,1.46,.64,1),opacity .28s ease;',
       'pointer-events:none;cursor:pointer;}',
     '.nw-teaser.nw-teaser-vis{transform:translateX(0) scale(1);opacity:1;pointer-events:auto;}',
@@ -137,8 +137,8 @@
       'font-family:system-ui,sans-serif;letter-spacing:.2px;}',
     '.nw-teaser-msg{display:block;font-size:12px;color:#475569;line-height:1.45;',
       'font-family:system-ui,sans-serif;margin-top:1px;}',
-    /* caret pointing down to button */
-    '.nw-teaser::after{content:\'\';position:absolute;bottom:-7px;right:20px;',
+    /* caret pointing down to button (left-aligned) */
+    '.nw-teaser::after{content:\'\';position:absolute;bottom:-7px;left:20px;',
       'width:0;height:0;',
       'border-left:7px solid transparent;border-right:7px solid transparent;',
       'border-top:7px solid #fff;}',
@@ -153,13 +153,13 @@
 
     /* ── panel ───────────────────────────────────────────────────────────── */
     '.nw-panel{',
-      'position:fixed;bottom:82px;right:20px;z-index:10005;',
+      'position:fixed;bottom:82px;left:20px;z-index:10005;',
       'width:375px;max-height:560px;',
       'display:flex;flex-direction:column;border-radius:18px;',
       'box-shadow:0 16px 56px rgba(15,23,42,.22),0 4px 14px rgba(15,23,42,.1);',
       'background:#fff;',
       "font-family:'Plus Jakarta Sans','Inter',system-ui,-apple-system,sans-serif;font-size:14px;",
-      'transform-origin:bottom right;',
+      'transform-origin:bottom left;',
       'transform:scale(.88) translateY(16px);opacity:0;pointer-events:none;',
       'transition:transform .3s cubic-bezier(.34,1.46,.64,1),opacity .22s ease;',
       'overflow:hidden;}',
@@ -281,11 +281,26 @@
 
     /* ── responsive ──────────────────────────────────────────────────────── */
     '@media(max-width:480px){',
-      '.nw-wrap{bottom:16px;right:14px;}',
+      '.nw-wrap{bottom:16px;left:14px;}',
       '.nw-btn{width:52px;height:52px;}',
-      '.nw-panel{width:calc(100vw - 28px);right:14px;bottom:76px;max-height:68vh;}',
-      '.nw-teaser{right:14px;bottom:84px;max-width:calc(100vw - 90px);}',
+      '.nw-panel{width:calc(100vw - 28px);left:14px;bottom:76px;max-height:68vh;}',
+      '.nw-teaser{left:14px;bottom:84px;max-width:calc(100vw - 90px);}',
     '}',
+
+    /* ── global theme-toggle override — remove floating toggles site-wide ── */
+    '#theme-toggle,#theme-toggle-fixed{display:none!important}',
+
+    /* ── nav-level theme button injected by widget ─────────────────────── */
+    '.nw-nav-dark-btn{',
+      'width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(15,23,42,.1);',
+      'background:#fff;display:flex;align-items:center;justify-content:center;',
+      'cursor:pointer;transition:all .22s;flex-shrink:0;}',
+    '.nw-nav-dark-btn svg{width:16px;height:16px;stroke:#64748b;stroke-width:1.8;fill:none;',
+      'stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s;}',
+    '.nw-nav-dark-btn:hover{background:#2563eb;border-color:#2563eb;transform:rotate(18deg) scale(1.06);}',
+    '.nw-nav-dark-btn:hover svg{stroke:#fff;}',
+    'body.dark .nw-nav-dark-btn{background:#1a2236;border-color:rgba(255,255,255,.1);}',
+    'body.dark .nw-nav-dark-btn svg{stroke:rgba(255,255,255,.8);}',
   ].join('');
 
   // ─── HTML ───────────────────────────────────────────────────────────────────
@@ -775,7 +790,18 @@
     fetchData();
 
     if (!this.msgs.length) {
-      this._addBot('Hi! 👋 I\'m NeurowexTech\'s support assistant.\n\nAsk me about **services**, **pricing**, **Academy courses**, **contact info**, or anything else — I\'m here to help!');
+      /* animated "Hi there" greeting with typing indicator */
+      var self = this;
+      var typingEl = this._showTyping();
+      setTimeout(function () {
+        typingEl.remove();
+        self._addBot('Hi there! 👋');
+        var t2 = self._showTyping();
+        setTimeout(function () {
+          t2.remove();
+          self._addBot('I\'m NeurowexTech\'s support assistant.\n\nAsk me about **services**, **pricing**, **Academy courses**, **contact info**, or anything else — I\'m here to help!');
+        }, 900);
+      }, 800);
     }
     this._scrollBottom();
   };
@@ -902,8 +928,74 @@
     };
   };
 
+  // ─── Global theme manager ────────────────────────────────────────────────────
+  var SVG_MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>';
+  var SVG_SUN  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+
+  function initTheme() {
+    var dark = localStorage.getItem('nw-theme') === 'dark' ||
+               (!localStorage.getItem('nw-theme') && window.matchMedia && window.matchMedia('(prefers-color-scheme:dark)').matches);
+
+    function applyTheme() {
+      document.body.classList.toggle('dark', dark);
+      /* sync all icon buttons the page may have */
+      var ids = ['theme-toggle', 'theme-toggle-fixed', 'theme-toggle-nav'];
+      ids.forEach(function (id) {
+        var btn = document.getElementById(id);
+        if (!btn) return;
+        btn.innerHTML = dark ? SVG_SUN : SVG_MOON;
+      });
+      /* fa-icon mobile buttons */
+      var mobs = ['mobThemeBtn'];
+      mobs.forEach(function (id) {
+        var btn = document.getElementById(id);
+        if (!btn) return;
+        btn.innerHTML = dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+      });
+      /* injected nav button */
+      var injected = document.getElementById('nwNavTheme');
+      if (injected) injected.innerHTML = dark ? SVG_SUN : SVG_MOON;
+    }
+
+    function toggle() {
+      dark = !dark;
+      localStorage.setItem('nw-theme', dark ? 'dark' : 'light');
+      applyTheme();
+    }
+
+    applyTheme();
+
+    /* wire existing page buttons without duplicating listeners */
+    ['theme-toggle', 'theme-toggle-fixed', 'theme-toggle-nav', 'mobThemeBtn'].forEach(function (id) {
+      var btn = document.getElementById(id);
+      if (btn && !btn.__nwThemeWired) {
+        btn.__nwThemeWired = true;
+        btn.addEventListener('click', toggle);
+      }
+    });
+
+    /* inject a theme button into .nav-cta only if no theme btn exists there yet */
+    var cta = document.querySelector('.nav-cta');
+    if (cta && !document.getElementById('nwNavTheme') && !document.getElementById('theme-toggle-nav')) {
+      var btn = document.createElement('button');
+      btn.id = 'nwNavTheme';
+      btn.className = 'nw-nav-dark-btn';
+      btn.title = 'Toggle dark mode';
+      btn.setAttribute('aria-label', 'Toggle dark mode');
+      btn.innerHTML = dark ? SVG_SUN : SVG_MOON;
+      btn.addEventListener('click', toggle);
+      cta.insertBefore(btn, cta.firstChild);
+    }
+
+    /* expose for any custom page code */
+    window.__nwToggleTheme = toggle;
+  }
+
   // ─── Boot ────────────────────────────────────────────────────────────────────
-  function boot() { window.__nwWidget = new Widget(); }
+  function boot() {
+    initTheme();
+    window.__nwWidget = new Widget();
+  }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);

@@ -119,8 +119,8 @@ router.post('/enroll/free', isAuthenticated, async (req, res) => {
             `INSERT INTO enrollments (user_id,course_id,enrolled_at,progress,status) VALUES ($1,$2,NOW(),0,'active')`,
             [req.session.userId, internalCourseId]
         );
-        await db.query('UPDATE courses SET enrolled_count=COALESCE(enrolled_count,0)+1 WHERE id=$1', [internalCourseId]);
-        db.query(`INSERT INTO user_activities (user_id,title,description,created_at) VALUES ($1,'Enrolled in course',$2,NOW())`,
+        db.query('UPDATE courses SET enrolled_count=COALESCE(enrolled_count,0)+1 WHERE id=$1', [internalCourseId]).catch(() => {});
+        db.query(`INSERT INTO user_activities (user_id,activity,type,created_at) VALUES ($1,$2,'enrollment',NOW())`,
             [req.session.userId, `Enrolled in "${courseTitle||'Free Course'}"`]).catch(()=>{});
 
         const statsR = await db.query('SELECT COUNT(*) AS total FROM enrollments');
@@ -150,8 +150,8 @@ router.post('/enroll', isAuthenticated, async (req, res) => {
                               redirect:`/learn/course/${courseId}/dashboard` });
 
         await db.query(`INSERT INTO enrollments (user_id,course_id,enrolled_at,progress,status) VALUES ($1,$2,NOW(),0,'active')`, [userId, courseId]);
-        await db.query('UPDATE courses SET enrolled_count=COALESCE(enrolled_count,0)+1 WHERE id=$1', [courseId]);
-        db.query(`INSERT INTO user_activities (user_id,activity,type,date) VALUES ($1,$2,'enrollment',NOW())`,
+        db.query('UPDATE courses SET enrolled_count=COALESCE(enrolled_count,0)+1 WHERE id=$1', [courseId]).catch(() => {});
+        db.query(`INSERT INTO user_activities (user_id,activity,type,created_at) VALUES ($1,$2,'enrollment',NOW())`,
             [userId, `Enrolled in ${cR.rows[0].title}`]).catch(e=>console.log('[activity log]',e.message));
 
         const statsR = await db.query('SELECT COUNT(*) as total FROM enrollments');

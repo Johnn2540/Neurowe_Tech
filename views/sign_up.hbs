@@ -22,7 +22,8 @@ a{text-decoration:none;color:inherit}
 .al-orb{position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,.14) 0%,transparent 65%);top:-120px;left:-80px}
 .al-orb2{position:absolute;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(224,92,42,.1) 0%,transparent 65%);bottom:-100px;right:-60px}
 .al-brand{display:flex;align-items:center;gap:10px;margin-bottom:40px;position:relative;z-index:1}
-.al-logo{width:42px;height:42px;border-radius:50%;border:2.5px solid var(--accent);background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-display);font-size:1.1rem;font-weight:600;box-shadow:0 0 0 3px rgba(224,92,42,.15)}
+.al-logo{width:44px;height:44px;border-radius:50%;border:2.5px solid var(--accent);background:#fff;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px rgba(224,92,42,.15)}
+.al-logo img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
 .al-brand-name{font-family:var(--font-display);font-size:1.2rem;font-weight:600;color:#fff}
 .al-brand-name em{font-style:normal;color:var(--accent)}
 .al-content{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justify-content:center}
@@ -39,11 +40,11 @@ a{text-decoration:none;color:inherit}
 /* RIGHT */
 .auth-right{background:#fff;display:flex;align-items:center;justify-content:center;padding:40px 24px;min-height:100vh}
 .auth-card{width:100%;max-width:440px}
-.mob-brand{display:flex;align-items:center;gap:10px;margin-bottom:28px;justify-content:center}
-@media(min-width:900px){.mob-brand{display:none}}
-.mob-logo{width:38px;height:38px;border-radius:50%;border:2.5px solid var(--accent);background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-display);font-size:1rem}
-.mob-name{font-family:var(--font-display);font-size:1.1rem;color:var(--primary)}
-.mob-name em{font-style:normal;color:var(--accent)}
+.logo-top{display:flex;flex-direction:column;align-items:center;margin-bottom:24px}
+.logo-circle{width:84px;height:84px;border-radius:50%;border:3px solid var(--accent);background:#fff;overflow:hidden;box-shadow:0 6px 28px rgba(28,43,74,.14),0 0 0 6px rgba(224,92,42,.09);display:flex;align-items:center;justify-content:center}
+.logo-circle img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
+.logo-top-name{font-family:var(--font-display);font-size:1.05rem;color:var(--primary);margin-top:10px;font-weight:600}
+.logo-top-name em{font-style:normal;color:var(--accent)}
 .back-link{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:var(--slate);margin-bottom:24px;transition:color .18s}
 .back-link:hover{color:var(--blue)}
 h1{font-family:var(--font-display);font-size:clamp(1.5rem,4vw,1.9rem);font-weight:400;color:var(--primary);margin-bottom:5px}
@@ -91,7 +92,7 @@ h1{font-family:var(--font-display);font-size:clamp(1.5rem,4vw,1.9rem);font-weigh
   <div class="auth-left">
     <div class="al-orb"></div><div class="al-orb2"></div>
     <div class="al-brand">
-      <div class="al-logo">N</div>
+      <div class="al-logo"><img src="/images/logo.png" alt="NeurowexTech"/></div>
       <div class="al-brand-name">Neurowex<em>Tech</em></div>
     </div>
     <div class="al-content">
@@ -121,9 +122,9 @@ h1{font-family:var(--font-display);font-size:clamp(1.5rem,4vw,1.9rem);font-weigh
   <!-- RIGHT -->
   <div class="auth-right">
     <div class="auth-card">
-      <div class="mob-brand">
-        <div class="mob-logo">N</div>
-        <div class="mob-name">Neurowex<em>Tech</em></div>
+      <div class="logo-top">
+        <div class="logo-circle"><img src="/images/logo.png" alt="NeurowexTech"/></div>
+        <span class="logo-top-name">Neurowex<em>Tech</em></span>
       </div>
       <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Back to home</a>
       <h1>Create your account</h1>

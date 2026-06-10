@@ -615,22 +615,76 @@ tbody tr td:first-child{color:var(--c-text);font-weight:500}
       </div>
 
       <div class="form-group">
-        <label class="form-label">Video URL</label>
-        <input type="url" class="form-input" id="dlVideoUrl" placeholder="https://youtube.com/embed/… or Vimeo embed URL"/>
+        <label class="form-label">Video</label>
+        <!-- Upload tab row -->
+        <div style="display:flex;gap:6px;margin-bottom:8px">
+          <button type="button" class="tb-btn" id="dlVideoTabUrl" style="font-size:.75rem;padding:5px 10px;border-bottom:2px solid var(--c-blue);color:var(--c-blue)">Link URL</button>
+          <button type="button" class="tb-btn" id="dlVideoTabUpload" style="font-size:.75rem;padding:5px 10px">Upload File</button>
+        </div>
+        <div id="dlVideoUrlPane">
+          <input type="url" class="form-input" id="dlVideoUrl" placeholder="https://youtube.com/embed/… or Vimeo embed URL"/>
+          <div class="form-hint">Paste a YouTube embed URL, Vimeo embed URL, or direct .mp4 link.</div>
+        </div>
+        <div id="dlVideoUploadPane" style="display:none">
+          <div class="img-upload-zone" id="videoUploadZone" style="min-height:90px;padding:16px">
+            <input type="file" id="dlVideoFile" accept="video/mp4,video/webm,video/quicktime" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%"/>
+            <div id="videoUploadPrompt" style="display:flex;flex-direction:column;align-items:center;gap:6px">
+              <i class="fas fa-cloud-upload-alt" style="font-size:1.6rem;color:var(--c-text3)"></i>
+              <span style="font-size:.78rem;color:var(--c-text3)"><strong>Click</strong> or drag video here</span>
+              <span style="font-size:.7rem;color:var(--c-text3)">MP4, WebM, MOV — max 512 MB</span>
+            </div>
+            <div id="videoUploadProgress" style="display:none;width:100%;flex-direction:column;gap:6px;align-items:flex-start">
+              <div style="font-size:.78rem;color:var(--c-text2);font-weight:500" id="videoUploadStatus">Uploading…</div>
+              <div style="width:100%;height:4px;background:var(--c-surface3);border-radius:2px;overflow:hidden">
+                <div id="videoUploadBar" style="height:100%;background:var(--g-blue);border-radius:2px;width:0%;transition:width .3s"></div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="video-preview-strip" id="videoPreviewStrip" style="display:none">
           <div class="video-preview-icon"><i class="fas fa-play"></i></div>
           <div class="video-preview-txt">
             <div class="video-preview-name" id="vpName">Video attached</div>
             <div class="video-preview-url" id="vpUrl"></div>
           </div>
+          <button type="button" class="tb-btn" id="clearVideoBtn" style="margin-left:auto;font-size:.72rem;padding:3px 8px" title="Remove video">
+            <i class="fas fa-times"></i>
+          </button>
         </div>
-        <div class="form-hint">Paste a YouTube embed URL, Vimeo embed URL, or direct .mp4 link.</div>
       </div>
 
       <div class="form-group">
         <label class="form-label">Duration</label>
         <input type="text" class="form-input" id="dlDuration" placeholder="e.g. 12:45" style="max-width:160px"/>
-        <div class="form-hint">mm:ss format</div>
+        <div class="form-hint">mm:ss format — auto-filled from uploaded video when available.</div>
+      </div>
+
+      <!-- Attachment upload -->
+      <div class="form-group" style="border-top:1px solid var(--c-border);padding-top:14px">
+        <label class="form-label">Lesson Attachment <span style="font-weight:400;color:var(--c-text3)">(optional PDF)</span></label>
+        <div id="attachmentExisting" style="display:none;align-items:center;gap:10px;padding:9px 12px;background:var(--c-surface2);border:1px solid var(--c-border);border-radius:var(--r-md);margin-bottom:8px">
+          <i class="fas fa-file-pdf" style="color:#ef4444;font-size:1rem"></i>
+          <span id="attachmentExistingName" style="font-size:.8rem;color:var(--c-text);font-weight:500;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+          <button type="button" class="tb-btn" id="removeAttachmentBtn" style="font-size:.72rem;padding:3px 8px;flex-shrink:0">
+            <i class="fas fa-times"></i> Remove
+          </button>
+        </div>
+        <div class="img-upload-zone" id="attachmentUploadZone" style="min-height:72px;padding:14px">
+          <input type="file" id="dlAttachmentFile" accept="application/pdf,.pdf" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%"/>
+          <div id="attachmentUploadPrompt" style="display:flex;align-items:center;gap:10px">
+            <i class="fas fa-file-upload" style="font-size:1.2rem;color:var(--c-text3)"></i>
+            <span style="font-size:.78rem;color:var(--c-text3)"><strong>Click</strong> to upload PDF — max 50 MB</span>
+          </div>
+          <div id="attachmentUploadProgress" style="display:none;width:100%;flex-direction:column;gap:6px">
+            <div style="font-size:.78rem;color:var(--c-text2);font-weight:500" id="attachmentUploadStatus">Uploading…</div>
+            <div style="width:100%;height:4px;background:var(--c-surface3);border-radius:2px;overflow:hidden">
+              <div id="attachmentUploadBar" style="height:100%;background:var(--g-blue);border-radius:2px;width:0%;transition:width .3s"></div>
+            </div>
+          </div>
+        </div>
+        <input type="hidden" id="dlAttachmentUrl"/>
+        <input type="hidden" id="dlAttachmentName"/>
+        <input type="hidden" id="dlAttachmentPublicId"/>
       </div>
 
       <div style="border-top:1px solid var(--c-border);padding-top:14px">
@@ -969,6 +1023,10 @@ tbody tr td:first-child{color:var(--c-text);font-weight:500}
                               data-duration="{{this.duration}}"
                               data-published="{{this.isPublished}}"
                               data-free="{{this.isFree}}"
+                              data-attachment-url="{{this.attachmentUrl}}"
+                              data-attachment-name="{{this.attachmentName}}"
+                              data-attachment-pub-id="{{this.attachmentPublicId}}"
+                              data-cloudinary-pub-id="{{this.cloudinaryPublicId}}"
                               title="Edit lesson" aria-label="Edit lesson">
                         <i class="fas fa-edit"></i>
                       </button>
@@ -1036,16 +1094,29 @@ tbody tr td:first-child{color:var(--c-text);font-weight:500}
             </div>
 
             <div style="margin-top:20px">
-              <label class="form-label" style="margin-bottom:8px;display:block">Course Thumbnail</label>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                <label class="form-label" style="margin-bottom:0">Course Thumbnail</label>
+                <button type="button" class="tb-btn primary" id="uploadThumbBtn" style="font-size:.75rem;padding:5px 12px">
+                  <i class="fas fa-cloud-upload-alt"></i> <span id="uploadThumbBtnTxt">Upload Image</span>
+                </button>
+              </div>
               <div class="img-upload-zone" id="thumbUploadZone">
                 <input type="file" id="thumbFileInput" accept="image/*" aria-label="Upload thumbnail"/>
                 {{#if courseThumbnail}}
                 <img src="{{courseThumbnail}}" class="img-preview" id="thumbPreview" style="display:block"/>
                 {{else}}
                 <div class="img-upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                <div class="img-upload-text"><strong>Click to upload</strong> or drag & drop<br><span style="font-size:.72rem">PNG, JPG, WEBP — recommended 1280×720</span></div>
+                <div class="img-upload-text"><strong>Click to select</strong> or drag & drop<br><span style="font-size:.72rem">PNG, JPG, WEBP — recommended 1280×720</span></div>
                 <img class="img-preview" id="thumbPreview"/>
                 {{/if}}
+              </div>
+              <div id="thumbUploadStatus" style="display:none;margin-top:8px">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div style="flex:1;height:4px;background:var(--c-surface3);border-radius:2px;overflow:hidden">
+                    <div id="thumbUploadBar" style="height:100%;background:var(--g-blue);border-radius:2px;width:0%;transition:width .4s"></div>
+                  </div>
+                  <span id="thumbUploadStatusTxt" style="font-size:.74rem;color:var(--c-text3);white-space:nowrap">Uploading…</span>
+                </div>
               </div>
             </div>
 
@@ -1224,13 +1295,17 @@ var STATE = {
       lessons: [
         {{#each this.lessons}}
         {
-          id:          {{this.id}},
-          title:       {{{json this.title}}},
-          videoUrl:    {{{json this.video_url}}},
-          duration:    {{{json this.duration}}},
-          isPublished: {{#if this.isPublished}}true{{else}}false{{/if}},
-          isFree:      {{#if this.isFree}}true{{else}}false{{/if}},
-          order:       {{@index}}
+          id:                 {{this.id}},
+          title:              {{{json this.title}}},
+          videoUrl:           {{{json this.video_url}}},
+          duration:           {{{json this.duration}}},
+          isPublished:        {{#if this.isPublished}}true{{else}}false{{/if}},
+          isFree:             {{#if this.isFree}}true{{else}}false{{/if}},
+          attachmentUrl:      {{{json this.attachmentUrl}}},
+          attachmentName:     {{{json this.attachmentName}}},
+          attachmentPublicId: {{{json this.attachmentPublicId}}},
+          cloudinaryPublicId: {{{json this.cloudinaryPublicId}}},
+          order:              {{@index}}
         }{{#unless @last}},{{/unless}}
         {{/each}}
       ]
@@ -1466,6 +1541,25 @@ function openDrawer(lessonData, moduleId){
   el('dlPublished').checked      = isEdit ? lessonData.isPublished : true;
   el('dlFree').checked           = isEdit ? lessonData.isFree : false;
   el('dlDesc').value             = '';
+  // Reset attachment fields
+  var attUrl  = el('dlAttachmentUrl');
+  var attName = el('dlAttachmentName');
+  var attPid  = el('dlAttachmentPublicId');
+  if(attUrl)  attUrl.value  = isEdit ? (lessonData.attachmentUrl  || '') : '';
+  if(attName) attName.value = isEdit ? (lessonData.attachmentName || '') : '';
+  if(attPid)  attPid.value  = isEdit ? (lessonData.attachmentPublicId || '') : '';
+  // Show attachment if it exists
+  var setAtt = window._setAttachmentDisplay;
+  if(typeof setAtt === 'function'){
+    setAtt(isEdit && lessonData.attachmentName ? lessonData.attachmentName : null);
+  } else {
+    // Fallback inline
+    var ex = el('attachmentExisting'); var exName = el('attachmentExistingName'); var az = el('attachmentUploadZone');
+    var name = isEdit && lessonData.attachmentName ? lessonData.attachmentName : null;
+    if(ex)     ex.style.display    = name ? 'flex' : 'none';
+    if(exName) exName.textContent  = name || '';
+    if(az)     az.style.display    = name ? 'none' : '';
+  }
   updateVideoPreview(el('dlVideoUrl').value);
   el('lessonDrawer').classList.add('open');
   el('drawerOverlay').classList.add('open');
@@ -1475,6 +1569,15 @@ function openDrawer(lessonData, moduleId){
 function closeDrawer(){
   el('lessonDrawer').classList.remove('open');
   el('drawerOverlay').classList.remove('open');
+  // Reset video tab to URL pane
+  var tabUrl = el('dlVideoTabUrl');
+  var tabUp  = el('dlVideoTabUpload');
+  var pUrl   = el('dlVideoUrlPane');
+  var pUp    = el('dlVideoUploadPane');
+  if(tabUrl){  tabUrl.style.borderBottom = '2px solid var(--c-blue)'; tabUrl.style.color = 'var(--c-blue)'; }
+  if(tabUp){   tabUp.style.borderBottom  = '2px solid transparent';  tabUp.style.color  = 'var(--c-text3)'; }
+  if(pUrl) pUrl.style.display  = '';
+  if(pUp)  pUp.style.display   = 'none';
 }
 
 el('drawerClose')  && el('drawerClose').addEventListener('click', closeDrawer);
@@ -1501,13 +1604,16 @@ function updateVideoPreview(url){
    DRAWER SAVE (create or update lesson)
 ═══════════════════════════════════════════════════════════════= */
 el('drawerSave') && el('drawerSave').addEventListener('click', async function(){
-  var title     = el('dlTitle').value.trim();
-  var videoUrl  = el('dlVideoUrl').value.trim();
-  var duration  = el('dlDuration').value.trim();
-  var published = el('dlPublished').checked;
-  var free      = el('dlFree').checked;
-  var lessonId  = el('drawerLessonId').value;
-  var moduleId  = el('drawerModuleId').value;
+  var title          = el('dlTitle').value.trim();
+  var videoUrl       = el('dlVideoUrl').value.trim();
+  var duration       = el('dlDuration').value.trim();
+  var published      = el('dlPublished').checked;
+  var free           = el('dlFree').checked;
+  var lessonId       = el('drawerLessonId').value;
+  var moduleId       = el('drawerModuleId').value;
+  var attachmentUrl  = (el('dlAttachmentUrl')       && el('dlAttachmentUrl').value)       || '';
+  var attachmentName = (el('dlAttachmentName')      && el('dlAttachmentName').value)      || '';
+  var attachPubId    = (el('dlAttachmentPublicId')  && el('dlAttachmentPublicId').value)  || '';
 
   if(!title){ showToast('Lesson title is required.', true); el('dlTitle').focus(); return; }
 
@@ -1518,9 +1624,13 @@ el('drawerSave') && el('drawerSave').addEventListener('click', async function(){
 
   var isEdit = !!lessonId;
   var endpoint = isEdit ? '/api/instructor/lesson/update' : '/api/instructor/lesson/create';
+  var base = { title, videoUrl, duration, isPublished: published, isFree: free,
+               attachmentUrl: attachmentUrl || undefined,
+               attachmentName: attachmentName || undefined,
+               attachmentPublicId: attachPubId || undefined };
   var payload  = isEdit
-    ? { lessonId, title, videoUrl, duration, isPublished: published, isFree: free }
-    : { moduleId, title, videoUrl, duration, isPublished: published, isFree: free };
+    ? { lessonId, ...base }
+    : { moduleId, ...base };
 
   var data = await api(endpoint, payload);
   btn.innerHTML = orig;
@@ -1544,16 +1654,31 @@ el('drawerSave') && el('drawerSave').addEventListener('click', async function(){
         /* update data attrs on edit btn */
         var editBtn = item.querySelector('.edit-lesson-btn');
         if(editBtn){
-          editBtn.dataset.title      = title;
-          editBtn.dataset.videoUrl   = videoUrl;
-          editBtn.dataset.duration   = duration;
-          editBtn.dataset.published  = published;
-          editBtn.dataset.free       = free;
+          editBtn.dataset.title             = title;
+          editBtn.dataset.videoUrl          = videoUrl;
+          editBtn.dataset.duration          = duration;
+          editBtn.dataset.published         = published;
+          editBtn.dataset.free              = free;
+          editBtn.dataset.attachmentUrl     = attachmentUrl;
+          editBtn.dataset.attachmentName    = attachmentName;
+          editBtn.dataset.attachmentPubId   = attachPubId;
         }
       }
     } else if(data.lesson){
-      /* inject new lesson row into correct module */
-      insertLessonRow(data.lesson, moduleId);
+      /* normalize snake_case API response → camelCase for insertLessonRow */
+      var l = data.lesson;
+      insertLessonRow({
+        id:                 l.id,
+        title:              l.title,
+        videoUrl:           l.video_url          || l.videoUrl           || '',
+        duration:           l.duration           || '',
+        isPublished:        l.is_published        !== undefined ? l.is_published        : (l.isPublished        !== undefined ? l.isPublished        : true),
+        isFree:             l.is_free             !== undefined ? l.is_free             : (l.isFree             || false),
+        attachmentUrl:      l.attachment_url      || l.attachmentUrl      || '',
+        attachmentName:     l.attachment_name     || l.attachmentName     || '',
+        attachmentPublicId: l.attachment_public_id|| l.attachmentPublicId || '',
+        cloudinaryPublicId: l.cloudinary_public_id|| l.cloudinaryPublicId || '',
+      }, moduleId);
       updateLessonCount();
     }
   } else {
@@ -1586,6 +1711,10 @@ function insertLessonRow(lesson, moduleId){
               data-duration="${escHtml(lesson.duration || '')}"
               data-published="${lesson.isPublished}"
               data-free="${lesson.isFree || false}"
+              data-attachment-url="${escHtml(lesson.attachmentUrl || '')}"
+              data-attachment-name="${escHtml(lesson.attachmentName || '')}"
+              data-attachment-pub-id="${escHtml(lesson.attachmentPublicId || '')}"
+              data-cloudinary-pub-id="${escHtml(lesson.cloudinaryPublicId || '')}"
               title="Edit lesson"><i class="fas fa-edit"></i></button>
       <button class="lesson-act-btn del delete-lesson-btn"
               data-lesson-id="${lesson.id}"
@@ -1607,12 +1736,16 @@ document.addEventListener('click', function(e){
   var btn = e.target.closest('.edit-lesson-btn');
   if(!btn) return;
   openDrawer({
-    id:          btn.dataset.lessonId,
-    title:       btn.dataset.title,
-    videoUrl:    btn.dataset.videoUrl,
-    duration:    btn.dataset.duration,
-    isPublished: btn.dataset.published === 'true',
-    isFree:      btn.dataset.free === 'true'
+    id:                 btn.dataset.lessonId,
+    title:              btn.dataset.title,
+    videoUrl:           btn.dataset.videoUrl,
+    duration:           btn.dataset.duration,
+    isPublished:        btn.dataset.published === 'true',
+    isFree:             btn.dataset.free === 'true',
+    attachmentUrl:      btn.dataset.attachmentUrl      || '',
+    attachmentName:     btn.dataset.attachmentName     || '',
+    attachmentPublicId: btn.dataset.attachmentPubId    || '',
+    cloudinaryPublicId: btn.dataset.cloudinaryPubId    || '',
   }, btn.dataset.modId);
 });
 
@@ -1766,37 +1899,324 @@ el('deleteCourseBtn') && el('deleteCourseBtn').addEventListener('click', functio
 });
 
 /* ══════════════════════════════════════════════════════════════
-   THUMBNAIL UPLOAD PREVIEW
+   THUMBNAIL — preview + Cloudinary upload
 ═══════════════════════════════════════════════════════════════= */
 (function(){
-  var zone  = el('thumbUploadZone');
-  var input = el('thumbFileInput');
-  var prev  = el('thumbPreview');
-  if(!zone || !input || !prev) return;
+  var zone     = el('thumbUploadZone');
+  var input    = el('thumbFileInput');
+  var prev     = el('thumbPreview');
+  var uploadBtn= el('uploadThumbBtn');
+  var barWrap  = el('thumbUploadStatus');
+  var bar      = el('thumbUploadBar');
+  var statusTxt= el('thumbUploadStatusTxt');
+  var btnTxt   = el('uploadThumbBtnTxt');
+  if(!zone || !input) return;
 
-  input.addEventListener('change', function(){
-    var file = this.files[0];
-    if(!file) return;
+  function showPreview(file){
+    if(!prev) return;
     var reader = new FileReader();
     reader.onload = function(e){
       prev.src   = e.target.result;
       prev.style.display = 'block';
-      zone.querySelector('.img-upload-icon') && (zone.querySelector('.img-upload-icon').style.display = 'none');
-      zone.querySelector('.img-upload-text') && (zone.querySelector('.img-upload-text').style.display = 'none');
+      var icon = zone.querySelector('.img-upload-icon');
+      var txt  = zone.querySelector('.img-upload-text');
+      if(icon) icon.style.display = 'none';
+      if(txt)  txt.style.display  = 'none';
     };
     reader.readAsDataURL(file);
+  }
+
+  async function doThumbUpload(file){
+    if(!file) return;
+    showPreview(file);
+    if(barWrap){ barWrap.style.display = 'block'; }
+    if(bar){ bar.style.width = '10%'; }
+    if(statusTxt){ statusTxt.textContent = 'Uploading…'; }
+    if(uploadBtn){ uploadBtn.disabled = true; if(btnTxt) btnTxt.textContent = 'Uploading…'; }
+
+    var fd = new FormData();
+    fd.append('image', file);
+
+    try {
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/upload/course-image');
+
+      xhr.upload.onprogress = function(e){
+        if(e.lengthComputable && bar){
+          bar.style.width = Math.round((e.loaded / e.total) * 90) + '%';
+        }
+      };
+
+      var result = await new Promise(function(resolve, reject){
+        xhr.onload = function(){
+          try { resolve(JSON.parse(xhr.responseText)); }
+          catch(e){ reject(new Error('Invalid response')); }
+        };
+        xhr.onerror = function(){ reject(new Error('Network error')); };
+        xhr.send(fd);
+      });
+
+      if(result.success){
+        if(bar){ bar.style.width = '100%'; }
+        if(statusTxt){ statusTxt.textContent = 'Saving…'; }
+
+        var saveData = await api('/api/instructor/course/update', {
+          courseId: STATE.courseId,
+          imageUrl: result.imageUrl
+        });
+
+        if(saveData.success){
+          if(statusTxt){ statusTxt.textContent = 'Thumbnail saved!'; }
+          showToast('Course thumbnail updated!');
+        } else {
+          showToast(saveData.message || 'Upload succeeded but save failed.', true);
+          if(statusTxt){ statusTxt.textContent = 'Save failed.'; }
+        }
+      } else {
+        showToast(result.message || 'Upload failed.', true);
+        if(statusTxt){ statusTxt.textContent = 'Upload failed.'; }
+      }
+    } catch(e){
+      showToast(e.message || 'Upload error.', true);
+      if(statusTxt){ statusTxt.textContent = 'Error.'; }
+    } finally {
+      if(uploadBtn){ uploadBtn.disabled = false; if(btnTxt) btnTxt.textContent = 'Upload Image'; }
+      setTimeout(function(){ if(barWrap) barWrap.style.display = 'none'; }, 2200);
+    }
+  }
+
+  input.addEventListener('change', function(){
+    if(this.files[0]) doThumbUpload(this.files[0]);
   });
+
+  if(uploadBtn){
+    uploadBtn.addEventListener('click', function(){ input.click(); });
+  }
 
   zone.addEventListener('dragover', function(e){ e.preventDefault(); zone.classList.add('drag'); });
   zone.addEventListener('dragleave', function(){ zone.classList.remove('drag'); });
   zone.addEventListener('drop', function(e){
     e.preventDefault(); zone.classList.remove('drag');
     var file = e.dataTransfer.files[0];
-    if(file && file.type.startsWith('image/')){
-      input.files = e.dataTransfer.files;
-      input.dispatchEvent(new Event('change'));
-    }
+    if(file && file.type.startsWith('image/')){ doThumbUpload(file); }
   });
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   LESSON DRAWER — video tabs + upload
+═══════════════════════════════════════════════════════════════= */
+(function(){
+  var tabUrl    = el('dlVideoTabUrl');
+  var tabUpload = el('dlVideoTabUpload');
+  var paneUrl   = el('dlVideoUrlPane');
+  var paneUp    = el('dlVideoUploadPane');
+  var clearBtn  = el('clearVideoBtn');
+
+  function setTab(isUpload){
+    if(tabUrl){
+      tabUrl.style.borderBottom    = isUpload ? '2px solid transparent' : '2px solid var(--c-blue)';
+      tabUrl.style.color           = isUpload ? 'var(--c-text3)' : 'var(--c-blue)';
+    }
+    if(tabUpload){
+      tabUpload.style.borderBottom = isUpload ? '2px solid var(--c-blue)' : '2px solid transparent';
+      tabUpload.style.color        = isUpload ? 'var(--c-blue)' : 'var(--c-text3)';
+    }
+    if(paneUrl)    paneUrl.style.display  = isUpload ? 'none' : '';
+    if(paneUp)     paneUp.style.display   = isUpload ? ''     : 'none';
+  }
+
+  tabUrl    && tabUrl.addEventListener('click',    function(){ setTab(false); });
+  tabUpload && tabUpload.addEventListener('click',  function(){ setTab(true); });
+
+  clearBtn && clearBtn.addEventListener('click', function(){
+    var inp = el('dlVideoUrl');
+    if(inp) inp.value = '';
+    updateVideoPreview('');
+  });
+
+  // ── Video file upload ──
+  var videoInput   = el('dlVideoFile');
+  var videoZone    = el('videoUploadZone');
+  var videoPrompt  = el('videoUploadPrompt');
+  var videoProgWrap= el('videoUploadProgress');
+  var videoBar     = el('videoUploadBar');
+  var videoStatus  = el('videoUploadStatus');
+
+  async function doVideoUpload(file){
+    if(!file) return;
+    if(videoPrompt)   videoPrompt.style.display   = 'none';
+    if(videoProgWrap) videoProgWrap.style.display  = 'flex';
+    if(videoBar)      videoBar.style.width         = '5%';
+    if(videoStatus)   videoStatus.textContent      = 'Uploading video…';
+
+    var fd = new FormData();
+    fd.append('video', file);
+
+    try {
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/upload/lesson-video');
+
+      xhr.upload.onprogress = function(e){
+        if(e.lengthComputable && videoBar){
+          videoBar.style.width = Math.round((e.loaded / e.total) * 95) + '%';
+        }
+      };
+
+      var result = await new Promise(function(resolve, reject){
+        xhr.onload = function(){
+          try { resolve(JSON.parse(xhr.responseText)); }
+          catch(e){ reject(new Error('Invalid server response')); }
+        };
+        xhr.onerror = function(){ reject(new Error('Network error')); };
+        xhr.send(fd);
+      });
+
+      if(result.success){
+        if(videoBar)    videoBar.style.width       = '100%';
+        if(videoStatus) videoStatus.textContent    = 'Upload complete!';
+
+        var urlInput = el('dlVideoUrl');
+        if(urlInput) urlInput.value = result.videoUrl;
+        updateVideoPreview(result.videoUrl);
+
+        // Auto-fill duration from Cloudinary response
+        if(result.duration){
+          var durInput = el('dlDuration');
+          if(durInput && !durInput.value){
+            var secs  = Math.round(result.duration);
+            var mm    = Math.floor(secs / 60);
+            var ss    = String(secs % 60).padStart(2, '0');
+            durInput.value = mm + ':' + ss;
+          }
+        }
+        setTab(false); // switch back to URL tab to show filled value
+        showToast('Video uploaded to Cloudinary!');
+      } else {
+        showToast(result.message || 'Video upload failed.', true);
+        if(videoStatus) videoStatus.textContent = 'Upload failed.';
+      }
+    } catch(e){
+      showToast(e.message || 'Upload error.', true);
+      if(videoStatus) videoStatus.textContent = 'Error.';
+    } finally {
+      setTimeout(function(){
+        if(videoPrompt)   videoPrompt.style.display   = '';
+        if(videoProgWrap) videoProgWrap.style.display  = 'none';
+        if(videoBar)      videoBar.style.width         = '0%';
+      }, 1800);
+    }
+  }
+
+  videoInput && videoInput.addEventListener('change', function(){
+    if(this.files[0]) doVideoUpload(this.files[0]);
+  });
+
+  if(videoZone){
+    videoZone.addEventListener('dragover',  function(e){ e.preventDefault(); videoZone.classList.add('drag'); });
+    videoZone.addEventListener('dragleave', function(){  videoZone.classList.remove('drag'); });
+    videoZone.addEventListener('drop',      function(e){
+      e.preventDefault(); videoZone.classList.remove('drag');
+      var file = e.dataTransfer.files[0];
+      if(file && file.type.startsWith('video/')) doVideoUpload(file);
+    });
+  }
+
+  // ── Attachment (PDF) upload ──
+  var attachInput     = el('dlAttachmentFile');
+  var attachZone      = el('attachmentUploadZone');
+  var attachPrompt    = el('attachmentUploadPrompt');
+  var attachProgWrap  = el('attachmentUploadProgress');
+  var attachBar       = el('attachmentUploadBar');
+  var attachStatus    = el('attachmentUploadStatus');
+  var attachExisting  = el('attachmentExisting');
+  var attachExName    = el('attachmentExistingName');
+  var removeAttBtn    = el('removeAttachmentBtn');
+
+  function setAttachmentDisplay(name){
+    if(name){
+      if(attachExisting)  attachExisting.style.display  = 'flex';
+      if(attachExName)    attachExName.textContent       = name;
+      if(attachZone)      attachZone.style.display       = 'none';
+    } else {
+      if(attachExisting)  attachExisting.style.display  = 'none';
+      if(attachZone)      attachZone.style.display       = '';
+    }
+  }
+  window._setAttachmentDisplay = setAttachmentDisplay;
+
+  removeAttBtn && removeAttBtn.addEventListener('click', function(){
+    var urlInput  = el('dlAttachmentUrl');
+    var nameInput = el('dlAttachmentName');
+    var pidInput  = el('dlAttachmentPublicId');
+    if(urlInput)  urlInput.value  = '';
+    if(nameInput) nameInput.value = '';
+    if(pidInput)  pidInput.value  = '';
+    setAttachmentDisplay(null);
+  });
+
+  async function doAttachmentUpload(file){
+    if(!file) return;
+    if(attachPrompt)   attachPrompt.style.display   = 'none';
+    if(attachProgWrap) attachProgWrap.style.display  = 'flex';
+    if(attachBar)      attachBar.style.width         = '5%';
+    if(attachStatus)   attachStatus.textContent      = 'Uploading attachment…';
+
+    var fd = new FormData();
+    fd.append('attachment', file);
+
+    try {
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/upload/lesson-attachment');
+
+      xhr.upload.onprogress = function(e){
+        if(e.lengthComputable && attachBar){
+          attachBar.style.width = Math.round((e.loaded / e.total) * 95) + '%';
+        }
+      };
+
+      var result = await new Promise(function(resolve, reject){
+        xhr.onload = function(){
+          try { resolve(JSON.parse(xhr.responseText)); }
+          catch(e){ reject(new Error('Invalid response')); }
+        };
+        xhr.onerror = function(){ reject(new Error('Network error')); };
+        xhr.send(fd);
+      });
+
+      if(result.success){
+        var urlInput  = el('dlAttachmentUrl');
+        var nameInput = el('dlAttachmentName');
+        var pidInput  = el('dlAttachmentPublicId');
+        if(urlInput)  urlInput.value  = result.attachmentUrl;
+        if(nameInput) nameInput.value = result.originalName || file.name;
+        if(pidInput)  pidInput.value  = result.publicId || '';
+        setAttachmentDisplay(result.originalName || file.name);
+        showToast('Attachment uploaded!');
+      } else {
+        showToast(result.message || 'Attachment upload failed.', true);
+      }
+    } catch(e){
+      showToast(e.message || 'Upload error.', true);
+    } finally {
+      if(attachPrompt)   attachPrompt.style.display   = '';
+      if(attachProgWrap) attachProgWrap.style.display  = 'none';
+      if(attachBar)      attachBar.style.width         = '0%';
+    }
+  }
+
+  attachInput && attachInput.addEventListener('change', function(){
+    if(this.files[0]) doAttachmentUpload(this.files[0]);
+  });
+
+  if(attachZone){
+    attachZone.addEventListener('dragover',  function(e){ e.preventDefault(); attachZone.classList.add('drag'); });
+    attachZone.addEventListener('dragleave', function(){  attachZone.classList.remove('drag'); });
+    attachZone.addEventListener('drop',      function(e){
+      e.preventDefault(); attachZone.classList.remove('drag');
+      var file = e.dataTransfer.files[0];
+      if(file && file.type === 'application/pdf') doAttachmentUpload(file);
+    });
+  }
 })();
 
 /* ══════════════════════════════════════════════════════════════

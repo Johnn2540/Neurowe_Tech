@@ -91,10 +91,10 @@ img{max-width:100%;display:block}
    SIDEBAR
 ══════════════════════════════════════════ */
 .adm-sidebar{
-  position:fixed;left:0;top:0;height:100vh;width:268px;
+  position:fixed;left:0;top:0;height:100vh;height:100dvh;width:268px;
   background:var(--ink);border-right:1px solid rgba(255,255,255,.06);
   display:flex;flex-direction:column;z-index:1050;
-  transition:width .3s var(--ease);overflow:hidden;
+  transition:width .3s var(--ease);overflow-x:hidden;
 }
 .adm-sidebar.col{width:68px}
 body.dark .adm-sidebar{background:#070d1a}
@@ -332,12 +332,14 @@ textarea.adm-input{resize:vertical}
 ══════════════════════════════════════════ */
 .adm-mob-overlay{position:fixed;inset:0;background:rgba(8,12,24,.6);backdrop-filter:blur(5px);z-index:1049;opacity:0;visibility:hidden;transition:opacity .3s}
 .adm-mob-overlay.open{opacity:1;visibility:visible}
+.tb-signout-mob{display:none}
 @media(max-width:991px){
   .adm-sidebar{transform:translateX(-100%);width:268px!important}
   .adm-sidebar.mob-open{transform:translateX(0)}
   .adm-topbar,.adm-main{left:0!important;margin-left:0!important}
   .adm-page{padding:14px}
   .pg-head h2{font-size:1.25rem}
+  .tb-signout-mob{display:flex}
 }
 
 /* ══════════════════════════════════════════
@@ -673,6 +675,7 @@ textarea.adm-input{resize:vertical}
     <button class="tb-btn" id="themeToggleAdm" title="Toggle theme">
       <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
     </button>
+    <a href="/logout" class="tb-btn tb-signout-mob" title="Sign Out" style="color:rgba(239,68,68,.8);border-color:rgba(239,68,68,.2)"><i class="fas fa-right-from-bracket"></i></a>
     <div class="tb-user-chip" aria-label="User menu">
       <div class="tb-chip-av" id="tbUserAv">A</div>
       <span class="tb-chip-name" id="tbUserName">{{userName}}</span>

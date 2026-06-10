@@ -229,12 +229,17 @@ body.dark .or-div::before,body.dark .or-div::after{background:rgba(255,255,255,.
 .row2{display:grid;grid-template-columns:1fr;gap:16px}
 .fg{display:flex;flex-direction:column;gap:0}
 .mt14{margin-top:14px}.mt20{margin-top:20px}
-.svc-wrap{display:flex;flex-wrap:wrap;gap:7px}
+.svc-wrap{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
 .svc-chk{display:none}
 .svc-tag{display:inline-flex;align-items:center;gap:5px;background:#fff;border:1.5px solid var(--mist);color:var(--slate);border-radius:var(--r-pill);padding:6px 13px;font-size:.76rem;font-weight:600;transition:var(--t);cursor:pointer;user-select:none}
 .svc-tag i{font-size:.7rem}
 .svc-tag:hover{border-color:var(--blue);color:var(--blue)}
 .svc-chk:checked+.svc-tag{background:var(--g-blue);border-color:transparent;color:#fff;box-shadow:var(--sh-blue)}
+.svc-custom-inp{background:#fff;border:1.5px dashed var(--mist);color:var(--slate);border-radius:var(--r-pill);padding:6px 14px;font-size:.76rem;font-weight:600;width:160px;outline:none;transition:var(--t);font-family:inherit}
+.svc-custom-inp:focus{border-color:var(--blue);border-style:solid}
+.svc-custom-inp::placeholder{color:var(--mist);font-weight:500}
+body.dark .svc-custom-inp{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.7)}
+body.dark .svc-custom-inp:focus{border-color:var(--blue)}
 .textarea-wrap{position:relative}
 .char-ct{position:absolute;bottom:9px;right:11px;font-size:.63rem;color:var(--slate-l);pointer-events:none}
 .nda-row{display:flex;align-items:flex-start;gap:9px;background:var(--blue-pale);border:1px solid rgba(26,79,214,.14);border-radius:var(--r-md);padding:13px 14px;margin-top:20px;cursor:pointer}
@@ -653,6 +658,7 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
                   <input type="checkbox" class="svc-chk" id="sv6" value="Graphic Design"><label class="svc-tag" for="sv6"><i class="fas fa-palette"></i> Graphic Design</label>
                   <input type="checkbox" class="svc-chk" id="sv7" value="Cloud & DevOps"><label class="svc-tag" for="sv7"><i class="fas fa-cloud-upload-alt"></i> Cloud</label>
                   <input type="checkbox" class="svc-chk" id="sv8" value="SEO / Analytics"><label class="svc-tag" for="sv8"><i class="fas fa-chart-line"></i> SEO / Analytics</label>
+                  <input type="text" id="svcCustom" class="svc-custom-inp" placeholder="+ Other service..." maxlength="80" autocomplete="off">
                 </div>
               </div>
 
@@ -1009,9 +1015,14 @@ function toast(msg, isErr) {
   var p = new URLSearchParams(window.location.search), svc = p.get('service');
   if (!svc) return;
   var v = svc.toLowerCase().replace(/\+/g, ' ');
+  var matched = false;
   document.querySelectorAll('.svc-chk').forEach(function(c) {
-    if (c.value.toLowerCase() === v) c.checked = true;
+    if (c.value.toLowerCase() === v) { c.checked = true; matched = true; }
   });
+  if (!matched) {
+    var customInp = document.getElementById('svcCustom');
+    if (customInp) customInp.value = svc.replace(/\+/g, ' ');
+  }
 })();
 
 /* ── CHAR COUNT ── */
@@ -1053,8 +1064,10 @@ document.getElementById('contactForm').addEventListener('submit', async function
   btn.classList.add('loading');
   btn.disabled = true;
 
-  // Collect services
+  // Collect services (checkboxes + custom freetext)
   var services = Array.from(document.querySelectorAll('.svc-chk:checked')).map(function(c) { return c.value; });
+  var customSvc = document.getElementById('svcCustom').value.trim();
+  if (customSvc) services.push(customSvc);
 
   // Append timeline + NDA into the message body so server stores them
   // (server extracts: name, email, phone, project_type, budget, message, company, services)

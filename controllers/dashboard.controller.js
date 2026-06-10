@@ -25,7 +25,7 @@ async function userDashboard(req, res) {
                        c.price, c.total_duration, u.username AS instructor_name
                 FROM enrollments e
                 JOIN courses c ON e.course_id = c.id
-                JOIN users   u ON c.instructor_id = u.id
+                LEFT JOIN users u ON c.instructor_id = u.id
                 WHERE e.user_id=$1 ORDER BY e.enrolled_at DESC
             `, [uid]).catch(() => ({ rows: [] })),
             db.query(
@@ -161,13 +161,17 @@ async function instructorCoursePage(req, res) {
             SELECT cm.*,
                    COALESCE(json_agg(
                        json_build_object(
-                           'id',           cl.id,
-                           'title',        cl.title,
-                           'duration',     cl.duration,
-                           'lesson_order', cl.lesson_order,
-                           'video_url',    cl.video_url,
-                           'is_free',      cl.is_free,
-                           'is_published', COALESCE(cl.is_published, true)
+                           'id',                 cl.id,
+                           'title',              cl.title,
+                           'duration',           cl.duration,
+                           'lesson_order',       cl.lesson_order,
+                           'video_url',          cl.video_url,
+                           'isFree',             cl.is_free,
+                           'isPublished',        COALESCE(cl.is_published, true),
+                           'cloudinaryPublicId', cl.cloudinary_public_id,
+                           'attachmentUrl',      cl.attachment_url,
+                           'attachmentName',     cl.attachment_name,
+                           'attachmentPublicId', cl.attachment_public_id
                        ) ORDER BY cl.lesson_order
                    ) FILTER (WHERE cl.id IS NOT NULL), '[]') AS lessons
             FROM course_modules cm

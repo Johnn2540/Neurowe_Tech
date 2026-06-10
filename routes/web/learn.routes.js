@@ -251,29 +251,66 @@ router.get('/learn/course/:id/dashboard', isAuthenticated, async (req, res) => {
 router.get('/my-learning', isAuthenticated, async (req, res) => {
     try {
         const userId = req.session.userId;
-        const r = await db.query(`
-            SELECT e.*, c.id AS course_id, c.title, c.category, c.level, c.image_url,
-                   c.description, c.total_duration,
-                   COALESCE(u.username,'NeurowexTech') AS instructor_name,
-                   COALESCE(ls.lesson_count,0) AS total_lessons
-            FROM enrollments e JOIN courses c ON e.course_id=c.id
-            LEFT JOIN users u ON c.instructor_id=u.id
-            LEFT JOIN (SELECT course_id,COUNT(*) as lesson_count FROM course_lessons GROUP BY course_id) ls
-                ON c.id=ls.course_id
-            WHERE e.user_id=$1 ORDER BY e.enrolled_at DESC
-        `, [userId]);
 
-        const enrollments      = r.rows || [];
-        const totalEnrolled    = enrollments.length;
-        const activeCourses    = enrollments.filter(e=>e.status==='active').length;
-        const completedCourses = enrollments.filter(e=>e.progress===100).length;
-        const averageProgress  = totalEnrolled>0
-            ? Math.round(enrollments.reduce((s,e)=>s+(e.progress||0),0)/totalEnrolled) : 0;
+        const [enrollR, lessonsR, recR] = await Promise.all([
+            db.query(`
+                SELECT e.*, c.id AS course_id, c.title, c.category, c.level, c.image_url,
+                       c.description, c.total_duration,
+                       COALESCE(u.username,'NeurowexTech') AS instructor_name,
+                       COALESCE(ls.lesson_count,0)::int AS total_lessons,
+                       COALESCE(cl_done.done_count,0)::int AS completed_lessons
+                FROM enrollments e JOIN courses c ON e.course_id=c.id
+                LEFT JOIN users u ON c.instructor_id=u.id
+                LEFT JOIN (
+                    SELECT cm.course_id, COUNT(cl.id) AS lesson_count
+                    FROM course_lessons cl JOIN course_modules cm ON cl.module_id=cm.id
+                    GROUP BY cm.course_id
+                ) ls ON c.id=ls.course_id
+                LEFT JOIN (
+                    SELECT cm.course_id, COUNT(ulp.lesson_id) AS done_count
+                    FROM user_lesson_progress ulp
+                    JOIN course_lessons cl ON ulp.lesson_id=cl.id
+                    JOIN course_modules cm ON cl.module_id=cm.id
+                    WHERE ulp.user_id=$1 AND ulp.completed=true
+                    GROUP BY cm.course_id
+                ) cl_done ON c.id=cl_done.course_id
+                WHERE e.user_id=$1 ORDER BY e.enrolled_at DESC
+            `, [userId]),
+            db.query(`
+                SELECT COUNT(*) AS total
+                FROM user_lesson_progress ulp
+                JOIN course_lessons cl ON ulp.lesson_id=cl.id
+                JOIN course_modules cm ON cl.module_id=cm.id
+                JOIN enrollments e ON cm.course_id=e.course_id AND e.user_id=$1
+                WHERE ulp.user_id=$1 AND ulp.completed=true
+            `, [userId]).catch(() => ({ rows: [{ total: 0 }] })),
+            db.query(`
+                SELECT c.id, c.title, c.category, c.level,
+                       COALESCE(c.rating,4.5) AS rating, c.image_url
+                FROM courses c
+                WHERE c.published=true
+                  AND c.id NOT IN (
+                      SELECT course_id FROM enrollments WHERE user_id=$1
+                  )
+                ORDER BY c.featured DESC, c.rating DESC NULLS LAST, c.created_at DESC
+                LIMIT 4
+            `, [userId]).catch(() => ({ rows: [] })),
+        ]);
+
+        const enrollments       = enrollR.rows || [];
+        const totalEnrolled     = enrollments.length;
+        const completedCourses  = enrollments.filter(e => parseInt(e.progress) === 100).length;
+        const averageProgress   = totalEnrolled > 0
+            ? Math.round(enrollments.reduce((s, e) => s + (parseInt(e.progress) || 0), 0) / totalEnrolled)
+            : 0;
+        const lessonsCompleted  = parseInt(lessonsR.rows[0]?.total) || 0;
+        const certificatesEarned = completedCourses;
 
         return res.render('my-learning', {
             title: 'My Learning – NeurowexTech',
             enrollments,
-            stats: { totalEnrolled, activeCourses, completedCourses, averageProgress },
+            recommendedCourses: recR.rows || [],
+            stats: { totalEnrolled, averageProgress, lessonsCompleted, certificatesEarned },
         });
     } catch (err) {
         console.error('[learn] my-learning error:', err);
