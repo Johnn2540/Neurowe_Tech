@@ -5,6 +5,7 @@
     firstVisit : 'nwt_pwa_fv',
     views      : 'nwt_pwa_views',
     dismissed  : 'nwt_pwa_dismissed',
+    wasInstalled: 'nwt_pwa_installed', // set after install, cleared after uninstall detected
   };
 
   var VIEWS_THRESHOLD  = 2;
@@ -60,37 +61,55 @@
 
   // ── Schedule the popup based on visit count or elapsed time ───────────────
 
-  function schedulePopup() {
+  function schedulePopup(immediately) {
     if (isDismissed()) return;
 
-    var views     = parseInt(localStorage.getItem(KEYS.views) || '0', 10);
+    // Re-install path: skip thresholds and show straight away
+    if (immediately) {
+      setTimeout(showPopup, 1200);
+      return;
+    }
+
+    var views      = parseInt(localStorage.getItem(KEYS.views) || '0', 10);
     var firstVisit = parseInt(localStorage.getItem(KEYS.firstVisit) || Date.now().toString(), 10);
-    var elapsed   = Date.now() - firstVisit;
+    var elapsed    = Date.now() - firstVisit;
 
     if (views >= VIEWS_THRESHOLD) {
-      // Already hit page-view threshold — show after a short settle delay
       setTimeout(showPopup, 1800);
     } else {
-      // Show after the remainder of the 30-second window
       var remaining = Math.max(0, TIME_THRESHOLD - elapsed);
       setTimeout(showPopup, remaining);
     }
   }
 
   // ── beforeinstallprompt ────────────────────────────────────────────────────
+  // The browser only re-fires this after the PWA has been uninstalled.
+  // If we see this event AND wasInstalled is set, the user uninstalled and
+  // wants to re-install — clear the dismissal so the popup can show again.
 
   window.addEventListener('beforeinstallprompt', function (e) {
     e.preventDefault();
     deferredPrompt = e;
-    schedulePopup();
+
+    var reinstall = localStorage.getItem(KEYS.wasInstalled) === '1';
+    if (reinstall) {
+      localStorage.removeItem(KEYS.dismissed);
+      localStorage.removeItem(KEYS.wasInstalled);
+      localStorage.removeItem(KEYS.views);
+      localStorage.removeItem(KEYS.firstVisit);
+    }
+
+    schedulePopup(reinstall);
   });
 
   // ── appinstalled ──────────────────────────────────────────────────────────
 
   window.addEventListener('appinstalled', function () {
-    hidePopup(true);
+    hidePopup(false); // hide without writing a new dismissal timestamp
+    localStorage.setItem(KEYS.wasInstalled, '1'); // remember it was installed
     localStorage.removeItem(KEYS.views);
     localStorage.removeItem(KEYS.firstVisit);
+    localStorage.removeItem(KEYS.dismissed);
   });
 
   // ── DOM wiring ─────────────────────────────────────────────────────────────
@@ -106,10 +125,15 @@
       installBtn.addEventListener('click', function () {
         if (!deferredPrompt) return;
         var prompt = deferredPrompt;
-        hidePopup(false); // hide immediately for good UX
+        hidePopup(false);
         prompt.prompt();
-        prompt.userChoice.then(function () {
-          localStorage.setItem(KEYS.dismissed, Date.now().toString());
+        prompt.userChoice.then(function (choice) {
+          if (choice.outcome === 'accepted') {
+            // appinstalled will fire and handle cleanup
+          } else {
+            // User declined the OS dialog — treat as a dismissal
+            localStorage.setItem(KEYS.dismissed, Date.now().toString());
+          }
         });
       });
     }
@@ -122,7 +146,6 @@
       closeBtn.addEventListener('click', function () { hidePopup(true); });
     }
 
-    // Close on Escape
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && shown) hidePopup(true);
     });
