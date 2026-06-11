@@ -1,21 +1,37 @@
 (function () {
   'use strict';
 
+  var VERSION = '3'; // bump this whenever key semantics change
+
   var KEYS = {
-    firstVisit : 'nwt_pwa_fv',
-    views      : 'nwt_pwa_views',
-    dismissed  : 'nwt_pwa_dismissed',
-    wasInstalled: 'nwt_pwa_installed', // set after install, cleared after uninstall detected
+    version     : 'nwt_pwa_v',
+    firstVisit  : 'nwt_pwa_fv',
+    views       : 'nwt_pwa_views',
+    dismissed   : 'nwt_pwa_dismissed',  // set ONLY by explicit "Not Now" / ✕ / Escape
+    wasInstalled: 'nwt_pwa_installed',  // set by appinstalled; cleared when re-install detected
   };
 
-  var VIEWS_THRESHOLD  = 2;
-  var TIME_THRESHOLD   = 30000; // 30 s from first recorded visit
-  var COOLDOWN         = 30 * 24 * 60 * 60 * 1000; // 30 days
+  var VIEWS_THRESHOLD = 2;
+  var TIME_THRESHOLD  = 30000;                    // 30 s from first recorded visit
+  var COOLDOWN        = 30 * 24 * 60 * 60 * 1000; // 30 days
 
   var deferredPrompt = null;
   var shown          = false;
 
-  // ── Helpers ────────────────────────────────────────────────────────────────
+  // ── One-time migration ──────────────────────────────────────────────────────
+  // Older code wrote `dismissed` on every install — not just on "Not Now" clicks.
+  // That left users permanently blocked after uninstalling.  Clear stale state once.
+  (function migrate() {
+    if (localStorage.getItem(KEYS.version) !== VERSION) {
+      localStorage.removeItem(KEYS.dismissed);
+      localStorage.removeItem(KEYS.wasInstalled);
+      localStorage.removeItem(KEYS.views);
+      localStorage.removeItem(KEYS.firstVisit);
+      localStorage.setItem(KEYS.version, VERSION);
+    }
+  })();
+
+  // ── Helpers ─────────────────────────────────────────────────────────────────
 
   function isDismissed() {
     var ts = localStorage.getItem(KEYS.dismissed);
@@ -49,7 +65,7 @@
     shown = false;
   }
 
-  // ── Visit tracking ─────────────────────────────────────────────────────────
+  // ── Visit tracking ──────────────────────────────────────────────────────────
 
   function trackVisit() {
     if (!localStorage.getItem(KEYS.firstVisit)) {
@@ -59,13 +75,13 @@
     localStorage.setItem(KEYS.views, v.toString());
   }
 
-  // ── Schedule the popup based on visit count or elapsed time ───────────────
+  // ── Schedule display ────────────────────────────────────────────────────────
 
   function schedulePopup(immediately) {
     if (isDismissed()) return;
 
-    // Re-install path: skip thresholds and show straight away
     if (immediately) {
+      // Re-install path: no thresholds needed — show quickly
       setTimeout(showPopup, 1200);
       return;
     }
@@ -77,15 +93,13 @@
     if (views >= VIEWS_THRESHOLD) {
       setTimeout(showPopup, 1800);
     } else {
-      var remaining = Math.max(0, TIME_THRESHOLD - elapsed);
-      setTimeout(showPopup, remaining);
+      setTimeout(showPopup, Math.max(0, TIME_THRESHOLD - elapsed));
     }
   }
 
-  // ── beforeinstallprompt ────────────────────────────────────────────────────
-  // The browser only re-fires this after the PWA has been uninstalled.
-  // If we see this event AND wasInstalled is set, the user uninstalled and
-  // wants to re-install — clear the dismissal so the popup can show again.
+  // ── beforeinstallprompt ─────────────────────────────────────────────────────
+  // The browser only fires this when the app is genuinely installable (not installed).
+  // If wasInstalled is set it means the app was previously installed and is now gone.
 
   window.addEventListener('beforeinstallprompt', function (e) {
     e.preventDefault();
@@ -93,8 +107,8 @@
 
     var reinstall = localStorage.getItem(KEYS.wasInstalled) === '1';
     if (reinstall) {
-      localStorage.removeItem(KEYS.dismissed);
       localStorage.removeItem(KEYS.wasInstalled);
+      localStorage.removeItem(KEYS.dismissed);
       localStorage.removeItem(KEYS.views);
       localStorage.removeItem(KEYS.firstVisit);
     }
@@ -102,17 +116,17 @@
     schedulePopup(reinstall);
   });
 
-  // ── appinstalled ──────────────────────────────────────────────────────────
+  // ── appinstalled ─────────────────────────────────────────────────────────────
 
   window.addEventListener('appinstalled', function () {
-    hidePopup(false); // hide without writing a new dismissal timestamp
+    hidePopup(false);                           // hide without setting dismissed
     localStorage.setItem(KEYS.wasInstalled, '1'); // remember it was installed
+    localStorage.removeItem(KEYS.dismissed);    // clear any leftover dismissed state
     localStorage.removeItem(KEYS.views);
     localStorage.removeItem(KEYS.firstVisit);
-    localStorage.removeItem(KEYS.dismissed);
   });
 
-  // ── DOM wiring ─────────────────────────────────────────────────────────────
+  // ── DOM wiring ───────────────────────────────────────────────────────────────
 
   document.addEventListener('DOMContentLoaded', function () {
     trackVisit();
@@ -128,12 +142,11 @@
         hidePopup(false);
         prompt.prompt();
         prompt.userChoice.then(function (choice) {
-          if (choice.outcome === 'accepted') {
-            // appinstalled will fire and handle cleanup
-          } else {
-            // User declined the OS dialog — treat as a dismissal
+          if (choice.outcome !== 'accepted') {
+            // User explicitly declined the OS dialog — treat as "Not Now"
             localStorage.setItem(KEYS.dismissed, Date.now().toString());
           }
+          // If accepted: appinstalled will fire and handle cleanup
         });
       });
     }
