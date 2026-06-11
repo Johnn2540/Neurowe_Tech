@@ -8,11 +8,16 @@
       <stop offset="0%" stop-color="#e05c2a"/>
       <stop offset="100%" stop-color="#c44e21"/>
     </linearGradient>
+    <clipPath id="round">
+      <circle cx="256" cy="256" r="256"/>
+    </clipPath>
   </defs>
-  <!-- Rounded background -->
-  <rect width="512" height="512" rx="96" ry="96" fill="url(#bg)"/>
-  <!-- "N" letterform -->
-  <path d="M120 128 L120 384 L192 384 L192 234 L320 384 L392 384 L392 128 L320 128 L320 278 L192 128 Z" fill="#ffffff"/>
-  <!-- Orange accent bar -->
-  <rect x="120" y="432" width="272" height="14" rx="7" fill="url(#acc)"/>
+  <!-- Circular background -->
+  <circle cx="256" cy="256" r="256" fill="url(#bg)"/>
+  <!-- Subtle inner ring for depth -->
+  <circle cx="256" cy="256" r="240" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2"/>
+  <!-- "N" letterform — centred within circle -->
+  <path d="M136 148 L136 364 L196 364 L196 248 L316 364 L376 364 L376 148 L316 148 L316 264 L196 148 Z" fill="#ffffff"/>
+  <!-- Orange accent dot — bottom right, within circle -->
+  <circle cx="340" cy="376" r="28" fill="url(#acc)"/>
 </svg>

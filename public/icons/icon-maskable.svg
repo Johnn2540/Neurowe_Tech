@@ -9,10 +9,12 @@
       <stop offset="100%" stop-color="#c44e21"/>
     </linearGradient>
   </defs>
-  <!-- Full-bleed background (required for maskable) -->
+  <!-- Full-bleed background — required for maskable (OS applies its own mask shape) -->
   <rect width="512" height="512" fill="url(#bg)"/>
-  <!-- "N" letterform — inset to respect safe zone (10% each side = 51px) -->
-  <path d="M136 148 L136 364 L200 364 L200 246 L312 364 L376 364 L376 148 L312 148 L312 266 L200 148 Z" fill="#ffffff"/>
-  <!-- Orange accent bar -->
-  <rect x="136" y="404" width="240" height="12" rx="6" fill="url(#acc)"/>
+  <!-- Visual circle frame centred within safe zone (safe zone = 80% = 102px inset each side) -->
+  <circle cx="256" cy="256" r="196" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)" stroke-width="2"/>
+  <!-- "N" letterform — within safe zone -->
+  <path d="M148 162 L148 350 L204 350 L204 256 L308 350 L364 350 L364 162 L308 162 L308 254 L204 162 Z" fill="#ffffff"/>
+  <!-- Orange accent dot -->
+  <circle cx="326" cy="360" r="24" fill="url(#acc)"/>
 </svg>
