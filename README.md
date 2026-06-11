@@ -1,6 +1,6 @@
 # NeurowexTech
 
-> Full-stack web application for a Kenyan tech agency — custom web & mobile app development, a learning platform (NeurowexTech Academy), portfolio, blog, and a full admin panel.
+> Full-stack web application for a Kenyan tech agency — custom web & mobile app development, a learning platform (NeurowexTech Academy), portfolio, blog, full admin panel, and Progressive Web App (PWA) support.
 
 ---
 
@@ -15,6 +15,7 @@
 | Auth | Session-based + Google OAuth2 |
 | File uploads | Cloudinary |
 | Deployment | Vercel (serverless) |
+| PWA | Web App Manifest + Service Worker |
 
 ---
 
@@ -71,17 +72,23 @@ neurowex-postgres/
 ├── db/
 │   └── postgres.js             # DB query wrapper (exports { query, pool })
 │
-├── views/                      # Handlebars templates
-│   ├── partials/               # Reusable partials (nav, footer, etc.)
-│   ├── home.hbs
-│   ├── learn.hbs
-│   ├── admin_dashboard.hbs
-│   └── ...
+├── views/                      # Handlebars templates (all standalone HTML — layout: false)
+│   ├── layouts/
+│   │   └── main.hbs            # Shared layout (used by opt-in pages only)
+│   ├── partials/               # header, footer, widget, project-card
+│   ├── home.hbs                # Homepage (includes PWA SW registration + install popup)
+│   └── ...                     # ~40 standalone page templates
 │
-└── public/                     # Static assets
-    ├── css/
+└── public/                     # Static assets (served at /)
+    ├── manifest.json           # PWA manifest
+    ├── sw.js                   # Service worker
+    ├── icons/
+    │   ├── icon.svg            # App icon — any purpose
+    │   └── icon-maskable.svg   # App icon — maskable (Android adaptive)
     ├── js/
-    └── images/
+    │   ├── widget.js           # AI chat widget
+    │   └── pwa-install.js      # PWA install prompt logic
+    └── robots.txt
 ```
 
 ---
@@ -141,6 +148,90 @@ Database tables are created automatically on first run (idempotent migrations in
 
 ---
 
+## Progressive Web App (PWA)
+
+The site ships as an installable PWA. Users on Chrome (Android/desktop) and Safari (iOS) can add it to their home screen without going through an app store.
+
+### Files
+
+| File | Path | Description |
+|---|---|---|
+| Manifest | `public/manifest.json` | App name, icons, colors, display mode, shortcuts |
+| Service worker | `public/sw.js` | Caching + offline support |
+| Install script | `public/js/pwa-install.js` | `beforeinstallprompt` capture + popup logic |
+| Icon (any) | `public/icons/icon.svg` | Navy gradient "N" logo — used at any size |
+| Icon (maskable) | `public/icons/icon-maskable.svg` | Full-bleed version for Android adaptive icons |
+
+### Manifest highlights
+
+```json
+{
+  "name": "NeurowexTech",
+  "display": "standalone",
+  "start_url": "/?source=pwa",
+  "theme_color": "#1c2b4a",
+  "background_color": "#1c2b4a"
+}
+```
+
+Shortcuts registered: `/contact`, `/services`, `/learn`.
+
+### Service worker caching strategy
+
+| Request type | Strategy |
+|---|---|
+| Navigation (HTML pages) | Network-first, fall back to cached page |
+| Images | Cache-first, update cache in background |
+| JS / CSS | Stale-while-revalidate |
+| `/api/*` | Bypassed entirely (never cached) |
+
+Pre-cached on install: `/`, `/manifest.json`, `/icons/icon.svg`, `/icons/icon-maskable.svg`, `/images/logo.png`, `/js/widget.js`, `/js/pwa-install.js`.
+
+### Install popup
+
+The popup captures `beforeinstallprompt` and shows conditionally:
+
+- **Trigger condition 1** — user has visited the site ≥ 2 times → popup appears 1.8 s after the event fires.
+- **Trigger condition 2** — fewer than 2 visits but ≥ 30 seconds have elapsed since first visit → popup appears when the timer expires.
+- **Dismissal** — "Not Now" or ✕ sets a 30-day cooldown in `localStorage`. Popup will not reappear until the cooldown expires.
+- **After install** — `appinstalled` event clears the visit counter and dismissal key.
+
+`localStorage` keys used:
+
+| Key | Purpose |
+|---|---|
+| `nwt_pwa_fv` | Timestamp of first visit |
+| `nwt_pwa_views` | Visit counter |
+| `nwt_pwa_dismissed` | Timestamp of last dismissal |
+
+### PWA head injection
+
+Because all views are standalone HTML files (`layout: false`), a small Express middleware in `app.js` injects the required `<link rel="manifest">` and `<meta name="theme-color">` tags into every HTML response automatically — no need to touch individual templates.
+
+```js
+// app.js — injected into every HTML response
+app.use((req, res, next) => {
+    const _send = res.send.bind(res);
+    res.send = function (body) {
+        if (typeof body === 'string' && body.includes('</head>') && !body.includes('rel="manifest"')) {
+            body = body.replace('</head>', `    ${PWA_HEAD}\n</head>`);
+        }
+        return _send(body);
+    };
+    next();
+});
+```
+
+### Testing PWA locally
+
+`beforeinstallprompt` only fires on HTTPS. To test the install popup during local development:
+
+1. Open Chrome DevTools → **Application** tab → **Manifest**
+2. Click **"Add to homescreen"** to force the prompt regardless of HTTPS
+3. Or use Chrome's `chrome://flags/#bypass-app-banner-engagement-checks` flag
+
+---
+
 ## Environment Variables Reference
 
 | Variable | Required | Description |
@@ -151,9 +242,9 @@ Database tables are created automatically on first run (idempotent migrations in
 | `CLOUDINARY_CLOUD_NAME` | ✅ | Cloudinary cloud name |
 | `CLOUDINARY_API_KEY` | ✅ | Cloudinary API key |
 | `CLOUDINARY_API_SECRET` | ✅ | Cloudinary API secret |
-| `NODE_ENV` | ✅ | `development` or `production` |
-| `PORT` | ❌ | HTTP port (default: `3000`) |
-| `VERCEL` | ❌ | Set to `1` automatically by Vercel |
+| `NODE_ENV` | | `development` or `production` (default: `development`) |
+| `PORT` | | HTTP port (default: `3000`) |
+| `VERCEL` | | Set to `1` automatically by Vercel |
 
 ---
 
@@ -184,6 +275,8 @@ Roles are stored in the `users.role` column. Admins promote users via the admin 
 | GET | `/contact` | Contact page |
 | POST | `/contact` | Submit contact form |
 | POST | `/subscribe` | Newsletter subscribe |
+| GET | `/sitemap.xml` | Auto-generated XML sitemap |
+| GET | `/health` | Health check (JSON) |
 
 ### Auth
 
@@ -293,7 +386,7 @@ All helpers are registered in `config/handlebars.js`.
 4. Set the **Output Directory** to `.` and **Build Command** to blank (no build step)
 5. Vercel detects `VERCEL=1` automatically — `app.listen()` is skipped and the app is exported as a serverless function
 
-**`vercel.json`** (if needed):
+**`vercel.json`:**
 ```json
 {
   "version": 2,
@@ -302,18 +395,17 @@ All helpers are registered in `config/handlebars.js`.
 }
 ```
 
+> The service worker requires HTTPS. Vercel provides HTTPS by default — PWA install will work on the deployed domain out of the box.
+
 ---
 
 ## Development Scripts
-
-Add to `package.json`:
 
 ```json
 {
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js",
-    "lint": "eslint ."
+    "dev": "nodemon server.js"
   }
 }
 ```
@@ -325,8 +417,9 @@ Add to `package.json`:
 - All sessions are `httpOnly`, `sameSite: lax`, and `secure` in production
 - Passwords are hashed with `bcrypt` (10 rounds)
 - Google OAuth tokens are verified server-side via `google-auth-library`
-- Security headers (`X-Frame-Options`, `X-XSS-Protection`, etc.) are set on every response
+- Security headers set on every response via `helmet` (`X-Frame-Options`, `Strict-Transport-Security`, etc.)
 - API routes always return JSON — never HTML error pages
+- Auth endpoints rate-limited to 20 requests per 15-minute window per IP
 - Password reset tokens expire after 1 hour
 
 ---

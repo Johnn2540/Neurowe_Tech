@@ -39,6 +39,30 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'views', 'images')));
 
+// ── PWA head injection ────────────────────────────────────────────────────────
+// All views are standalone HTML (layout:false); inject PWA tags into every
+// HTML response so the manifest and theme-color are present on every page.
+const PWA_HEAD = [
+    '<link rel="manifest" href="/manifest.json">',
+    '<meta name="theme-color" content="#1c2b4a">',
+    '<meta name="mobile-web-app-capable" content="yes">',
+    '<meta name="apple-mobile-web-app-capable" content="yes">',
+    '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">',
+    '<meta name="apple-mobile-web-app-title" content="NeurowexTech">',
+    '<link rel="apple-touch-icon" href="/images/logo.png">',
+].join('\n    ');
+
+app.use((req, res, next) => {
+    const _send = res.send.bind(res);
+    res.send = function (body) {
+        if (typeof body === 'string' && body.includes('</head>') && !body.includes('rel="manifest"')) {
+            body = body.replace('</head>', `    ${PWA_HEAD}\n</head>`);
+        }
+        return _send(body);
+    };
+    next();
+});
+
 // ── Body parsing ──────────────────────────────────────────────────────────────
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

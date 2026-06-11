@@ -73,6 +73,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#1c2b4a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="NeurowexTech">
+  <link rel="apple-touch-icon" href="/images/logo.png">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' })
+          .then(function (r) { console.log('[SW] registered', r.scope); })
+          .catch(function (e) { console.warn('[SW] registration failed', e); });
+      });
+    }
+  </script>
+  <script src="/js/pwa-install.js" defer></script>
 <style>
 :root {
   --primary:#1c2b4a; --primary-d:#111d33; --primary-l:#2d4270;
@@ -1536,5 +1554,214 @@ document.querySelectorAll('.faq-q').forEach(function(q){q.addEventListener('clic
 document.getElementById('nlForm').addEventListener('submit',async function(e){e.preventDefault();var email=document.getElementById('nlEmail').value.trim(),consent=document.getElementById('nlConsent').checked,btn=document.getElementById('nlBtn'),msg=document.getElementById('nlMsg');if(!email||!/^\S+@\S+\.\S+$/.test(email)){msg.innerHTML='<span style="color:#ef4444"><i class="fas fa-exclamation-circle"></i> Please enter a valid email.</span>';return;}if(!consent){msg.innerHTML='<span style="color:#ef4444"><i class="fas fa-exclamation-circle"></i> Please agree to receive emails.</span>';return;}var orig=btn.innerHTML;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Subscribing...';btn.disabled=true;try{var res=await fetch('/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})});var data=await res.json();if(data.success){msg.innerHTML='<span style="color:var(--emerald)"><i class="fas fa-check-circle"></i> 🎉 Subscribed!</span>';document.getElementById('nlForm').reset();document.getElementById('nlConsent').checked=true;showToast('Subscribed! Welcome aboard 🎉');}else{msg.innerHTML='<span style="color:#ef4444"><i class="fas fa-exclamation-circle"></i> '+(data.message||'Failed. Please try again.')+'</span>';}}catch(err){msg.innerHTML='<span style="color:#ef4444"><i class="fas fa-exclamation-circle"></i> Network error. Please try again.</span>';}finally{btn.innerHTML=orig;btn.disabled=false;setTimeout(function(){msg.innerHTML='';},5500);}});
 </script>
 {{> widget}}
+
+<!-- ═══ PWA Install Popup ═══════════════════════════════════════════════════ -->
+<style>
+.pwa-popup {
+  position: fixed;
+  z-index: 99998;
+  bottom: 24px;
+  right: 24px;
+  width: 356px;
+  max-width: calc(100vw - 32px);
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(15,23,42,.18), 0 8px 20px rgba(15,23,42,.1);
+  padding: 22px 22px 20px;
+  transform: translateY(calc(100% + 40px));
+  opacity: 0;
+  transition: transform .44s cubic-bezier(.34,1.56,.64,1), opacity .28s ease;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+.pwa-popup.pwa-popup--visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+.pwa-popup__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #94a3b8;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .18s, color .18s;
+  line-height: 1;
+}
+.pwa-popup__close:hover { background: #f1f5f9; color: #475569; }
+.pwa-popup__header {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 12px;
+  padding-right: 28px;
+}
+.pwa-popup__logo {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: #1c2b4a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 4px;
+}
+.pwa-popup__logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.pwa-popup__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 3px;
+  line-height: 1.25;
+}
+.pwa-popup__subtitle {
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 0;
+}
+.pwa-popup__desc {
+  font-size: 13.5px;
+  color: #475569;
+  margin: 0 0 14px;
+  line-height: 1.6;
+}
+.pwa-popup__features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 18px;
+}
+.pwa-popup__feature {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #1c2b4a;
+  background: rgba(28,43,74,.07);
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.pwa-popup__feature svg { color: #059669; flex-shrink: 0; }
+.pwa-popup__actions {
+  display: flex;
+  gap: 10px;
+}
+.pwa-popup__btn {
+  flex: 1;
+  border: none;
+  border-radius: 11px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 11px 14px;
+  transition: background .2s, transform .18s, box-shadow .18s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: inherit;
+}
+.pwa-popup__btn--install {
+  background: #1c2b4a;
+  color: #ffffff;
+}
+.pwa-popup__btn--install:hover {
+  background: #2d4270;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(28,43,74,.3);
+}
+.pwa-popup__btn--install:active { transform: translateY(0); }
+.pwa-popup__btn--dismiss {
+  background: #f1f5f9;
+  color: #64748b;
+}
+.pwa-popup__btn--dismiss:hover { background: #e2e8f0; color: #334155; }
+/* Mobile: full-width bottom sheet */
+@media (max-width: 480px) {
+  .pwa-popup {
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 20px 20px 0 0;
+    padding: 22px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+  }
+}
+/* Dark mode */
+body.dark .pwa-popup {
+  background: #1e293b;
+  box-shadow: 0 20px 60px rgba(0,0,0,.45), 0 8px 20px rgba(0,0,0,.25);
+}
+body.dark .pwa-popup__title  { color: #f1f5f9; }
+body.dark .pwa-popup__desc   { color: #94a3b8; }
+body.dark .pwa-popup__subtitle { color: #64748b; }
+body.dark .pwa-popup__feature { background: rgba(255,255,255,.08); color: #cbd5e1; }
+body.dark .pwa-popup__close  { color: #64748b; }
+body.dark .pwa-popup__close:hover { background: rgba(255,255,255,.07); color: #94a3b8; }
+body.dark .pwa-popup__btn--dismiss {
+  background: rgba(255,255,255,.07);
+  color: #94a3b8;
+}
+body.dark .pwa-popup__btn--dismiss:hover {
+  background: rgba(255,255,255,.12);
+  color: #cbd5e1;
+}
+</style>
+
+<div id="pwa-install-popup" class="pwa-popup" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="pwa-popup-title" aria-describedby="pwa-popup-desc">
+  <button id="pwa-close-btn" class="pwa-popup__close" aria-label="Dismiss install prompt">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+    </svg>
+  </button>
+  <div class="pwa-popup__header">
+    <div class="pwa-popup__logo">
+      <img src="/images/logo.png" alt="" width="44" height="44" loading="lazy">
+    </div>
+    <div>
+      <p id="pwa-popup-title" class="pwa-popup__title">Install NeurowexTech</p>
+      <p class="pwa-popup__subtitle">Free &middot; No app store needed</p>
+    </div>
+  </div>
+  <p id="pwa-popup-desc" class="pwa-popup__desc">Add to your home screen for faster access, offline browsing, and a native app feel.</p>
+  <div class="pwa-popup__features">
+    <span class="pwa-popup__feature">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M1.5 6l3 3 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Works offline
+    </span>
+    <span class="pwa-popup__feature">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M1.5 6l3 3 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Faster loading
+    </span>
+    <span class="pwa-popup__feature">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M1.5 6l3 3 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Home screen icon
+    </span>
+  </div>
+  <div class="pwa-popup__actions">
+    <button id="pwa-install-btn" class="pwa-popup__btn pwa-popup__btn--install">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+        <path d="M7.5 1v8M4 6l3.5 3.5L11 6M1 10.5v1.5A2 2 0 003 14h9a2 2 0 002-2v-1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Install Now
+    </button>
+    <button id="pwa-dismiss-btn" class="pwa-popup__btn pwa-popup__btn--dismiss">Not Now</button>
+  </div>
+</div>
 </body>
 </html>

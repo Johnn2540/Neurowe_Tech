@@ -1,0 +1,54 @@
+{
+  "name": "NeurowexTech",
+  "short_name": "NeurowexTech",
+  "description": "Professional web development, mobile apps, graphic design, SEO and digital skills training in Kenya.",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#1c2b4a",
+  "theme_color": "#1c2b4a",
+  "lang": "en-KE",
+  "dir": "ltr",
+  "categories": ["business", "education"],
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/images/logo.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Contact Us",
+      "short_name": "Contact",
+      "url": "/contact",
+      "description": "Get in touch with NeurowexTech"
+    },
+    {
+      "name": "Our Services",
+      "short_name": "Services",
+      "url": "/services",
+      "description": "View all our digital services"
+    },
+    {
+      "name": "Learn Digital Skills",
+      "short_name": "Academy",
+      "url": "/learn",
+      "description": "Learn web development, AI and more"
+    }
+  ]
+}
