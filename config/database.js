@@ -138,6 +138,53 @@ async function runStartupMigrations() {
             completed_at TIMESTAMPTZ,
             UNIQUE(child_id, lesson_id)
         )`,
+        `ALTER TABLE course_lessons ADD COLUMN IF NOT EXISTS is_published BOOLEAN DEFAULT true`,
+        `ALTER TABLE course_lessons ADD COLUMN IF NOT EXISTS cloudinary_public_id TEXT`,
+        `ALTER TABLE course_lessons ADD COLUMN IF NOT EXISTS attachment_url        TEXT`,
+        `ALTER TABLE course_lessons ADD COLUMN IF NOT EXISTS attachment_name       TEXT`,
+        `ALTER TABLE course_lessons ADD COLUMN IF NOT EXISTS attachment_public_id  TEXT`,
+        `ALTER TABLE courses ADD COLUMN IF NOT EXISTS certificate_enabled BOOLEAN NOT NULL DEFAULT true`,
+        `CREATE TABLE IF NOT EXISTS course_certificates (
+            id                    SERIAL PRIMARY KEY,
+            user_id               INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            course_id             INTEGER NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+            issued_by             INTEGER REFERENCES users(id) ON DELETE SET NULL,
+            certificate_url       TEXT NOT NULL,
+            certificate_public_id TEXT,
+            issued_at             TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            UNIQUE (user_id, course_id)
+        )`,
+        `CREATE INDEX IF NOT EXISTS idx_cc_user   ON course_certificates(user_id)`,
+        `CREATE INDEX IF NOT EXISTS idx_cc_course ON course_certificates(course_id)`,
+        `CREATE INDEX IF NOT EXISTS idx_cc_issued ON course_certificates(issued_at DESC)`,
+        `CREATE TABLE IF NOT EXISTS user_lesson_progress (
+            id           SERIAL PRIMARY KEY,
+            user_id      INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            lesson_id    INTEGER NOT NULL REFERENCES course_lessons(id) ON DELETE CASCADE,
+            completed    BOOLEAN DEFAULT false,
+            completed_at TIMESTAMPTZ,
+            UNIQUE(user_id, lesson_id)
+        )`,
+        `CREATE TABLE IF NOT EXISTS user_activities (
+            id         SERIAL PRIMARY KEY,
+            user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            activity   TEXT NOT NULL,
+            type       VARCHAR(50) DEFAULT 'general',
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        )`,
+        `CREATE TABLE IF NOT EXISTS course_reviews (
+            id         SERIAL PRIMARY KEY,
+            user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            course_id  INTEGER NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+            rating     INTEGER CHECK (rating BETWEEN 1 AND 5),
+            review     TEXT,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            UNIQUE(user_id, course_id)
+        )`,
+        `CREATE INDEX IF NOT EXISTS idx_ulp_user   ON user_lesson_progress(user_id)`,
+        `CREATE INDEX IF NOT EXISTS idx_ulp_lesson ON user_lesson_progress(lesson_id)`,
+        `CREATE INDEX IF NOT EXISTS idx_ua_user    ON user_activities(user_id)`,
+        `CREATE INDEX IF NOT EXISTS idx_cr_course  ON course_reviews(course_id)`,
     ];
 
     for (const sql of migrations) {

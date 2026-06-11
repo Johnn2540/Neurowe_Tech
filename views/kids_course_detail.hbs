@@ -3,7 +3,68 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>{{title}}</title>
+<title>{{course.title}} | Kids Coding | NeurowexTech Academy</title>
+<meta name="description" content="{{course.description}}"/>
+<meta name="keywords" content="kids coding course Kenya, {{course.title}}, children programming Nairobi, NeurowexTech kids academy, coding for kids online"/>
+<meta name="robots" content="index, follow"/>
+<meta name="author" content="NeurowexTech"/>
+<link rel="canonical" href="https://neurowextech.co.ke/kids-academy/course/{{course.id}}"/>
+<!-- Open Graph -->
+<meta property="og:type"         content="website"/>
+<meta property="og:site_name"    content="NeurowexTech"/>
+<meta property="og:title"        content="{{course.title}} | Kids Coding | NeurowexTech"/>
+<meta property="og:description"  content="{{course.description}}"/>
+<meta property="og:url"          content="https://neurowextech.co.ke/kids-academy/course/{{course.id}}"/>
+{{#if course.image_url}}<meta property="og:image" content="{{course.image_url}}"/>{{else}}<meta property="og:image" content="https://neurowextech.co.ke/images/og-kids.jpg"/>{{/if}}
+<meta property="og:image:width"  content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta property="og:locale"       content="en_KE"/>
+<!-- Twitter Card -->
+<meta name="twitter:card"        content="summary_large_image"/>
+<meta name="twitter:site"        content="@neurowextech"/>
+<meta name="twitter:title"       content="{{course.title}} | Kids Coding | NeurowexTech"/>
+<meta name="twitter:description" content="{{course.description}}"/>
+{{#if course.image_url}}<meta name="twitter:image" content="{{course.image_url}}"/>{{else}}<meta name="twitter:image" content="https://neurowextech.co.ke/images/og-kids.jpg"/>{{/if}}
+<!-- Course structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": "{{course.title}}",
+  "description": "{{course.description}}",
+  "url": "https://neurowextech.co.ke/kids-academy/course/{{course.id}}",
+  {{#if course.image_url}}"image": "{{course.image_url}}",{{/if}}
+  "provider": {
+    "@type": "EducationalOrganization",
+    "name": "NeurowexTech",
+    "url": "https://neurowextech.co.ke",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Nairobi",
+      "addressCountry": "KE"
+    }
+  },
+  "educationalLevel": "{{course.level}}",
+  "audience": { "@type": "EducationalAudience", "educationalRole": "student" },
+  "courseMode": "online",
+  "inLanguage": "en",
+  "offers": {
+    "@type": "Offer",
+    "price": "{{course.price}}",
+    "priceCurrency": "KES",
+    "availability": "https://schema.org/InStock",
+    "validFrom": "2024-01-01"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home",         "item": "https://neurowextech.co.ke/" },
+      { "@type": "ListItem", "position": 2, "name": "Kids Academy", "item": "https://neurowextech.co.ke/kids-academy" },
+      { "@type": "ListItem", "position": 3, "name": "{{course.title}}", "item": "https://neurowextech.co.ke/kids-academy/course/{{course.id}}" }
+    ]
+  }
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap" rel="stylesheet"/>
@@ -189,7 +250,7 @@ button{font-family:'Plus Jakarta Sans',sans-serif}
       </div>
       <div class="ch-meta">
         <span class="ch-tag cat"><i class="fas fa-child"></i> Kids Coding</span>
-        <span class="ch-tag lvl-{{course.levelLower}}"><i class="fas fa-layer-group"></i> {{course.level}}</span>
+        <span class="ch-tag lvl-{{lowercase course.level}}"><i class="fas fa-layer-group"></i> {{course.level}}</span>
       </div>
       <h1 class="ch-title">{{course.title}}</h1>
       {{#if course.description}}<p class="ch-desc">{{course.description}}</p>{{/if}}

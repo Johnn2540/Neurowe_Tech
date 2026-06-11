@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>{{title}}</title>
+<meta name="robots" content="noindex, nofollow"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+:root{
+  --kp:#7c3aed;--kpink:#db2777;
+  --g-kids:linear-gradient(135deg,#7c3aed,#db2777);
+  --ink:#0c1220;--slate:#5a6880;--ghost:#f5f7fd;--white:#fff;--mist:#e2e8f5;
+  --sidebar-w:300px;--nav-h:60px;--bar-h:52px;
+  --r-pill:999px;--r-lg:12px;--r-xl:18px;
+  --ease:cubic-bezier(.4,0,.2,1);--t:.2s var(--ease);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{height:100%;-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#0d0d14;color:var(--ink);height:100%;display:flex;flex-direction:column;overflow-x:hidden;font-size:14px;line-height:1.6}
+h1,h2,h3,h4{font-family:'Fraunces',serif;line-height:1.18;letter-spacing:-.02em}
+a{text-decoration:none;color:inherit}
+button{font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer}
+
+/* ── TOP BAR ── */
+.topbar{height:var(--nav-h);background:rgba(10,8,20,.97);border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0;z-index:100}
+.tb-back{display:inline-flex;align-items:center;gap:7px;color:rgba(255,255,255,.45);font-size:.78rem;font-weight:600;padding:5px 10px;border-radius:8px;transition:var(--t)}
+.tb-back:hover{background:rgba(255,255,255,.07);color:#fff}
+.tb-divider{width:1px;height:22px;background:rgba(255,255,255,.1)}
+.tb-kid{display:flex;align-items:center;gap:8px;font-size:.82rem;color:rgba(255,255,255,.55);font-weight:600}
+.tb-av{width:28px;height:28px;border-radius:50%;background:var(--g-kids);display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.tb-course{font-size:.82rem;color:rgba(255,255,255,.42);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
+.tb-spacer{flex:1}
+.tb-prog{display:flex;align-items:center;gap:10px}
+.tb-prog-bar{width:120px;height:6px;border-radius:var(--r-pill);background:rgba(255,255,255,.1);overflow:hidden}
+.tb-prog-fill{height:100%;border-radius:var(--r-pill);background:var(--g-kids);transition:width .5s var(--ease)}
+.tb-prog-pct{font-size:.77rem;font-weight:800;color:#c4b5fd;min-width:32px;text-align:right}
+.tb-dash{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;border-radius:var(--r-pill);border:1.5px solid rgba(255,255,255,.14);color:rgba(255,255,255,.55);font-size:.76rem;font-weight:700;transition:var(--t)}
+.tb-dash:hover{border-color:rgba(255,255,255,.3);color:#fff}
+
+/* ── LAYOUT ── */
+.learn-layout{flex:1;display:flex;overflow:hidden;height:calc(100vh - var(--nav-h))}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar-w);background:#111020;border-right:1px solid rgba(255,255,255,.07);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;transition:transform var(--t)}
+.sb-head{padding:16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.sb-title{font-size:.9rem;font-weight:700;color:#fff;margin-bottom:8px;font-family:'Fraunces',serif;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sb-prog-row{display:flex;align-items:center;gap:8px}
+.sb-prog-bar{flex:1;height:5px;border-radius:var(--r-pill);background:rgba(255,255,255,.1);overflow:hidden}
+.sb-prog-fill{height:100%;border-radius:var(--r-pill);background:var(--g-kids);transition:width .5s}
+.sb-prog-txt{font-size:.72rem;font-weight:800;color:#c4b5fd;min-width:28px;text-align:right}
+.sb-scroll{flex:1;overflow-y:auto;padding:8px 0}
+.sb-scroll::-webkit-scrollbar{width:4px}
+.sb-scroll::-webkit-scrollbar-track{background:transparent}
+.sb-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:4px}
+
+.mod-section{margin-bottom:2px}
+.mod-header{display:flex;align-items:center;gap:9px;padding:9px 14px;cursor:pointer;user-select:none}
+.mod-header:hover{background:rgba(255,255,255,.03)}
+.mod-num-sm{width:20px;height:20px;border-radius:50%;background:rgba(124,58,237,.22);display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;color:#c4b5fd;flex-shrink:0}
+.mod-title-sm{font-size:.79rem;font-weight:700;color:rgba(255,255,255,.65);flex:1;line-height:1.3}
+.mod-done-cnt{font-size:.66rem;color:rgba(255,255,255,.25);margin-right:4px}
+.mod-chev-sm{color:rgba(255,255,255,.25);font-size:.65rem;transition:transform var(--t)}
+.mod-section.closed .mod-chev-sm{transform:rotate(-90deg)}
+.mod-lessons{display:flex;flex-direction:column;padding-bottom:4px}
+.mod-section.closed .mod-lessons{display:none}
+
+.lesson-item{display:flex;align-items:center;gap:9px;padding:8px 14px 8px 22px;cursor:pointer;transition:background var(--t);position:relative}
+.lesson-item:hover{background:rgba(255,255,255,.04)}
+.lesson-item.current{background:rgba(124,58,237,.12);border-left:3px solid var(--kp)}
+.lesson-item.completed .li-ico{background:rgba(5,150,105,.2);color:#34d399}
+.lesson-item.current .li-ico{background:rgba(124,58,237,.25);color:#c4b5fd}
+.li-ico{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:.62rem;flex-shrink:0;transition:var(--t)}
+.li-title{font-size:.78rem;color:rgba(255,255,255,.45);flex:1;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;transition:color var(--t)}
+.lesson-item.current .li-title{color:#e2d9ff;font-weight:600}
+.lesson-item.completed .li-title{color:rgba(255,255,255,.35)}
+.li-dur{font-size:.65rem;color:rgba(255,255,255,.2);flex-shrink:0}
+
+/* Mobile sidebar toggle */
+.sb-toggle{display:none;position:fixed;bottom:80px;left:14px;z-index:90;width:42px;height:42px;border-radius:50%;background:var(--kp);border:none;color:#fff;font-size:1rem;box-shadow:0 4px 14px rgba(124,58,237,.42);transition:var(--t)}
+.sb-toggle:hover{transform:scale(1.08)}
+@media(max-width:860px){
+  .sidebar{position:fixed;top:var(--nav-h);left:0;bottom:0;z-index:80;transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .sb-toggle{display:flex;align-items:center;justify-content:center}
+}
+
+/* ── MAIN CONTENT ── */
+.main-content{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#0d0d14}
+
+/* VIDEO AREA */
+.video-area{position:relative;width:100%;background:#000;flex-shrink:0}
+.video-wrap{position:relative;padding-top:56.25%;background:#050510}
+.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
+.no-video{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:rgba(255,255,255,.25);text-align:center;padding:24px}
+.no-video i{font-size:2.5rem;opacity:.3}
+.no-video p{font-size:.85rem;max-width:300px;line-height:1.65}
+
+/* LESSON INFO BAR */
+.lesson-bar{background:#16142a;border-top:1px solid rgba(255,255,255,.07);padding:14px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;flex-shrink:0}
+.lb-info{flex:1;min-width:0}
+.lb-module{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:rgba(124,58,237,.7);margin-bottom:3px}
+.lb-title{font-size:1rem;font-weight:700;color:#fff;font-family:'Fraunces',serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.nav-btn-sm{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--r-pill);font-size:.77rem;font-weight:700;transition:var(--t);border:none}
+.nav-btn-sm.prev{background:rgba(255,255,255,.06);color:rgba(255,255,255,.55)}
+.nav-btn-sm.prev:hover{background:rgba(255,255,255,.12);color:#fff}
+.nav-btn-sm.prev:disabled{opacity:.25;cursor:not-allowed}
+.nav-btn-sm.next{background:rgba(255,255,255,.06);color:rgba(255,255,255,.55)}
+.nav-btn-sm.next:hover{background:rgba(255,255,255,.12);color:#fff}
+.nav-btn-sm.next:disabled{opacity:.25;cursor:not-allowed}
+.complete-btn{display:inline-flex;align-items:center;gap:7px;background:var(--g-kids);color:#fff;padding:8px 20px;border-radius:var(--r-pill);font-size:.82rem;font-weight:800;transition:var(--t);border:none;box-shadow:0 4px 16px rgba(124,58,237,.3)}
+.complete-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(124,58,237,.4)}
+.complete-btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.complete-btn.done{background:linear-gradient(135deg,#059669,#10b981);box-shadow:0 4px 16px rgba(5,150,105,.3)}
+.complete-btn.done:hover{box-shadow:0 8px 24px rgba(5,150,105,.4)}
+
+/* COURSE COMPLETE BANNER */
+.course-complete-banner{background:linear-gradient(135deg,rgba(5,150,105,.18),rgba(16,185,129,.1));border:1px solid rgba(5,150,105,.25);border-radius:var(--r-xl);padding:22px 24px;margin:20px;display:none;align-items:center;gap:16px}
+.course-complete-banner.vis{display:flex}
+.ccb-ico{width:52px;height:52px;border-radius:50%;background:rgba(5,150,105,.15);display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0}
+.ccb-text h3{font-size:1rem;font-weight:700;color:#34d399;margin-bottom:3px}
+.ccb-text p{font-size:.82rem;color:rgba(255,255,255,.45);line-height:1.6}
+.ccb-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.ccb-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(5,150,105,.15);color:#34d399;border:1px solid rgba(5,150,105,.25);border-radius:var(--r-pill);padding:7px 15px;font-size:.78rem;font-weight:700;transition:var(--t);text-decoration:none}
+.ccb-btn:hover{background:rgba(5,150,105,.25)}
+
+/* LESSON NOTES AREA */
+.notes-area{flex:1;overflow-y:auto;padding:20px;background:#0d0d14}
+.notes-area::-webkit-scrollbar{width:5px}
+.notes-area::-webkit-scrollbar-track{background:transparent}
+.notes-area::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:4px}
+.lesson-card{background:#16142a;border:1px solid rgba(255,255,255,.07);border-radius:var(--r-xl);padding:22px;max-width:840px;margin:0 auto}
+.lc-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.lc-head-ico{width:36px;height:36px;border-radius:10px;background:rgba(124,58,237,.15);display:flex;align-items:center;justify-content:center;color:#c4b5fd;font-size:.85rem}
+.lc-head h3{font-size:.95rem;font-weight:700;color:#fff}
+.lesson-tips{list-style:none;display:flex;flex-direction:column;gap:9px}
+.lesson-tips li{display:flex;align-items:flex-start;gap:10px;font-size:.82rem;color:rgba(255,255,255,.45);line-height:1.6}
+.lesson-tips li i{color:rgba(124,58,237,.6);margin-top:3px;flex-shrink:0}
+.no-lesson-hint{text-align:center;padding:40px 20px;color:rgba(255,255,255,.2)}
+.no-lesson-hint i{font-size:2rem;display:block;margin-bottom:12px;opacity:.3}
+.no-lesson-hint p{font-size:.84rem;max-width:280px;margin:0 auto;line-height:1.65}
+
+/* TOAST */
+#kl-toast{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;align-items:center;gap:10px;background:#1e1b38;color:#fff;padding:10px 18px;border-radius:12px;font-size:.81rem;font-weight:600;box-shadow:0 8px 28px rgba(0,0,0,.5);transform:translateY(120%);opacity:0;transition:transform .28s var(--ease),opacity .25s}
+#kl-toast.show{transform:translateY(0);opacity:1}
+.tkl i{color:#34d399}.tkle i{color:#f87171}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <a href="/kids-academy/my-kids" class="tb-back"><i class="fas fa-arrow-left"></i> My Kids</a>
+  <div class="tb-divider"></div>
+  <div class="tb-kid"><span class="tb-av">{{childAvatar}}</span> {{childName}}</div>
+  <div class="tb-divider"></div>
+  <span class="tb-course">{{courseTitle}}</span>
+  <div class="tb-spacer"></div>
+  <div class="tb-prog">
+    <div class="tb-prog-bar"><div class="tb-prog-fill" id="topProgFill" style="width:{{progress}}%"></div></div>
+    <span class="tb-prog-pct" id="topProgPct">{{progress}}%</span>
+  </div>
+  <a href="/kids-academy/my-kids" class="tb-dash"><i class="fas fa-th-large"></i> Dashboard</a>
+</div>
+
+<!-- LAYOUT -->
+<div class="learn-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-head">
+      <div class="sb-title">{{courseTitle}}</div>
+      <div class="sb-prog-row">
+        <div class="sb-prog-bar"><div class="sb-prog-fill" id="sbProgFill" style="width:{{progress}}%"></div></div>
+        <span class="sb-prog-txt" id="sbProgTxt">{{progress}}%</span>
+      </div>
+    </div>
+    <div class="sb-scroll" id="sidebarScroll">
+      {{#each modules}}
+      <div class="mod-section" data-mod="{{id}}">
+        <div class="mod-header" onclick="toggleModule(this.parentElement)">
+          <span class="mod-num-sm">{{add @index 1}}</span>
+          <span class="mod-title-sm">{{title}}</span>
+          <span class="mod-done-cnt">{{completedLessons}}/{{totalLessons}}</span>
+          <i class="fas fa-chevron-down mod-chev-sm"></i>
+        </div>
+        <div class="mod-lessons">
+          {{#each lessons}}
+          {{#if id}}
+          <div class="lesson-item{{#if completed}} completed{{/if}}{{#if isCurrent}} current{{/if}}"
+               data-lesson-id="{{id}}"
+               data-video="{{video_url}}"
+               data-title="{{title}}"
+               data-module="{{../title}}"
+               data-completed="{{completed}}"
+               onclick="switchLesson(this)">
+            <span class="li-ico">
+              {{#if completed}}<i class="fas fa-check"></i>
+              {{else if isCurrent}}<i class="fas fa-play"></i>
+              {{else}}<i class="fas fa-circle" style="font-size:.35rem"></i>{{/if}}
+            </span>
+            <span class="li-title">{{title}}</span>
+            {{#if duration}}<span class="li-dur">{{duration}}</span>{{/if}}
+          </div>
+          {{/if}}
+          {{/each}}
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+
+    <!-- VIDEO -->
+    <div class="video-area">
+      <div class="video-wrap" id="videoWrap">
+        {{#if currentVideoUrl}}
+        <iframe id="videoFrame" src="{{currentVideoUrl}}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        {{else}}
+        <div class="no-video">
+          <i class="fas fa-film"></i>
+          <p id="noVideoMsg">{{#if currentLessonTitle}}The instructor hasn't uploaded a video for this lesson yet. Check back soon!{{else}}Select a lesson from the sidebar to start learning.{{/if}}</p>
+        </div>
+        {{/if}}
+      </div>
+    </div>
+
+    <!-- LESSON BAR -->
+    <div class="lesson-bar">
+      <div class="lb-info">
+        <div class="lb-module" id="lbModule">{{currentModuleTitle}}</div>
+        <div class="lb-title" id="lbTitle">{{#if currentLessonTitle}}{{currentLessonTitle}}{{else}}Select a lesson to begin{{/if}}</div>
+      </div>
+      <div class="lb-actions">
+        <button class="nav-btn-sm prev" id="prevBtn" onclick="goPrev()" {{#unless hasPrevLesson}}disabled{{/unless}}>
+          <i class="fas fa-chevron-left"></i> Prev
+        </button>
+        <button class="nav-btn-sm next" id="nextBtn" onclick="goNext()" {{#unless hasNextLesson}}disabled{{/unless}}>
+          Next <i class="fas fa-chevron-right"></i>
+        </button>
+        <button class="complete-btn{{#if currentLessonCompleted}} done{{/if}}" id="completeBtn"
+                onclick="markComplete()"
+                {{#unless currentLessonId}}disabled{{/unless}}>
+          {{#if currentLessonCompleted}}
+          <i class="fas fa-check-circle"></i> Completed
+          {{else}}
+          <i class="fas fa-check"></i> Mark Complete
+          {{/if}}
+        </button>
+      </div>
+    </div>
+
+    <!-- COURSE COMPLETE BANNER -->
+    <div class="course-complete-banner" id="completeBanner" {{#if (eq progress 100)}}style="display:flex"{{/if}}>
+      <div class="ccb-ico">🏆</div>
+      <div class="ccb-text">
+        <h3>Course Complete!</h3>
+        <p>{{childName}} has finished every lesson in <strong>{{courseTitle}}</strong>. Amazing work!</p>
+      </div>
+      <div class="ccb-actions">
+        <a href="/kids-academy" class="ccb-btn"><i class="fas fa-graduation-cap"></i> More Courses</a>
+        <a href="/kids-academy/my-kids" class="ccb-btn"><i class="fas fa-chart-bar"></i> Dashboard</a>
+      </div>
+    </div>
+
+    <!-- NOTES -->
+    <div class="notes-area">
+      {{#if currentLessonTitle}}
+      <div class="lesson-card">
+        <div class="lc-head">
+          <span class="lc-head-ico"><i class="fas fa-lightbulb"></i></span>
+          <h3>Lesson Tips</h3>
+        </div>
+        <ul class="lesson-tips">
+          <li><i class="fas fa-pause-circle"></i> Pause the video whenever you need to — learning at your own pace is totally fine!</li>
+          <li><i class="fas fa-redo"></i> Rewatch any section as many times as you like before moving on.</li>
+          <li><i class="fas fa-keyboard"></i> Try typing out the code yourself instead of just watching — it makes a huge difference.</li>
+          <li><i class="fas fa-check-circle"></i> When you're done with this lesson, hit <strong>Mark Complete</strong> to track your progress.</li>
+        </ul>
+      </div>
+      {{else}}
+      <div class="no-lesson-hint">
+        <i class="fas fa-hand-point-left"></i>
+        <p>Pick any lesson from the sidebar on the left to get started!</p>
+      </div>
+      {{/if}}
+    </div>
+
+  </main>
+</div>
+
+<!-- MOBILE SIDEBAR TOGGLE -->
+<button class="sb-toggle" id="sbToggle" onclick="toggleSidebar()">
+  <i class="fas fa-bars"></i>
+</button>
+
+<div id="kl-toast"><i id="kl-ico" class="fas fa-check-circle"></i><span id="kl-msg">Done!</span></div>
+
+{{> widget}}
+
+<script>
+var COURSE_ID   = {{courseId}};
+var CHILD_ID    = {{childId}};
+var CURRENT_ID  = {{#if currentLessonId}}{{currentLessonId}}{{else}}null{{/if}};
+var CURRENT_DONE= {{#if currentLessonCompleted}}true{{else}}false{{/if}};
+
+/* Build a flat ordered list of all lesson items from the sidebar DOM */
+function allLessonItems() {
+  return Array.from(document.querySelectorAll('.lesson-item[data-lesson-id]'));
+}
+function currentIndex() {
+  if (!CURRENT_ID) return -1;
+  return allLessonItems().findIndex(function(el) { return parseInt(el.dataset.lessonId) === CURRENT_ID; });
+}
+
+function toast(msg, type) {
+  var el  = document.getElementById('kl-toast');
+  var ico = document.getElementById('kl-ico');
+  document.getElementById('kl-msg').textContent = msg;
+  el.className = 'show ' + (type === 'error' ? 'tkle' : 'tkl');
+  ico.className = type === 'error' ? 'fas fa-times-circle' : 'fas fa-check-circle';
+  setTimeout(function() { el.className = ''; }, 3400);
+}
+
+function switchLesson(el) {
+  /* Update sidebar highlight */
+  allLessonItems().forEach(function(o) { o.classList.remove('current'); });
+  el.classList.add('current');
+
+  CURRENT_ID   = parseInt(el.dataset.lessonId);
+  CURRENT_DONE = el.dataset.completed === 'true';
+  var videoUrl  = el.dataset.video  || '';
+  var title     = el.dataset.title  || '';
+  var modTitle  = el.dataset.module || '';
+
+  /* Update lesson bar */
+  document.getElementById('lbModule').textContent = modTitle;
+  document.getElementById('lbTitle').textContent  = title;
+
+  /* Update video */
+  var wrap = document.getElementById('videoWrap');
+  if (videoUrl) {
+    wrap.innerHTML = '<iframe id="videoFrame" src="' + videoUrl + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+  } else {
+    wrap.innerHTML = '<div class="no-video"><i class="fas fa-film"></i><p id="noVideoMsg">The instructor hasn\'t uploaded a video for this lesson yet.</p></div>';
+  }
+
+  /* Update complete button */
+  var btn = document.getElementById('completeBtn');
+  btn.disabled = false;
+  if (CURRENT_DONE) {
+    btn.className = 'complete-btn done';
+    btn.innerHTML = '<i class="fas fa-check-circle"></i> Completed';
+  } else {
+    btn.className = 'complete-btn';
+    btn.innerHTML = '<i class="fas fa-check"></i> Mark Complete';
+  }
+
+  /* Update prev/next */
+  var idx = currentIndex();
+  var all = allLessonItems();
+  document.getElementById('prevBtn').disabled = idx <= 0;
+  document.getElementById('nextBtn').disabled = idx < 0 || idx >= all.length - 1;
+
+  /* Scroll sidebar item into view */
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  /* Close mobile sidebar */
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function goPrev() {
+  var idx = currentIndex();
+  var all = allLessonItems();
+  if (idx > 0) switchLesson(all[idx - 1]);
+}
+function goNext() {
+  var idx = currentIndex();
+  var all = allLessonItems();
+  if (idx >= 0 && idx < all.length - 1) switchLesson(all[idx + 1]);
+}
+
+function markComplete() {
+  if (!CURRENT_ID) return;
+  if (CURRENT_DONE) { toast('Already marked complete!'); return; }
+  var btn = document.getElementById('completeBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+
+  fetch('/api/kids/lesson/complete', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ childId: CHILD_ID, lessonId: CURRENT_ID, courseId: COURSE_ID })
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.success) {
+      CURRENT_DONE = true;
+      btn.className = 'complete-btn done';
+      btn.innerHTML = '<i class="fas fa-check-circle"></i> Completed';
+      btn.disabled  = false;
+      toast('Lesson complete! 🎉');
+
+      /* Update sidebar item */
+      var el = allLessonItems().find(function(o) { return parseInt(o.dataset.lessonId) === CURRENT_ID; });
+      if (el) {
+        el.classList.add('completed');
+        el.dataset.completed = 'true';
+        var ico = el.querySelector('.li-ico');
+        if (ico) ico.innerHTML = '<i class="fas fa-check"></i>';
+        /* Update module counts */
+        var modSection = el.closest('.mod-section');
+        if (modSection) {
+          var total    = modSection.querySelectorAll('.lesson-item').length;
+          var done     = modSection.querySelectorAll('.lesson-item.completed').length;
+          var cntEl    = modSection.querySelector('.mod-done-cnt');
+          if (cntEl) cntEl.textContent = done + '/' + total;
+        }
+      }
+
+      /* Update progress bars */
+      var pct = d.progress || 0;
+      document.getElementById('topProgFill').style.width = pct + '%';
+      document.getElementById('topProgPct').textContent  = pct + '%';
+      document.getElementById('sbProgFill').style.width  = pct + '%';
+      document.getElementById('sbProgTxt').textContent   = pct + '%';
+
+      /* Show course complete banner at 100% */
+      if (pct >= 100) {
+        document.getElementById('completeBanner').classList.add('vis');
+      }
+
+      /* Auto-advance to next lesson after a moment */
+      setTimeout(function() {
+        var idx = currentIndex();
+        var all = allLessonItems();
+        if (idx >= 0 && idx < all.length - 1) {
+          goNext();
+        }
+      }, 1200);
+    } else {
+      toast(d.message || 'Could not save progress', 'error');
+      btn.disabled  = false;
+      btn.innerHTML = '<i class="fas fa-check"></i> Mark Complete';
+    }
+  }).catch(function() {
+    toast('Something went wrong', 'error');
+    btn.disabled  = false;
+    btn.innerHTML = '<i class="fas fa-check"></i> Mark Complete';
+  });
+}
+
+function toggleModule(section) {
+  section.classList.toggle('closed');
+}
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+/* Keyboard shortcuts */
+document.addEventListener('keydown', function(e) {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'ArrowRight' || e.key === 'n') goNext();
+  if (e.key === 'ArrowLeft'  || e.key === 'p') goPrev();
+  if (e.key === 'c') markComplete();
+});
+
+/* Scroll to current lesson on load */
+(function() {
+  var cur = document.querySelector('.lesson-item.current');
+  if (cur) cur.scrollIntoView({ behavior: 'auto', block: 'center' });
+})();
+</script>
+</body>
+</html>
