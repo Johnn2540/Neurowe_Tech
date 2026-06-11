@@ -12,8 +12,10 @@ const homeRoutes      = require('./web/home.routes');
 const blogRoutes      = require('./web/blog.routes');
 const portfolioRoutes = require('./web/portfolio.routes');
 const learnRoutes     = require('./web/learn.routes');
+const kidsRoutes      = require('./web/kids.routes');
 
 // API routes
+const kidsApi      = require('./api/kids.api');
 const userApi      = require('./api/user.api');
 const adminApi     = require('./api/admin.api');
 const contactsApi  = require('./api/contacts.api');
@@ -31,8 +33,10 @@ router.use('/', homeRoutes);
 router.use('/', blogRoutes);
 router.use('/', portfolioRoutes);
 router.use('/', learnRoutes);
+router.use('/', kidsRoutes);
 
 // ── API routes ────────────────────────────────────────────────────────────────
+router.use('/api/kids',       kidsApi);
 router.use('/api/user',       userApi);
 router.use('/api/admin',      adminApi);
 router.use('/api/contacts',   contactsApi);

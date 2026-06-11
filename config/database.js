@@ -112,6 +112,32 @@ async function runStartupMigrations() {
             assigned_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             UNIQUE (instructor_id, course_id)
         )`,
+        `CREATE TABLE IF NOT EXISTS user_children (
+            id           SERIAL PRIMARY KEY,
+            parent_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            name         VARCHAR(100) NOT NULL,
+            age          INTEGER,
+            avatar_emoji VARCHAR(10) DEFAULT '🧒',
+            created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        )`,
+        `CREATE TABLE IF NOT EXISTS kids_enrollments (
+            id          SERIAL PRIMARY KEY,
+            parent_id   INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            child_id    INTEGER NOT NULL REFERENCES user_children(id) ON DELETE CASCADE,
+            course_id   INTEGER NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+            enrolled_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            progress    INTEGER DEFAULT 0,
+            status      VARCHAR(20) DEFAULT 'active',
+            UNIQUE(child_id, course_id)
+        )`,
+        `CREATE TABLE IF NOT EXISTS kids_lesson_progress (
+            id           SERIAL PRIMARY KEY,
+            child_id     INTEGER NOT NULL REFERENCES user_children(id) ON DELETE CASCADE,
+            lesson_id    INTEGER NOT NULL REFERENCES course_lessons(id) ON DELETE CASCADE,
+            completed    BOOLEAN DEFAULT false,
+            completed_at TIMESTAMPTZ,
+            UNIQUE(child_id, lesson_id)
+        )`,
     ];
 
     for (const sql of migrations) {

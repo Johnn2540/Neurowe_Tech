@@ -3,20 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Neurowex Tech - Custom web and mobile app development">
-    <title>{{title}}</title>
+    <title>{{#if title}}{{title}}{{else}}NeurowexTech — Web & App Development Kenya{{/if}}</title>
+    <meta name="description" content="{{#if metaDescription}}{{metaDescription}}{{else}}NeurowexTech — professional web development, mobile apps, SEO and digital skills training in Kenya and across Africa. Websites from KSh 13,000.{{/if}}">
+    {{#if metaKeywords}}<meta name="keywords" content="{{metaKeywords}}">{{else}}<meta name="keywords" content="web development Kenya, mobile app development Nairobi, digital agency Kenya, website design, SEO Kenya, NeurowexTech">{{/if}}
+    {{#if noIndex}}<meta name="robots" content="noindex,nofollow">{{else}}<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">{{/if}}
+    {{#if canonical}}<link rel="canonical" href="{{canonical}}">{{/if}}
+    <!-- Open Graph -->
+    <meta property="og:title"       content="{{#if ogTitle}}{{ogTitle}}{{else}}{{title}}{{/if}}">
+    <meta property="og:description" content="{{#if ogDescription}}{{ogDescription}}{{else}}{{#if metaDescription}}{{metaDescription}}{{else}}NeurowexTech — professional web development, mobile apps and digital solutions in Kenya.{{/if}}{{/if}}">
+    <meta property="og:type"        content="{{#if ogType}}{{ogType}}{{else}}website{{/if}}">
+    <meta property="og:site_name"   content="NeurowexTech">
+    <meta property="og:locale"      content="en_KE">
+    <meta property="og:image"       content="{{#if ogImage}}{{ogImage}}{{else}}https://neurowextech.co.ke/images/og-home.jpg{{/if}}">
+    <meta property="og:image:width"  content="1200">
+    <meta property="og:image:height" content="630">
+    {{#if canonical}}<meta property="og:url" content="{{canonical}}">{{/if}}
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:site"        content="@neurowextech">
+    <meta name="twitter:title"       content="{{#if ogTitle}}{{ogTitle}}{{else}}{{title}}{{/if}}">
+    <meta name="twitter:description" content="{{#if metaDescription}}{{metaDescription}}{{else}}NeurowexTech — professional web development, mobile apps and digital solutions in Kenya.{{/if}}">
+    <meta name="twitter:image"       content="{{#if ogImage}}{{ogImage}}{{else}}https://neurowextech.co.ke/images/og-home.jpg{{/if}}">
+    <!-- Preconnects -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="/styles/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Organization schema (every page) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": "https://neurowextech.co.ke/#organization",
+      "name": "NeurowexTech",
+      "url": "https://neurowextech.co.ke",
+      "logo": { "@type": "ImageObject", "url": "https://neurowextech.co.ke/images/logo.png" },
+      "telephone": "+254769329340",
+      "email": "techneurowex@gmail.com",
+      "address": { "@type": "PostalAddress", "addressLocality": "Nairobi", "addressCountry": "KE" },
+      "sameAs": ["https://twitter.com/neurowextech", "https://linkedin.com/company/neurowextech"],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+254769329340",
+        "contactType": "customer service",
+        "availableLanguage": "English"
+      }
+    }
+    </script>
 </head>
 <body>
     {{> header}}
-    
+
     <main>
         {{{body}}}
     </main>
-    
+
     {{> footer}}
-    
+
     <script src="/js/main.js"></script>
     {{> widget}}
 </body>

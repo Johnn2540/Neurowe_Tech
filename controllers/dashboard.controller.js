@@ -131,21 +131,32 @@ async function instructorDashboard(req, res) {
 
 async function instructorCoursePage(req, res) {
     try {
-        const courseId = parseInt(req.params.id);
+        const courseId = parseInt(req.params.id, 10);
         const userId   = req.session.userId;
 
-        if (isNaN(courseId)) return res.redirect('/instructor/dashboard');
+        if (!courseId || isNaN(courseId)) return res.redirect('/instructor/dashboard');
 
         // Confirm access unless admin
         if (req.session.userRole !== 'admin') {
-            const accessR = await db.query(`
-                SELECT 1 FROM courses WHERE id=$1 AND instructor_id=$2
-                UNION
-                SELECT 1 FROM instructor_course_assignments WHERE course_id=$1 AND instructor_id=$2
-            `, [courseId, userId]);
+            let accessR;
+            try {
+                accessR = await db.query(`
+                    SELECT 1 FROM courses WHERE id=$1 AND instructor_id=$2
+                    UNION
+                    SELECT 1 FROM instructor_course_assignments WHERE course_id=$1 AND instructor_id=$2
+                `, [courseId, userId]);
+            } catch (accessErr) {
+                console.error('[dashboard] access check error for course', courseId, ':', accessErr.message);
+                // Fall back to basic courses-only check if instructor_course_assignments doesn't exist
+                accessR = await db.query(
+                    'SELECT 1 FROM courses WHERE id=$1 AND instructor_id=$2',
+                    [courseId, userId]
+                );
+            }
             if (!accessR.rows.length)
                 return res.status(403).render('error', {
-                    title: 'Access Denied', message: 'You are not assigned to this course.',
+                    title:   'Access Denied',
+                    message: 'You do not have access to this course. Go back to your dashboard and try again, or ask an admin to assign you.',
                 });
         }
 

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>{{title}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+:root{
+  --kp:#7c3aed;--kpink:#db2777;--kamber:#d97706;
+  --g-kids:linear-gradient(135deg,#7c3aed,#db2777);
+  --ink:#0c1220;--slate:#5a6880;--ghost:#f5f7fd;--white:#fff;--mist:#e2e8f5;
+  --r-pill:999px;--r-lg:14px;--r-xl:22px;
+  --ease:cubic-bezier(.4,0,.2,1);--t:.22s var(--ease);--nav-h:64px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--ghost);color:var(--ink);font-size:15px;line-height:1.65}
+h1,h2,h3{font-family:'Fraunces',serif;line-height:1.15;letter-spacing:-.02em}
+a{text-decoration:none;color:inherit}
+button,input{font-family:'Plus Jakarta Sans',sans-serif}
+.container{max-width:1160px;margin:0 auto;padding:0 24px}
+
+/* NAV */
+.navbar{position:sticky;top:0;z-index:200;height:var(--nav-h);background:rgba(12,18,32,.97);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.07)}
+.nav-inner{height:100%;max-width:1160px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:8px}
+.nav-brand{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px}
+.nav-brand .bm{width:30px;height:30px;background:var(--g-kids);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem;color:#fff;font-weight:800}
+.nav-brand em{font-style:italic;color:#f9a8d4}
+.nav-links{display:none;list-style:none;gap:2px;align-items:center;margin-left:12px}
+.nav-links a{padding:6px 12px;border-radius:8px;font-size:.82rem;font-weight:600;color:rgba(255,255,255,.55);transition:var(--t)}
+.nav-links a:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav-links a.kids-link{color:#c4b5fd}
+.nav-links a.kids-link.cur{background:rgba(124,58,237,.15)}
+@media(min-width:768px){.nav-links{display:flex}}
+.nav-spacer{flex:1}
+.nav-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 18px;border-radius:var(--r-pill);font-size:.82rem;font-weight:700;transition:var(--t)}
+.nav-btn.kids{background:var(--g-kids);color:#fff;box-shadow:0 4px 18px rgba(124,58,237,.3)}
+.nav-btn.kids:hover{transform:translateY(-1px);box-shadow:0 8px 26px rgba(124,58,237,.42)}
+
+/* PAGE HEADER */
+.page-header{background:linear-gradient(162deg,#0a0618 0%,#12073a 60%,#1c0a4a 100%);padding:48px 0 42px;position:relative;overflow:hidden}
+.page-header::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(124,58,237,.04) 1px,transparent 1px);background-size:22px 22px;pointer-events:none}
+.ph-inner{position:relative;z-index:1}
+.ph-kicker{display:inline-flex;align-items:center;gap:7px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.28);border-radius:var(--r-pill);padding:5px 14px;font-size:.67rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:#c4b5fd;margin-bottom:12px}
+.page-header h1{font-size:clamp(1.65rem,4vw,2.4rem);font-weight:700;color:#fff;margin-bottom:6px}
+.page-header h1 em{font-style:italic;background:var(--g-kids);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ph-sub{color:rgba(255,255,255,.45);font-size:.9rem;max-width:420px;line-height:1.7;margin-bottom:22px}
+.ph-stats{display:flex;gap:20px;flex-wrap:wrap}
+.ph-s{display:flex;align-items:center;gap:8px;font-size:.8rem;color:rgba(255,255,255,.45);font-weight:600}
+.ph-s strong{color:#c4b5fd}
+
+/* ADD CHILD TOGGLE BAR */
+.add-bar{display:flex;align-items:center;justify-content:space-between;padding:20px 0 0}
+.add-bar h2{font-size:1.1rem;font-weight:700;color:var(--ink)}
+.add-btn{display:inline-flex;align-items:center;gap:7px;background:var(--g-kids);color:#fff;border:none;border-radius:var(--r-pill);padding:8px 20px;font-size:.82rem;font-weight:700;cursor:pointer;transition:var(--t)}
+.add-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,237,.3)}
+
+/* ADD CHILD FORM */
+.add-child-panel{background:#fff;border:1.5px solid rgba(124,58,237,.18);border-radius:var(--r-xl);padding:22px;margin-top:16px;display:none;box-shadow:0 4px 18px rgba(124,58,237,.08)}
+.add-child-panel.vis{display:block}
+.acp-title{font-size:.94rem;font-weight:700;color:var(--ink);margin-bottom:14px}
+.acp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:12px}
+.acp-label{display:block;font-size:.75rem;font-weight:700;color:var(--ink);margin-bottom:4px}
+.acp-inp{width:100%;border:1.5px solid var(--mist);border-radius:8px;padding:9px 12px;font-size:.85rem;color:var(--ink);transition:var(--t)}
+.acp-inp:focus{outline:none;border-color:var(--kp);box-shadow:0 0 0 3px rgba(124,58,237,.07)}
+.av-row-acp{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.av-acp{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer;border:2px solid transparent;transition:var(--t)}
+.av-acp:hover{border-color:rgba(124,58,237,.3)}
+.av-acp.on{border-color:var(--kp);background:rgba(124,58,237,.08)}
+.acp-actions{display:flex;gap:10px;align-items:center}
+.acp-save{display:inline-flex;align-items:center;gap:7px;background:var(--g-kids);color:#fff;border:none;border-radius:var(--r-pill);padding:10px 22px;font-size:.86rem;font-weight:700;cursor:pointer;transition:var(--t)}
+.acp-save:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,237,.3)}
+.acp-cancel{background:none;border:none;font-size:.82rem;color:var(--slate);cursor:pointer;padding:0 8px;font-weight:600;transition:var(--t)}
+.acp-cancel:hover{color:var(--kp)}
+
+/* CHILDREN */
+.children-wrap{padding:28px 0 72px}
+.no-children-empty{text-align:center;padding:80px 24px;border:1.5px dashed rgba(124,58,237,.2);border-radius:var(--r-xl);background:#fff;margin-top:24px}
+.ne-icon{width:72px;height:72px;border-radius:50%;background:rgba(124,58,237,.07);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:2rem}
+.no-children-empty h3{font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:7px}
+.no-children-empty p{color:var(--slate);font-size:.88rem;max-width:340px;margin:0 auto;line-height:1.65}
+
+.child-card{background:#fff;border-radius:var(--r-xl);border:1px solid rgba(0,0,0,.08);overflow:hidden;box-shadow:0 2px 12px rgba(8,12,24,.05);margin-bottom:24px}
+.cc-top{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;border-bottom:1px solid var(--mist)}
+.cc-id{display:flex;align-items:center;gap:14px}
+.cc-av-lg{width:50px;height:50px;border-radius:50%;background:var(--g-kids);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;box-shadow:0 4px 14px rgba(124,58,237,.22)}
+.cc-name{font-size:1.05rem;font-weight:700;color:var(--ink)}
+.cc-age{font-size:.78rem;color:var(--slate);margin-top:2px}
+.cc-counts{display:flex;gap:14px;flex-wrap:wrap}
+.cc-cnt{text-align:center}
+.cc-cnt-val{font-family:'Fraunces',serif;font-size:1.15rem;font-weight:700;color:var(--ink)}
+.cc-cnt-lbl{font-size:.68rem;color:var(--slate);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.cc-top-actions{display:flex;gap:8px;align-items:center}
+.del-child-btn{display:inline-flex;align-items:center;gap:5px;background:rgba(239,68,68,.07);color:#dc2626;border:none;border-radius:8px;padding:6px 12px;font-size:.75rem;font-weight:700;cursor:pointer;transition:var(--t)}
+.del-child-btn:hover{background:rgba(239,68,68,.14)}
+.browse-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(124,58,237,.08);color:var(--kp);border:none;border-radius:var(--r-pill);padding:6px 14px;font-size:.78rem;font-weight:700;cursor:pointer;transition:var(--t);text-decoration:none}
+.browse-btn:hover{background:rgba(124,58,237,.15)}
+
+/* ENROLLMENTS */
+.cc-enrolments{padding:18px 22px}
+.cc-enr-head{font-size:.78rem;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px}
+.no-enrol-note{font-size:.83rem;color:var(--slate);padding:12px 0;line-height:1.65}
+.no-enrol-note a{color:var(--kp);font-weight:700}
+.enrol-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.enrol-card{border:1px solid rgba(0,0,0,.08);border-radius:var(--r-lg);padding:13px 14px;display:flex;flex-direction:column;gap:10px;background:var(--ghost);transition:var(--t)}
+.enrol-card:hover{border-color:rgba(124,58,237,.22);background:#fff;box-shadow:0 4px 14px rgba(8,12,24,.07)}
+.ec-course-title{font-size:.88rem;font-weight:700;color:var(--ink);line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ec-instr{font-size:.73rem;color:var(--slate);display:flex;align-items:center;gap:5px}
+.ec-prog-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ec-prog-bar-wrap{flex:1;height:6px;border-radius:var(--r-pill);background:var(--mist);overflow:hidden}
+.ec-prog-fill{height:100%;border-radius:var(--r-pill);background:var(--g-kids);transition:width .4s}
+.ec-prog-pct{font-size:.72rem;font-weight:800;color:var(--kp);flex-shrink:0;min-width:32px;text-align:right}
+.ec-go{display:inline-flex;align-items:center;gap:5px;background:var(--g-kids);color:#fff;border:none;border-radius:var(--r-pill);padding:5px 13px;font-size:.74rem;font-weight:700;cursor:pointer;transition:var(--t);text-decoration:none}
+.ec-go:hover{transform:translateY(-1px)}
+.ec-complete{display:inline-flex;align-items:center;gap:5px;background:rgba(5,150,105,.1);color:#059669;border:none;border-radius:var(--r-pill);padding:5px 11px;font-size:.74rem;font-weight:700}
+
+/* TOAST */
+#kd-toast{position:fixed;bottom:22px;right:22px;z-index:9999;display:flex;align-items:center;gap:10px;background:#0c1220;color:#fff;padding:11px 18px;border-radius:12px;font-size:.82rem;font-weight:600;box-shadow:0 8px 28px rgba(0,0,0,.3);transform:translateY(120%);opacity:0;transition:transform .28s var(--ease),opacity .25s}
+#kd-toast.show{transform:translateY(0);opacity:1}
+.tg i{color:#34d399}.tge i{color:#f87171}
+
+/* FOOTER */
+.site-footer{background:#050810;color:rgba(255,255,255,.35);padding:22px 0;text-align:center;font-size:.77rem;border-top:1px solid rgba(255,255,255,.05)}
+.site-footer a{color:rgba(255,255,255,.4);margin:0 8px;transition:color .18s}.site-footer a:hover{color:#fff}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand"><span class="bm">N</span>Neurowex<em>Tech</em></a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/learn">Academy</a></li>
+      <li><a href="/kids-academy" class="kids-link cur">🎮 Kids</a></li>
+    </ul>
+    <div class="nav-spacer"></div>
+    <a href="/kids-academy" class="nav-btn kids"><i class="fas fa-graduation-cap"></i> Browse Courses</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<section class="page-header">
+  <div class="container">
+    <div class="ph-inner">
+      <div class="ph-kicker">👨‍👩‍👧 Parent Dashboard</div>
+      <h1>My <em>Kids' Learning</em></h1>
+      <p class="ph-sub">Manage your children's profiles, track their progress, and enrol them in new courses.</p>
+      <div class="ph-stats">
+        <div class="ph-s"><strong>{{totalChildren}}</strong> child{{#if (gt totalChildren 1)}}ren{{/if}}</div>
+        {{#each children}}
+        {{#if enrollments.length}}
+        <div class="ph-s"><strong>{{name}}</strong> — {{completedCourses}}/{{totalCourses}} courses done</div>
+        {{/if}}
+        {{/each}}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<div class="container">
+  <div class="children-wrap">
+    <!-- ADD CHILD BAR -->
+    <div class="add-bar">
+      <h2>Children</h2>
+      <button class="add-btn" onclick="toggleAddPanel()"><i class="fas fa-plus"></i> Add Child</button>
+    </div>
+
+    <!-- ADD CHILD PANEL -->
+    <div class="add-child-panel" id="addPanel">
+      <div class="acp-title">New child profile</div>
+      <div class="acp-grid">
+        <div>
+          <label class="acp-label">Name *</label>
+          <input class="acp-inp" id="acName" placeholder="e.g. Emma" autocomplete="off"/>
+        </div>
+        <div>
+          <label class="acp-label">Age</label>
+          <input class="acp-inp" id="acAge" type="number" min="4" max="17" placeholder="10"/>
+        </div>
+      </div>
+      <label class="acp-label" style="margin-bottom:8px">Avatar</label>
+      <div class="av-row-acp" id="avAcp">
+        <span class="av-acp on" data-emoji="🧒" onclick="pickAvAcp(this)">🧒</span>
+        <span class="av-acp" data-emoji="👦" onclick="pickAvAcp(this)">👦</span>
+        <span class="av-acp" data-emoji="👧" onclick="pickAvAcp(this)">👧</span>
+        <span class="av-acp" data-emoji="🧑" onclick="pickAvAcp(this)">🧑</span>
+        <span class="av-acp" data-emoji="🦸" onclick="pickAvAcp(this)">🦸</span>
+        <span class="av-acp" data-emoji="🧙" onclick="pickAvAcp(this)">🧙</span>
+        <span class="av-acp" data-emoji="🤖" onclick="pickAvAcp(this)">🤖</span>
+        <span class="av-acp" data-emoji="🦊" onclick="pickAvAcp(this)">🦊</span>
+      </div>
+      <div class="acp-actions">
+        <button class="acp-save" onclick="saveNewChild()"><i class="fas fa-check"></i> Save Child</button>
+        <button class="acp-cancel" onclick="toggleAddPanel()">Cancel</button>
+      </div>
+    </div>
+
+    {{#if children.length}}
+    <div id="childrenList" style="margin-top:28px">
+      {{#each children}}
+      <div class="child-card" id="child-{{id}}">
+        <div class="cc-top">
+          <div class="cc-id">
+            <div class="cc-av-lg">{{avatar_emoji}}</div>
+            <div>
+              <div class="cc-name">{{name}}</div>
+              {{#if age}}<div class="cc-age">Age {{age}}</div>{{/if}}
+            </div>
+          </div>
+          <div class="cc-counts">
+            <div class="cc-cnt"><div class="cc-cnt-val">{{totalCourses}}</div><div class="cc-cnt-lbl">Enrolled</div></div>
+            <div class="cc-cnt"><div class="cc-cnt-val">{{completedCourses}}</div><div class="cc-cnt-lbl">Completed</div></div>
+          </div>
+          <div class="cc-top-actions">
+            <a href="/kids-academy" class="browse-btn"><i class="fas fa-plus"></i> Add Course</a>
+            <button class="del-child-btn" onclick="deleteChild({{id}},'{{name}}')"><i class="fas fa-trash-alt"></i> Remove</button>
+          </div>
+        </div>
+        <div class="cc-enrolments">
+          <div class="cc-enr-head">Enrolled Courses</div>
+          {{#if enrollments.length}}
+          <div class="enrol-grid">
+            {{#each enrollments}}
+            <div class="enrol-card">
+              <div class="ec-course-title">{{title}}</div>
+              <div class="ec-instr"><i class="fas fa-user-tie" style="color:var(--kp)"></i> {{instructor_name}}</div>
+              <div class="ec-prog-row">
+                <div class="ec-prog-bar-wrap"><div class="ec-prog-fill" style="width:{{progress}}%"></div></div>
+                <span class="ec-prog-pct">{{progress}}%</span>
+              </div>
+              {{#if (gte progress 100)}}
+              <span class="ec-complete"><i class="fas fa-trophy"></i> Completed!</span>
+              {{else}}
+              <a href="/kids-academy/course/{{course_id}}/learn/{{../id}}" class="ec-go"><i class="fas fa-play"></i> Continue</a>
+              {{/if}}
+            </div>
+            {{/each}}
+          </div>
+          {{else}}
+          <p class="no-enrol-note">{{name}} isn't enrolled in any courses yet. <a href="/kids-academy">Browse Kids Courses</a> to get started!</p>
+          {{/if}}
+        </div>
+      </div>
+      {{/each}}
+    </div>
+    {{else}}
+    <div class="no-children-empty" id="emptyState">
+      <div class="ne-icon">🧒</div>
+      <h3>No children added yet</h3>
+      <p>Add a child profile above, then browse the Kids Academy to enrol them in courses!</p>
+    </div>
+    {{/if}}
+
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    © {{currentYear}} NeurowexTech &nbsp;·&nbsp;
+    <a href="/kids-academy">Kids Academy</a>
+    <a href="/contact">Contact</a>
+  </div>
+</footer>
+
+<div id="kd-toast"><i id="kd-ico" class="fas fa-check-circle"></i><span id="kd-msg">Done!</span></div>
+
+{{> widget}}
+
+<script>
+var selectedAvAcp = '🧒';
+var childrenExists = {{#if children.length}}true{{else}}false{{/if}};
+
+function toggleAddPanel() {
+  document.getElementById('addPanel').classList.toggle('vis');
+}
+function pickAvAcp(el) {
+  document.querySelectorAll('.av-acp').forEach(function(o) { o.classList.remove('on'); });
+  el.classList.add('on');
+  selectedAvAcp = el.dataset.emoji;
+}
+function toast(msg, type) {
+  var el  = document.getElementById('kd-toast');
+  var ico = document.getElementById('kd-ico');
+  document.getElementById('kd-msg').textContent = msg;
+  el.className = 'show ' + (type === 'error' ? 'tge' : 'tg');
+  ico.className = type === 'error' ? 'fas fa-times-circle' : 'fas fa-check-circle';
+  setTimeout(function() { el.className = ''; }, 3400);
+}
+
+function saveNewChild() {
+  var name = (document.getElementById('acName').value || '').trim();
+  var age  = parseInt(document.getElementById('acAge').value) || null;
+  if (!name) { toast("Please enter the child's name", 'error'); return; }
+  fetch('/api/kids/children', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: name, age: age, avatar_emoji: selectedAvAcp })
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.success) {
+      toast(name + ' added!');
+      document.getElementById('acName').value = '';
+      document.getElementById('acAge').value  = '';
+      document.getElementById('addPanel').classList.remove('vis');
+      // Reload to show new child
+      setTimeout(function() { window.location.reload(); }, 700);
+    } else { toast(d.message || 'Could not add child', 'error'); }
+  }).catch(function() { toast('Something went wrong', 'error'); });
+}
+
+function deleteChild(id, name) {
+  if (!confirm('Remove ' + name + '? This will delete all their enrolled courses and progress.')) return;
+  fetch('/api/kids/children/' + id, { method: 'DELETE' })
+  .then(function(r) { return r.json(); }).then(function(d) {
+    if (d.success) {
+      toast(name + ' removed');
+      var el = document.getElementById('child-' + id);
+      if (el) el.remove();
+      // Check if no children remain
+      var list = document.getElementById('childrenList');
+      if (list && !list.querySelectorAll('.child-card').length) {
+        list.remove();
+        var wrap = document.querySelector('.children-wrap');
+        var empty = document.createElement('div');
+        empty.className = 'no-children-empty'; empty.id = 'emptyState';
+        empty.innerHTML = '<div class="ne-icon">🧒</div><h3>No children added yet</h3><p>Add a child profile above, then browse Kids Academy to get started!</p>';
+        wrap.appendChild(empty);
+      }
+    } else { toast(d.message || 'Could not remove child', 'error'); }
+  }).catch(function() { toast('Something went wrong', 'error'); });
+}
+</script>
+</body>
+</html>

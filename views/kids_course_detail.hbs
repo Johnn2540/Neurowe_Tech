@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>{{title}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+:root{
+  --kp:#7c3aed;--kpink:#db2777;--kamber:#d97706;
+  --g-kids:linear-gradient(135deg,#7c3aed,#db2777);
+  --ink:#0c1220;--slate:#5a6880;--ghost:#f5f7fd;--white:#fff;--mist:#e2e8f5;
+  --r-pill:999px;--r-lg:14px;--r-xl:22px;
+  --ease:cubic-bezier(.4,0,.2,1);--t:.22s var(--ease);--nav-h:64px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--ghost);color:var(--ink);font-size:15px;line-height:1.65}
+h1,h2,h3,h4{font-family:'Fraunces',serif;line-height:1.15;letter-spacing:-.02em}
+a{text-decoration:none;color:inherit}
+button{font-family:'Plus Jakarta Sans',sans-serif}
+.container{max-width:1220px;margin:0 auto;padding:0 24px}
+
+/* NAV */
+.navbar{position:sticky;top:0;z-index:200;height:var(--nav-h);background:rgba(12,18,32,.97);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.07)}
+.nav-inner{height:100%;max-width:1220px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:8px}
+.nav-brand{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px}
+.nav-brand .bm{width:30px;height:30px;background:var(--g-kids);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem;color:#fff;font-weight:800}
+.nav-brand em{font-style:italic;color:#f9a8d4}
+.nav-links{display:none;list-style:none;gap:2px;align-items:center;margin-left:12px}
+.nav-links a{padding:6px 12px;border-radius:8px;font-size:.82rem;font-weight:600;color:rgba(255,255,255,.55);transition:var(--t)}
+.nav-links a:hover,.nav-links a.cur{background:rgba(255,255,255,.07);color:#fff}
+.nav-links a.kids-link{color:#c4b5fd}
+.nav-links a.kids-link:hover,.nav-links a.kids-link.cur{background:rgba(124,58,237,.15);color:#c4b5fd}
+@media(min-width:768px){.nav-links{display:flex}}
+.nav-spacer{flex:1}
+.nav-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 18px;border-radius:var(--r-pill);font-size:.82rem;font-weight:700;transition:var(--t)}
+.nav-btn.ghost{border:1.5px solid rgba(255,255,255,.16);color:rgba(255,255,255,.7)}
+.nav-btn.ghost:hover{background:rgba(255,255,255,.07);color:#fff}
+
+/* HERO */
+.course-hero{background:linear-gradient(162deg,#0a0618 0%,#12073a 60%,#1c0a4a 100%);padding:56px 0 52px;position:relative;overflow:hidden}
+.course-hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(124,58,237,.04) 1px,transparent 1px);background-size:24px 24px;pointer-events:none}
+.ch-blob{position:absolute;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(124,58,237,.12) 0%,transparent 70%);width:400px;height:400px;top:-100px;right:-80px}
+.ch-inner{position:relative;z-index:1}
+.ch-crumb{display:flex;align-items:center;gap:8px;margin-bottom:18px;font-size:.75rem;color:rgba(255,255,255,.38)}
+.ch-crumb a{color:rgba(255,255,255,.45);transition:color .16s}.ch-crumb a:hover{color:#c4b5fd}
+.ch-crumb i{font-size:.55rem}
+.ch-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;align-items:center}
+.ch-tag{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:var(--r-pill);font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.ch-tag.cat{background:rgba(124,58,237,.18);border:1px solid rgba(124,58,237,.3);color:#c4b5fd}
+.ch-tag.lvl-beginner{background:rgba(5,150,105,.15);border:1px solid rgba(5,150,105,.25);color:#34d399}
+.ch-tag.lvl-intermediate{background:rgba(217,119,6,.14);border:1px solid rgba(217,119,6,.25);color:#fbbf24}
+.ch-tag.lvl-advanced{background:rgba(219,39,119,.14);border:1px solid rgba(219,39,119,.25);color:#f9a8d4}
+.ch-tag.lvl-all{background:rgba(26,79,214,.15);border:1px solid rgba(26,79,214,.25);color:#93c5fd}
+.ch-title{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;color:#fff;margin-bottom:10px}
+.ch-desc{font-size:.94rem;color:rgba(255,255,255,.52);max-width:600px;line-height:1.75;margin-bottom:22px}
+.ch-stats{display:flex;flex-wrap:wrap;gap:20px}
+.chs-item{display:flex;align-items:center;gap:8px;font-size:.81rem;color:rgba(255,255,255,.45)}
+.chs-item i{color:rgba(124,58,237,.7)}
+.chs-item span{font-weight:600}
+
+/* LAYOUT */
+.detail-layout{display:grid;grid-template-columns:1fr;gap:28px;padding:44px 0 72px}
+@media(min-width:960px){.detail-layout{grid-template-columns:1fr 340px}}
+
+/* MODULES */
+.modules-section{}
+.sec-h{font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.sec-h-ico{width:32px;height:32px;border-radius:10px;background:rgba(124,58,237,.1);display:flex;align-items:center;justify-content:center;color:var(--kp)}
+.module-accordion{display:flex;flex-direction:column;gap:10px}
+.mod-item{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:var(--r-lg);overflow:hidden;box-shadow:0 1px 6px rgba(8,12,24,.04)}
+.mod-head{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;transition:background var(--t)}
+.mod-head:hover{background:rgba(124,58,237,.02)}
+.mod-num{width:28px;height:28px;border-radius:50%;background:var(--g-kids);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;color:#fff;flex-shrink:0}
+.mod-title{font-weight:700;font-size:.9rem;color:var(--ink);flex:1}
+.mod-count{font-size:.75rem;color:var(--slate);margin-right:8px}
+.mod-chev{color:var(--slate);font-size:.8rem;transition:transform var(--t)}
+.mod-item.open .mod-chev{transform:rotate(180deg)}
+.mod-body{border-top:1px solid var(--mist);display:none}
+.mod-item.open .mod-body{display:block}
+.lesson-row{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--mist)}
+.lesson-row:last-child{border-bottom:none}
+.lesson-ico{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.75rem}
+.lesson-ico.vid{background:rgba(124,58,237,.08);color:var(--kp)}
+.lesson-ico.lock{background:var(--mist);color:var(--slate)}
+.lesson-info{flex:1;min-width:0}
+.lesson-title{font-size:.85rem;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lesson-dur{font-size:.72rem;color:var(--slate);margin-top:1px}
+.free-tag{font-size:.65rem;font-weight:800;color:#059669;background:rgba(5,150,105,.08);padding:2px 7px;border-radius:var(--r-pill)}
+
+/* SIDEBAR */
+.sidebar{}
+.enroll-card{background:#fff;border-radius:var(--r-xl);border:1px solid rgba(0,0,0,.08);overflow:hidden;box-shadow:0 4px 20px rgba(8,12,24,.07);position:sticky;top:80px}
+.ec-thumb{position:relative;width:100%;padding-top:52%;background:rgba(124,58,237,.06)}
+.ec-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ec-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3rem;opacity:.2}
+.ec-body{padding:20px}
+.ec-price{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:700;margin-bottom:4px}
+.ec-price.free{color:#059669}
+.ec-price.paid{color:var(--kp)}
+.ec-sub{font-size:.78rem;color:var(--slate);margin-bottom:16px}
+.ec-btn-wrap{margin-bottom:14px}
+.ec-btn{width:100%;background:var(--g-kids);color:#fff;border:none;border-radius:var(--r-pill);padding:13px;font-size:.9rem;font-weight:800;cursor:pointer;transition:var(--t);display:flex;align-items:center;justify-content:center;gap:8px}
+.ec-btn:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(124,58,237,.32)}
+.ec-info-list{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:14px}
+.ec-info-list li{display:flex;align-items:center;gap:9px;font-size:.81rem;color:var(--slate)}
+.ec-info-list li i{color:var(--kp);width:14px;text-align:center}
+
+/* CHILDREN SECTION */
+.children-section{margin-top:20px}
+.cs-head{font-size:.78rem;font-weight:700;color:var(--ink);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.cs-head i{color:var(--kp)}
+.child-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--mist)}
+.child-row:last-child{border-bottom:none}
+.cr-av{width:34px;height:34px;border-radius:50%;background:var(--g-kids);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.cr-info{flex:1;min-width:0}
+.cr-name{font-size:.85rem;font-weight:700;color:var(--ink)}
+.cr-prog{font-size:.72rem;color:var(--slate);margin-top:1px}
+.cr-prog-bar{height:4px;border-radius:var(--r-pill);background:var(--mist);overflow:hidden;margin-top:4px}
+.cr-prog-fill{height:100%;border-radius:var(--r-pill);background:var(--g-kids);transition:width .4s}
+.cr-action{flex-shrink:0}
+.cr-go-btn{display:inline-flex;align-items:center;gap:5px;background:rgba(124,58,237,.08);color:var(--kp);border:none;border-radius:var(--r-pill);padding:5px 12px;font-size:.74rem;font-weight:700;cursor:pointer;transition:var(--t)}
+.cr-go-btn:hover{background:rgba(124,58,237,.15)}
+.cr-enroll-btn{display:inline-flex;align-items:center;gap:5px;background:var(--g-kids);color:#fff;border:none;border-radius:var(--r-pill);padding:5px 12px;font-size:.74rem;font-weight:700;cursor:pointer;transition:var(--t)}
+.cr-enroll-btn:hover{transform:translateY(-1px)}
+
+/* ADD CHILD INLINE */
+.add-child-section{margin-top:14px}
+.add-child-toggle-sm{display:flex;align-items:center;gap:7px;font-size:.79rem;font-weight:700;color:var(--kp);background:none;border:none;cursor:pointer;padding:4px 0;transition:var(--t)}
+.add-child-toggle-sm:hover{opacity:.7}
+.add-child-mini{background:rgba(124,58,237,.03);border:1px solid rgba(124,58,237,.12);border-radius:10px;padding:12px;margin-top:8px;display:none}
+.add-child-mini.vis{display:block}
+.mini-inp{width:100%;border:1.5px solid var(--mist);border-radius:8px;padding:8px 11px;font-size:.82rem;margin-bottom:7px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--ink);transition:var(--t)}
+.mini-inp:focus{outline:none;border-color:var(--kp);box-shadow:0 0 0 3px rgba(124,58,237,.07)}
+.mini-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:7px}
+.av-row-sm{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.av-o{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;cursor:pointer;border:2px solid transparent;transition:var(--t)}
+.av-o:hover{border-color:rgba(124,58,237,.3)}
+.av-o.on{border-color:var(--kp);background:rgba(124,58,237,.08)}
+.save-mini-btn{display:inline-flex;align-items:center;gap:5px;background:var(--g-kids);color:#fff;border:none;border-radius:var(--r-pill);padding:7px 15px;font-size:.79rem;font-weight:700;cursor:pointer;transition:var(--t)}
+.save-mini-btn:hover{transform:translateY(-1px)}
+.no-children-note{font-size:.8rem;color:var(--slate);line-height:1.6;padding:6px 0}
+.no-auth-note{text-align:center;padding:10px 0;font-size:.81rem;color:var(--slate);line-height:1.65}
+.no-auth-note a{color:var(--kp);font-weight:700}
+
+/* TOAST */
+#cd-toast{position:fixed;bottom:22px;right:22px;z-index:9999;display:flex;align-items:center;gap:10px;background:#0c1220;color:#fff;padding:11px 18px;border-radius:12px;font-size:.82rem;font-weight:600;box-shadow:0 8px 28px rgba(0,0,0,.3);transform:translateY(120%);opacity:0;transition:transform .28s var(--ease),opacity .25s}
+#cd-toast.show{transform:translateY(0);opacity:1}
+.tok i{color:#34d399}.tok-e i{color:#f87171}
+
+/* FOOTER */
+.site-footer{background:#050810;color:rgba(255,255,255,.35);padding:22px 0;text-align:center;font-size:.77rem;border-top:1px solid rgba(255,255,255,.05)}
+.site-footer a{color:rgba(255,255,255,.4);margin:0 8px;transition:color .18s}.site-footer a:hover{color:#fff}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand"><span class="bm">N</span>Neurowex<em>Tech</em></a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/learn">Academy</a></li>
+      <li><a href="/kids-academy" class="kids-link cur">🎮 Kids</a></li>
+    </ul>
+    <div class="nav-spacer"></div>
+    {{#if isAuthenticated}}
+    <a href="/kids-academy/my-kids" class="nav-btn ghost"><i class="fas fa-child"></i> My Kids</a>
+    {{else}}
+    <a href="/login"   class="nav-btn ghost">Log In</a>
+    {{/if}}
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="course-hero">
+  <div class="ch-blob"></div>
+  <div class="container">
+    <div class="ch-inner">
+      <div class="ch-crumb">
+        <a href="/">Home</a><i class="fas fa-chevron-right"></i>
+        <a href="/kids-academy">Kids Academy</a><i class="fas fa-chevron-right"></i>
+        <span>{{course.title}}</span>
+      </div>
+      <div class="ch-meta">
+        <span class="ch-tag cat"><i class="fas fa-child"></i> Kids Coding</span>
+        <span class="ch-tag lvl-{{course.levelLower}}"><i class="fas fa-layer-group"></i> {{course.level}}</span>
+      </div>
+      <h1 class="ch-title">{{course.title}}</h1>
+      {{#if course.description}}<p class="ch-desc">{{course.description}}</p>{{/if}}
+      <div class="ch-stats">
+        <div class="chs-item"><i class="fas fa-cubes"></i><span>{{modules.length}} modules</span></div>
+        <div class="chs-item"><i class="fas fa-play-circle"></i><span>{{totalLessons}} lessons</span></div>
+        <div class="chs-item"><i class="fas fa-user-tie"></i><span>{{course.instructor_name}}</span></div>
+        <div class="chs-item"><i class="fas fa-users"></i><span>{{course.total_enrolled}} enrolled</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<div class="container">
+  <div class="detail-layout">
+
+    <!-- MODULES -->
+    <div class="modules-section">
+      <h3 class="sec-h"><span class="sec-h-ico"><i class="fas fa-layer-group"></i></span>Course Content</h3>
+      <div class="module-accordion" id="accordion">
+        {{#each modules}}
+        <div class="mod-item{{#if @first}} open{{/if}}">
+          <div class="mod-head" onclick="toggleMod(this.parentElement)">
+            <span class="mod-num">{{add @index 1}}</span>
+            <span class="mod-title">{{title}}</span>
+            <span class="mod-count">{{lessons.length}} lessons</span>
+            <i class="fas fa-chevron-down mod-chev"></i>
+          </div>
+          <div class="mod-body">
+            {{#each lessons}}
+            <div class="lesson-row">
+              <span class="lesson-ico {{#if is_free}}vid{{else}}lock{{/if}}">
+                <i class="fas {{#if is_free}}fa-play{{else}}fa-lock{{/if}}"></i>
+              </span>
+              <div class="lesson-info">
+                <div class="lesson-title">{{title}}</div>
+                {{#if duration}}<div class="lesson-dur"><i class="fas fa-clock" style="font-size:.6rem;color:#7c3aed;margin-right:3px"></i>{{duration}}</div>{{/if}}
+              </div>
+              {{#if is_free}}<span class="free-tag">Free</span>{{/if}}
+            </div>
+            {{/each}}
+          </div>
+        </div>
+        {{else}}
+        <div style="text-align:center;padding:40px;color:var(--slate);font-size:.88rem">
+          <i class="fas fa-tools" style="font-size:1.5rem;color:rgba(124,58,237,.3);display:block;margin-bottom:10px"></i>
+          The instructor is still adding content. Check back soon!
+        </div>
+        {{/each}}
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="enroll-card">
+        <div class="ec-thumb">
+          {{#if course.image_url}}<img src="{{course.image_url}}" alt="{{course.title}}"/>
+          {{else}}<div class="ec-ph">🎮</div>{{/if}}
+        </div>
+        <div class="ec-body">
+          {{#if course.isFree}}
+          <div class="ec-price free">Free</div>
+          <div class="ec-sub">No cost — just enrol and start learning!</div>
+          {{else}}
+          <div class="ec-price paid">{{course.priceLabel}}</div>
+          <div class="ec-sub">One-time enrolment</div>
+          {{/if}}
+
+          {{#if isAuthenticated}}
+          <div class="ec-btn-wrap">
+            <button class="ec-btn" onclick="scrollToChildren()"><i class="fas fa-rocket"></i> Enrol a Child Below</button>
+          </div>
+          {{else}}
+          <div class="ec-btn-wrap">
+            <a href="/login?redirect=/kids-academy/course/{{course.id}}" class="ec-btn" style="display:flex;text-decoration:none"><i class="fas fa-sign-in-alt"></i> Log In to Enrol</a>
+          </div>
+          {{/if}}
+
+          <ul class="ec-info-list">
+            <li><i class="fas fa-cubes"></i> {{modules.length}} modules, {{totalLessons}} lessons</li>
+            <li><i class="fas fa-user-tie"></i> Instructor: {{course.instructor_name}}</li>
+            <li><i class="fas fa-layer-group"></i> Level: {{course.level}}</li>
+            {{#if course.total_duration}}<li><i class="fas fa-clock"></i> {{course.total_duration}}</li>{{/if}}
+            <li><i class="fas fa-users"></i> {{course.total_enrolled}} enrolled</li>
+          </ul>
+
+          <!-- CHILDREN -->
+          {{#if isAuthenticated}}
+          <div class="children-section" id="childrenSection">
+            <div class="cs-head"><i class="fas fa-child"></i> Your Children</div>
+            <div id="childRows">
+              {{#if hasChildren}}
+              {{#each children}}
+              <div class="child-row" data-child-id="{{id}}">
+                <span class="cr-av">{{avatar_emoji}}</span>
+                <div class="cr-info">
+                  <div class="cr-name">{{name}}{{#if age}} · age {{age}}{{/if}}</div>
+                  {{#if isEnrolled}}
+                  <div class="cr-prog">Progress: {{progress}}%</div>
+                  <div class="cr-prog-bar"><div class="cr-prog-fill" style="width:{{progress}}%"></div></div>
+                  {{else}}
+                  <div class="cr-prog" style="color:#7c3aed">Not enrolled</div>
+                  {{/if}}
+                </div>
+                <div class="cr-action">
+                  {{#if isEnrolled}}
+                  <a href="/kids-academy/course/{{../course.id}}/learn/{{id}}" class="cr-go-btn"><i class="fas fa-play"></i> Go</a>
+                  {{else}}
+                  <button class="cr-enroll-btn" onclick="enrollChild({{id}})"><i class="fas fa-plus"></i> Enrol</button>
+                  {{/if}}
+                </div>
+              </div>
+              {{/each}}
+              {{else}}
+              <p class="no-children-note">You haven't added any children yet. Add one below to get started!</p>
+              {{/if}}
+            </div>
+            <div class="add-child-section">
+              <button class="add-child-toggle-sm" onclick="toggleMini()"><i class="fas fa-plus-circle"></i> Add a child</button>
+              <div class="add-child-mini" id="miniForm">
+                <input class="mini-inp" id="mName" placeholder="Child's name *" autocomplete="off"/>
+                <div class="mini-row">
+                  <input class="mini-inp" id="mAge" type="number" min="4" max="17" placeholder="Age" style="margin-bottom:0"/>
+                  <div></div>
+                </div>
+                <div class="av-row-sm" id="avSm">
+                  <span class="av-o on" data-emoji="🧒" onclick="pickAvSm(this)">🧒</span>
+                  <span class="av-o" data-emoji="👦" onclick="pickAvSm(this)">👦</span>
+                  <span class="av-o" data-emoji="👧" onclick="pickAvSm(this)">👧</span>
+                  <span class="av-o" data-emoji="🧑" onclick="pickAvSm(this)">🧑</span>
+                  <span class="av-o" data-emoji="🦸" onclick="pickAvSm(this)">🦸</span>
+                  <span class="av-o" data-emoji="🧙" onclick="pickAvSm(this)">🧙</span>
+                </div>
+                <button class="save-mini-btn" onclick="saveChildMini()"><i class="fas fa-check"></i> Save</button>
+              </div>
+            </div>
+          </div>
+          {{else}}
+          <div class="no-auth-note">
+            <a href="/login">Log in</a> or <a href="/sign_up">sign up</a> to enrol a child.
+          </div>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    © {{currentYear}} NeurowexTech &nbsp;·&nbsp;
+    <a href="/kids-academy">Kids Academy</a>
+    <a href="/kids-academy/my-kids">My Kids</a>
+    <a href="/contact">Contact</a>
+  </div>
+</footer>
+
+<div id="cd-toast"><i id="cd-ico" class="fas fa-check-circle"></i><span id="cd-msg">Done!</span></div>
+
+{{> widget}}
+
+<script>
+var COURSE_ID = {{course.id}};
+var ENROLLED_IDS = {{enrolledChildIds}};
+var selectedAv = '🧒';
+
+function toggleMod(el) {
+  el.classList.toggle('open');
+}
+function scrollToChildren() {
+  var el = document.getElementById('childrenSection');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+function toggleMini() {
+  document.getElementById('miniForm').classList.toggle('vis');
+}
+function pickAvSm(el) {
+  document.querySelectorAll('.av-o').forEach(function(o) { o.classList.remove('on'); });
+  el.classList.add('on');
+  selectedAv = el.dataset.emoji;
+}
+function toast(msg, type) {
+  var el  = document.getElementById('cd-toast');
+  var ico = document.getElementById('cd-ico');
+  document.getElementById('cd-msg').textContent = msg;
+  el.className = 'show ' + (type === 'error' ? 'tok-e' : 'tok');
+  ico.className = type === 'error' ? 'fas fa-times-circle' : 'fas fa-check-circle';
+  setTimeout(function() { el.className = ''; }, 3400);
+}
+function enrollChild(childId) {
+  fetch('/api/kids/enroll', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ childId: childId, courseId: COURSE_ID })
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.success) {
+      toast(d.message || 'Enrolled!');
+      if (d.redirect) setTimeout(function() { window.location.href = d.redirect; }, 900);
+    } else { toast(d.message || 'Could not enrol', 'error'); }
+  }).catch(function() { toast('Something went wrong', 'error'); });
+}
+function saveChildMini() {
+  var name = (document.getElementById('mName').value || '').trim();
+  var age  = parseInt(document.getElementById('mAge').value) || null;
+  if (!name) { toast("Please enter the child's name", 'error'); return; }
+  fetch('/api/kids/children', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: name, age: age, avatar_emoji: selectedAv })
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.success) {
+      toast(name + ' added!');
+      document.getElementById('mName').value = '';
+      document.getElementById('mAge').value  = '';
+      document.getElementById('miniForm').classList.remove('vis');
+      var c = d.child;
+      var rows = document.getElementById('childRows');
+      var note = rows.querySelector('.no-children-note');
+      if (note) note.remove();
+      var div = document.createElement('div');
+      div.className = 'child-row'; div.dataset.childId = c.id;
+      div.innerHTML = '<span class="cr-av">' + (c.avatar_emoji||'🧒') + '</span>' +
+        '<div class="cr-info"><div class="cr-name">' + c.name + (c.age ? ' · age '+c.age : '') + '</div>' +
+        '<div class="cr-prog" style="color:#7c3aed">Not enrolled</div></div>' +
+        '<div class="cr-action"><button class="cr-enroll-btn" onclick="enrollChild('+c.id+')"><i class="fas fa-plus"></i> Enrol</button></div>';
+      rows.appendChild(div);
+    } else { toast(d.message || 'Could not add child', 'error'); }
+  }).catch(function() { toast('Something went wrong', 'error'); });
+}
+</script>
+</body>
+</html>

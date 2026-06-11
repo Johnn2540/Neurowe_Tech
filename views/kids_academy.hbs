@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>{{title}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+:root{
+  --blue:#1a4fd6;--blue-d:#1340b0;
+  --kp:#7c3aed;--kpink:#db2777;--kamber:#d97706;
+  --g-kids:linear-gradient(135deg,#7c3aed,#db2777);
+  --ink:#0c1220;--slate:#5a6880;--ghost:#f5f7fd;--white:#fff;--mist:#e2e8f5;
+  --r-pill:999px;--r-lg:16px;--r-xl:22px;
+  --ease:cubic-bezier(.4,0,.2,1);--t:.24s var(--ease);--nav-h:64px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--ghost);color:var(--ink);overflow-x:hidden;font-size:15px;line-height:1.65}
+h1,h2,h3{font-family:'Fraunces',serif;line-height:1.1;letter-spacing:-.02em}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
+button,input{font-family:'Plus Jakarta Sans',sans-serif}
+.container{max-width:1280px;margin:0 auto;padding:0 24px}
+
+/* ── NAV ── */
+.navbar{position:sticky;top:0;z-index:200;height:var(--nav-h);background:rgba(12,18,32,.97);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.07)}
+.nav-inner{height:100%;max-width:1280px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:8px}
+.nav-brand{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px}
+.nav-brand .bm{width:30px;height:30px;background:var(--g-kids);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem;color:#fff;font-weight:800}
+.nav-brand em{font-style:italic;color:#f9a8d4}
+.nav-links{display:none;list-style:none;gap:2px;align-items:center;margin-left:12px}
+.nav-links a{padding:6px 12px;border-radius:8px;font-size:.82rem;font-weight:600;color:rgba(255,255,255,.55);transition:var(--t)}
+.nav-links a:hover,.nav-links a.cur{background:rgba(255,255,255,.07);color:#fff}
+.nav-links a.kids-link{color:#c4b5fd}
+.nav-links a.kids-link:hover,.nav-links a.kids-link.cur{background:rgba(124,58,237,.15);color:#c4b5fd}
+@media(min-width:768px){.nav-links{display:flex}}
+.nav-spacer{flex:1}
+.nav-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 18px;border-radius:var(--r-pill);font-size:.82rem;font-weight:700;transition:var(--t)}
+.nav-btn.primary{background:var(--g-kids);color:#fff;box-shadow:0 4px 18px rgba(124,58,237,.3)}
+.nav-btn.primary:hover{transform:translateY(-1px);box-shadow:0 8px 26px rgba(124,58,237,.42)}
+.nav-btn.ghost{border:1.5px solid rgba(255,255,255,.16);color:rgba(255,255,255,.7)}
+.nav-btn.ghost:hover{background:rgba(255,255,255,.07);color:#fff}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(168deg,#0a0618 0%,#12073a 55%,#1c0a4a 100%);padding:80px 0 76px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(124,58,237,.05) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
+.hero-blob{position:absolute;border-radius:50%;pointer-events:none}
+.hero-blob-1{width:520px;height:520px;background:radial-gradient(circle,rgba(124,58,237,.16) 0%,transparent 70%);top:-130px;right:-100px}
+.hero-blob-2{width:320px;height:320px;background:radial-gradient(circle,rgba(219,39,119,.1) 0%,transparent 70%);bottom:-60px;left:-50px}
+.hero-inner{position:relative;z-index:1;text-align:center}
+.hero-kicker{display:inline-flex;align-items:center;gap:8px;background:rgba(124,58,237,.18);border:1px solid rgba(124,58,237,.3);border-radius:var(--r-pill);padding:6px 16px;font-size:.68rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#c4b5fd;margin-bottom:20px}
+.kd{width:5px;height:5px;border-radius:50%;background:#c4b5fd;animation:dot-p 2s infinite}
+@keyframes dot-p{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(1.5)}}
+.hero h1{font-size:clamp(2.2rem,6vw,3.8rem);font-weight:700;color:#fff;margin-bottom:14px}
+.hero h1 em{font-style:italic;background:var(--g-kids);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-sub{font-size:clamp(.9rem,2.2vw,1.05rem);color:rgba(255,255,255,.54);max-width:520px;margin:0 auto 30px;line-height:1.78}
+.hero-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-h-primary{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--kp),#9d4edd);color:#fff;padding:13px 28px;border-radius:var(--r-pill);font-size:.9rem;font-weight:800;transition:var(--t);box-shadow:0 8px 28px rgba(124,58,237,.36)}
+.btn-h-primary:hover{transform:translateY(-2px);box-shadow:0 14px 38px rgba(124,58,237,.46)}
+.btn-h-ghost{display:inline-flex;align-items:center;gap:8px;border:2px solid rgba(255,255,255,.2);color:rgba(255,255,255,.72);padding:12px 26px;border-radius:var(--r-pill);font-size:.9rem;font-weight:700;transition:var(--t)}
+.btn-h-ghost:hover{border-color:rgba(255,255,255,.4);color:#fff;background:rgba(255,255,255,.05)}
+.hero-stats{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;margin-top:52px;padding-top:48px;border-top:1px solid rgba(255,255,255,.08)}
+.h-stat-val{font-family:'Fraunces',serif;font-size:2rem;font-weight:700;color:#fff;line-height:1}
+.h-stat-lbl{font-size:.7rem;color:rgba(255,255,255,.38);margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:.8px}
+
+/* ── COURSES ── */
+.courses-section{padding:68px 0 88px}
+.sec-head{text-align:center;margin-bottom:44px}
+.sec-kicker{display:inline-flex;align-items:center;gap:7px;background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.18);border-radius:var(--r-pill);padding:5px 14px;font-size:.67rem;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:var(--kp);margin-bottom:12px}
+.sec-kicker::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--kp)}
+.sec-head h2{font-size:clamp(1.7rem,4vw,2.4rem);font-weight:700;color:var(--ink);margin-bottom:8px}
+.sec-head p{color:var(--slate);max-width:480px;margin:0 auto;font-size:.93rem;line-height:1.72}
+.g-kids{background:var(--g-kids);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+.courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px}
+.course-card{background:#fff;border-radius:var(--r-xl);border:1px solid rgba(0,0,0,.07);overflow:hidden;transition:var(--t);box-shadow:0 2px 12px rgba(8,12,24,.05);display:flex;flex-direction:column}
+.course-card:hover{transform:translateY(-5px);box-shadow:0 18px 48px rgba(8,12,24,.1);border-color:rgba(124,58,237,.22)}
+.cc-thumb{position:relative;width:100%;padding-top:52%;background:#f3eeff;overflow:hidden;flex-shrink:0}
+.cc-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s var(--ease)}
+.course-card:hover .cc-thumb img{transform:scale(1.05)}
+.cc-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:3rem;opacity:.22}
+.cc-badge{position:absolute;top:10px;left:10px;padding:3px 10px;border-radius:var(--r-pill);font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.5px;backdrop-filter:blur(6px)}
+.cc-badge.free{background:rgba(5,150,105,.18);color:#059669;border:1px solid rgba(5,150,105,.22)}
+.cc-badge.paid{background:rgba(124,58,237,.18);color:var(--kp);border:1px solid rgba(124,58,237,.22)}
+.cc-body{padding:18px;flex:1;display:flex;flex-direction:column}
+.cc-level{display:inline-flex;align-items:center;gap:5px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px}
+.cc-level.beginner{color:#059669}.cc-level.intermediate{color:var(--kamber)}.cc-level.advanced{color:var(--kpink)}.cc-level.all{color:var(--blue)}
+.cc-title{font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:6px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cc-instr{font-size:.77rem;color:var(--slate);margin-bottom:10px;display:flex;align-items:center;gap:6px;flex:1}
+.cc-av{width:22px;height:22px;border-radius:50%;background:var(--g-kids);display:flex;align-items:center;justify-content:center;font-size:.65rem;color:#fff;font-weight:700;flex-shrink:0}
+.cc-foot{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid rgba(0,0,0,.06);margin-top:auto}
+.cc-price-free{font-size:.9rem;font-weight:800;color:#059669}
+.cc-price-paid{font-size:.9rem;font-weight:800;color:var(--kp)}
+.cc-enroll-btn{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--kp),#9d4edd);color:#fff;padding:7px 16px;border-radius:var(--r-pill);font-size:.78rem;font-weight:700;transition:var(--t);border:none;cursor:pointer}
+.cc-enroll-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,237,.32)}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:80px 24px;border:1.5px dashed rgba(124,58,237,.2);border-radius:var(--r-xl);background:#fff}
+.empty-icon{width:76px;height:76px;border-radius:50%;background:rgba(124,58,237,.07);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:2.2rem}
+.empty-state h3{font-size:1.15rem;font-weight:700;color:var(--ink);margin-bottom:8px}
+.empty-state p{color:var(--slate);font-size:.88rem;max-width:340px;margin:0 auto 22px;line-height:1.65}
+.btn-empty{display:inline-flex;align-items:center;gap:7px;background:var(--g-kids);color:#fff;padding:10px 24px;border-radius:var(--r-pill);font-size:.86rem;font-weight:700;transition:var(--t)}
+.btn-empty:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(124,58,237,.3)}
+
+/* ── ENROLL MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(8,12,24,.72);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{background:#fff;border-radius:var(--r-xl);padding:28px 26px;width:100%;max-width:440px;max-height:88vh;overflow-y:auto;transform:scale(.94) translateY(10px);transition:transform .26s var(--ease)}
+.modal-overlay.open .modal-box{transform:scale(1) translateY(0)}
+.modal-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px}
+.modal-head h3{font-size:1.1rem;font-weight:700;color:var(--ink)}
+.modal-x{background:none;border:none;color:var(--slate);font-size:1.2rem;cursor:pointer;padding:2px 6px;border-radius:6px;line-height:1;transition:var(--t)}
+.modal-x:hover{background:rgba(0,0,0,.06);color:var(--ink)}
+.modal-course-badge{background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.15);border-radius:8px;padding:9px 13px;font-size:.82rem;font-weight:600;color:var(--kp);margin-bottom:20px;line-height:1.4}
+.modal-label{display:block;font-size:.78rem;font-weight:700;color:var(--ink);margin-bottom:8px}
+.child-pick-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.child-opt{display:flex;align-items:center;gap:11px;padding:10px 13px;border-radius:10px;border:1.5px solid var(--mist);cursor:pointer;transition:var(--t);user-select:none}
+.child-opt:hover{border-color:rgba(124,58,237,.3);background:rgba(124,58,237,.03)}
+.child-opt.selected{border-color:var(--kp);background:rgba(124,58,237,.06)}
+.child-opt.is-enrolled{border-color:#059669;background:rgba(5,150,105,.04);cursor:default;opacity:.8}
+.ch-av{width:36px;height:36px;border-radius:50%;background:var(--g-kids);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.ch-name{font-weight:700;font-size:.88rem;color:var(--ink)}
+.ch-age{font-size:.72rem;color:var(--slate);margin-top:1px}
+.ch-enrolled-tag{margin-left:auto;font-size:.67rem;font-weight:800;color:#059669;background:rgba(5,150,105,.1);padding:3px 9px;border-radius:var(--r-pill)}
+.add-child-toggle{display:flex;align-items:center;gap:8px;font-size:.82rem;font-weight:700;color:var(--kp);background:none;border:none;cursor:pointer;padding:6px 0;transition:var(--t)}
+.add-child-toggle:hover{opacity:.75}
+.add-child-form{background:rgba(124,58,237,.03);border:1px solid rgba(124,58,237,.12);border-radius:10px;padding:14px;margin-top:10px;display:none}
+.add-child-form.vis{display:block}
+.kid-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.kid-row-1{margin-bottom:10px}
+.kid-inp{width:100%;border:1.5px solid var(--mist);border-radius:8px;padding:9px 12px;font-size:.83rem;transition:var(--t);color:var(--ink);background:#fff}
+.kid-inp:focus{outline:none;border-color:var(--kp);box-shadow:0 0 0 3px rgba(124,58,237,.08)}
+.av-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.av-opt{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.15rem;cursor:pointer;border:2px solid transparent;transition:var(--t)}
+.av-opt:hover{border-color:rgba(124,58,237,.3)}
+.av-opt.on{border-color:var(--kp);background:rgba(124,58,237,.08)}
+.save-child-btn{display:inline-flex;align-items:center;gap:6px;background:var(--g-kids);color:#fff;border:none;border-radius:var(--r-pill);padding:8px 18px;font-size:.82rem;font-weight:700;cursor:pointer;transition:var(--t)}
+.save-child-btn:hover{transform:translateY(-1px)}
+.modal-enroll-btn{width:100%;background:var(--g-kids);color:#fff;border:none;border-radius:var(--r-pill);padding:12px;font-size:.9rem;font-weight:800;cursor:pointer;transition:var(--t);margin-top:14px;display:flex;align-items:center;justify-content:center;gap:8px}
+.modal-enroll-btn:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(124,58,237,.32)}
+.modal-enroll-btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.no-auth{text-align:center;padding:10px 0 4px}
+.no-auth p{color:var(--slate);font-size:.86rem;margin-bottom:16px;line-height:1.65}
+.btn-login-modal{display:inline-flex;align-items:center;gap:8px;background:var(--g-kids);color:#fff;padding:10px 24px;border-radius:var(--r-pill);font-size:.86rem;font-weight:700;transition:var(--t)}
+.btn-login-modal:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(124,58,237,.32)}
+
+/* ── TOAST ── */
+#ka-toast{position:fixed;bottom:22px;right:22px;z-index:9999;display:flex;align-items:center;gap:10px;background:#0c1220;color:#fff;padding:11px 18px;border-radius:12px;font-size:.82rem;font-weight:600;box-shadow:0 8px 28px rgba(0,0,0,.32);transform:translateY(120%);opacity:0;transition:transform .3s var(--ease),opacity .28s}
+#ka-toast.show{transform:translateY(0);opacity:1}
+.toast-ok i{color:#34d399}
+.toast-err i{color:#f87171}
+
+/* ── FOOTER ── */
+.site-footer{background:#050810;color:rgba(255,255,255,.35);padding:24px 0;border-top:1px solid rgba(255,255,255,.05);text-align:center;font-size:.77rem}
+.site-footer a{color:rgba(255,255,255,.4);margin:0 8px;transition:color .18s}
+.site-footer a:hover{color:#fff}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand"><span class="bm">N</span>Neurowex<em>Tech</em></a>
+    <ul class="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/learn">Academy</a></li>
+      <li><a href="/kids-academy" class="kids-link cur">🎮 Kids</a></li>
+    </ul>
+    <div class="nav-spacer"></div>
+    {{#if isAuthenticated}}
+    <a href="/kids-academy/my-kids" class="nav-btn ghost"><i class="fas fa-child"></i> My Kids</a>
+    {{else}}
+    <a href="/login"   class="nav-btn ghost">Log In</a>
+    <a href="/sign_up" class="nav-btn primary">Sign Up Free</a>
+    {{/if}}
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-blob hero-blob-1"></div>
+  <div class="hero-blob hero-blob-2"></div>
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-kicker"><span class="kd"></span>NeurowexTech Kids Academy</div>
+      <h1>Where kids learn to <em>build &amp; create</em></h1>
+      <p class="hero-sub">Fun, age-appropriate coding courses for ages 6–17. Parents enrol, instructors guide, kids build real things.</p>
+      <div class="hero-actions">
+        <a href="#courses" class="btn-h-primary"><i class="fas fa-rocket"></i> Browse Courses</a>
+        {{#if isAuthenticated}}
+        <a href="/kids-academy/my-kids" class="btn-h-ghost"><i class="fas fa-chart-line"></i> Track Progress</a>
+        {{else}}
+        <a href="/sign_up" class="btn-h-ghost"><i class="fas fa-user-plus"></i> Create Account</a>
+        {{/if}}
+      </div>
+      <div class="hero-stats">
+        <div><div class="h-stat-val">{{totalCourses}}</div><div class="h-stat-lbl">Courses</div></div>
+        <div><div class="h-stat-val">{{freeCourses}}</div><div class="h-stat-lbl">Free</div></div>
+        <div><div class="h-stat-val">Ages 6–17</div><div class="h-stat-lbl">For kids</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COURSES -->
+<section class="courses-section" id="courses">
+  <div class="container">
+    <div class="sec-head">
+      <div class="sec-kicker">All Courses</div>
+      <h2>Pick a course for your <span class="g-kids">little coder</span></h2>
+      <p>Every course is designed for young learners — clear steps, fun projects, and expert instructor support all the way.</p>
+    </div>
+
+    {{#if courses.length}}
+    <div class="courses-grid">
+      {{#each courses}}
+      <div class="course-card">
+        <div class="cc-thumb">
+          {{#if image_url}}<img src="{{image_url}}" alt="{{title}}" loading="lazy"/>
+          {{else}}<div class="cc-ph">🎮</div>{{/if}}
+          {{#if isFree}}<span class="cc-badge free">Free</span>
+          {{else}}<span class="cc-badge paid">{{priceLabel}}</span>{{/if}}
+        </div>
+        <div class="cc-body">
+          <div class="cc-level {{levelLower}}">
+            {{#if (eq level "Beginner")}}<i class="fas fa-seedling"></i>
+            {{else if (eq level "Intermediate")}}<i class="fas fa-star-half-alt"></i>
+            {{else if (eq level "Advanced")}}<i class="fas fa-bolt"></i>
+            {{else}}<i class="fas fa-layer-group"></i>{{/if}}
+            {{level}}
+          </div>
+          <div class="cc-title">{{title}}</div>
+          <div class="cc-instr"><span class="cc-av">{{firstChar instructor_name}}</span> {{instructor_name}}</div>
+          <div class="cc-foot">
+            {{#if isFree}}<span class="cc-price-free">Free</span>
+            {{else}}<span class="cc-price-paid">{{priceLabel}}</span>{{/if}}
+            <button class="cc-enroll-btn" onclick="openEnroll({{this.id}},'{{title}}')">
+              <i class="fas fa-plus"></i> Enrol a Child
+            </button>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+    {{else}}
+    <div class="empty-state">
+      <div class="empty-icon">🚀</div>
+      <h3>Kids courses coming soon!</h3>
+      <p>Our instructors are building exciting coding courses for young learners. Check back soon or browse our full academy.</p>
+      <a href="/learn" class="btn-empty"><i class="fas fa-graduation-cap"></i> Browse All Courses</a>
+    </div>
+    {{/if}}
+  </div>
+</section>
+
+<!-- ENROLL MODAL -->
+<div class="modal-overlay" id="enrollModal" onclick="handleOverlayClick(event)">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>🚀 Enrol a Child</h3>
+      <button class="modal-x" onclick="closeEnroll()" aria-label="Close"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-course-badge" id="modalCourseTitle"></div>
+
+    {{#if isAuthenticated}}
+    <label class="modal-label">Choose which child to enrol:</label>
+    <div class="child-pick-list" id="childList"></div>
+    <button class="add-child-toggle" onclick="toggleAddForm()"><i class="fas fa-plus-circle"></i> Add a new child profile</button>
+    <div class="add-child-form" id="addChildForm">
+      <div class="kid-row-1">
+        <label class="modal-label" style="margin-bottom:5px">Child's name *</label>
+        <input class="kid-inp" id="newChildName" placeholder="e.g. Emma" autocomplete="off"/>
+      </div>
+      <div class="kid-row">
+        <div>
+          <label class="modal-label" style="margin-bottom:5px">Age</label>
+          <input class="kid-inp" id="newChildAge" type="number" min="4" max="17" placeholder="10"/>
+        </div>
+        <div>
+          <label class="modal-label" style="margin-bottom:5px">Avatar</label>
+          <div class="av-row" id="avRow">
+            <span class="av-opt on" data-emoji="🧒" onclick="pickAv(this)">🧒</span>
+            <span class="av-opt" data-emoji="👦" onclick="pickAv(this)">👦</span>
+            <span class="av-opt" data-emoji="👧" onclick="pickAv(this)">👧</span>
+            <span class="av-opt" data-emoji="🧑" onclick="pickAv(this)">🧑</span>
+            <span class="av-opt" data-emoji="🦸" onclick="pickAv(this)">🦸</span>
+            <span class="av-opt" data-emoji="🧙" onclick="pickAv(this)">🧙</span>
+          </div>
+        </div>
+      </div>
+      <button class="save-child-btn" onclick="saveChild()"><i class="fas fa-check"></i> Save</button>
+    </div>
+    <button class="modal-enroll-btn" id="enrollBtn" onclick="doEnroll()" disabled>
+      <i class="fas fa-rocket"></i> Enrol Now
+    </button>
+    {{else}}
+    <div class="no-auth">
+      <p>Please log in to enrol a child. It takes less than a minute to create a free account!</p>
+      <a href="/login" class="btn-login-modal"><i class="fas fa-sign-in-alt"></i> Log In to Continue</a>
+    </div>
+    {{/if}}
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>© {{currentYear}} NeurowexTech &nbsp;·&nbsp;
+      <a href="/">Home</a>
+      <a href="/learn">Academy</a>
+      <a href="/kids-academy">Kids</a>
+      <a href="/kids-academy/my-kids">My Kids</a>
+      <a href="/contact">Contact</a>
+    </p>
+  </div>
+</footer>
+
+<div id="ka-toast"><i id="toast-ico" class="fas fa-check-circle"></i><span id="toast-msg">Done!</span></div>
+
+{{> widget}}
+
+<script>
+var CURRENT_COURSE_ID = null;
+var SELECTED_CHILD    = null;
+var SELECTED_AVATAR   = '🧒';
+var CHILDREN          = {{{json parentChildren}}};
+
+function openEnroll(courseId, title) {
+  CURRENT_COURSE_ID = courseId;
+  SELECTED_CHILD    = null;
+  document.getElementById('modalCourseTitle').textContent = title;
+  {{#if isAuthenticated}}
+  renderChildren();
+  document.getElementById('addChildForm').classList.remove('vis');
+  document.getElementById('enrollBtn').disabled = true;
+  {{/if}}
+  document.getElementById('enrollModal').classList.add('open');
+}
+function closeEnroll() {
+  document.getElementById('enrollModal').classList.remove('open');
+}
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('enrollModal')) closeEnroll();
+}
+
+function renderChildren() {
+  var el = document.getElementById('childList');
+  if (!el) return;
+  if (!CHILDREN.length) {
+    el.innerHTML = '<p style="font-size:.82rem;color:#5a6880;padding:4px 0 6px">No children yet — add one below to enrol!</p>';
+    return;
+  }
+  el.innerHTML = CHILDREN.map(function(c) {
+    return '<div class="child-opt" data-id="' + c.id + '" onclick="selectChild(this,' + c.id + ')">' +
+      '<span class="ch-av">' + (c.avatar_emoji || '🧒') + '</span>' +
+      '<div><div class="ch-name">' + esc(c.name) + '</div>' +
+      (c.age ? '<div class="ch-age">Age ' + c.age + '</div>' : '') + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function selectChild(el, id) {
+  if (el.classList.contains('is-enrolled')) return;
+  document.querySelectorAll('.child-opt').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+  SELECTED_CHILD = id;
+  document.getElementById('enrollBtn').disabled = false;
+}
+
+function toggleAddForm() {
+  document.getElementById('addChildForm').classList.toggle('vis');
+}
+function pickAv(el) {
+  document.querySelectorAll('.av-opt').forEach(function(o) { o.classList.remove('on'); });
+  el.classList.add('on');
+  SELECTED_AVATAR = el.dataset.emoji;
+}
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function toast(msg, type) {
+  var el  = document.getElementById('ka-toast');
+  var ico = document.getElementById('toast-ico');
+  document.getElementById('toast-msg').textContent = msg;
+  el.className = 'show ' + (type === 'error' ? 'toast-err' : 'toast-ok');
+  ico.className = type === 'error' ? 'fas fa-times-circle' : 'fas fa-check-circle';
+  setTimeout(function() { el.className = ''; }, 3400);
+}
+
+function saveChild() {
+  var name = (document.getElementById('newChildName').value || '').trim();
+  var age  = parseInt(document.getElementById('newChildAge').value) || null;
+  if (!name) { toast("Please enter the child's name", 'error'); return; }
+  fetch('/api/kids/children', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: name, age: age, avatar_emoji: SELECTED_AVATAR })
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.success) {
+      CHILDREN.push(d.child);
+      renderChildren();
+      document.getElementById('newChildName').value = '';
+      document.getElementById('newChildAge').value  = '';
+      document.getElementById('addChildForm').classList.remove('vis');
+      toast(name + ' added!');
+    } else { toast(d.message || 'Could not add child', 'error'); }
+  }).catch(function() { toast('Something went wrong', 'error'); });
+}
+
+function doEnroll() {
+  if (!SELECTED_CHILD || !CURRENT_COURSE_ID) return;
+  var btn = document.getElementById('enrollBtn');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enrolling…';
+  fetch('/api/kids/enroll', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ childId: SELECTED_CHILD, courseId: CURRENT_COURSE_ID })
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.success) {
+      toast(d.message || 'Enrolled!');
+      closeEnroll();
+      if (d.redirect) setTimeout(function() { window.location.href = d.redirect; }, 900);
+    } else {
+      toast(d.message || 'Enrollment failed', 'error');
+      btn.disabled = false; btn.innerHTML = '<i class="fas fa-rocket"></i> Enrol Now';
+    }
+  }).catch(function() {
+    toast('Something went wrong', 'error');
+    btn.disabled = false; btn.innerHTML = '<i class="fas fa-rocket"></i> Enrol Now';
+  });
+}
+</script>
+</body>
+</html>

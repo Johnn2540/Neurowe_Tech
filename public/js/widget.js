@@ -92,24 +92,32 @@
 
   // ─── Live notification messages ──────────────────────────────────────────────
   var LIVE_NOTIFS = [
-    { icon: '⚡', text: 'Support Available 24/7' },
-    { icon: '🔔', text: '3 people enrolled in courses today' },
-    { icon: '✅', text: 'Basic websites from KSh 13,000' },
-    { icon: '🌍', text: 'Serving clients across 20+ countries' },
-    { icon: '⭐', text: '4.9 / 5 star rating · 300+ happy clients' },
-    { icon: '🚀', text: '500+ projects delivered successfully' },
-    { icon: '💬', text: 'We typically reply in under 2 hours' },
+    { icon: '🕐', text: '24/7 support — always here for you' },
+    { icon: '✅', text: 'Websites from KSh 13,000 · no hidden fees' },
+    { icon: '⚡', text: 'Websites built in just 1–2 weeks' },
+    { icon: '📱', text: 'Free consultation — book yours today' },
+    { icon: '🌍', text: 'Trusted by clients in 20+ countries' },
+    { icon: '⭐', text: '4.9 / 5 rating · 300+ satisfied clients' },
+    { icon: '🚀', text: '500+ successful projects delivered' },
+    { icon: '💬', text: 'Average reply time: under 2 hours' },
     { icon: '🎓', text: 'Free courses — start learning today' },
-    { icon: '💡', text: 'Get a free quote in 30 minutes' },
-    { icon: '🏆', text: "Kenya's leading digital agency" },
+    { icon: '🔒', text: 'Secure, fast & SEO-optimised websites' },
+    { icon: '📈', text: 'Sites that rank on Google — built-in SEO' },
+    { icon: '💳', text: 'Flexible payments — 50% now, 50% on delivery' },
+    { icon: '🏆', text: "Kenya's top-rated digital agency" },
+    { icon: '🎁', text: 'Student & startup discounts available' },
+    { icon: '🤝', text: 'Post-launch support in every package' },
   ];
 
   var TEASER_MSGS = [
     '👋 ' + timeGreeting() + '! A basic website is just KSh 13,000. Ask me anything!',
     '🎓 Free Academy courses available — explore them now!',
     '⚡ We build websites in as little as 1–2 weeks!',
-    '💬 Hi! Johnston and the team are online. What can we help with?',
-    '🌍 We\'ve served 300+ clients in 20+ countries. Let\'s help you too!',
+    '💬 Our team is online right now — how can we help?',
+    '🌍 Trusted by 300+ clients across 20+ countries. Let\'s work together!',
+    '🔒 Secure, SEO-optimised websites — built for results!',
+    '📈 Free project quote — we respond in under 2 hours!',
+    '🕐 24/7 support — we\'re always here for you.',
   ];
 
   // ─── Intent detection ────────────────────────────────────────────────────────
@@ -135,6 +143,9 @@
     { keys: ['ai','artificial intelligence','machine learning','chatbot','automation','gpt','openai'], intent: 'ai' },
     { keys: ['graphic','logo','brand','branding','identity','flyer','poster','banner','design'], intent: 'graphic' },
     { keys: ['faq','question','help','explain','tell me','what is','how do','can i','do you'], intent: 'faq' },
+    { keys: ['compare','difference between','which plan','best plan','which package','versus','suitable for me','right for me','best for me','which option','which is better','what should i choose'], intent: 'compare' },
+    { keys: ['get started','start a project','begin','i need a website','build my site','need an app','want a website','create my website','launch my','new project','how do i start','kick off','ready to start','i want to build','i want to create','let\'s start'], intent: 'getstarted' },
+    { keys: ['rank','google','search engine','serp','keyword','backlink','organic','on-page','technical seo','local seo','seo audit'], intent: 'seo' },
   ];
 
   function detectIntent(q) {
@@ -209,7 +220,7 @@
     pricing:      ['📞 WhatsApp us',      '⏱️ How long?',         '💳 Payment options'],
     courses:      ['🎓 Free courses?',    '📜 Certificates?',     '🔗 Browse /learn'],
     contact:      ['💬 WhatsApp now',     '📧 Send email',        '📋 Contact form'],
-    team:         ['👨‍💼 Johnston J',    '🛠️ Our services',      '📂 Portfolio'],
+    team:         ['👨‍💼 Our founder',    '🛠️ Our services',      '📂 Portfolio'],
     web:          ['💰 Basic site cost?', '⏱️ Timeline',          '🛒 E-commerce?'],
     mobile:       ['💰 App pricing',      '⏱️ How long?',         '📱 Cross-platform?'],
     ecommerce:    ['💳 M-Pesa support?',  '💰 Pricing',           '⏱️ Timeline'],
@@ -224,6 +235,9 @@
     graphic:      ['💰 Graphic pricing',  '📂 Our portfolio',     '📬 Get a quote'],
     location:     ['🌍 International?',   '📞 WhatsApp us',       '📬 Contact form'],
     portfolio:    ['🛠️ Our services',     '💰 Pricing',           '📬 Get a quote'],
+    compare:      ['🚀 Get started',      '📬 Get a quote',       '📞 WhatsApp us'],
+    getstarted:   ['💬 WhatsApp now',     '📬 Fill contact form', '💰 Pricing'],
+    seo:          ['📈 SEO pricing',      '⏱️ Timeline',          '📬 Get a quote'],
   };
 
   function getFollowups(intent) {
@@ -281,15 +295,15 @@
         if (pg === 'services')  contextLine = '\n\nI see you\'re checking out our **services** — I can answer any pricing or timeline questions! 🛠️';
         if (pg === 'contact')   contextLine = '\n\nReady to get in touch? I can help you before you send that message! 📬';
         if (pg === 'portfolio') contextLine = '\n\nBrowsing our **portfolio**? I can tell you more about any of our projects! 📂';
-        txt = timeGreeting() + '! 👋 I\'m NeurowexTech\'s assistant.\n\n' +
-              'I can help you with:\n• **Services & pricing** — websites from KSh 13,000\n• **Academy** — courses & enrolment\n• **Team** — meet Johnston J & the crew\n• **Contact** — reach us directly' +
-              contextLine + '\n\nWhat would you like to know?';
+        txt = timeGreeting() + '! 👋 Great to have you here.\n\n' +
+              'I\'m the NeurowexTech support assistant — happy to help with anything!\n\n• **Pricing & services** — websites start at just KSh 13,000\n• **Academy** — find a course that works for you\n• **Our team** — based right here in Kenya 🇰🇪\n• **Get in touch** — we\'re always a message away' +
+              contextLine + '\n\nWhat\'s on your mind?';
         return { text: txt, intent: intent };
       }
 
       case 'services': {
         var svcs = d.services || [];
-        if (!svcs.length) return { text: 'We build web apps, mobile apps, e-commerce stores, and offer design & digital marketing — starting from KSh 13,000.\n\n[View all services →](/services) | [Get a quote →](/contact)', intent: intent };
+        if (!svcs.length) return { text: 'We cover a lot of ground — web apps, mobile apps, e-commerce stores, graphic design, digital marketing, and AI solutions. Prices start from as low as KSh 13,000!\n\n[See all our services →](/services) | [Get a free quote →](/contact)', intent: intent };
         var out = '🛠️ **Our Services:**\n\n';
         svcs.forEach(function (s) {
           out += '🔹 **' + s.name + '**';
@@ -302,7 +316,7 @@
 
       case 'pricing': {
         var plans = d.pricing || [];
-        if (!plans.length) return { text: '💰 Pricing starts from **KSh 13,000** for a basic website. [Contact us →](/contact) for a custom quote.', intent: intent };
+        if (!plans.length) return { text: '💰 Good news — we keep our prices accessible! A basic website starts at just **KSh 13,000**. [Chat with us →](/contact) and we\'ll put together a quote that fits your budget.', intent: intent };
         var out = '💰 **Our Pricing:**\n\n';
         plans.forEach(function (p) {
           var price = p.price || p.base_price || 'Custom';
@@ -316,7 +330,7 @@
 
       case 'courses': {
         var cs = d.courses || [];
-        if (!cs.length) return { text: '🎓 NeurowexTech Academy offers courses in web dev, mobile, design, marketing & more — some free!\n\n[Browse all →](/learn) | [Sign up free →](/sign_up)', intent: intent };
+        if (!cs.length) return { text: '🎓 We\'ve got courses on web development, mobile apps, design, digital marketing and more — and yes, some of them are completely free! Whether you\'re just starting out or leveling up, there\'s something for you.\n\n[Browse all courses →](/learn) | [Create a free account →](/sign_up)', intent: intent };
         var out = '🎓 **NeurowexTech Academy:**\n\n';
         cs.slice(0, 8).forEach(function (c) {
           out += '📚 **' + c.title + '**';
@@ -336,7 +350,7 @@
         if (c.phone)    out += '📞 **Phone:** ' + c.phone + '\n';
         if (c.whatsapp) out += '💬 **WhatsApp:** [Chat now](https://wa.me/' + c.whatsapp.replace(/\D/g,'') + ')\n';
         if (c.email)    out += '📧 **Email:** ' + c.email + '\n';
-        out += '\n🕐 We typically reply **within 2 hours** during business hours.\n\n[Fill contact form →](/contact)';
+        out += '\n🕐 We\'re pretty quick — we usually reply **within 2 hours** during business hours!\n\n[Fill the contact form →](/contact)';
         return { text: out, intent: intent };
       }
 
@@ -347,51 +361,51 @@
           out += '**' + m.name + '** — *' + (m.role || 'Team Member') + '*\n';
           if (m.bio) out += (m.bio.length > 120 ? m.bio.slice(0, 120) + '…' : m.bio) + '\n\n';
         });
-        out += '[Meet the full team →](/about)';
+        out += 'We\'re a tight-knit group and we love what we do! [Meet everyone →](/about)';
         return { text: out, intent: intent };
       }
 
       case 'portfolio':
-        return { text: '🖥️ We\'ve delivered **500+ projects** across e-commerce, fintech, healthtech, and EdTech — for clients in Kenya and globally.\n\nHighlights: FitSync, ChatSphere, TaskFlow, MediBook, ShopEase, EduLearn & more.\n\n[View full portfolio →](/portfolio)', intent: intent };
+        return { text: '🖥️ We\'re really proud of what we\'ve built together with our clients! Over **500 projects** delivered across e-commerce, fintech, healthtech, and EdTech — from Kenya to clients all over the world.\n\nA few highlights: FitSync, ChatSphere, TaskFlow, MediBook, ShopEase, EduLearn & more!\n\n[Check out our full portfolio →](/portfolio)', intent: intent };
 
       case 'location':
-        return { text: '📍 NeurowexTech is headquartered in **Kenya** 🇰🇪 and serves clients in **20+ countries** worldwide.\n\n[Contact us →](/contact) to schedule a call, virtual meeting, or site visit.', intent: intent };
+        return { text: '📍 We\'re based in **Kenya** 🇰🇪 — but distance is never a barrier for us! We\'ve worked with clients across **20+ countries** and we\'re very comfortable collaborating remotely.\n\nFeel free to [reach out →](/contact) and we can set up a call or virtual meeting anytime.', intent: intent };
 
       case 'web':
-        return { text: '🌐 **Web Development** is our core service:\n• Basic website — from **KSh 13,000** (1–2 weeks)\n• Business site with CMS — from **KSh 35,000** (2–4 weeks)\n• Custom web app — from **KSh 60,000** (4–8 weeks)\n• React, Next.js, Node.js, WordPress & more\n\n[Get a quote →](/contact) | [See examples →](/portfolio)', intent: intent };
+        return { text: '🌐 Web development is honestly what we love most! Here\'s a quick rundown:\n\n• **Basic website** — from **KSh 13,000** · ready in 1–2 weeks\n• **Business site with CMS** — from **KSh 35,000** · 2–4 weeks\n• **Custom web app** — from **KSh 60,000** · 4–8 weeks\n\nWe work with React, Next.js, Node.js, WordPress and more — whatever fits your project best.\n\n[Get a quote →](/contact) | [See our work →](/portfolio)', intent: intent };
 
       case 'mobile':
-        return { text: '📱 **Mobile App Development:**\n• Flutter (cross-platform iOS & Android) — from **KSh 50,000**\n• React Native — from **KSh 50,000**\n• Delivery: 6–12 weeks depending on complexity\n\n[Get a quote →](/contact)', intent: intent };
+        return { text: '📱 We\'d love to help bring your app idea to life! We build cross-platform apps using Flutter and React Native — so it works great on both iOS and Android without double the cost.\n\n• **Flutter or React Native** — from **KSh 50,000**\n• Most apps are ready in **6–12 weeks** depending on complexity\n\n[Let\'s talk about your idea →](/contact)', intent: intent };
 
       case 'ecommerce':
-        return { text: '🛒 **E-commerce Solutions** from **KSh 45,000:**\n• M-Pesa, card & PayPal integration\n• Product catalogue & inventory management\n• Order tracking & customer dashboard\n• Mobile-optimised checkout\n• Delivery: 3–6 weeks\n\n[Get a quote →](/contact)', intent: intent };
+        return { text: '🛒 We\'ll set you up with a store that actually converts! Here\'s what you get from **KSh 45,000:**\n\n• M-Pesa, card & PayPal payments built right in\n• Product catalogue & inventory management\n• Order tracking & customer dashboard\n• A checkout that looks and feels great on mobile\n• Up and running in **3–6 weeks**\n\n[Get a quote →](/contact)', intent: intent };
 
       case 'marketing':
-        return { text: '📈 **Digital Marketing & SEO** from **KSh 12,000/month:**\n• Search Engine Optimisation (SEO)\n• Google Ads & social media management\n• Content marketing & email campaigns\n• Monthly reporting & analytics\n\n[Learn more →](/services) | [Get a quote →](/contact)', intent: intent };
+        return { text: '📈 Let\'s get your brand seen! Our digital marketing packages start from **KSh 12,000/month** and include:\n\n• SEO — so you show up on Google\n• Google Ads & social media management\n• Content marketing & email campaigns\n• Monthly reports so you always know what\'s working\n\n[Learn more →](/services) | [Get a quote →](/contact)', intent: intent };
 
       case 'timeline':
-        return { text: '⏱️ **Typical project timelines:**\n• Basic website — **1–2 weeks**\n• Business site with CMS — **2–4 weeks**\n• E-commerce store — **3–6 weeks**\n• Custom web app — **4–8 weeks**\n• Mobile app — **6–12 weeks**\n\nTimeline depends on scope and how fast you provide feedback. Urgent delivery is possible — [ask us →](/contact)', intent: intent };
+        return { text: '⏱️ Here\'s a rough idea of how long things typically take:\n\n• **Basic website** — 1–2 weeks\n• **Business site with CMS** — 2–4 weeks\n• **E-commerce store** — 3–6 weeks\n• **Custom web app** — 4–8 weeks\n• **Mobile app** — 6–12 weeks\n\nTiming also depends on how quickly you\'re able to provide feedback and content — we\'ll always be upfront if anything might shift. Need it done faster? Just [ask us →](/contact) and we\'ll see what we can do!', intent: intent };
 
       case 'support':
-        return { text: '🛡️ **Post-launch support:**\n• All packages: at least **1 month free support** included\n• Extended maintenance plans available\n• Bug fixes, updates & hosting guidance\n• Response within 24 hours guaranteed\n\n[Contact us for a support plan →](/contact)', intent: intent };
+        return { text: '🛡️ We don\'t just hand things over and disappear — we stay with you! Every package includes at least **1 month of free support** after launch.\n\n• Ongoing maintenance plans available if you want more coverage\n• Bug fixes, updates & hosting help — we\'ve got you\n• We\'ll always get back to you **within 24 hours**\n\n[Talk to us about a support plan →](/contact)', intent: intent };
 
       case 'payment':
-        return { text: '💳 **Payment options:**\n• **M-Pesa** (till number available)\n• Bank transfer (KCB, Equity, NCBA)\n• PayPal & Wise for international clients\n• **50% upfront + 50% on delivery**\n• Milestone billing for larger projects\n\n[Request an invoice →](/contact)', intent: intent };
+        return { text: '💳 We try to make paying as easy as possible! Here\'s how it works:\n\n• **M-Pesa** — till number available, super convenient\n• Bank transfer — KCB, Equity, NCBA\n• PayPal & Wise — for our international clients\n• **50% upfront, 50% on delivery** — no surprises\n• Milestone payments available for larger projects\n\n[Request an invoice →](/contact)', intent: intent };
 
       case 'discount':
-        return { text: '🎁 **Special offers & discounts:**\n• Student / recent graduate discount — ask us!\n• Referral discount — refer a client, get KSh 5,000 off your next project\n• Bundle deals — combine services for savings\n• Seasonal promotions — follow us or ask for current deals\n\n[Ask for a personalised offer →](/contact)', intent: intent };
+        return { text: '🎁 We love making it work for people! Here are some ways you could save:\n\n• **Student/graduate discount** — just let us know, we\'re happy to help\n• **Referral bonus** — send a client our way and we\'ll knock KSh 5,000 off your next project\n• **Bundle deals** — combine services and we\'ll sort you out\n• **Seasonal promos** — follow us or just ask what\'s on!\n\n[Ask about a deal →](/contact)', intent: intent };
 
       case 'testimonials':
-        return { text: '⭐ **Client reviews:**\n\n"NeurowexTech delivered our MVP in 5 weeks. Incredibly responsive and talented." — *John S., TechStartup Inc.*\n\n"Our e-commerce sales tripled after the redesign. Highly recommended!" — *Sarah C., ShopEase*\n\nRating: **4.9 / 5** · **300+ happy clients** · **20+ countries**\n\n[See full portfolio →](/portfolio)', intent: intent };
+        return { text: '⭐ We really value the trust our clients put in us — here\'s what a couple of them had to say:\n\n*"NeurowexTech delivered our MVP in 5 weeks. Incredibly responsive and talented."* — John S., TechStartup Inc.\n\n*"Our e-commerce sales tripled after the redesign. Highly recommended!"* — Sarah C., ShopEase\n\nWe\'re sitting at **4.9 / 5** · **300+ happy clients** · **20+ countries** 😊\n\n[See our portfolio →](/portfolio)', intent: intent };
 
       case 'urgent':
-        return { text: '🚨 **Need something urgently?**\n\nThe fastest way to reach us is:\n\n💬 **WhatsApp:** [Message Johnston directly](https://wa.me/' + ((d.contact || {}).whatsapp || FALLBACK.contact.whatsapp).replace(/\D/g,'') + ')\n📞 **Call:** ' + ((d.contact || {}).phone || FALLBACK.contact.phone) + '\n\nWe offer **rush delivery** for select projects. Let us know your deadline and we\'ll tell you if we can hit it!', intent: intent };
+        return { text: '🚨 **We hear you — let\'s move fast!**\n\nThe quickest way to reach us right now:\n\n💬 **WhatsApp:** [Message our team now](https://wa.me/' + ((d.contact || {}).whatsapp || FALLBACK.contact.whatsapp).replace(/\D/g,'') + ')\n📞 **Call:** ' + ((d.contact || {}).phone || FALLBACK.contact.phone) + '\n\nWe do offer **rush delivery** for select projects. Just share your deadline and we\'ll be straight with you about whether we can make it!', intent: intent };
 
       case 'ai':
-        return { text: '🤖 **AI Solutions** from **KSh 60,000:**\n• Custom AI chatbots & virtual assistants\n• Business process automation\n• AI-powered data analytics\n• OpenAI / Claude API integrations\n• Machine learning model deployment\n\n[Get an AI consultation →](/contact)', intent: intent };
+        return { text: '🤖 AI is genuinely exciting — and we\'re glad you asked! Here\'s what we can build for you, starting from **KSh 60,000:**\n\n• Custom AI chatbots & virtual assistants (like this one!)\n• Automating repetitive business processes\n• AI-powered analytics to make sense of your data\n• OpenAI / Claude API integrations\n• Machine learning model deployment\n\n[Book a free AI consultation →](/contact)', intent: intent };
 
       case 'graphic':
-        return { text: '🎨 **Graphic Design** from **KSh 8,000:**\n• Logo & brand identity\n• Social media graphics\n• Flyers, posters & banners\n• Pitch deck design\n• Packaging design\n\nFast turnaround — most jobs done in 3–5 days.\n\n[Get a quote →](/contact)', intent: intent };
+        return { text: '🎨 Great design makes such a difference! We handle it all, starting from **KSh 8,000:**\n\n• Logo & brand identity\n• Social media graphics\n• Flyers, posters & banners\n• Pitch decks\n• Packaging design\n\nWe work fast too — most jobs are wrapped up in **3–5 days**.\n\n[Get a quote →](/contact)', intent: intent };
 
       case 'faq': {
         var faqs = d.faqs || [];
@@ -404,12 +418,26 @@
           if (topScore >= 1 && bestFaq) return { text: '**' + bestFaq.question + '**\n\n' + bestFaq.answer, intent: intent };
         }
         var c2 = d.contact || {};
-        return { text: 'Great question! Here\'s what I can help with:\n\n• **Pricing** — from KSh 13,000\n• **Services** — web, mobile, AI & more\n• **Academy** — courses & certificates\n• **Team** — Johnston J & the crew\n• **Portfolio** — 500+ projects\n\n' + (c2.email ? 'Or email **' + c2.email + '** for a personal reply 😊' : '[Contact us →](/contact) for a personal reply'), intent: intent };
+        return { text: 'Happy to help! Here\'s what I can answer for you:\n\n• **Pricing** — websites from KSh 13,000\n• **Services** — web, mobile, AI & more\n• **Academy** — courses & certificates\n• **Compare plans** — find the right fit\n• **Portfolio** — 500+ projects delivered\n\n' + (c2.email ? 'Or just email us at **' + c2.email + '** and we\'ll reply personally 😊' : '[Contact us →](/contact) and we\'ll get back to you personally'), intent: intent };
+      }
+
+      case 'compare': {
+        var wa2 = ((d.contact || {}).whatsapp || FALLBACK.contact.whatsapp).replace(/\D/g,'');
+        return { text: '📊 **Which package is right for you?**\n\n🟢 **Basic — KSh 13,000**\nBest for: personal sites, portfolios, small businesses\n  ✓ 3–5 pages · contact form · mobile-ready · 2 weeks\n\n🔵 **Business — KSh 35,000**\nBest for: growing businesses needing a CMS & blog\n  ✓ Up to 10 pages · edit your own content · SEO · WhatsApp\n\n🟠 **E-commerce — KSh 45,000**\nBest for: selling products or services online\n  ✓ M-Pesa + card payments · product catalogue · order tracking\n\n🔴 **Enterprise — Custom quote**\nBest for: large-scale apps, custom integrations, SaaS\n\n💡 Not sure? [WhatsApp us](https://wa.me/' + wa2 + ') — we\'ll recommend the right fit in minutes!', intent: intent };
+      }
+
+      case 'getstarted': {
+        var wa3 = ((d.contact || {}).whatsapp || FALLBACK.contact.whatsapp).replace(/\D/g,'');
+        return { text: '🚀 **Let\'s build something great!**\n\nHere\'s how it works:\n\n1️⃣ **Tell us what you need** — website, app, design?\n2️⃣ **Free quote within 2 hours** — no obligation\n3️⃣ **Agree on scope & timeline** — no surprises\n4️⃣ **We build, you review** — staged delivery\n5️⃣ **Launch + support** — 1 month included\n\n💳 Pay **50% now, 50% on delivery** · M-Pesa accepted\n\n👇 **Pick the fastest path:**\n💬 [WhatsApp us now](https://wa.me/' + wa3 + ') · [Fill our form →](/contact)', intent: intent };
+      }
+
+      case 'seo': {
+        return { text: '📈 Want to actually show up on Google? Here\'s what our SEO service covers:\n\n  ✓ Full site audit — we\'ll find exactly what\'s holding you back\n  ✓ Keyword research & strategy\n  ✓ On-page optimisation (titles, meta, headings, schema)\n  ✓ Technical SEO — speed, Core Web Vitals, mobile\n  ✓ Local SEO & Google Business Profile\n  ✓ Backlink building\n  ✓ Monthly ranking reports so you can track progress\n\n**Starting from KSh 12,000/month.** By the way — every website we build is already SEO-ready from day one.\n\n[Get a free SEO audit →](/contact) | [Learn more →](/services)', intent: intent };
       }
 
       default: {
         var c3 = d.contact || {};
-        return { text: 'I didn\'t quite catch that! 😊 Try asking me about:\n\n• **"How much is a basic website?"**\n• **"Who is the founder?"**\n• **"What courses do you offer?"**\n• **"How do I contact NeurowexTech?"**\n\n' + (c3.email ? 'Or reach us at **' + c3.email + '** — happy to help!' : '[Contact us →](/contact) for a personal reply'), intent: 'fallback' };
+        return { text: 'Hmm, I\'m not quite sure I caught that — sorry about that! 😊 Here are some things you could try asking:\n\n• **"How much is a basic website?"**\n• **"What services do you offer?"**\n• **"Compare your pricing plans"**\n• **"How do I get started?"**\n\n' + (c3.email ? 'Or just drop us an email at **' + c3.email + '** and we\'ll sort you out personally!' : '[Contact us →](/contact) and we\'ll get back to you personally.'), intent: 'fallback' };
       }
     }
   }
@@ -749,14 +777,14 @@
     /* live activity notification */
     '<div class="nw-notif" id="nwNotif">',
       '<span class="nw-notif-icon" id="nwNotifIcon">⚡</span>',
-      '<span class="nw-notif-text" id="nwNotifText">Johnston is online right now</span>',
+      '<span class="nw-notif-text" id="nwNotifText">24/7 support — always here for you</span>',
     '</div>',
 
     /* teaser bubble */
     '<div class="nw-teaser" id="nwTeaser">',
       '<div class="nw-teaser-av">🤖</div>',
       '<div class="nw-teaser-text">',
-        '<span class="nw-teaser-name">NeurowexTech · Johnston J</span>',
+        '<span class="nw-teaser-name">NeurowexTech · AI Support</span>',
         '<span class="nw-teaser-msg" id="nwTeaserMsg">👋 Hi! A basic website is just KSh 13,000. Ask me anything!</span>',
       '</div>',
       '<button class="nw-teaser-close" id="nwTeaserClose" aria-label="Dismiss">×</button>',
@@ -785,8 +813,8 @@
       '<div class="nw-hdr">',
         '<div class="nw-hdr-av">🤖</div>',
         '<div class="nw-hdr-info">',
-          '<div class="nw-hdr-name">NeurowexTech · Johnston J</div>',
-          '<div class="nw-hdr-sub">Founder &amp; CEO · Kenya 🇰🇪</div>',
+          '<div class="nw-hdr-name">NeurowexTech · AI Support</div>',
+          '<div class="nw-hdr-sub">AI Support · Kenya 🇰🇪</div>',
           '<div class="nw-hdr-status"><span class="nw-dot"></span><span id="nwOnlineTxt">Online · we reply in &lt;2 hours</span></div>',
         '</div>',
         '<div class="nw-hdr-acts">',
@@ -828,7 +856,7 @@
           '</svg>',
         '</button>',
       '</div>',
-      '<div class="nw-brand">Powered by <strong>NeurowexTech</strong> · Johnston J &amp; Team 🇰🇪</div>',
+      '<div class="nw-brand">Powered by <strong>NeurowexTech</strong> · AI Support Team 🇰🇪</div>',
     '</div>',
   ].join('');
 
@@ -1021,7 +1049,7 @@
       var t1 = self._showTyping();
       setTimeout(function () {
         t1.remove();
-        self._addBot(timeGreeting() + '! 👋 I\'m NeurowexTech\'s assistant — powered by Johnston J\'s team.');
+        self._addBot(timeGreeting() + '! 👋 I\'m NeurowexTech\'s virtual assistant — here to help you 24/7.');
         var t2 = self._showTyping();
         setTimeout(function () {
           t2.remove();
@@ -1113,7 +1141,7 @@
       '💬 WhatsApp now':     'How can I contact you?',
       '📧 Send email':       'What is your email address?',
       '📋 Contact form':     'How can I contact you?',
-      '👨‍💼 Johnston J':    'Who is the founder?',
+      '👨‍💼 Our founder':   'Who is the founder?',
       '🛠️ Our services':     'What services do you offer?',
       '📂 Portfolio':        'Can I see your portfolio?',
       '💰 Basic site cost?': 'How much is a basic website?',
@@ -1133,6 +1161,11 @@
       '🛠️ Services':         'What services do you offer?',
       '💰 Pricing':          'What are your prices?',
       '📬 Contact':          'How can I contact you?',
+      '🚀 Get started':      'I want to get started on a project',
+      '📊 Compare plans':    'Can you compare your packages?',
+      '📈 SEO pricing':      'How much does SEO cost?',
+      '💬 WhatsApp now':     'How can I contact you?',
+      '📬 Fill contact form':'How can I contact you?',
     };
 
     setTimeout(function () {
