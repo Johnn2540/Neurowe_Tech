@@ -413,21 +413,35 @@ button{font-family:'Plus Jakarta Sans',sans-serif}
 <div id="cd-toast"><i id="cd-ico" class="fas fa-check-circle"></i><span id="cd-msg">Done!</span></div>
 
 <style>
-#soc-sidebar{position:fixed;right:0;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;z-index:9000;border-radius:6px 0 0 6px;overflow:hidden;box-shadow:-2px 0 16px rgba(0,0,0,.2)}
-.ss-link{width:42px;height:42px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.88rem;text-decoration:none;transition:width .2s,opacity .15s}
-.ss-link:hover{width:52px;opacity:.9}
+/* ── Social sidebar ── */
+#soc-sidebar{position:fixed;right:0;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:4px;z-index:9000}
+/* desktop: expanding tabs flush right */
+.ss-link{display:flex;align-items:center;color:#fff;text-decoration:none;border-radius:8px 0 0 8px;overflow:hidden;width:46px;height:48px;transition:width .32s cubic-bezier(.4,0,.2,1);box-shadow:-3px 2px 14px rgba(0,0,0,.28);flex-shrink:0}
+.ss-link:hover,.ss-link:focus-visible{width:154px;outline:none}
+.ss-icon{min-width:46px;height:48px;display:flex;align-items:center;justify-content:center;font-size:.95rem;order:2;flex-shrink:0;transition:transform .2s}
+.ss-link:hover .ss-icon,.ss-link:focus-visible .ss-icon{transform:scale(1.12)}
+.ss-label{order:1;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;padding-left:14px;opacity:0;transform:translateX(10px);transition:opacity .2s .08s,transform .2s .08s;flex:1}
+.ss-link:hover .ss-label,.ss-link:focus-visible .ss-label{opacity:1;transform:translateX(0)}
 .ss-link.fb{background:#1877f2}
 .ss-link.yt{background:#ff0000}
-.ss-link.li{background:#0077b5}
-.ss-link.ig{background:linear-gradient(180deg,#f58529,#dd2a7b,#8134af,#515bd4)}
-@media(max-width:640px){#soc-sidebar{display:none}}
+.ss-link.li{background:#0a66c2}
+.ss-link.ig{background:linear-gradient(160deg,#f77737 0%,#c13584 45%,#405de6 100%)}
+/* mobile: compact pills on the left (opposite WhatsApp) */
+@media(max-width:768px){
+  #soc-sidebar{right:auto;left:0;gap:5px;top:50%;transform:translateY(-50%)}
+  .ss-link{width:36px;height:36px;border-radius:0 10px 10px 0;box-shadow:3px 2px 10px rgba(0,0,0,.25)}
+  .ss-link:hover,.ss-link:focus-visible{width:36px}
+  .ss-label{display:none}
+  .ss-icon{min-width:36px;height:36px;font-size:.8rem;order:1}
+  .ss-link:hover .ss-icon,.ss-link:focus-visible .ss-icon{transform:scale(1.08)}
+}
 @media print{#soc-sidebar{display:none}}
 </style>
 <aside id="soc-sidebar" aria-label="Follow us on social media">
-  <a href="https://www.facebook.com/share/1928ETerkE/" target="_blank" rel="noopener noreferrer" class="ss-link fb" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-  <a href="https://youtube.com/@neurowextech?si=CSiI92E2peTQmngO" target="_blank" rel="noopener noreferrer" class="ss-link yt" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-  <a href="https://www.linkedin.com/in/neurowex-tech-588045312" target="_blank" rel="noopener noreferrer" class="ss-link li" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-  <a href="https://www.instagram.com/neorowex_tech_solutions" target="_blank" rel="noopener noreferrer" class="ss-link ig" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+  <a href="https://www.facebook.com/share/1928ETerkE/" target="_blank" rel="noopener noreferrer" class="ss-link fb" aria-label="Follow us on Facebook"><span class="ss-label">Facebook</span><span class="ss-icon"><i class="fab fa-facebook-f"></i></span></a>
+  <a href="https://youtube.com/@neurowextech?si=CSiI92E2peTQmngO" target="_blank" rel="noopener noreferrer" class="ss-link yt" aria-label="Subscribe on YouTube"><span class="ss-label">YouTube</span><span class="ss-icon"><i class="fab fa-youtube"></i></span></a>
+  <a href="https://www.linkedin.com/in/neurowex-tech-588045312" target="_blank" rel="noopener noreferrer" class="ss-link li" aria-label="Connect on LinkedIn"><span class="ss-label">LinkedIn</span><span class="ss-icon"><i class="fab fa-linkedin-in"></i></span></a>
+  <a href="https://www.instagram.com/neorowex_tech_solutions" target="_blank" rel="noopener noreferrer" class="ss-link ig" aria-label="Follow us on Instagram"><span class="ss-label">Instagram</span><span class="ss-icon"><i class="fab fa-instagram"></i></span></a>
 </aside>
 {{> widget}}
 
