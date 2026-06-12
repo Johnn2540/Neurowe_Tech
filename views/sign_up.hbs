@@ -136,6 +136,15 @@ h1{font-family:var(--font-display);font-size:clamp(1.5rem,4vw,1.9rem);font-weigh
       <h1>Create your account</h1>
       <p class="sub">Already have an account? <a href="/login">Sign in</a></p>
       <div class="alert alert-error" id="alertBox"><i class="fas fa-exclamation-circle"></i><span id="alertMsg"></span></div>
+      <!-- Email verification sent screen (hidden by default) -->
+      <div id="verifyScreen" style="display:none;text-align:center;padding:12px 0">
+        <div style="width:72px;height:72px;border-radius:50%;background:rgba(5,150,105,.1);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:2rem;color:#059669"><i class="fas fa-envelope-circle-check"></i></div>
+        <h2 style="font-size:1.25rem;color:#0f172a;margin-bottom:8px">Check your email</h2>
+        <p style="font-size:.88rem;color:#64748b;line-height:1.7;margin-bottom:20px">We sent a verification link to <strong id="verifyEmail"></strong>. Click the link to activate your account.</p>
+        <a href="/login" style="display:inline-block;padding:11px 28px;background:linear-gradient(135deg,#1c2b4a,#2563eb);color:#fff;border-radius:8px;font-weight:700;font-size:.88rem;text-decoration:none">Go to Sign In</a>
+        <p style="font-size:.78rem;color:#94a3b8;margin-top:16px">Didn't get it? Check spam or <button id="resendBtn" type="button" style="background:none;border:none;color:#2563eb;font-weight:600;cursor:pointer;font-size:.78rem;padding:0">resend verification email</button></p>
+        <p id="resendMsg" style="display:none;font-size:.78rem;color:#059669;margin-top:8px"></p>
+      </div>
       <button class="btn-google" id="googleBtn" type="button">
         <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
         Sign up with Google
@@ -233,8 +242,22 @@ document.getElementById('signupForm').addEventListener('submit',async function(e
   try{
     var res=await fetch('/api/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,email,password:pwd})});
     var data=await res.json();
-    if(res.ok&&data.success){showAlert('Account created! Redirecting…','success');setTimeout(()=>{window.location.href=data.redirect||'/user_dashboard';},900);}
-    else{showAlert(data.message||'Registration failed. Please try again.','error');}
+    if(res.ok&&data.success){
+      if(data.needsVerify){
+        // Show email verification screen
+        document.getElementById('signupForm').closest('form') && (document.getElementById('signupForm').style.display='none');
+        document.querySelector('.btn-google') && (document.querySelector('.btn-google').style.display='none');
+        document.querySelector('.divider') && (document.querySelector('.divider').style.display='none');
+        _resendEmail=data.email||'';
+        document.getElementById('verifyEmail').textContent=data.email||'your email';
+        document.getElementById('verifyScreen').style.display='block';
+        document.querySelector('h1') && (document.querySelector('h1').style.display='none');
+        document.querySelector('.sub') && (document.querySelector('.sub').style.display='none');
+      } else {
+        showAlert('Account created! Redirecting…','success');
+        setTimeout(()=>{window.location.href=data.redirect||'/user_dashboard';},900);
+      }
+    } else {showAlert(data.message||'Registration failed. Please try again.','error');}
   }catch(err){showAlert('Network error. Please try again.','error');}
   finally{setLoading(false);}
 });
@@ -255,6 +278,21 @@ async function handleGoogle(response){
   }catch(err){showAlert('Google error. Please try again.','error');}
   finally{setLoading(false);}
 }
+
+// Resend verification email
+var _resendEmail='';
+document.getElementById('resendBtn') && document.getElementById('resendBtn').addEventListener('click',async function(){
+  var email=_resendEmail||document.getElementById('verifyEmail').textContent;
+  if(!email)return;
+  this.disabled=true;this.textContent='Sending…';
+  var msg=document.getElementById('resendMsg');
+  try{
+    var r=await fetch('/api/resend-verification',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+    var d=await r.json();
+    msg.textContent=d.message||'Sent!';msg.style.display='block';msg.style.color=d.success?'#059669':'#e11d48';
+  }catch(e){msg.textContent='Network error. Try again.';msg.style.display='block';msg.style.color='#e11d48';}
+  setTimeout(()=>{this.disabled=false;this.textContent='resend verification email';},30000);
+});
 </script>
 {{#if googleClientId}}<script src="https://accounts.google.com/gsi/client" async defer></script>{{/if}}
 <style>

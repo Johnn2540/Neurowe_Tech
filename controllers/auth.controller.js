@@ -5,6 +5,7 @@ const bcrypt          = require('bcryptjs');
 const { OAuth2Client} = require('google-auth-library');
 const db              = require('../db/postgres');
 const { ROLES }       = require('../config/constants');
+const { sendResetEmail, sendVerificationEmail } = require('../config/mailer');
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -39,17 +40,35 @@ async function register(req, res) {
 
         const hashed = await bcrypt.hash(password, 10);
         const result = await db.query(
-            `INSERT INTO users (username, email, password_hash, role, is_active, created_at)
-             VALUES ($1, $2, $3, 'user', true, NOW())
+            `INSERT INTO users (username, email, password_hash, role, is_active, email_verified, created_at)
+             VALUES ($1, $2, $3, 'user', true, false, NOW())
              RETURNING id, username, email, role`,
             [uname, email.toLowerCase(), hashed]
         );
+        const newUser = result.rows[0];
+
+        // Generate verification token (24-hour expiry)
+        const crypto     = require('crypto');
+        const vToken     = crypto.randomBytes(32).toString('hex');
+        const vExpiresAt = new Date(Date.now() + 86_400_000);
+        await db.query(
+            `INSERT INTO email_verifications (email, token, expires_at) VALUES ($1, $2, $3)
+             ON CONFLICT (token) DO NOTHING`,
+            [email.toLowerCase(), vToken, vExpiresAt]
+        );
+
+        const verifyLink = `${req.protocol}://${req.get('host')}/verify-email?token=${vToken}`;
+        try {
+            await sendVerificationEmail(email.toLowerCase(), verifyLink, uname);
+        } catch (mailErr) {
+            console.error('[auth] verification email error:', mailErr.message);
+        }
 
         return res.json({
-            success: true,
-            message: 'Account created! Please sign in.',
-            redirect: '/login',
-            user: result.rows[0],
+            success:     true,
+            needsVerify: true,
+            message:     'Account created! Please check your email to verify your account before signing in.',
+            email:       email.toLowerCase(),
         });
     } catch (err) {
         console.error('[auth] register error:', err);
@@ -81,6 +100,14 @@ async function login(req, res) {
         const valid = await bcrypt.compare(password, user.password_hash);
         if (!valid)
             return res.status(401).json({ success: false, message: 'Invalid email or password' });
+
+        if (user.email_verified === false)
+            return res.status(403).json({
+                success:       false,
+                needsVerify:   true,
+                email:         user.email,
+                message:       'Please verify your email before signing in. Check your inbox or resend the link.',
+            });
 
         req.session.userId    = user.id;
         req.session.userEmail = user.email;
@@ -195,10 +222,26 @@ async function forgotPassword(req, res) {
             [email.toLowerCase(), token, expiresAt]
         );
 
-        console.log('[auth] Password reset link:',
-            `${req.protocol}://${req.get('host')}/reset-password?token=${token}`);
+        const resetLink = `${req.protocol}://${req.get('host')}/reset-password?token=${token}`;
 
-        return res.json({ success: true, message: 'If an account exists with that email, a reset link has been sent.' });
+        let emailSent = false;
+        try {
+            emailSent = await sendResetEmail(email.toLowerCase(), resetLink);
+        } catch (mailErr) {
+            console.error('[auth] email send error:', mailErr.message);
+        }
+
+        if (!emailSent) {
+            // No SMTP configured — return the link directly so the user can still reset
+            console.log('[auth] Password reset link (no SMTP):', resetLink);
+            return res.json({
+                success:   true,
+                resetLink,
+                message:   'Email service not configured. Use the link below to reset your password.',
+            });
+        }
+
+        return res.json({ success: true, message: 'Reset link sent! Check your email inbox (and spam folder).' });
     } catch (err) {
         console.error('[auth] forgot-password error:', err);
         return res.status(500).json({ success: false, message: 'Server error' });
@@ -228,4 +271,43 @@ async function resetPassword(req, res) {
     }
 }
 
-module.exports = { register, login, googleAuth, logout, forgotPassword, resetPassword };
+// ─── resend verification ─────────────────────────────────────────────────────
+
+async function resendVerification(req, res) {
+    try {
+        const { email } = req.body;
+        if (!email) return res.status(400).json({ success: false, message: 'Email required' });
+
+        const userR = await db.query(
+            'SELECT id, username, email_verified FROM users WHERE email=$1', [email.toLowerCase()]
+        );
+        // Always return success to prevent enumeration
+        if (!userR.rows.length || userR.rows[0].email_verified)
+            return res.json({ success: true, message: 'If that email exists and is unverified, a new link has been sent.' });
+
+        const crypto     = require('crypto');
+        const vToken     = crypto.randomBytes(32).toString('hex');
+        const vExpiresAt = new Date(Date.now() + 86_400_000);
+
+        // Delete any existing token for this email then insert fresh
+        await db.query('DELETE FROM email_verifications WHERE email=$1', [email.toLowerCase()]);
+        await db.query(
+            'INSERT INTO email_verifications (email, token, expires_at) VALUES ($1,$2,$3)',
+            [email.toLowerCase(), vToken, vExpiresAt]
+        );
+
+        const verifyLink = `${req.protocol}://${req.get('host')}/verify-email?token=${vToken}`;
+        try {
+            await sendVerificationEmail(email.toLowerCase(), verifyLink, userR.rows[0].username);
+        } catch (mailErr) {
+            console.error('[auth] resend verification email error:', mailErr.message);
+        }
+
+        return res.json({ success: true, message: 'Verification email sent! Check your inbox.' });
+    } catch (err) {
+        console.error('[auth] resend-verification error:', err);
+        return res.status(500).json({ success: false, message: 'Server error' });
+    }
+}
+
+module.exports = { register, login, googleAuth, logout, forgotPassword, resetPassword, resendVerification };
