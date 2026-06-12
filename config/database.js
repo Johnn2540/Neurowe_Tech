@@ -185,6 +185,39 @@ async function runStartupMigrations() {
         `CREATE INDEX IF NOT EXISTS idx_ulp_lesson ON user_lesson_progress(lesson_id)`,
         `CREATE INDEX IF NOT EXISTS idx_ua_user    ON user_activities(user_id)`,
         `CREATE INDEX IF NOT EXISTS idx_cr_course  ON course_reviews(course_id)`,
+
+        // ── Performance indexes ────────────────────────────────────────────────
+        // blog_posts — filtered on every blog page load
+        `CREATE INDEX IF NOT EXISTS idx_bp_published    ON blog_posts(published) WHERE published=true`,
+        `CREATE INDEX IF NOT EXISTS idx_bp_slug         ON blog_posts(slug)`,
+        `CREATE INDEX IF NOT EXISTS idx_bp_category     ON blog_posts(category)`,
+        `CREATE INDEX IF NOT EXISTS idx_bp_created      ON blog_posts(created_at DESC)`,
+
+        // courses — filtered on every homepage / academy page load
+        `CREATE INDEX IF NOT EXISTS idx_c_published     ON courses(published) WHERE published=true`,
+        `CREATE INDEX IF NOT EXISTS idx_c_instructor    ON courses(instructor_id)`,
+        `CREATE INDEX IF NOT EXISTS idx_c_created       ON courses(created_at DESC)`,
+
+        // projects — filtered on homepage and portfolio page
+        `CREATE INDEX IF NOT EXISTS idx_p_featured      ON projects(featured) WHERE featured=true`,
+        `CREATE INDEX IF NOT EXISTS idx_p_created       ON projects(created_at DESC)`,
+
+        // course_modules — joined on every course detail load
+        `CREATE INDEX IF NOT EXISTS idx_cm_course_id    ON course_modules(course_id)`,
+
+        // enrollments — checked on every course page and dashboard
+        `CREATE INDEX IF NOT EXISTS idx_e_user_id       ON enrollments(user_id)`,
+        `CREATE INDEX IF NOT EXISTS idx_e_course_id     ON enrollments(course_id)`,
+
+        // session table — expire lookup on every authenticated request
+        `CREATE INDEX IF NOT EXISTS idx_session_expire  ON "session"(expire)`,
+
+        // contacts — filtered by status in admin dashboard
+        `CREATE INDEX IF NOT EXISTS idx_contacts_status ON contacts(status)`,
+        `CREATE INDEX IF NOT EXISTS idx_contacts_created ON contacts(created_at DESC)`,
+
+        // user_activities — fetched per user on dashboard
+        `CREATE INDEX IF NOT EXISTS idx_ua_created ON user_activities(created_at DESC)`,
     ];
 
     for (const sql of migrations) {

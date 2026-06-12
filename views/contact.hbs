@@ -41,9 +41,11 @@
       "availableLanguage": "English",
       "contactOption": "TollFree"
     },
-    "sameAs": ["https://twitter.com/neurowextech", "https://linkedin.com/company/neurowextech"]
+    "sameAs": ["https://www.facebook.com/share/1928ETerkE/", "https://www.linkedin.com/in/neurowex-tech-588045312", "https://www.instagram.com/neorowex_tech_solutions", "https://youtube.com/@neurowextech?si=CSiI92E2peTQmngO"]
   }
   </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <style>
@@ -399,9 +401,8 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
 .footer-socials{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
 .fsoc{width:32px;height:32px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);color:rgba(255,255,255,.48);font-size:.78rem;transition:all .2s;text-decoration:none}
 .fsoc:hover{transform:translateY(-2px)}
-.fsoc.tw:hover{background:#1da1f2;color:#fff}
+.fsoc.fb:hover{background:#1877f2;color:#fff}
 .fsoc.li:hover{background:#0077b5;color:#fff}
-.fsoc.gh:hover{background:#fff;color:#111}
 .fsoc.ig:hover{background:linear-gradient(135deg,#fd5949,#d6249f,#285aeb);color:#fff}
 .fsoc.yt:hover{background:#ff0000;color:#fff}
 .fsoc.wa:hover{background:#25D366;color:#fff}
@@ -922,11 +923,10 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
           <div class="footer-brand-name"><span class="footer-bmark">N</span>Neurowex<em>Tech</em></div>
           <p class="footer-tagline">We turn bold ideas into successful digital products — fast, scalable, and built to last.</p>
           <div class="footer-socials">
-            <a href="#" class="fsoc tw" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-            <a href="#" class="fsoc li" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-            <a href="#" class="fsoc gh" aria-label="GitHub"><i class="fab fa-github"></i></a>
-            <a href="#" class="fsoc ig" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="#" class="fsoc yt" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://www.facebook.com/share/1928ETerkE/" target="_blank" rel="noopener noreferrer" class="fsoc fb" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.linkedin.com/in/neurowex-tech-588045312" target="_blank" rel="noopener noreferrer" class="fsoc li" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://www.instagram.com/neorowex_tech_solutions" target="_blank" rel="noopener noreferrer" class="fsoc ig" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://youtube.com/@neurowextech?si=CSiI92E2peTQmngO" target="_blank" rel="noopener noreferrer" class="fsoc yt" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
             <a href="https://wa.me/254769329340" target="_blank" rel="noopener noreferrer" class="fsoc wa" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
           </div>
           <div style="display:flex;gap:6px;flex-wrap:wrap">
@@ -1177,6 +1177,23 @@ if (window._formSuccess) {
   document.getElementById('formSuccess').style.display = 'block';
 }
 </script>
+<style>
+#soc-sidebar{position:fixed;right:0;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;z-index:9000;border-radius:6px 0 0 6px;overflow:hidden;box-shadow:-2px 0 16px rgba(0,0,0,.2)}
+.ss-link{width:42px;height:42px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.88rem;text-decoration:none;transition:width .2s,opacity .15s}
+.ss-link:hover{width:52px;opacity:.9}
+.ss-link.fb{background:#1877f2}
+.ss-link.yt{background:#ff0000}
+.ss-link.li{background:#0077b5}
+.ss-link.ig{background:linear-gradient(180deg,#f58529,#dd2a7b,#8134af,#515bd4)}
+@media(max-width:640px){#soc-sidebar{display:none}}
+@media print{#soc-sidebar{display:none}}
+</style>
+<aside id="soc-sidebar" aria-label="Follow us on social media">
+  <a href="https://www.facebook.com/share/1928ETerkE/" target="_blank" rel="noopener noreferrer" class="ss-link fb" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+  <a href="https://youtube.com/@neurowextech?si=CSiI92E2peTQmngO" target="_blank" rel="noopener noreferrer" class="ss-link yt" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+  <a href="https://www.linkedin.com/in/neurowex-tech-588045312" target="_blank" rel="noopener noreferrer" class="ss-link li" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+  <a href="https://www.instagram.com/neorowex_tech_solutions" target="_blank" rel="noopener noreferrer" class="ss-link ig" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+</aside>
 {{> widget}}
 </body>
 </html>

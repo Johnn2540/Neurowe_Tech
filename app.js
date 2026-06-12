@@ -3,10 +3,11 @@
 
 require('dotenv').config();
 
-const express   = require('express');
-const path      = require('path');
-const helmet    = require('helmet');
-const rateLimit = require('express-rate-limit');
+const express     = require('express');
+const path        = require('path');
+const helmet      = require('helmet');
+const rateLimit   = require('express-rate-limit');
+const compression = require('compression');
 
 // ── Validate critical imports BEFORE using them ───────────────────────────────
 const { runStartupMigrations } = require('./config/database');
@@ -35,9 +36,38 @@ for (const [name, val] of Object.entries(required)) {
 // ── App ───────────────────────────────────────────────────────────────────────
 const app = express();
 
+// ── Compression (gzip) — must be first middleware ─────────────────────────────
+app.use(compression({
+    level: 6,
+    threshold: 1024,
+    filter: (req, res) => {
+        if (req.headers['x-no-compression']) return false;
+        return compression.filter(req, res);
+    },
+}));
+
 // ── Static files ──────────────────────────────────────────────────────────────
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/images', express.static(path.join(__dirname, 'views', 'images')));
+// Immutable cache for hashed assets (JS/CSS); 1 day for images; no-cache for SW/manifest
+app.use(express.static(path.join(__dirname, 'public'), {
+    etag:         true,
+    lastModified: true,
+    setHeaders(res, filePath) {
+        const ext = path.extname(filePath).toLowerCase();
+        if (ext === '.js' || ext === '.css') {
+            res.setHeader('Cache-Control', 'public, max-age=604800, stale-while-revalidate=86400');
+        } else if (ext === '.json' || filePath.endsWith('sw.js')) {
+            res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+        } else if (['.png','.jpg','.jpeg','.webp','.gif','.svg','.ico','.woff','.woff2'].includes(ext)) {
+            res.setHeader('Cache-Control', 'public, max-age=2592000, stale-while-revalidate=86400');
+        }
+    },
+}));
+app.use('/images', express.static(path.join(__dirname, 'views', 'images'), {
+    etag: true,
+    setHeaders(res) {
+        res.setHeader('Cache-Control', 'public, max-age=2592000, stale-while-revalidate=86400');
+    },
+}));
 
 // ── PWA head injection ────────────────────────────────────────────────────────
 // All views are standalone HTML (layout:false); inject PWA tags into every
@@ -55,7 +85,8 @@ const PWA_HEAD = [
 app.use((req, res, next) => {
     const _send = res.send.bind(res);
     res.send = function (body) {
-        if (typeof body === 'string' && body.includes('</head>') && !body.includes('rel="manifest"')) {
+        const ct = res.getHeader('Content-Type') || '';
+        if (typeof body === 'string' && ct.includes('html') && !body.includes('rel="manifest"') && body.includes('</head>')) {
             body = body.replace('</head>', `    ${PWA_HEAD}\n</head>`);
         }
         return _send(body);
@@ -64,8 +95,8 @@ app.use((req, res, next) => {
 });
 
 // ── Body parsing ──────────────────────────────────────────────────────────────
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: true, limit: '2mb' }));
+app.use(express.json({ limit: '2mb' }));
 
 // ── Security headers (Helmet) ─────────────────────────────────────────────────
 // CSP disabled — pages load assets from Google Fonts, cdnjs, etc.

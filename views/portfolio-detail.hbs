@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{title}}</title>
+  <meta name="description" content="{{#if project.description}}{{project.description}}{{else}}View project details for {{project.name}} by NeurowexTech.{{/if}}" />
+  <link rel="canonical" href="https://neurowextech.co.ke/portfolio/{{project.id}}" />
+  <meta property="og:title"       content="{{project.name}} – NeurowexTech" />
+  <meta property="og:description" content="{{#if project.description}}{{project.description}}{{else}}View this project by NeurowexTech.{{/if}}" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="NeurowexTech" />
+  {{#if project.image_url}}<meta property="og:image" content="{{project.image_url}}" />{{/if}}
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+<style>
+:root {
+  --primary:#1c2b4a; --primary-d:#111d33;
+  --accent:#e05c2a; --accent-d:#c44e21; --accent-pale:rgba(224,92,42,.08);
+  --blue:#2563eb; --blue-d:#1d4ed8; --blue-l:#3b82f6;
+  --blue-pale:rgba(37,99,235,.07); --blue-pale2:rgba(37,99,235,.13);
+  --ink:#0f172a; --ink-2:#1e293b;
+  --slate:#64748b; --slate-l:#94a3b8;
+  --mist:#e2e8f0; --ghost:#f8fafc; --white:#ffffff; --surface:#f1f5f9;
+  --emerald:#059669; --teal:#0d9488;
+  --g-blue:linear-gradient(135deg,#2563eb,#1d4ed8);
+  --g-accent:linear-gradient(135deg,#e05c2a,#c44e21);
+  --r-xs:4px;--r-sm:6px;--r-md:8px;--r-lg:12px;--r-xl:16px;--r-2xl:20px;--r-pill:999px;
+  --nav-h:66px;
+  --sh-sm:0 1px 3px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04);
+  --sh-md:0 4px 16px rgba(15,23,42,.08),0 2px 6px rgba(15,23,42,.05);
+  --sh-lg:0 12px 40px rgba(15,23,42,.12),0 4px 12px rgba(15,23,42,.06);
+  --sh-xl:0 20px 60px rgba(15,23,42,.16),0 8px 20px rgba(15,23,42,.08);
+  --sh-blue:0 4px 18px rgba(37,99,235,.28);
+  --sh-accent:0 4px 18px rgba(224,92,42,.28);
+  --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);--t:.22s var(--ease);
+  --font-display:'Fraunces',Georgia,serif;
+  --font-body:'Plus Jakarta Sans',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font-body);background:var(--ghost);color:var(--ink);overflow-x:hidden;font-size:16px;line-height:1.6}
+h1,h2,h3,h4{font-family:var(--font-display);line-height:1.1;letter-spacing:-.02em}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--ink)}
+::-webkit-scrollbar-thumb{background:var(--blue);border-radius:4px}
+@media(pointer:fine){body{cursor:none}a,button,[role="button"],input,select{cursor:none}}
+#cursor-dot{position:fixed;width:8px;height:8px;border-radius:50%;background:var(--accent);pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:background .25s,transform .2s var(--spring),opacity .2s;will-change:left,top}
+#cursor-ring{position:fixed;width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(224,92,42,.5);pointer-events:none;z-index:99998;transform:translate(-50%,-50%);will-change:left,top;transition:width .22s,height .22s,border-color .22s}
+body.cursor-hover #cursor-dot{transform:translate(-50%,-50%) scale(2.5);background:var(--blue)}
+body.cursor-hover #cursor-ring{width:54px;height:54px;border-color:rgba(37,99,235,.4)}
+body.cursor-click #cursor-dot{transform:translate(-50%,-50%) scale(.5)}
+body.cursor-hidden #cursor-dot,body.cursor-hidden #cursor-ring{opacity:0}
+#scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--primary),var(--blue),var(--accent));z-index:9999;transition:width .06s linear}
+
+/* DARK MODE */
+body.dark{background:#0a0f1e;color:rgba(255,255,255,.88)}
+body.dark .navbar{background:rgba(10,15,30,.97);border-bottom-color:rgba(255,255,255,.06)}
+body.dark .navbar.scrolled{box-shadow:0 1px 16px rgba(0,0,0,.3)}
+body.dark .nav-links .nl-a{color:rgba(255,255,255,.65)}
+body.dark .nav-links .nl-a:hover{color:#fff}
+body.dark .mega-drop{background:rgba(13,18,36,.98);border-color:rgba(255,255,255,.07)}
+body.dark .btn-nav-signin{border-color:rgba(255,255,255,.14);color:rgba(255,255,255,.55)}
+body.dark .detail-card{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.07)}
+body.dark .breadcrumb-item{color:rgba(255,255,255,.35)}
+body.dark .breadcrumb-sep{color:rgba(255,255,255,.15)}
+body.dark .meta-row span{background:rgba(255,255,255,.07);color:rgba(255,255,255,.55)}
+body.dark .btn-back{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:rgba(255,255,255,.55)}
+body.dark .btn-back:hover{border-color:var(--blue);color:rgba(147,197,253,.9)}
+body.dark footer{background:#080d1a}
+body.dark .footer-divider{border-color:rgba(255,255,255,.06)}
+body.dark .mob-panel{background:#0d1220}
+
+/* NAVBAR */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:900;background:rgba(255,255,255,.97);border-bottom:1px solid rgba(15,23,42,.06);backdrop-filter:blur(18px);transition:box-shadow var(--t),background var(--t)}
+.navbar.scrolled{box-shadow:0 1px 14px rgba(15,23,42,.09)}
+.nav-inner{max-width:1280px;margin:0 auto;padding:0 28px;height:var(--nav-h);display:flex;align-items:center;gap:28px}
+.nav-brand{display:flex;align-items:center;gap:9px;flex-shrink:0}
+.nav-logo-circle{width:34px;height:34px;border-radius:50%;overflow:hidden;background:var(--primary);flex-shrink:0;border:1.5px solid rgba(37,99,235,.2)}
+.nav-logo-circle img{width:100%;height:100%;object-fit:cover}
+.nav-brand-text{font-family:var(--font-display);font-size:1.08rem;font-weight:600;letter-spacing:-.02em;color:var(--ink)}
+.nav-brand-text em{font-style:normal;color:var(--accent)}
+.nav-links{display:flex;list-style:none;gap:2px;margin-left:auto}
+.nl-item{position:relative}
+.nl-a{font-size:.82rem;font-weight:600;padding:7px 13px;border-radius:var(--r-lg);color:var(--slate);transition:color var(--t),background var(--t);display:flex;align-items:center;gap:5px}
+.nl-a:hover,.nl-a.active{color:var(--ink);background:var(--blue-pale)}
+.nl-a .arrow{font-size:.58rem;transition:transform var(--t);opacity:.5}
+.nl-item:hover .arrow{transform:rotate(180deg)}
+.mega-drop{display:none;position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--white);border:1px solid rgba(15,23,42,.07);border-radius:var(--r-xl);padding:20px;box-shadow:var(--sh-xl);min-width:520px}
+.nl-item:hover .mega-drop{display:block}
+.mega-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px 20px}
+.mega-col-label{font-size:.65rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--slate-l);padding:0 10px 6px;display:block}
+.mega-link{display:flex;align-items:center;gap:9px;font-size:.79rem;font-weight:600;color:var(--slate);padding:8px 10px;border-radius:var(--r-md);transition:background var(--t),color var(--t)}
+.mega-link:hover{background:var(--blue-pale);color:var(--blue)}
+.mega-link i{width:16px;text-align:center;opacity:.6}
+.nav-cta{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.btn-nav-signin{font-size:.78rem;font-weight:700;padding:7px 16px;border-radius:var(--r-pill);border:1.5px solid rgba(15,23,42,.12);color:var(--slate);transition:var(--t)}
+.btn-nav-signin:hover{background:var(--surface);color:var(--ink)}
+.btn-nav-orange{font-size:.78rem;font-weight:700;padding:7px 16px;border-radius:var(--r-pill);background:var(--accent-pale);color:var(--accent);transition:var(--t);display:flex;align-items:center;gap:5px}
+.btn-nav-orange:hover{background:var(--accent);color:#fff}
+.btn-nav-start{font-size:.78rem;font-weight:700;padding:7px 18px;border-radius:var(--r-pill);background:var(--g-blue);color:#fff;box-shadow:var(--sh-blue);transition:var(--t);display:flex;align-items:center;gap:6px}
+.btn-nav-start:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(37,99,235,.38)}
+#theme-toggle{width:34px;height:34px;border-radius:50%;border:none;background:var(--blue-pale);color:var(--blue);display:flex;align-items:center;justify-content:center;transition:var(--t);flex-shrink:0}
+#theme-toggle:hover{background:var(--blue);color:#fff}
+#theme-toggle svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mob-quick{display:none;align-items:center;gap:8px;margin-left:auto}
+.mob-quick-btn{width:36px;height:36px;border-radius:50%;border:none;background:var(--blue-pale);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.mob-quick-wa{width:36px;height:36px;border-radius:50%;background:#25d366;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.9rem}
+.ham-btn{width:36px;height:36px;border-radius:var(--r-md);border:none;background:var(--blue-pale);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.ham-line{display:block;width:18px;height:2px;background:var(--blue);border-radius:2px;transition:var(--t)}
+.mob-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:800;opacity:0;pointer-events:none;transition:opacity var(--t)}
+.mob-overlay.open{opacity:1;pointer-events:all}
+.mob-panel{position:fixed;top:0;right:0;bottom:0;width:min(320px,88vw);background:var(--white);z-index:810;transform:translateX(100%);transition:transform .3s var(--ease);overflow-y:auto;padding:20px}
+.mob-panel.open{transform:none}
+.mob-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--mist)}
+.mob-logo{font-family:var(--font-display);font-size:1.05rem;font-weight:600;color:var(--ink)}
+.mob-logo em{font-style:normal;color:var(--accent)}
+.mob-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--surface);color:var(--slate);font-size:.85rem}
+.mob-link{display:flex;align-items:center;gap:10px;font-size:.86rem;font-weight:600;color:var(--slate);padding:11px 0;border-bottom:1px solid var(--mist);transition:color var(--t)}
+.mob-link:hover{color:var(--blue)}
+.mob-link i{width:16px;text-align:center;opacity:.5}
+.mob-sub-toggle{display:flex;align-items:center;gap:10px;font-size:.86rem;font-weight:600;color:var(--slate);padding:11px 0;border-bottom:1px solid var(--mist)}
+.mob-sub{display:none;padding:8px 0 0 26px}
+.mob-sub.open{display:block}
+.mob-sub a{display:block;font-size:.8rem;color:var(--slate);padding:7px 0;border-bottom:1px solid var(--surface)}
+.mob-sub a:hover{color:var(--blue)}
+.mob-footer-links{margin-top:24px;display:flex;flex-direction:column;gap:10px}
+.mob-footer-links a{font-size:.8rem;font-weight:700;padding:11px 16px;border-radius:var(--r-lg);text-align:center;background:var(--surface)}
+.mob-footer-links .mob-cta-primary{background:var(--g-blue);color:#fff}
+.mob-footer-links .mob-cta-orange{background:var(--g-accent);color:#fff}
+@media(max-width:899px){.nav-links,.nav-cta,.btn-nav-orange{display:none!important}.mob-quick{display:flex!important}}
+@media(min-width:900px){.mob-overlay,.mob-panel{display:none!important}}
+
+/* LAYOUT */
+.container{width:100%;max-width:1200px;margin:0 auto;padding:0 24px}
+
+/* BREADCRUMB */
+.breadcrumb{padding:calc(var(--nav-h) + 24px) 0 0}
+.breadcrumb-inner{display:flex;align-items:center;gap:6px;font-size:.75rem;font-weight:600}
+.breadcrumb-item{color:var(--slate);transition:color var(--t)}
+.breadcrumb-item:hover{color:var(--blue)}
+.breadcrumb-sep{color:var(--mist);font-size:.6rem}
+.breadcrumb-item.current{color:var(--ink)}
+
+/* HERO */
+.detail-hero{padding:28px 0 60px}
+.detail-hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+@media(max-width:800px){.detail-hero-inner{grid-template-columns:1fr;gap:32px}}
+.detail-hero h1{font-size:clamp(1.9rem,5vw,3.2rem);font-weight:400;color:var(--ink);margin-bottom:14px;line-height:1.05}
+body.dark .detail-hero h1{color:#fff}
+.cat-badge{display:inline-flex;align-items:center;gap:6px;font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:5px 13px;border-radius:var(--r-pill);border:1px solid rgba(37,99,235,.2);background:var(--blue-pale);color:var(--blue);margin-bottom:16px}
+.featured-badge{display:inline-flex;align-items:center;gap:5px;font-size:.68rem;font-weight:800;padding:4px 11px;border-radius:var(--r-pill);background:rgba(217,119,6,.1);border:1px solid rgba(217,119,6,.2);color:#92400e;margin-left:8px}
+.detail-desc{font-size:.96rem;color:var(--slate);line-height:1.82;margin-bottom:28px}
+body.dark .detail-desc{color:rgba(255,255,255,.5)}
+.meta-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}
+.meta-row span{display:inline-flex;align-items:center;gap:6px;font-size:.76rem;font-weight:700;padding:6px 12px;border-radius:var(--r-md);background:var(--surface);color:var(--slate)}
+.meta-row span i{font-size:.72rem;opacity:.6}
+.detail-actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn-live{display:inline-flex;align-items:center;gap:8px;font-size:.88rem;font-weight:700;padding:12px 26px;border-radius:var(--r-pill);background:var(--g-blue);color:#fff;box-shadow:var(--sh-blue);transition:var(--t)}
+.btn-live:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(37,99,235,.38)}
+.btn-back{display:inline-flex;align-items:center;gap:8px;font-size:.88rem;font-weight:700;padding:12px 24px;border-radius:var(--r-pill);border:1.5px solid var(--mist);color:var(--slate);background:var(--white);transition:var(--t)}
+.btn-back:hover{background:var(--surface);border-color:var(--blue);color:var(--blue)}
+
+/* IMAGE */
+.detail-img-wrap{border-radius:var(--r-2xl);overflow:hidden;aspect-ratio:16/10;background:var(--blue-pale);box-shadow:var(--sh-xl);position:relative;border:1px solid var(--mist)}
+body.dark .detail-img-wrap{border-color:rgba(255,255,255,.07)}
+.detail-img-wrap img{width:100%;height:100%;object-fit:cover}
+.img-fallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-size:4rem;background:linear-gradient(135deg,var(--blue-pale2),var(--accent-pale))}
+
+/* CARDS */
+.detail-card{background:var(--white);border:1px solid var(--mist);border-radius:var(--r-2xl);padding:36px;margin-bottom:24px}
+.detail-card h2{font-size:1.15rem;font-weight:400;margin-bottom:18px;color:var(--ink)}
+body.dark .detail-card h2{color:#fff}
+.detail-grid{display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start}
+@media(max-width:768px){.detail-grid{grid-template-columns:1fr}}
+.info-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:480px){.info-row{grid-template-columns:1fr}}
+.info-item-lbl{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--slate-l);margin-bottom:4px}
+.info-item-val{font-size:.9rem;font-weight:600;color:var(--ink)}
+body.dark .info-item-val{color:rgba(255,255,255,.8)}
+
+/* CTA BAND */
+.cta-band{background:linear-gradient(158deg,#060c1a 0%,#0d1628 50%,#111f3a 100%);padding:88px 0;text-align:center;position:relative;overflow:hidden;margin-top:64px}
+.cta-band::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(37,99,235,.13),transparent);pointer-events:none}
+.cta-btn-white{display:inline-flex;align-items:center;gap:8px;font-size:.88rem;font-weight:700;padding:13px 28px;border-radius:var(--r-pill);background:#fff;color:var(--primary);box-shadow:var(--sh-lg);transition:var(--t)}
+.cta-btn-white:hover{transform:translateY(-2px);box-shadow:var(--sh-xl)}
+.cta-btn-orange{display:inline-flex;align-items:center;gap:8px;font-size:.88rem;font-weight:700;padding:13px 28px;border-radius:var(--r-pill);background:var(--g-accent);color:#fff;box-shadow:var(--sh-accent);transition:var(--t)}
+.cta-btn-orange:hover{transform:translateY(-2px)}
+.btn-wa-cta{display:inline-flex;align-items:center;gap:8px;font-size:.84rem;font-weight:700;padding:13px 22px;border-radius:var(--r-pill);background:#25d366;color:#fff;transition:var(--t)}
+.btn-wa-cta:hover{transform:translateY(-2px);background:#1ab757}
+
+/* BACK TO TOP */
+#back-to-top{position:fixed;bottom:28px;left:28px;width:40px;height:40px;border-radius:50%;background:var(--g-blue);color:#fff;border:none;box-shadow:var(--sh-blue);display:flex;align-items:center;justify-content:center;font-size:.8rem;z-index:700;opacity:0;pointer-events:none;transition:opacity var(--t),transform var(--t)}
+#back-to-top.visible{opacity:1;pointer-events:all}
+#back-to-top:hover{transform:translateY(-3px)}
+
+/* FOOTER */
+footer{background:#050c1e;color:rgba(255,255,255,.55);font-size:.84rem}
+.footer-accent-bar{height:3px;background:linear-gradient(90deg,var(--primary),var(--blue),var(--accent))}
+.footer-cta-strip{background:rgba(37,99,235,.07);border-bottom:1px solid rgba(255,255,255,.05);padding:24px 0}
+.footer-cta-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.footer-cta-text h4{font-family:var(--font-display);font-weight:400;color:#fff;font-size:1.05rem;margin-bottom:2px}
+.footer-cta-text p{font-size:.78rem;color:rgba(255,255,255,.4)}
+.footer-cta-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-body);font-size:.82rem;font-weight:700;padding:9px 20px;border-radius:var(--r-pill);background:var(--g-blue);color:#fff;transition:var(--t)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:var(--sh-blue)}
+.btn-wa{display:inline-flex;align-items:center;gap:8px;font-size:.84rem;font-weight:700;padding:9px 18px;border-radius:var(--r-pill);background:#25d366;color:#fff;transition:var(--t)}
+.btn-wa:hover{transform:translateY(-2px);background:#1ab757}
+.footer-body{padding:56px 0 36px}
+.footer-cols{display:grid;grid-template-columns:1.6fr 1fr 1fr 1.4fr;gap:40px}
+@media(max-width:900px){.footer-cols{grid-template-columns:1fr 1fr;gap:32px 24px}}
+@media(max-width:520px){.footer-cols{grid-template-columns:1fr;gap:28px}}
+.footer-brand-name{font-family:var(--font-display);font-size:1.3rem;font-weight:400;color:#fff;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.footer-brand-dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.footer-brand-name em{font-style:normal;color:var(--accent)}
+.footer-tagline{color:rgba(255,255,255,.38);line-height:1.72;max-width:280px;margin-bottom:18px;font-size:.82rem}
+.footer-socials{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.fsoc{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.06);color:rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;font-size:.82rem;transition:var(--t)}
+.fsoc:hover{transform:translateY(-2px);color:#fff}
+.fsoc.fb:hover{background:#1877f2;color:#fff}.fsoc.li:hover{background:#0077b5}.fsoc.ig:hover{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743)}.fsoc.yt:hover{background:#ff0000}.fsoc.wa:hover{background:#25d366}
+.footer-col-title{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.25);margin-bottom:14px}
+.footer-links{list-style:none}
+.footer-links li{margin-bottom:2px}
+.footer-links a{display:flex;align-items:center;gap:9px;font-size:.8rem;color:rgba(255,255,255,.42);padding:5px 0;transition:color var(--t)}
+.footer-links a:hover{color:rgba(255,255,255,.82)}
+.footer-links i{width:13px;font-size:.7rem;opacity:.5;text-align:center}
+.academy-link{color:rgba(52,211,153,.7)!important}
+.academy-link:hover{color:rgba(52,211,153,1)!important}
+.footer-contact-item{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
+.fci-icon{width:30px;height:30px;border-radius:var(--r-md);background:rgba(37,99,235,.1);display:flex;align-items:center;justify-content:center;font-size:.72rem;color:rgba(147,197,253,.8);flex-shrink:0;margin-top:1px}
+.fci-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.2);display:block;margin-bottom:1px}
+.fci-val{font-size:.8rem;color:rgba(255,255,255,.55)}
+.fci-val a{color:inherit;transition:color var(--t)}
+.fci-val a:hover{color:rgba(255,255,255,.9)}
+.footer-hours{display:flex;align-items:center;gap:7px;font-size:.75rem;color:rgba(255,255,255,.3);margin-top:4px}
+.hours-dot{width:6px;height:6px;border-radius:50%;background:#34d399;animation:pulse-dot 2s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.5)}50%{box-shadow:0 0 0 5px transparent}}
+.footer-divider{border:none;border-top:1px solid rgba(255,255,255,.05);margin:0}
+.footer-bottom-bar{padding:18px 0}
+.footer-bottom-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.footer-copy,.footer-made-in{font-size:.75rem;color:rgba(255,255,255,.25)}
+.footer-made-in span{color:#e11d48}
+.footer-legal{display:flex;gap:20px}
+.footer-legal a{font-size:.72rem;color:rgba(255,255,255,.25);transition:color var(--t)}
+.footer-legal a:hover{color:rgba(255,255,255,.6)}
+/* WA FLOAT */
+#wa-float{position:fixed;bottom:28px;right:28px;z-index:700}
+.wa-fab{width:52px;height:52px;border-radius:50%;background:#25d366;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 4px 20px rgba(37,211,102,.4);transition:var(--t)}
+.wa-fab:hover{transform:scale(1.08)}
+#wa-badge{position:absolute;top:-2px;right:-2px;width:14px;height:14px;border-radius:50%;background:#e11d48;border:2px solid var(--white)}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor-dot" aria-hidden="true"></div>
+<div id="cursor-ring" aria-hidden="true"></div>
+<div id="scroll-progress" aria-hidden="true"></div>
+
+<!-- MOBILE OVERLAY -->
+<div class="mob-overlay" id="mobOverlay" aria-hidden="true"></div>
+<div class="mob-panel" id="mobPanel" role="dialog" aria-modal="true" aria-label="Navigation menu">
+  <div class="mob-head">
+    <span class="mob-logo">Neurowex<em>Tech</em></span>
+    <button class="mob-close" id="mobClose" aria-label="Close menu"><i class="fas fa-times"></i></button>
+  </div>
+  <nav class="mob-body" aria-label="Mobile navigation">
+    <a href="/" class="mob-link"><i class="fas fa-home"></i> Home</a>
+    <div class="mob-sub-toggle" id="mobSvcToggle" role="button" tabindex="0" aria-expanded="false">
+      <i class="fas fa-th-large" style="width:16px;text-align:center;opacity:.5"></i> Services
+      <i class="fas fa-chevron-down" style="margin-left:auto;font-size:.6rem;opacity:.4"></i>
+    </div>
+    <div class="mob-sub" id="mobSvcSub">
+      <a href="/web_dev">Web Development</a>
+      <a href="/graphic_design">Graphic Design</a>
+      <a href="/seo">SEO & Marketing</a>
+      <a href="/ai-solutions">AI Solutions</a>
+      <a href="/cybersecurity">Cybersecurity</a>
+      <a href="/ecommerce">E-Commerce</a>
+      <a href="/uiux">UI/UX Design</a>
+    </div>
+    <a href="/learn" class="mob-link"><i class="fas fa-graduation-cap"></i> Academy</a>
+    <a href="/portfolio" class="mob-link"><i class="fas fa-briefcase"></i> Portfolio</a>
+    <a href="/blog" class="mob-link"><i class="fas fa-rss"></i> Blog</a>
+    <a href="/about" class="mob-link"><i class="fas fa-info-circle"></i> About</a>
+    <a href="/contact" class="mob-link"><i class="fas fa-envelope"></i> Contact</a>
+  </nav>
+  <div class="mob-footer-links">
+    <a href="/login">Sign In</a>
+    <a href="/contact" class="mob-cta-primary">Get Started <i class="fas fa-arrow-right"></i></a>
+    <a href="/learn" class="mob-cta-orange"><i class="fas fa-graduation-cap"></i> Explore Academy</a>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="mainNav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand" aria-label="NeurowexTech Home">
+      <div class="nav-logo-circle">
+        <img src="/images/logo.png" alt="NeurowexTech logo" onerror="this.parentElement.style.background='var(--primary)';this.parentElement.innerHTML='<span style=\'color:#fff;font-weight:700;font-size:.85rem;font-family:var(--font-body)\'>N</span>';this.remove()">
+      </div>
+      <div class="nav-brand-text">Neurowex<em>Tech</em></div>
+    </a>
+    <ul class="nav-links" role="list">
+      <li class="nl-item"><a href="/" class="nl-a">Home</a></li>
+      <li class="nl-item">
+        <a href="/#services" class="nl-a">Services <i class="fas fa-chevron-down arrow"></i></a>
+        <div class="mega-drop" role="menu">
+          <div class="mega-grid">
+            <div>
+              <span class="mega-col-label">Development</span>
+              <a class="mega-link" href="/web_dev"><i class="fas fa-laptop-code"></i> Web & App Dev</a>
+              <a class="mega-link" href="/ecommerce"><i class="fas fa-shopping-cart"></i> E-Commerce</a>
+              <a class="mega-link" href="/uiux"><i class="fas fa-pencil-ruler"></i> UI/UX Design</a>
+            </div>
+            <div>
+              <span class="mega-col-label">Marketing & Growth</span>
+              <a class="mega-link" href="/seo"><i class="fas fa-search"></i> SEO & Marketing</a>
+              <a class="mega-link" href="/social-media"><i class="fas fa-share-alt"></i> Social Media</a>
+              <a class="mega-link" href="/analytics"><i class="fas fa-chart-bar"></i> Data Analytics</a>
+            </div>
+            <div>
+              <span class="mega-col-label">Specialist</span>
+              <a class="mega-link" href="/graphic_design"><i class="fas fa-palette"></i> Graphic Design</a>
+              <a class="mega-link" href="/ai-solutions"><i class="fas fa-robot"></i> AI Solutions</a>
+              <a class="mega-link" href="/cybersecurity"><i class="fas fa-shield-alt"></i> Cybersecurity</a>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="nl-item"><a href="/learn" class="nl-a">Learn</a></li>
+      <li class="nl-item"><a href="/portfolio" class="nl-a active">Portfolio</a></li>
+      <li class="nl-item"><a href="/blog" class="nl-a">Blog</a></li>
+      <li class="nl-item"><a href="/about" class="nl-a">About</a></li>
+      <li class="nl-item"><a href="/contact" class="nl-a">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <button id="theme-toggle" aria-label="Toggle dark mode">
+        <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
+      <a href="/login" class="btn-nav-signin">Sign In</a>
+      <a href="/learn" class="btn-nav-orange"><i class="fas fa-graduation-cap"></i> Learn</a>
+      <a href="/contact" class="btn-nav-start">Get Started <i class="fas fa-arrow-right" style="font-size:.7rem"></i></a>
+    </div>
+    <div class="mob-quick" id="mobQuick">
+      <button class="mob-quick-btn" id="mobThemeBtn" aria-label="Toggle dark mode"><i class="fas fa-moon"></i></button>
+      <a href="https://wa.me/254769329340?text=Hello%20NeurowexTech!" target="_blank" rel="noopener noreferrer" class="mob-quick-wa" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      <button class="ham-btn" id="hamBtn" aria-label="Open menu" aria-expanded="false">
+        <span class="ham-line"></span><span class="ham-line"></span><span class="ham-line"></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <div class="container">
+    <div class="breadcrumb-inner">
+      <a href="/" class="breadcrumb-item"><i class="fas fa-home" style="font-size:.62rem"></i> Home</a>
+      <i class="fas fa-chevron-right breadcrumb-sep" style="font-size:.55rem"></i>
+      <a href="/portfolio" class="breadcrumb-item">Portfolio</a>
+      <i class="fas fa-chevron-right breadcrumb-sep" style="font-size:.55rem"></i>
+      <span class="breadcrumb-item current">{{project.name}}</span>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL HERO -->
+<section class="detail-hero">
+  <div class="container">
+    <div class="detail-hero-inner">
+      <div data-aos="fade-right">
+        <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:16px">
+          {{#if project.category}}
+          <span class="cat-badge"><i class="fas fa-tag" style="font-size:.6rem"></i> {{project.category}}</span>
+          {{/if}}
+          {{#if project.featured}}
+          <span class="featured-badge"><i class="fas fa-star" style="font-size:.6rem"></i> Featured</span>
+          {{/if}}
+        </div>
+        <h1>{{project.name}}</h1>
+        {{#if project.description}}
+        <p class="detail-desc">{{project.description}}</p>
+        {{/if}}
+        <div class="meta-row">
+          {{#if project.category}}<span><i class="fas fa-folder"></i> {{project.category}}</span>{{/if}}
+          <span><i class="fas fa-building"></i> NeurowexTech</span>
+          <span><i class="fas fa-check-circle" style="color:var(--emerald)"></i> Delivered</span>
+        </div>
+        <div class="detail-actions">
+          {{#if project.live_demo_url}}
+          <a href="{{project.live_demo_url}}" target="_blank" rel="noopener noreferrer" class="btn-live">
+            <i class="fas fa-external-link-alt"></i> View Live Demo
+          </a>
+          {{/if}}
+          <a href="/portfolio" class="btn-back">
+            <i class="fas fa-arrow-left"></i> All Projects
+          </a>
+        </div>
+      </div>
+      <div data-aos="fade-left" data-aos-delay="80">
+        <div class="detail-img-wrap">
+          {{#if project.image_url}}
+          <img src="{{project.image_url}}" alt="{{project.name}} screenshot" loading="lazy"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="img-fallback">
+            {{#if (eq project.category "Web App")}}🌐{{/if}}
+            {{#if (eq project.category "Mobile App")}}📱{{/if}}
+            {{#if (eq project.category "E-commerce")}}🛒{{/if}}
+            {{#if (eq project.category "Healthcare")}}🏥{{/if}}
+          </div>
+          {{else}}
+          <div class="img-fallback" style="display:flex">
+            {{#if (eq project.category "Web App")}}🌐{{/if}}
+            {{#if (eq project.category "Mobile App")}}📱{{/if}}
+            {{#if (eq project.category "E-commerce")}}🛒{{/if}}
+            {{#if (eq project.category "Healthcare")}}🏥{{/if}}
+            {{#unless project.category}}💡{{/unless}}
+          </div>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DETAIL BODY -->
+<section style="padding-bottom:64px">
+  <div class="container">
+    <div class="detail-grid">
+      <!-- Main -->
+      <div>
+        {{#if project.description}}
+        <div class="detail-card" data-aos="fade-up">
+          <h2><i class="fas fa-align-left" style="font-size:.85rem;color:var(--blue);margin-right:8px"></i>Project Overview</h2>
+          <p style="font-size:.9rem;color:var(--slate);line-height:1.84">{{project.description}}</p>
+        </div>
+        {{/if}}
+        <div class="detail-card" data-aos="fade-up" data-aos-delay="60">
+          <h2><i class="fas fa-info-circle" style="font-size:.85rem;color:var(--blue);margin-right:8px"></i>Project Details</h2>
+          <div class="info-row">
+            <div>
+              <div class="info-item-lbl">Project Name</div>
+              <div class="info-item-val">{{project.name}}</div>
+            </div>
+            {{#if project.category}}
+            <div>
+              <div class="info-item-lbl">Category</div>
+              <div class="info-item-val">{{project.category}}</div>
+            </div>
+            {{/if}}
+            <div>
+              <div class="info-item-lbl">Status</div>
+              <div class="info-item-val" style="color:var(--emerald);display:flex;align-items:center;gap:5px">
+                <i class="fas fa-check-circle" style="font-size:.75rem"></i> Delivered
+              </div>
+            </div>
+            <div>
+              <div class="info-item-lbl">Built By</div>
+              <div class="info-item-val">NeurowexTech</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Sidebar -->
+      <div>
+        <div class="detail-card" data-aos="fade-left">
+          <h2 style="font-size:1rem;margin-bottom:16px"><i class="fas fa-rocket" style="font-size:.85rem;color:var(--accent);margin-right:8px"></i>Start a Similar Project</h2>
+          <p style="font-size:.82rem;color:var(--slate);line-height:1.72;margin-bottom:18px">Like what you see? Let's talk — we build fast, ship on time, and make your vision real.</p>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <a href="/contact" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:var(--r-pill);background:var(--g-blue);color:#fff;font-size:.84rem;font-weight:700;transition:var(--t)" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+              <i class="fas fa-comments"></i> Discuss Your Project
+            </a>
+            <a href="https://wa.me/254769329340?text=Hi%20NeurowexTech!%20I%20saw%20the%20{{project.name}}%20project." target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:var(--r-pill);background:#25d366;color:#fff;font-size:.84rem;font-weight:700;transition:var(--t)" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+              <i class="fab fa-whatsapp"></i> WhatsApp Us
+            </a>
+            {{#if project.live_demo_url}}
+            <a href="{{project.live_demo_url}}" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:var(--r-pill);border:1.5px solid var(--mist);font-size:.84rem;font-weight:700;color:var(--slate);transition:var(--t)" onmouseover="this.style.borderColor='var(--blue)';this.style.color='var(--blue)'" onmouseout="this.style.borderColor='var(--mist)';this.style.color='var(--slate)'">
+              <i class="fas fa-external-link-alt"></i> View Live Demo
+            </a>
+            {{/if}}
+          </div>
+        </div>
+        <div class="detail-card" data-aos="fade-left" data-aos-delay="60">
+          <h2 style="font-size:1rem;margin-bottom:16px"><i class="fas fa-briefcase" style="font-size:.85rem;color:var(--blue);margin-right:8px"></i>Explore More</h2>
+          <a href="/portfolio" style="display:flex;align-items:center;justify-content:space-between;font-size:.84rem;font-weight:600;color:var(--blue);padding:10px 0;border-bottom:1px solid var(--mist)">
+            All Portfolio <i class="fas fa-arrow-right" style="font-size:.7rem"></i>
+          </a>
+          <a href="/#services" style="display:flex;align-items:center;justify-content:space-between;font-size:.84rem;font-weight:600;color:var(--slate);padding:10px 0;transition:color var(--t)" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--slate)'">
+            Our Services <i class="fas fa-arrow-right" style="font-size:.7rem"></i>
+          </a>
+          <a href="/learn" style="display:flex;align-items:center;justify-content:space-between;font-size:.84rem;font-weight:600;color:var(--slate);padding:10px 0;transition:color var(--t)" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--slate)'">
+            Academy <i class="fas fa-arrow-right" style="font-size:.7rem"></i>
+          </a>
+          <a href="/contact" style="display:flex;align-items:center;justify-content:space-between;font-size:.84rem;font-weight:600;color:var(--slate);padding:10px 0;transition:color var(--t)" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--slate)'">
+            Contact Us <i class="fas fa-arrow-right" style="font-size:.7rem"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-band" aria-label="Call to action">
+  <div class="container" style="position:relative;z-index:1">
+    <div style="display:inline-flex;align-items:center;gap:7px;font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(147,197,253,.75);background:rgba(37,99,235,.12);border:1px solid rgba(37,99,235,.2);padding:5px 14px;border-radius:var(--r-pill);margin-bottom:20px" data-aos="zoom-in">Let's Work Together</div>
+    <h2 style="font-weight:400;color:#fff;font-size:clamp(1.8rem,5vw,3.2rem);margin-bottom:14px;line-height:1.06;text-align:center" data-aos="zoom-in" data-aos-delay="40">
+      Have a project in mind?<br>
+      <span style="font-style:italic;color:rgba(255,255,255,.35);font-weight:300;font-size:clamp(1.2rem,3.3vw,2rem)">Let's build it together.</span>
+    </h2>
+    <p style="color:rgba(255,255,255,.5);font-size:clamp(.9rem,2.3vw,1.05rem);margin:0 auto 34px;max-width:500px;text-align:center;line-height:1.76" data-aos="zoom-in" data-aos-delay="80">
+      Free 30-minute consultation — we scope your idea, answer every question, and give you a clear plan with no strings attached.
+    </p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap" data-aos="zoom-in" data-aos-delay="120">
+      <a href="/contact" class="cta-btn-white">Start Your Project <i class="fas fa-arrow-right"></i></a>
+      <a href="/portfolio" class="cta-btn-orange"><i class="fas fa-briefcase"></i> All Portfolio</a>
+      <a href="https://wa.me/254769329340?text=Hello%20NeurowexTech!" target="_blank" rel="noopener noreferrer" class="btn-wa-cta"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-accent-bar"></div>
+  <div class="footer-cta-strip">
+    <div class="container">
+      <div class="footer-cta-inner">
+        <div class="footer-cta-text"><h4>Ready to build something great?</h4><p>Free 30-min consultation — no strings attached.</p></div>
+        <div class="footer-cta-actions">
+          <a href="/contact" class="btn-primary">Start a Project <i class="fas fa-arrow-right"></i></a>
+          <a href="https://wa.me/254769329340?text=Hello%20NeurowexTech!" target="_blank" rel="noopener noreferrer" class="btn-wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-body">
+    <div class="container">
+      <div class="footer-cols">
+        <div>
+          <div class="footer-brand-name"><span class="footer-brand-dot"></span>Neurowex<em>Tech</em></div>
+          <p class="footer-tagline">We turn bold ideas into successful digital products — fast, scalable, and built to last.</p>
+          <div class="footer-socials">
+            <a href="https://www.facebook.com/share/1928ETerkE/" target="_blank" rel="noopener noreferrer" class="fsoc fb" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.linkedin.com/in/neurowex-tech-588045312" target="_blank" rel="noopener noreferrer" class="fsoc li" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://www.instagram.com/neorowex_tech_solutions" target="_blank" rel="noopener noreferrer" class="fsoc ig" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://youtube.com/@neurowextech?si=CSiI92E2peTQmngO" target="_blank" rel="noopener noreferrer" class="fsoc yt" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://wa.me/254769329340" target="_blank" rel="noopener noreferrer" class="fsoc wa" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-links">
+            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="/portfolio"><i class="fas fa-briefcase"></i> Portfolio</a></li>
+            <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+            <li><a href="/learn" class="academy-link"><i class="fas fa-graduation-cap"></i> Academy 🎓</a></li>
+            <li><a href="/blog"><i class="fas fa-rss"></i> Blog</a></li>
+            <li><a href="/about"><i class="fas fa-info-circle"></i> About Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Services</div>
+          <ul class="footer-links">
+            <li><a href="/web_dev"><i class="fas fa-laptop-code"></i> Web Development</a></li>
+            <li><a href="/graphic_design"><i class="fas fa-palette"></i> Graphic Design</a></li>
+            <li><a href="/seo"><i class="fas fa-search"></i> SEO & Marketing</a></li>
+            <li><a href="/ai-solutions"><i class="fas fa-robot"></i> AI Solutions</a></li>
+            <li><a href="/cybersecurity"><i class="fas fa-shield-alt"></i> Cybersecurity</a></li>
+            <li><a href="/ecommerce"><i class="fas fa-shopping-cart"></i> E-Commerce</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Contact</div>
+          <div class="footer-contact-item"><div class="fci-icon"><i class="fas fa-envelope"></i></div><div class="fci-text"><span class="fci-label">Email</span><span class="fci-val"><a href="mailto:techneurowex@gmail.com">techneurowex@gmail.com</a></span></div></div>
+          <div class="footer-contact-item"><div class="fci-icon"><i class="fas fa-phone-alt"></i></div><div class="fci-text"><span class="fci-label">Phone</span><span class="fci-val"><a href="tel:+254769329340">+254 769 329 340</a></span></div></div>
+          <div class="footer-contact-item"><div class="fci-icon"><i class="fas fa-map-marker-alt"></i></div><div class="fci-text"><span class="fci-label">Location</span><span class="fci-val">Nairobi, Kenya 🇰🇪</span></div></div>
+          <div class="footer-hours"><span class="hours-dot"></span> Mon – Fri · 9 am – 6 pm EAT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr class="footer-divider">
+  <div class="footer-bottom-bar">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="footer-copy">© {{currentYear}} NeurowexTech. All rights reserved.</p>
+        <nav class="footer-legal" aria-label="Legal links">
+          <a href="/privacy-policy">Privacy</a>
+          <a href="/terms-of-service">Terms</a>
+          <a href="/cookie-policy">Cookies</a>
+        </nav>
+        <p class="footer-made-in">Made with <span>♥</span> in Nairobi</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- BACK TO TOP -->
+<button id="back-to-top" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
+
+<!-- WA FLOAT -->
+<div id="wa-float">
+  <a href="https://wa.me/254769329340?text=Hello%20NeurowexTech!" target="_blank" rel="noopener noreferrer" class="wa-fab" aria-label="Chat on WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+    <span id="wa-badge" aria-hidden="true"></span>
+  </a>
+</div>
+
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script>
+AOS.init({duration:720,once:true,offset:50,easing:'ease-out-cubic'});
+
+/* CURSOR */
+(function(){var dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');if(!dot||!ring)return;var mx=window.innerWidth/2,my=window.innerHeight/2,rx=mx,ry=my;document.addEventListener('mouseleave',function(){document.body.classList.add('cursor-hidden');});document.addEventListener('mouseenter',function(){document.body.classList.remove('cursor-hidden');});document.addEventListener('mousedown',function(){document.body.classList.add('cursor-click');});document.addEventListener('mouseup',function(){document.body.classList.remove('cursor-click');});window.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';},{passive:true});(function loop(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();document.querySelectorAll('a,button,[role="button"]').forEach(function(el){el.addEventListener('mouseenter',function(){document.body.classList.add('cursor-hover');});el.addEventListener('mouseleave',function(){document.body.classList.remove('cursor-hover');});});})();
+
+/* SCROLL */
+var navbar=document.getElementById('mainNav'),btt=document.getElementById('back-to-top'),sp=document.getElementById('scroll-progress');
+window.addEventListener('scroll',function(){var st=window.pageYOffset,dh=document.documentElement.scrollHeight-window.innerHeight;sp.style.width=(dh>0?(st/dh)*100:0)+'%';navbar.classList.toggle('scrolled',st>40);btt.classList.toggle('visible',st>400);},{passive:true});
+btt.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+
+/* MOBILE NAV */
+var mo=document.getElementById('mobOverlay'),mp=document.getElementById('mobPanel'),hb=document.getElementById('hamBtn'),mc=document.getElementById('mobClose'),st2=document.getElementById('mobSvcToggle'),ss=document.getElementById('mobSvcSub');
+function openM(){mo.classList.add('open');mp.classList.add('open');hb.setAttribute('aria-expanded','true');document.body.style.overflow='hidden';}
+function closeM(){mp.classList.remove('open');mo.classList.remove('open');hb.setAttribute('aria-expanded','false');document.body.style.overflow='';}
+hb.addEventListener('click',openM);mc.addEventListener('click',closeM);mo.addEventListener('click',closeM);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&mp.classList.contains('open'))closeM();});
+st2.addEventListener('click',function(){var o=ss.classList.toggle('open');st2.setAttribute('aria-expanded',o);});
+
+/* THEME */
+var tb=document.getElementById('theme-toggle'),mtb=document.getElementById('mobThemeBtn');
+var dark=localStorage.getItem('nw-theme')==='dark'||(!localStorage.getItem('nw-theme')&&window.matchMedia('(prefers-color-scheme:dark)').matches);
+var MOON='<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>';
+var SUN='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+function applyT(){document.body.classList.toggle('dark',dark);tb.innerHTML=dark?SUN:MOON;if(mtb)mtb.innerHTML=dark?'<i class="fas fa-sun"></i>':'<i class="fas fa-moon"></i>';}
+applyT();
+function toggleT(){dark=!dark;localStorage.setItem('nw-theme',dark?'dark':'light');applyT();}
+tb.addEventListener('click',toggleT);if(mtb)mtb.addEventListener('click',toggleT);
+</script>
+<style>
+#soc-sidebar{position:fixed;right:0;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;z-index:9000;border-radius:6px 0 0 6px;overflow:hidden;box-shadow:-2px 0 16px rgba(0,0,0,.2)}
+.ss-link{width:42px;height:42px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.88rem;text-decoration:none;transition:width .2s,opacity .15s}
+.ss-link:hover{width:52px;opacity:.9}
+.ss-link.fb{background:#1877f2}
+.ss-link.yt{background:#ff0000}
+.ss-link.li{background:#0077b5}
+.ss-link.ig{background:linear-gradient(180deg,#f58529,#dd2a7b,#8134af,#515bd4)}
+@media(max-width:640px){#soc-sidebar{display:none}}
+@media print{#soc-sidebar{display:none}}
+</style>
+<aside id="soc-sidebar" aria-label="Follow us on social media">
+  <a href="https://www.facebook.com/share/1928ETerkE/" target="_blank" rel="noopener noreferrer" class="ss-link fb" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+  <a href="https://youtube.com/@neurowextech?si=CSiI92E2peTQmngO" target="_blank" rel="noopener noreferrer" class="ss-link yt" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+  <a href="https://www.linkedin.com/in/neurowex-tech-588045312" target="_blank" rel="noopener noreferrer" class="ss-link li" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+  <a href="https://www.instagram.com/neorowex_tech_solutions" target="_blank" rel="noopener noreferrer" class="ss-link ig" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+</aside>
+{{> widget}}
+</body>
+</html>

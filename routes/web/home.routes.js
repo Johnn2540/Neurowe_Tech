@@ -10,10 +10,17 @@ const router = Router();
 
 router.get('/', async (req, res) => {
     try {
-        const [featuredR, blogsR] = await Promise.all([
+        const [featuredR, blogsR, coursesR] = await Promise.all([
             db.query('SELECT * FROM projects WHERE featured=true ORDER BY created_at DESC LIMIT 6')
               .catch(() => ({ rows: [] })),
-            db.query("SELECT * FROM blog_posts WHERE published=true ORDER BY created_at DESC LIMIT 3")
+            db.query("SELECT id,title,slug,category,excerpt,image_url,created_at FROM blog_posts WHERE published=true ORDER BY created_at DESC LIMIT 3")
+              .catch(() => ({ rows: [] })),
+            db.query(`SELECT c.*, u.username AS instructor_name,
+                             (SELECT COUNT(*) FROM courses WHERE published=true) AS total_count
+                      FROM courses c
+                      LEFT JOIN users u ON u.id = c.instructor_id
+                      WHERE c.published = true
+                      ORDER BY c.created_at DESC LIMIT 3`)
               .catch(() => ({ rows: [] })),
         ]);
         const blogs = blogsR.rows.map(p => ({
@@ -23,15 +30,18 @@ router.get('/', async (req, res) => {
                       year: 'numeric', month: 'short', day: 'numeric',
                   }) : '',
         }));
+        const courseCount = parseInt(coursesR.rows[0]?.total_count || 0, 10);
         return res.render('home', {
             title:            'NeurowexTech – Web & Mobile Apps That Actually Ship',
             description:      'Custom web and mobile app development for startups and businesses.',
             featuredProjects: featuredR.rows,
             recentBlogs:      blogs,
+            featuredCourses:  coursesR.rows,
+            courseCount,
         });
     } catch (err) {
         console.error('[home] render error:', err);
-        return res.render('home', { title: 'NeurowexTech', featuredProjects: [], recentBlogs: [] });
+        return res.render('home', { title: 'NeurowexTech', featuredProjects: [], recentBlogs: [], featuredCourses: [], courseCount: 0 });
     }
 });
 

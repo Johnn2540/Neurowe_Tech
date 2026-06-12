@@ -49,7 +49,9 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,600&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -72,8 +74,8 @@
             --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
             --radius-lg: 16px;
             --radius-md: 12px;
-            --font-sans: 'Inter', sans-serif;
-            --font-heading: 'Syne', var(--font-sans);
+            --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+            --font-heading: 'Fraunces', Georgia, serif;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -529,9 +531,10 @@
                 <h5>NeurowexTech</h5>
                 <p class="small">Helping you learn new skills and grow your career.</p>
                 <div class="d-flex gap-2">
-                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.facebook.com/share/1928ETerkE/" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.linkedin.com/in/neurowex-tech-588045312" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://www.instagram.com/neorowex_tech_solutions" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://youtube.com/@neurowextech?si=CSiI92E2peTQmngO" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
             <div class="col-md-2 mb-4">
@@ -601,6 +604,23 @@
     function applyTheme() { document.body.classList.toggle('dark', dark); }
     applyTheme();
 </script>
+<style>
+#soc-sidebar{position:fixed;right:0;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;z-index:9000;border-radius:6px 0 0 6px;overflow:hidden;box-shadow:-2px 0 16px rgba(0,0,0,.2)}
+.ss-link{width:42px;height:42px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.88rem;text-decoration:none;transition:width .2s,opacity .15s}
+.ss-link:hover{width:52px;opacity:.9}
+.ss-link.fb{background:#1877f2}
+.ss-link.yt{background:#ff0000}
+.ss-link.li{background:#0077b5}
+.ss-link.ig{background:linear-gradient(180deg,#f58529,#dd2a7b,#8134af,#515bd4)}
+@media(max-width:640px){#soc-sidebar{display:none}}
+@media print{#soc-sidebar{display:none}}
+</style>
+<aside id="soc-sidebar" aria-label="Follow us on social media">
+  <a href="https://www.facebook.com/share/1928ETerkE/" target="_blank" rel="noopener noreferrer" class="ss-link fb" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+  <a href="https://youtube.com/@neurowextech?si=CSiI92E2peTQmngO" target="_blank" rel="noopener noreferrer" class="ss-link yt" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+  <a href="https://www.linkedin.com/in/neurowex-tech-588045312" target="_blank" rel="noopener noreferrer" class="ss-link li" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+  <a href="https://www.instagram.com/neorowex_tech_solutions" target="_blank" rel="noopener noreferrer" class="ss-link ig" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+</aside>
 {{> widget}}
 </body>
 </html>

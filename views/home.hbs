@@ -633,9 +633,8 @@ footer{background:#060d1e;color:rgba(255,255,255,.5);font-size:.82rem;border-top
 .footer-socials{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
 .fsoc{width:32px;height:32px;border-radius:var(--r-md);display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);font-size:.8rem;transition:all .2s;text-decoration:none}
 .fsoc:hover{transform:translateY(-3px)}
-.fsoc.tw:hover{background:#1da1f2;color:#fff}
+.fsoc.fb:hover{background:#1877f2;color:#fff}
 .fsoc.li:hover{background:#0077b5;color:#fff}
-.fsoc.gh:hover{background:#fff;color:#111}
 .fsoc.ig:hover{background:linear-gradient(135deg,#fd5949,#d6249f,#285aeb);color:#fff}
 .fsoc.yt:hover{background:#ff0000;color:#fff}
 .fsoc.wa:hover{background:#25D366;color:#fff}
@@ -733,7 +732,7 @@ footer{background:#060d1e;color:rgba(255,255,255,.5);font-size:.82rem;border-top
 
 /* PORTFOLIO GRID */
 .port-grid{display:grid;grid-template-columns:1fr;gap:20px}
-.port-card{display:flex;flex-direction:column;background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);overflow:hidden;transition:var(--t);text-decoration:none;color:inherit}
+.port-card{display:flex;flex-direction:column;background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);overflow:hidden;transition:var(--t);text-decoration:none;color:inherit;position:relative}
 .port-card:hover{transform:translateY(-6px);box-shadow:var(--sh-lg);border-color:rgba(37,99,235,.15)}
 .port-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--primary),var(--blue),var(--accent));transform:scaleX(0);transform-origin:left;transition:transform .38s;z-index:3}
 .port-card:hover::before{transform:scaleX(1)}
@@ -773,6 +772,34 @@ body.dark .blog-card,body.dark .port-card{background:#1a2236;border-color:rgba(2
 body.dark .blog-title,body.dark .port-name{color:rgba(255,255,255,.88)}
 body.dark .blog-excerpt,body.dark .port-cat{color:rgba(255,255,255,.45)}
 body.dark .blog-meta{color:rgba(255,255,255,.3)}
+
+/* COURSE GRID */
+.course-grid{display:grid;grid-template-columns:1fr;gap:20px}
+.course-card{display:flex;flex-direction:column;background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);overflow:hidden;transition:var(--t);text-decoration:none;color:inherit;position:relative}
+.course-card:hover{transform:translateY(-6px);box-shadow:var(--sh-lg);border-color:rgba(20,184,166,.25)}
+.course-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--teal),var(--blue),var(--accent));transform:scaleX(0);transform-origin:left;transition:transform .38s;z-index:3}
+.course-card:hover::before{transform:scaleX(1)}
+.course-thumb{position:relative;width:100%;height:176px;overflow:hidden;background:var(--surface);flex-shrink:0}
+.course-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.course-card:hover .course-thumb img{transform:scale(1.06)}
+.course-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.6rem;background:linear-gradient(135deg,rgba(20,184,166,.08),rgba(37,99,235,.06));color:var(--teal)}
+.course-level-badge{position:absolute;top:12px;left:12px;background:rgba(13,148,136,.85);color:#fff;border-radius:var(--r-pill);padding:3px 11px;font-size:.62rem;font-weight:700;text-transform:capitalize;letter-spacing:.4px;backdrop-filter:blur(8px)}
+.course-body{padding:16px 18px 18px;flex:1;display:flex;flex-direction:column;gap:6px}
+.course-cat{font-size:.67rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.9px}
+.course-title{font-family:var(--font-body);font-size:1rem;font-weight:700;color:var(--ink);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.course-desc{font-size:.8rem;color:var(--slate);line-height:1.65;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0}
+.course-meta{display:flex;align-items:center;justify-content:space-between;font-size:.73rem;color:var(--slate-l);gap:8px;margin-top:auto;padding-top:10px;border-top:1px solid var(--mist)}
+.course-meta i{font-size:.65rem}
+.course-price{font-weight:700;color:var(--teal);font-family:var(--font-mono);font-size:.78rem}
+.course-price.free{color:var(--emerald)}
+.course-cta{font-size:.79rem;font-weight:700;color:var(--teal);display:inline-flex;align-items:center;gap:5px;transition:gap .18s}
+.course-card:hover .course-cta{gap:9px}
+@media(min-width:600px){.course-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:992px){.course-grid{grid-template-columns:repeat(3,1fr)}}
+body.dark .course-card{background:#1a2236;border-color:rgba(255,255,255,.07)}
+body.dark .course-title{color:rgba(255,255,255,.88)}
+body.dark .course-desc,body.dark .course-cat{color:rgba(255,255,255,.45)}
+body.dark .course-meta{color:rgba(255,255,255,.3);border-top-color:rgba(255,255,255,.06)}
 </style>
 </head>
 <body>
@@ -964,13 +991,13 @@ body.dark .blog-meta{color:rgba(255,255,255,.3)}
       <!-- RIGHT IMAGE PANEL -->
       <div class="hero-image-panel" aria-hidden="true">
         <div style="position:relative;width:100%">
-          <div class="hero-img-frame">
+          <div class="hero-img-frame" style="box-shadow:0 0 0 1px rgba(37,99,235,.22),0 0 0 5px rgba(37,99,235,.07),0 40px 100px rgba(0,0,0,.55)">
             <img src="/images/hero-image.jpg" alt="NeuroWex Tech digital solutions" loading="lazy" />
             <div class="hero-img-badge">
               <div class="hib-icon"><i class="fas fa-rocket"></i></div>
               <div class="hib-text">
                 <div class="hib-title">500+ Projects Delivered</div>
-                <div class="hib-sub">Web · Mobile · Design · AI · SEO</div>
+                <div class="hib-sub">Web · Mobile · AI · Design · Academy</div>
               </div>
               <div class="hib-rating">
                 <div class="hib-stars">★★★★★</div>
@@ -989,6 +1016,13 @@ body.dark .blog-meta{color:rgba(255,255,255,.3)}
             <div class="hfc-val" style="color:rgba(251,191,36,1)">4.9/5</div>
             <div class="hfc-label">Rating</div>
           </div>
+          {{#if courseCount}}
+          <div class="hero-float-card" style="bottom:42%;right:-22px;animation:float-a 6.5s .6s ease-in-out infinite">
+            <div class="hfc-icon">🎓</div>
+            <div class="hfc-val" style="color:rgba(52,211,153,1)">{{courseCount}}+</div>
+            <div class="hfc-label">Courses</div>
+          </div>
+          {{/if}}
         </div>
       </div>
     </div>
@@ -1137,6 +1171,47 @@ body.dark .blog-meta{color:rgba(255,255,255,.3)}
   </div>
 </section>
 
+<!-- FEATURED COURSES — Academy -->
+{{#if featuredCourses.length}}
+<section class="section-py bg-white-section" id="academy">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:44px;" data-aos="fade-up">
+      <div class="section-tag" style="color:var(--teal);background:rgba(13,148,136,.08);border-color:rgba(13,148,136,.2);"><i class="fas fa-graduation-cap" style="font-size:.7rem;margin-right:4px"></i>NeurowexTech Academy</div>
+      <h2 class="section-title">Learn <span style="background:linear-gradient(135deg,var(--teal),var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent">In-Demand</span> Skills</h2>
+      <p class="section-sub" style="margin:0 auto;">Master web development, AI, cybersecurity &amp; more — {{courseCount}}+ courses built for the modern digital economy.</p>
+    </div>
+    <div class="course-grid">
+      {{#each featuredCourses}}
+      <a href="/learn/course/{{id}}" class="course-card" data-aos="fade-up" data-aos-delay="60">
+        <div class="course-thumb">
+          {{#if thumbnail_url}}
+          <img src="{{thumbnail_url}}" alt="{{title}}" loading="lazy" onerror="this.style.display='none';this.parentElement.querySelector('.course-fallback').style.display='flex'"/>
+          <div class="course-fallback" style="display:none"><i class="fas fa-graduation-cap"></i></div>
+          {{else}}
+          <div class="course-fallback"><i class="fas fa-graduation-cap"></i></div>
+          {{/if}}
+          {{#if level}}<div class="course-level-badge">{{level}}</div>{{/if}}
+        </div>
+        <div class="course-body">
+          {{#if category}}<div class="course-cat">{{category}}</div>{{/if}}
+          <div class="course-title">{{title}}</div>
+          {{#if description}}<p class="course-desc">{{description}}</p>{{/if}}
+          <div class="course-meta">
+            {{#if instructor_name}}<span><i class="fas fa-user-tie"></i> {{instructor_name}}</span>{{/if}}
+            <span class="course-price {{#unless price}}free{{/unless}}">{{#if price}}KES {{price}}{{else}}Free{{/if}}</span>
+          </div>
+          <div class="course-cta">Enroll Now <i class="fas fa-arrow-right"></i></div>
+        </div>
+      </a>
+      {{/each}}
+    </div>
+    <div style="text-align:center;margin-top:40px;" data-aos="fade-up">
+      <a href="/learn" class="btn-orange">Browse All {{courseCount}}+ Courses <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+{{/if}}
+
 <!-- FEATURED PROJECTS -->
 {{#if featuredProjects.length}}
 <section class="section-py bg-ghost" id="portfolio">
@@ -1148,7 +1223,7 @@ body.dark .blog-meta{color:rgba(255,255,255,.3)}
     </div>
     <div class="port-grid">
       {{#each featuredProjects}}
-      <a href="/portfolio" class="port-card card-white" data-aos="zoom-in" data-aos-delay="60">
+      <a href="/portfolio/{{id}}" class="port-card card-white" data-aos="zoom-in" data-aos-delay="60">
         <div class="port-thumb">
           {{#if image_url}}
           <img src="{{image_url}}" alt="{{name}}" loading="lazy" class="port-img" onerror="this.style.display='none';this.parentElement.querySelector('.port-fallback').style.display='flex'"/>
@@ -1439,11 +1514,10 @@ body.dark .blog-meta{color:rgba(255,255,255,.3)}
           <div class="footer-brand-name"><span class="footer-brand-dot"></span>Neurowex<em>Tech</em></div>
           <p class="footer-tagline">We turn bold ideas into successful digital products — fast, scalable, and built to last.</p>
           <div class="footer-socials">
-            <a href="#" class="fsoc tw" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-            <a href="#" class="fsoc li" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-            <a href="#" class="fsoc gh" aria-label="GitHub"><i class="fab fa-github"></i></a>
-            <a href="#" class="fsoc ig" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="#" class="fsoc yt" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://www.facebook.com/share/1928ETerkE/" target="_blank" rel="noopener noreferrer" class="fsoc fb" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.linkedin.com/in/neurowex-tech-588045312" target="_blank" rel="noopener noreferrer" class="fsoc li" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://www.instagram.com/neorowex_tech_solutions" target="_blank" rel="noopener noreferrer" class="fsoc ig" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://youtube.com/@neurowextech?si=CSiI92E2peTQmngO" target="_blank" rel="noopener noreferrer" class="fsoc yt" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
             <a href="https://wa.me/254769329340" target="_blank" rel="noopener noreferrer" class="fsoc wa" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
           </div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;">
@@ -1553,6 +1627,23 @@ document.querySelectorAll('.faq-q').forEach(function(q){q.addEventListener('clic
 /* NEWSLETTER */
 document.getElementById('nlForm').addEventListener('submit',async function(e){e.preventDefault();var email=document.getElementById('nlEmail').value.trim(),consent=document.getElementById('nlConsent').checked,btn=document.getElementById('nlBtn'),msg=document.getElementById('nlMsg');if(!email||!/^\S+@\S+\.\S+$/.test(email)){msg.innerHTML='<span style="color:#ef4444"><i class="fas fa-exclamation-circle"></i> Please enter a valid email.</span>';return;}if(!consent){msg.innerHTML='<span style="color:#ef4444"><i class="fas fa-exclamation-circle"></i> Please agree to receive emails.</span>';return;}var orig=btn.innerHTML;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Subscribing...';btn.disabled=true;try{var res=await fetch('/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})});var data=await res.json();if(data.success){msg.innerHTML='<span style="color:var(--emerald)"><i class="fas fa-check-circle"></i> 🎉 Subscribed!</span>';document.getElementById('nlForm').reset();document.getElementById('nlConsent').checked=true;showToast('Subscribed! Welcome aboard 🎉');}else{msg.innerHTML='<span style="color:#ef4444"><i class="fas fa-exclamation-circle"></i> '+(data.message||'Failed. Please try again.')+'</span>';}}catch(err){msg.innerHTML='<span style="color:#ef4444"><i class="fas fa-exclamation-circle"></i> Network error. Please try again.</span>';}finally{btn.innerHTML=orig;btn.disabled=false;setTimeout(function(){msg.innerHTML='';},5500);}});
 </script>
+<style>
+#soc-sidebar{position:fixed;right:0;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;z-index:9000;border-radius:6px 0 0 6px;overflow:hidden;box-shadow:-2px 0 16px rgba(0,0,0,.2)}
+.ss-link{width:42px;height:42px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.88rem;text-decoration:none;transition:width .2s,opacity .15s}
+.ss-link:hover{width:52px;opacity:.9}
+.ss-link.fb{background:#1877f2}
+.ss-link.yt{background:#ff0000}
+.ss-link.li{background:#0077b5}
+.ss-link.ig{background:linear-gradient(180deg,#f58529,#dd2a7b,#8134af,#515bd4)}
+@media(max-width:640px){#soc-sidebar{display:none}}
+@media print{#soc-sidebar{display:none}}
+</style>
+<aside id="soc-sidebar" aria-label="Follow us on social media">
+  <a href="https://www.facebook.com/share/1928ETerkE/" target="_blank" rel="noopener noreferrer" class="ss-link fb" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+  <a href="https://youtube.com/@neurowextech?si=CSiI92E2peTQmngO" target="_blank" rel="noopener noreferrer" class="ss-link yt" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+  <a href="https://www.linkedin.com/in/neurowex-tech-588045312" target="_blank" rel="noopener noreferrer" class="ss-link li" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+  <a href="https://www.instagram.com/neorowex_tech_solutions" target="_blank" rel="noopener noreferrer" class="ss-link ig" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+</aside>
 {{> widget}}
 
 <!-- ═══ PWA Install Popup ═══════════════════════════════════════════════════ -->

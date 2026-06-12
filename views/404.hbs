@@ -1,114 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>404 - Page Not Found - NeurowexTech</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 – Page Not Found | NeurowexTech</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+:root{
+  --primary:#1c2b4a;--accent:#e05c2a;--accent-d:#c44e21;--blue:#2563eb;
+  --font-display:'Fraunces',Georgia,serif;--font-body:'Plus Jakarta Sans',system-ui,sans-serif;--font-mono:'JetBrains Mono',monospace;
+  --t:.22s cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-font-smoothing:antialiased;height:100%}
+body{font-family:var(--font-body);min-height:100svh;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;
+  background:linear-gradient(158deg,#060c1a 0%,#0c1628 45%,#111f3a 100%);color:#fff;}
+body.dark{background:linear-gradient(158deg,#030408 0%,#060a14 45%,#080e22 100%)}
 
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+.bg-mesh{position:absolute;inset:0;background-image:linear-gradient(rgba(37,99,235,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,.04) 1px,transparent 1px);background-size:52px 52px;pointer-events:none}
+.orb{position:absolute;border-radius:50%;pointer-events:none}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(37,99,235,.13) 0%,transparent 65%);top:-200px;right:-150px}
+.orb-2{width:440px;height:440px;background:radial-gradient(circle,rgba(224,92,42,.1) 0%,transparent 65%);bottom:-150px;left:-100px}
 
-    <style>
-        :root {
-            --blue: #2563eb;
-            --orange: #f97316;
-            --grad-blue: linear-gradient(135deg, #2563eb, #1d4ed8);
-            --font-head: 'Syne', sans-serif;
-            --font-body: 'Inter', sans-serif;
-        }
-        body {
-            font-family: var(--font-body);
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-        .error-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .error-card {
-            background: white;
-            border-radius: 20px;
-            padding: 50px 40px;
-            text-align: center;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-            animation: fadeInUp 0.6s ease;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .error-icon {
-            font-size: 5rem;
-            color: #f59e0b;
-            margin-bottom: 20px;
-        }
-        .error-code {
-            font-size: 6rem;
-            font-weight: 800;
-            font-family: var(--font-head);
-            background: var(--grad-blue);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 10px;
-        }
-        .error-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-        .error-message {
-            color: #6b7280;
-            margin-bottom: 30px;
-        }
-        .btn-home {
-            background: var(--grad-blue);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
-        .btn-home:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(37,99,235,0.3);
-            color: white;
-        }
-        @media (max-width: 576px) {
-            .error-card { padding: 30px 20px; }
-            .error-code { font-size: 4rem; }
-            .error-title { font-size: 1.2rem; }
-        }
-    </style>
+.wrap{position:relative;z-index:1;text-align:center;padding:40px 24px;max-width:580px;animation:fade-up .7s cubic-bezier(.22,1,.36,1) both}
+@keyframes fade-up{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+
+.brand{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:48px}
+.brand-logo{width:46px;height:46px;border-radius:50%;overflow:hidden;border:2px solid rgba(224,92,42,.4);background:var(--primary);flex-shrink:0}
+.brand-logo img{width:100%;height:100%;object-fit:cover}
+.brand-name{font-family:var(--font-display);font-size:1.15rem;font-weight:600;color:#fff;letter-spacing:-.02em}
+.brand-name em{font-style:normal;color:var(--accent)}
+
+.code{font-family:var(--font-mono);font-size:clamp(5rem,18vw,9.5rem);font-weight:400;line-height:1;
+  background:linear-gradient(135deg,rgba(147,197,253,.95),rgba(37,99,235,.6));
+  -webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:6px;letter-spacing:-.04em}
+
+h1{font-family:var(--font-display);font-size:clamp(1.4rem,4vw,2.1rem);font-weight:400;color:#fff;margin-bottom:14px;line-height:1.12}
+.desc{font-size:clamp(.88rem,2vw,.98rem);color:rgba(255,255,255,.48);line-height:1.78;margin-bottom:34px;max-width:440px;margin-left:auto;margin-right:auto}
+
+.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-body);font-size:.88rem;font-weight:700;padding:12px 26px;border-radius:12px;transition:var(--t);cursor:pointer;border:none;white-space:nowrap}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--blue));color:#fff;box-shadow:0 4px 18px rgba(37,99,235,.28)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(37,99,235,.42)}
+.btn-accent{background:linear-gradient(135deg,var(--accent),var(--accent-d));color:#fff;box-shadow:0 4px 18px rgba(224,92,42,.28)}
+.btn-accent:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(224,92,42,.4)}
+
+.quick-links{margin-top:40px;display:flex;gap:20px;justify-content:center;flex-wrap:wrap;padding-top:28px;border-top:1px solid rgba(255,255,255,.07)}
+.quick-link{font-size:.78rem;font-weight:600;color:rgba(255,255,255,.32);transition:color .18s}
+.quick-link:hover{color:rgba(255,255,255,.68)}
+.quick-link i{font-size:.65rem;margin-right:4px}
+</style>
 </head>
 <body>
-    <div class="error-container">
-        <div class="error-card">
-            <div class="error-icon">
-                <i class="fas fa-compass"></i>
-            </div>
-            <div class="error-code">404</div>
-            <h1 class="error-title">Page Not Found</h1>
-            <p class="error-message">{{message}}</p>
-            <a href="/" class="btn-home">
-                <i class="fas fa-home me-2"></i> Back to Home
-            </a>
-        </div>
+<div class="bg-mesh" aria-hidden="true"></div>
+<div class="orb orb-1" aria-hidden="true"></div>
+<div class="orb orb-2" aria-hidden="true"></div>
+
+<div class="wrap">
+  <a href="/" class="brand" aria-label="NeurowexTech Home">
+    <div class="brand-logo">
+      <img src="/images/logo.png" alt="NeurowexTech logo" onerror="this.parentElement.style.background='var(--primary)'">
     </div>
+    <div class="brand-name">Neurowex<em>Tech</em></div>
+  </a>
+
+  <div class="code" aria-hidden="true">404</div>
+  <h1>Page Not Found</h1>
+  <p class="desc">{{#if message}}{{message}}{{else}}The page you're looking for doesn't exist or has been moved. Let's get you back on track.{{/if}}</p>
+
+  <div class="actions">
+    <a href="/" class="btn btn-primary"><i class="fas fa-home"></i> Back to Home</a>
+    <a href="/contact" class="btn btn-accent"><i class="fas fa-envelope"></i> Contact Us</a>
+  </div>
+
+  <nav class="quick-links" aria-label="Popular pages">
+    <a href="/learn" class="quick-link"><i class="fas fa-graduation-cap"></i>Academy</a>
+    <a href="/portfolio" class="quick-link"><i class="fas fa-briefcase"></i>Portfolio</a>
+    <a href="/blog" class="quick-link"><i class="fas fa-rss"></i>Blog</a>
+    <a href="/services" class="quick-link"><i class="fas fa-th-large"></i>Services</a>
+    <a href="/about" class="quick-link"><i class="fas fa-info-circle"></i>About</a>
+  </nav>
+</div>
+
+<script>
+(function(){var d=localStorage.getItem('nw-theme')==='dark'||(!localStorage.getItem('nw-theme')&&window.matchMedia('(prefers-color-scheme:dark)').matches);document.body.classList.toggle('dark',d);})();
+</script>
+<style>
+#soc-sidebar{position:fixed;right:0;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;z-index:9000;border-radius:6px 0 0 6px;overflow:hidden;box-shadow:-2px 0 16px rgba(0,0,0,.2)}
+.ss-link{width:42px;height:42px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.88rem;text-decoration:none;transition:width .2s,opacity .15s}
+.ss-link:hover{width:52px;opacity:.9}
+.ss-link.fb{background:#1877f2}
+.ss-link.yt{background:#ff0000}
+.ss-link.li{background:#0077b5}
+.ss-link.ig{background:linear-gradient(180deg,#f58529,#dd2a7b,#8134af,#515bd4)}
+@media(max-width:640px){#soc-sidebar{display:none}}
+@media print{#soc-sidebar{display:none}}
+</style>
+<aside id="soc-sidebar" aria-label="Follow us on social media">
+  <a href="https://www.facebook.com/share/1928ETerkE/" target="_blank" rel="noopener noreferrer" class="ss-link fb" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+  <a href="https://youtube.com/@neurowextech?si=CSiI92E2peTQmngO" target="_blank" rel="noopener noreferrer" class="ss-link yt" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+  <a href="https://www.linkedin.com/in/neurowex-tech-588045312" target="_blank" rel="noopener noreferrer" class="ss-link li" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+  <a href="https://www.instagram.com/neorowex_tech_solutions" target="_blank" rel="noopener noreferrer" class="ss-link ig" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+</aside>
 {{> widget}}
 </body>
 </html>

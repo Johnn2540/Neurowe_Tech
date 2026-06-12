@@ -1,514 +1,783 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>About Us | NeurowexTech – Web & App Development Kenya</title>
-    <meta name="description" content="Learn about NeurowexTech — a Nairobi-based team building professional web applications, mobile apps and digital solutions for businesses across Kenya and Africa." />
-    <link rel="canonical" href="https://neurowextech.co.ke/about" />
-    <!-- Open Graph -->
-    <meta property="og:title"       content="About NeurowexTech | Web & App Development Kenya" />
-    <meta property="og:description" content="A Nairobi-based team building professional web applications, mobile apps and digital solutions for businesses across Kenya and Africa." />
-    <meta property="og:url"         content="https://neurowextech.co.ke/about" />
-    <meta property="og:type"        content="website" />
-    <meta property="og:site_name"   content="NeurowexTech" />
-    <meta property="og:locale"      content="en_KE" />
-    <!-- Twitter Card -->
-    <meta name="twitter:card"        content="summary" />
-    <meta name="twitter:site"        content="@neurowextech" />
-    <meta name="twitter:title"       content="About NeurowexTech" />
-    <meta name="twitter:description" content="A Nairobi-based team building professional web applications, mobile apps and digital solutions for businesses across Kenya and Africa." />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us | NeurowexTech – Web & App Development Kenya</title>
+  <meta name="description" content="Learn about NeurowexTech — a Nairobi-based team building professional web applications, mobile apps and digital solutions for businesses across Kenya and Africa." />
+  <link rel="canonical" href="https://neurowextech.co.ke/about" />
+  <meta property="og:title"       content="About NeurowexTech | Web & App Development Kenya" />
+  <meta property="og:description" content="A Nairobi-based team building professional web applications, mobile apps and digital solutions for businesses across Kenya and Africa." />
+  <meta property="og:url"         content="https://neurowextech.co.ke/about" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:site_name"   content="NeurowexTech" />
+  <meta property="og:locale"      content="en_KE" />
+  <meta name="twitter:card"        content="summary" />
+  <meta name="twitter:site"        content="@neurowextech" />
+  <meta name="twitter:title"       content="About NeurowexTech" />
+  <meta name="twitter:description" content="A Nairobi-based team building professional web applications, mobile apps and digital solutions for businesses across Kenya and Africa." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+<style>
+:root {
+  --primary:#1c2b4a; --primary-d:#111d33; --primary-l:#2d4270;
+  --accent:#e05c2a; --accent-d:#c44e21; --accent-l:#f07040; --accent-pale:rgba(224,92,42,.08);
+  --blue:#2563eb; --blue-d:#1d4ed8; --blue-l:#3b82f6;
+  --blue-pale:rgba(37,99,235,.07); --blue-pale2:rgba(37,99,235,.13);
+  --ink:#0f172a; --ink-2:#1e293b;
+  --slate:#64748b; --slate-l:#94a3b8;
+  --mist:#e2e8f0; --ghost:#f8fafc; --white:#ffffff; --surface:#f1f5f9;
+  --emerald:#059669; --teal:#0d9488; --gold:#d97706; --rose:#e11d48;
+  --g-blue:linear-gradient(135deg,#2563eb,#1d4ed8);
+  --g-accent:linear-gradient(135deg,#e05c2a,#c44e21);
+  --g-brand:linear-gradient(135deg,#1c2b4a 0%,#2563eb 50%,#e05c2a 100%);
+  --r-xs:4px;--r-sm:6px;--r-md:8px;--r-lg:12px;--r-xl:16px;--r-2xl:20px;--r-pill:999px;
+  --nav-h:66px;
+  --sh-sm:0 1px 3px rgba(15,23,42,.06),0 1px 2px rgba(15,23,42,.04);
+  --sh-md:0 4px 16px rgba(15,23,42,.08),0 2px 6px rgba(15,23,42,.05);
+  --sh-lg:0 12px 40px rgba(15,23,42,.12),0 4px 12px rgba(15,23,42,.06);
+  --sh-xl:0 20px 60px rgba(15,23,42,.16),0 8px 20px rgba(15,23,42,.08);
+  --sh-blue:0 4px 18px rgba(37,99,235,.28);
+  --sh-accent:0 4px 18px rgba(224,92,42,.28);
+  --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);--t:.22s var(--ease);
+  --font-display:'Fraunces',Georgia,serif;
+  --font-body:'Plus Jakarta Sans',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
 
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- AOS -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{font-family:var(--font-body);background:var(--ghost);color:var(--ink);overflow-x:hidden;font-size:16px;line-height:1.6}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-display);line-height:1.1;letter-spacing:-.02em}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--ink)}
+::-webkit-scrollbar-thumb{background:var(--blue);border-radius:4px}
 
-    <style>
-        :root {
-            --blue: #2563eb;
-            --orange: #f97316;
-            --dark: #050b18;
-            --dark-2: #0d1526;
-            --light: #f8fafc;
-            --light-2: #e2e8f0;
-            --text: #334155;
-            --text-light: #94a3b8;
-            --grad-blue: linear-gradient(135deg, #2563eb, #1d4ed8);
-            --font-head: 'Syne', sans-serif;
-            --font-body: 'Inter', sans-serif;
-            --radius: 20px;
-            --radius-sm: 12px;
-            --transition: all 0.35s ease;
-        }
+@media(pointer:fine){body{cursor:none}a,button,[role="button"],input,textarea,select,label{cursor:none}}
+#cursor-dot{position:fixed;width:8px;height:8px;border-radius:50%;background:var(--accent);pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:background .25s,transform .2s var(--spring),opacity .2s,width .18s,height .18s,border-radius .18s;will-change:left,top}
+#cursor-ring{position:fixed;width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(224,92,42,.5);pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:width .22s var(--ease),height .22s var(--ease),border-color .22s,background .22s,opacity .2s;display:flex;align-items:center;justify-content:center;will-change:left,top}
+#cursor-label{font-size:.52rem;font-weight:800;color:#fff;letter-spacing:.1em;text-transform:uppercase;opacity:0;transition:opacity .15s;white-space:nowrap;user-select:none;pointer-events:none}
+body.cursor-hover #cursor-dot{transform:translate(-50%,-50%) scale(2.5);background:var(--blue)}
+body.cursor-hover #cursor-ring{width:54px;height:54px;border-color:rgba(37,99,235,.4)}
+body.cursor-click #cursor-dot{transform:translate(-50%,-50%) scale(.5)}
+body.cursor-click #cursor-ring{width:22px;height:22px;border-color:rgba(224,92,42,.8)}
+body.cursor-hidden #cursor-dot,body.cursor-hidden #cursor-ring{opacity:0}
+#scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--primary),var(--blue),var(--accent));z-index:9999;transition:width .06s linear}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: var(--font-body);
-            background: var(--light);
-            color: var(--text);
-            overflow-x: hidden;
-        }
-        h1, h2, h3, h4, h5 { font-family: var(--font-head); }
+/* DARK MODE */
+body.dark{background:#0a0f1e;color:rgba(255,255,255,.88)}
+body.dark .navbar{background:rgba(10,15,30,.97);border-bottom-color:rgba(255,255,255,.06)}
+body.dark .navbar.scrolled{background:rgba(10,15,30,.99);box-shadow:0 1px 16px rgba(0,0,0,.3)}
+body.dark .nav-links .nl-a{color:rgba(255,255,255,.65)}
+body.dark .nav-links .nl-a:hover{color:#fff}
+body.dark .mega-drop{background:rgba(13,18,36,.98);border-color:rgba(255,255,255,.07)}
+body.dark .btn-nav-signin{border-color:rgba(255,255,255,.14);color:rgba(255,255,255,.55)}
+body.dark .btn-nav-signin:hover{background:rgba(255,255,255,.07);color:#fff}
+body.dark .mob-panel{background:#0d1220}
+body.dark .mob-link,.dark .mob-sub-toggle{color:rgba(255,255,255,.75);border-bottom-color:rgba(255,255,255,.06)}
+body.dark .about-card{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.07)}
+body.dark .about-card:hover{background:rgba(255,255,255,.06);border-color:rgba(37,99,235,.2)}
+body.dark .stat-card{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.07)}
+body.dark .team-card{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.07)}
+body.dark .team-card:hover{border-color:rgba(37,99,235,.25)}
+body.dark .value-card{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.07)}
+body.dark .story-block{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.07)}
+body.dark footer{background:#080d1a}
+body.dark .footer-divider{border-color:rgba(255,255,255,.06)}
+body.dark .footer-bottom-bar{background:rgba(0,0,0,.2)}
+body.dark .footer-copy,.dark .footer-made-in,.dark .footer-legal a{color:rgba(255,255,255,.3)}
 
-        /* Navbar */
-        .navbar {
-            background: rgba(255,255,255,0.98);
-            backdrop-filter: blur(16px);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.05);
-            padding: 0.8rem 0;
-            transition: var(--transition);
-        }
-        .navbar.scrolled { padding: 0.5rem 0; }
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: var(--grad-blue);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .navbar-brand span { color: var(--orange); background: none; }
-        .nav-link {
-            font-weight: 500;
-            color: var(--text) !important;
-            transition: var(--transition);
-        }
-        .nav-link:hover { color: var(--blue) !important; }
+/* NAVBAR */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:900;background:rgba(255,255,255,.97);border-bottom:1px solid rgba(15,23,42,.06);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);transition:box-shadow var(--t),background var(--t),padding var(--t)}
+.navbar.scrolled{box-shadow:0 1px 14px rgba(15,23,42,.09)}
+.nav-inner{max-width:1280px;margin:0 auto;padding:0 28px;height:var(--nav-h);display:flex;align-items:center;gap:28px}
+.nav-brand{display:flex;align-items:center;gap:9px;flex-shrink:0}
+.nav-logo-circle{width:34px;height:34px;border-radius:50%;overflow:hidden;background:var(--primary);flex-shrink:0;border:1.5px solid rgba(37,99,235,.2)}
+.nav-logo-circle img{width:100%;height:100%;object-fit:cover}
+.nav-brand-text{font-family:var(--font-display);font-size:1.08rem;font-weight:600;letter-spacing:-.02em;color:var(--ink)}
+.nav-brand-text em{font-style:normal;color:var(--accent)}
+.nav-links{display:flex;list-style:none;gap:2px;margin-left:auto}
+.nl-item{position:relative}
+.nl-a{font-size:.82rem;font-weight:600;padding:7px 13px;border-radius:var(--r-lg);color:var(--slate);transition:color var(--t),background var(--t);display:flex;align-items:center;gap:5px;letter-spacing:.01em}
+.nl-a:hover,.nl-a:focus,.nl-a.about-active{color:var(--ink);background:var(--blue-pale)}
+.nl-a .arrow{font-size:.58rem;transition:transform var(--t);opacity:.5}
+.nl-item:hover .arrow{transform:rotate(180deg)}
+.mega-drop{display:none;position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--white);border:1px solid rgba(15,23,42,.07);border-radius:var(--r-xl);padding:20px;box-shadow:var(--sh-xl);min-width:520px}
+.nl-item:hover .mega-drop{display:block}
+.mega-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px 20px}
+.mega-col-label{font-size:.65rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--slate-l);padding:0 10px 6px;display:block}
+.mega-link{display:flex;align-items:center;gap:9px;font-size:.79rem;font-weight:600;color:var(--slate);padding:8px 10px;border-radius:var(--r-md);transition:background var(--t),color var(--t)}
+.mega-link:hover{background:var(--blue-pale);color:var(--blue)}
+.mega-link i{width:16px;text-align:center;opacity:.6}
+.nav-cta{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.btn-nav-signin{font-size:.78rem;font-weight:700;padding:7px 16px;border-radius:var(--r-pill);border:1.5px solid rgba(15,23,42,.12);color:var(--slate);transition:var(--t)}
+.btn-nav-signin:hover{background:var(--surface);color:var(--ink)}
+.btn-nav-orange{font-size:.78rem;font-weight:700;padding:7px 16px;border-radius:var(--r-pill);background:var(--accent-pale);color:var(--accent);transition:var(--t);display:flex;align-items:center;gap:5px}
+.btn-nav-orange:hover{background:var(--accent);color:#fff}
+.btn-nav-start{font-size:.78rem;font-weight:700;padding:7px 18px;border-radius:var(--r-pill);background:var(--g-blue);color:#fff;box-shadow:var(--sh-blue);transition:var(--t);display:flex;align-items:center;gap:6px}
+.btn-nav-start:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(37,99,235,.38)}
+#theme-toggle{width:34px;height:34px;border-radius:50%;border:none;background:var(--blue-pale);color:var(--blue);display:flex;align-items:center;justify-content:center;transition:var(--t);flex-shrink:0}
+#theme-toggle:hover{background:var(--blue);color:#fff}
+#theme-toggle svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
-        /* Page Header */
-        .page-header {
-            background: var(--grad-blue);
-            padding: 120px 0 60px;
-            color: white;
-            text-align: center;
-        }
-        .page-header h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 15px; }
-        .page-header p { opacity: 0.85; font-size: 1rem; max-width: 600px; margin: 0 auto; }
+/* MOBILE NAV */
+.mob-quick{display:none;align-items:center;gap:8px;margin-left:auto}
+.mob-quick-btn{width:36px;height:36px;border-radius:50%;border:none;background:var(--blue-pale);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.mob-quick-wa{width:36px;height:36px;border-radius:50%;background:#25d366;color:#fff;display:flex;align-items:center;justify-content:center;font-size:.9rem}
+.ham-btn{width:36px;height:36px;border-radius:var(--r-md);border:none;background:var(--blue-pale);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.ham-line{display:block;width:18px;height:2px;background:var(--blue);border-radius:2px;transition:var(--t)}
+.mob-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:800;opacity:0;pointer-events:none;transition:opacity var(--t)}
+.mob-overlay.open{opacity:1;pointer-events:all}
+.mob-panel{position:fixed;top:0;right:0;bottom:0;width:min(320px,88vw);background:var(--white);z-index:810;transform:translateX(100%);transition:transform .3s var(--ease);overflow-y:auto;padding:20px}
+.mob-panel.open{transform:none}
+.mob-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--mist)}
+.mob-logo{font-family:var(--font-display);font-size:1.05rem;font-weight:600;color:var(--ink)}
+.mob-logo em{font-style:normal;color:var(--accent)}
+.mob-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--surface);color:var(--slate);font-size:.85rem}
+nav.mob-body{}
+.mob-link{display:flex;align-items:center;gap:10px;font-size:.86rem;font-weight:600;color:var(--slate);padding:11px 0;border-bottom:1px solid var(--mist);transition:color var(--t)}
+.mob-link:hover{color:var(--blue)}
+.mob-link i{width:16px;text-align:center;opacity:.5}
+.mob-sub-toggle{display:flex;align-items:center;gap:10px;font-size:.86rem;font-weight:600;color:var(--slate);padding:11px 0;border-bottom:1px solid var(--mist)}
+.mob-sub{display:none;padding:8px 0 0 26px}
+.mob-sub.open{display:block}
+.mob-sub a{display:block;font-size:.8rem;color:var(--slate);padding:7px 0;border-bottom:1px solid var(--surface)}
+.mob-sub a:hover{color:var(--blue)}
+.mob-footer-links{margin-top:24px;display:flex;flex-direction:column;gap:10px}
+.mob-footer-links a{font-size:.8rem;font-weight:700;padding:11px 16px;border-radius:var(--r-lg);text-align:center;background:var(--surface)}
+.mob-footer-links .mob-cta-primary{background:var(--g-blue);color:#fff}
+.mob-footer-links .mob-cta-orange{background:var(--g-accent);color:#fff}
 
-        /* Content Sections */
-        .about-section {
-            padding: 60px 0;
-        }
-        .about-card {
-            background: white;
-            border-radius: var(--radius);
-            padding: 40px;
-            height: 100%;
-            border: 1px solid var(--light-2);
-            transition: var(--transition);
-        }
-        .about-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        }
-        .about-icon {
-            width: 70px;
-            height: 70px;
-            background: rgba(37,99,235,0.1);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            font-size: 2rem;
-            color: var(--blue);
-        }
-        .stats-card {
-            background: white;
-            border-radius: var(--radius);
-            padding: 30px;
-            text-align: center;
-            border: 1px solid var(--light-2);
-            transition: var(--transition);
-        }
-        .stats-card:hover {
-            transform: translateY(-5px);
-        }
-        .stats-number {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--blue);
-        }
-        .team-member {
-            background: white;
-            border-radius: var(--radius);
-            padding: 30px;
-            text-align: center;
-            border: 1px solid var(--light-2);
-            transition: var(--transition);
-        }
-        .team-member:hover {
-            transform: translateY(-5px);
-        }
-        .team-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            overflow: hidden;
-        }
-        .team-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .back-home {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--grad-blue);
-            color: white;
-            padding: 12px 28px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition);
-            margin-top: 30px;
-        }
-        .back-home:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(37,99,235,0.3);
-            color: white;
-        }
+@media(max-width:899px){.nav-links,.nav-cta,.btn-nav-orange{display:none!important}.mob-quick{display:flex!important}}
+@media(min-width:900px){.mob-overlay,.mob-panel{display:none!important}}
 
-        /* Footer */
-        footer {
-            background: var(--dark);
-            color: rgba(255,255,255,0.7);
-            padding: 60px 0 30px;
-            margin-top: 60px;
-        }
-        footer h4, footer h5 { color: white; margin-bottom: 1rem; font-family: var(--font-head); }
-        footer a { color: rgba(255,255,255,0.55); text-decoration: none; transition: var(--transition); }
-        footer a:hover { color: var(--orange); }
-        footer ul li { padding: 4px 0; }
-        .footer-divider { border-color: rgba(255,255,255,0.08); margin: 32px 0 24px; }
-        .footer-bottom { color: rgba(255,255,255,0.4); font-size: 0.82rem; }
-        .social-btn {
-            width: 38px; height: 38px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255,255,255,0.07);
-            color: white;
-            transition: var(--transition);
-            font-size: 0.9rem;
-        }
-        .social-btn:hover { background: var(--blue); color: white; transform: translateY(-3px); }
-        .footer-logo-img { max-width: 160px; height: auto; }
+/* LAYOUT */
+.container{width:100%;max-width:1200px;margin:0 auto;padding:0 24px}
+.section-py{padding:88px 0}
+@media(max-width:768px){.section-py{padding:60px 0}}
 
-        /* Dark Mode */
-        body.dark {
-            background: var(--dark);
-            color: var(--light);
-        }
-        body.dark .navbar { background: rgba(5,11,24,0.98) !important; }
-        body.dark .about-card,
-        body.dark .stats-card,
-        body.dark .team-member {
-            background: var(--dark-2);
-            border-color: rgba(255,255,255,0.08);
-        }
-        body.dark .about-card p,
-        body.dark .stats-card p,
-        body.dark .team-member p {
-            color: var(--text-light);
-        }
-        body.dark footer { background: var(--dark-2); }
+/* SECTION TAG */
+.section-tag{display:inline-flex;align-items:center;gap:7px;font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-radius:var(--r-pill);border:1px solid rgba(37,99,235,.2);background:var(--blue-pale);color:var(--blue);margin-bottom:16px}
+.section-tag.orange{background:var(--accent-pale);border-color:rgba(224,92,42,.2);color:var(--accent)}
+.section-tag.teal{background:rgba(13,148,136,.08);border-color:rgba(13,148,136,.2);color:var(--teal)}
+.section-title{font-family:var(--font-display);font-size:clamp(1.9rem,4vw,3rem);font-weight:400;line-height:1.05;letter-spacing:-.03em;margin-bottom:12px}
+.section-sub{font-size:.92rem;color:var(--slate);line-height:1.78;max-width:600px}
+.g-blue{background:var(--g-blue);-webkit-background-clip:text;background-clip:text;color:transparent}
+.g-accent{background:var(--g-accent);-webkit-background-clip:text;background-clip:text;color:transparent}
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .page-header { padding: 100px 0 40px; }
-            .page-header h1 { font-size: 1.8rem; }
-            .about-card { padding: 24px; }
-            .stats-number { font-size: 1.8rem; }
-            .team-avatar { width: 100px; height: 100px; }
-        }
-    </style>
+/* HERO */
+.about-hero{padding:calc(var(--nav-h) + 70px) 0 80px;background:linear-gradient(158deg,#060c1a 0%,#0d1628 50%,#111f3a 100%);position:relative;overflow:hidden}
+.hero-orb-1{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,.13) 0%,transparent 65%);top:-200px;right:-100px;pointer-events:none}
+.hero-orb-2{position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(224,92,42,.1) 0%,transparent 65%);bottom:-150px;left:-80px;pointer-events:none}
+.hero-mesh{position:absolute;inset:0;background-image:linear-gradient(rgba(37,99,235,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,.04) 1px,transparent 1px);background-size:52px 52px;pointer-events:none}
+.about-hero .container{position:relative;z-index:1;text-align:center}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:.68rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(147,197,253,.75);background:rgba(37,99,235,.12);border:1px solid rgba(37,99,235,.2);padding:5px 14px;border-radius:var(--r-pill);margin-bottom:22px}
+.about-hero h1{font-size:clamp(2.2rem,6vw,4.2rem);font-weight:400;line-height:1.04;color:#fff;margin-bottom:18px;letter-spacing:-.04em}
+.about-hero h1 em{font-style:italic;color:rgba(255,255,255,.38);font-weight:300}
+.about-hero p{font-size:clamp(.9rem,2.2vw,1.05rem);color:rgba(255,255,255,.55);max-width:560px;margin:0 auto 40px;line-height:1.78}
+.hero-stats{display:flex;gap:40px;justify-content:center;flex-wrap:wrap;padding-top:36px;border-top:1px solid rgba(255,255,255,.07)}
+.h-stat{text-align:center}
+.h-stat-val{font-family:var(--font-display);font-size:clamp(1.6rem,3vw,2.2rem);font-weight:400;color:#fff;line-height:1}
+.h-stat-val .accent{color:var(--accent)}
+.h-stat-val .blue{color:rgba(147,197,253,.9)}
+.h-stat-lbl{font-size:.72rem;font-weight:600;color:rgba(255,255,255,.38);margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
+
+/* MISSION / VISION CARDS */
+.mv-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:640px){.mv-grid{grid-template-columns:1fr}}
+.about-card{background:var(--white);border:1px solid var(--mist);border-radius:var(--r-2xl);padding:36px;transition:transform var(--t),box-shadow var(--t),border-color var(--t)}
+.about-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg);border-color:rgba(37,99,235,.15)}
+.card-icon{width:56px;height:56px;border-radius:var(--r-xl);display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:1.5rem}
+.icon-blue{background:var(--blue-pale);color:var(--blue)}
+.icon-accent{background:var(--accent-pale);color:var(--accent)}
+.icon-teal{background:rgba(13,148,136,.1);color:var(--teal)}
+.icon-gold{background:rgba(217,119,6,.1);color:var(--gold)}
+.about-card h2{font-size:1.4rem;font-weight:400;margin-bottom:10px;color:var(--ink)}
+.about-card p{font-size:.88rem;color:var(--slate);line-height:1.78}
+
+/* STORY */
+.story-block{background:var(--white);border:1px solid var(--mist);border-radius:var(--r-2xl);padding:44px;display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:start}
+@media(max-width:640px){.story-block{grid-template-columns:1fr;padding:28px}}
+.story-block p{font-size:.9rem;color:var(--slate);line-height:1.82;margin-bottom:10px}
+.story-block p:last-child{margin-bottom:0}
+.story-year{font-family:var(--font-mono);font-size:clamp(3.5rem,8vw,5.5rem);font-weight:400;line-height:1;color:transparent;-webkit-text-stroke:1.5px rgba(37,99,235,.25);letter-spacing:-.04em;flex-shrink:0}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+@media(max-width:840px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:400px){.stats-grid{grid-template-columns:1fr 1fr}}
+.stat-card{background:var(--white);border:1px solid var(--mist);border-radius:var(--r-2xl);padding:28px 20px;text-align:center;transition:transform var(--t),box-shadow var(--t)}
+.stat-card:hover{transform:translateY(-4px);box-shadow:var(--sh-md)}
+.stat-num{font-family:var(--font-display);font-size:clamp(1.8rem,4vw,2.6rem);font-weight:400;line-height:1;margin-bottom:6px}
+.stat-lbl{font-size:.75rem;font-weight:700;color:var(--slate-l);text-transform:uppercase;letter-spacing:.06em}
+
+/* VALUES */
+.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:840px){.values-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){.values-grid{grid-template-columns:1fr}}
+.value-card{background:var(--white);border:1px solid var(--mist);border-radius:var(--r-2xl);padding:32px;text-align:center;transition:transform var(--t),box-shadow var(--t),border-color var(--t)}
+.value-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg);border-color:rgba(37,99,235,.15)}
+.value-card .card-icon{margin:0 auto 18px}
+.value-card h3{font-size:1.1rem;font-weight:400;margin-bottom:8px;color:var(--ink)}
+.value-card p{font-size:.83rem;color:var(--slate);line-height:1.72}
+
+/* TEAM */
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+@media(max-width:900px){.team-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.team-grid{grid-template-columns:1fr 1fr}}
+.team-card{background:var(--white);border:1px solid var(--mist);border-radius:var(--r-2xl);padding:28px 20px;text-align:center;transition:transform var(--t),box-shadow var(--t),border-color var(--t);position:relative;overflow:hidden}
+.team-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--accent));transform:scaleX(0);transform-origin:left;transition:transform .32s var(--ease)}
+.team-card:hover::before{transform:scaleX(1)}
+.team-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg)}
+.team-avatar{width:90px;height:90px;border-radius:50%;overflow:hidden;margin:0 auto 16px;border:2px solid rgba(37,99,235,.15);background:var(--blue-pale)}
+.team-avatar img{width:100%;height:100%;object-fit:cover}
+.team-card h4{font-size:.98rem;font-weight:600;margin-bottom:4px;color:var(--ink);font-family:var(--font-body)}
+.team-role{font-size:.75rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;font-family:var(--font-body)}
+.team-card p{font-size:.78rem;color:var(--slate);line-height:1.68}
+
+/* CTA SECTION */
+.cta-section{background:linear-gradient(158deg,#060c1a 0%,#0d1628 50%,#111f3a 100%);position:relative;overflow:hidden}
+.cta-section::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 50%,rgba(37,99,235,.13),transparent);pointer-events:none}
+.cta-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cta-btn-white{display:inline-flex;align-items:center;gap:8px;font-size:.88rem;font-weight:700;padding:13px 28px;border-radius:var(--r-pill);background:#fff;color:var(--primary);box-shadow:var(--sh-lg);transition:var(--t)}
+.cta-btn-white:hover{transform:translateY(-2px);box-shadow:var(--sh-xl)}
+.cta-btn-orange{display:inline-flex;align-items:center;gap:8px;font-size:.88rem;font-weight:700;padding:13px 28px;border-radius:var(--r-pill);background:var(--g-accent);color:#fff;box-shadow:var(--sh-accent);transition:var(--t)}
+.cta-btn-orange:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(224,92,42,.42)}
+.btn-wa{display:inline-flex;align-items:center;gap:8px;font-size:.84rem;font-weight:700;padding:13px 22px;border-radius:var(--r-pill);background:#25d366;color:#fff;transition:var(--t)}
+.btn-wa:hover{transform:translateY(-2px);background:#1ab757}
+
+/* BACK TO TOP */
+#back-to-top{position:fixed;bottom:28px;left:28px;width:40px;height:40px;border-radius:50%;background:var(--g-blue);color:#fff;border:none;box-shadow:var(--sh-blue);display:flex;align-items:center;justify-content:center;font-size:.8rem;z-index:700;opacity:0;pointer-events:none;transition:opacity var(--t),transform var(--t)}
+#back-to-top.visible{opacity:1;pointer-events:all}
+#back-to-top:hover{transform:translateY(-3px)}
+
+/* FOOTER */
+footer{background:#050c1e;color:rgba(255,255,255,.55);font-size:.84rem}
+.footer-accent-bar{height:3px;background:linear-gradient(90deg,var(--primary),var(--blue),var(--accent))}
+.footer-cta-strip{background:rgba(37,99,235,.07);border-bottom:1px solid rgba(255,255,255,.05);padding:24px 0}
+.footer-cta-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.footer-cta-text h4{font-family:var(--font-display);font-weight:400;color:#fff;font-size:1.05rem;margin-bottom:2px}
+.footer-cta-text p{font-size:.78rem;color:rgba(255,255,255,.4)}
+.footer-cta-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-body);font-size:.82rem;font-weight:700;padding:9px 20px;border-radius:var(--r-pill);background:var(--g-blue);color:#fff;transition:var(--t)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:var(--sh-blue)}
+.footer-body{padding:56px 0 36px}
+.footer-cols{display:grid;grid-template-columns:1.6fr 1fr 1fr 1.4fr;gap:40px}
+@media(max-width:900px){.footer-cols{grid-template-columns:1fr 1fr;gap:32px 24px}}
+@media(max-width:520px){.footer-cols{grid-template-columns:1fr;gap:28px}}
+.footer-brand-name{font-family:var(--font-display);font-size:1.3rem;font-weight:400;color:#fff;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.footer-brand-dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.footer-brand-name em{font-style:normal;color:var(--accent)}
+.footer-tagline{color:rgba(255,255,255,.38);line-height:1.72;max-width:280px;margin-bottom:18px;font-size:.82rem}
+.footer-socials{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.fsoc{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.06);color:rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;font-size:.82rem;transition:var(--t)}
+.fsoc:hover{transform:translateY(-2px);color:#fff}
+.fsoc.fb:hover{background:#1877f2;color:#fff}.fsoc.li:hover{background:#0077b5}.fsoc.ig:hover{background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)}.fsoc.yt:hover{background:#ff0000}.fsoc.wa:hover{background:#25d366}
+.footer-col-title{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.25);margin-bottom:14px}
+.footer-links{list-style:none}
+.footer-links li{margin-bottom:2px}
+.footer-links a{display:flex;align-items:center;gap:9px;font-size:.8rem;color:rgba(255,255,255,.42);padding:5px 0;transition:color var(--t)}
+.footer-links a:hover{color:rgba(255,255,255,.82)}
+.footer-links i{width:13px;font-size:.7rem;opacity:.5;text-align:center}
+.academy-link{color:rgba(52,211,153,.7)!important}
+.academy-link:hover{color:rgba(52,211,153,1)!important}
+.footer-contact-item{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
+.fci-icon{width:30px;height:30px;border-radius:var(--r-md);background:rgba(37,99,235,.1);display:flex;align-items:center;justify-content:center;font-size:.72rem;color:rgba(147,197,253,.8);flex-shrink:0;margin-top:1px}
+.fci-label{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.2);display:block;margin-bottom:1px}
+.fci-val{font-size:.8rem;color:rgba(255,255,255,.55)}
+.fci-val a{color:inherit;transition:color var(--t)}
+.fci-val a:hover{color:rgba(255,255,255,.9)}
+.footer-hours{display:flex;align-items:center;gap:7px;font-size:.75rem;color:rgba(255,255,255,.3);margin-top:4px}
+.hours-dot{width:6px;height:6px;border-radius:50%;background:#34d399;animation:pulse-dot 2s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.5)}50%{box-shadow:0 0 0 5px transparent}}
+.footer-divider{border:none;border-top:1px solid rgba(255,255,255,.05);margin:0}
+.footer-bottom-bar{padding:18px 0}
+.footer-bottom-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.footer-copy,.footer-made-in{font-size:.75rem;color:rgba(255,255,255,.25)}
+.footer-made-in span{color:var(--rose)}
+.footer-legal{display:flex;gap:20px}
+.footer-legal a{font-size:.72rem;color:rgba(255,255,255,.25);transition:color var(--t)}
+.footer-legal a:hover{color:rgba(255,255,255,.6)}
+
+/* COOKIE */
+#cookie-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(10,15,30,.97);color:rgba(255,255,255,.75);padding:14px 24px;z-index:600;display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:.78rem;transform:translateY(100%);transition:transform .4s var(--ease)}
+#cookie-bar.show{transform:none}
+#cookie-bar p{flex:1;min-width:200px;line-height:1.5}
+#cookie-bar a{color:rgba(147,197,253,.75)}
+#cookie-accept{padding:7px 20px;border-radius:var(--r-pill);border:none;background:var(--blue);color:#fff;font-size:.77rem;font-weight:700;flex-shrink:0}
+
+/* WA FLOAT */
+#wa-float{position:fixed;bottom:28px;right:28px;z-index:700}
+.wa-fab{width:52px;height:52px;border-radius:50%;background:#25d366;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 4px 20px rgba(37,211,102,.4);transition:var(--t)}
+.wa-fab:hover{transform:scale(1.08)}
+#wa-badge{position:absolute;top:-2px;right:-2px;width:14px;height:14px;border-radius:50%;background:var(--rose);border:2px solid var(--white)}
+#wa-tooltip{position:absolute;bottom:60px;right:0;background:#fff;color:var(--ink);border-radius:var(--r-xl);padding:12px 16px;min-width:200px;box-shadow:var(--sh-xl);opacity:0;transform:translateY(8px) scale(.96);pointer-events:none;transition:opacity .25s,transform .25s var(--spring)}
+#wa-tooltip.show{opacity:1;transform:none;pointer-events:all}
+#wa-tooltip p{font-size:.78rem;font-weight:600;margin-bottom:4px;color:var(--ink)}
+#wa-tooltip span{font-size:.72rem;color:var(--slate)}
+#waTooltipClose{position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:50%;border:none;background:var(--surface);color:var(--slate);font-size:.6rem;display:flex;align-items:center;justify-content:center}
+</style>
 </head>
 <body>
 
-<!-- ======================== NAVBAR ======================== -->
-<nav class="navbar navbar-expand-lg fixed-top">
-    <div class="container">
-        <a class="navbar-brand" href="/">Neurowex<span>Tech</span></a>
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
-                <li class="nav-item"><a class="nav-link" href="/#home">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="/#services">Services</a></li>
-                <li class="nav-item"><a class="nav-link" href="/#portfolio">Portfolio</a></li>
-                <li class="nav-item"><a class="nav-link" href="/#contact">Contact</a></li>
-            </ul>
-            <div class="d-none d-lg-flex align-items-center gap-2 ms-3">
-                <a href="/login" class="btn btn-outline-primary btn-sm rounded-pill">Sign In</a>
-                <a href="/sign_up" class="btn btn-primary btn-sm rounded-pill">Sign Up</a>
-            </div>
-        </div>
+<!-- CURSOR -->
+<div id="cursor-dot"  aria-hidden="true"></div>
+<div id="cursor-ring" aria-hidden="true"><span id="cursor-label"></span></div>
+<div id="scroll-progress" aria-hidden="true"></div>
+
+<!-- MOBILE OVERLAY -->
+<div class="mob-overlay" id="mobOverlay" aria-hidden="true"></div>
+<div class="mob-panel" id="mobPanel" role="dialog" aria-modal="true" aria-label="Navigation menu">
+  <div class="mob-head">
+    <span class="mob-logo">Neurowex<em>Tech</em></span>
+    <button class="mob-close" id="mobClose" aria-label="Close menu"><i class="fas fa-times"></i></button>
+  </div>
+  <nav class="mob-body" aria-label="Mobile navigation">
+    <a href="/" class="mob-link"><i class="fas fa-home"></i> Home</a>
+    <div class="mob-sub-toggle" id="mobSvcToggle" role="button" tabindex="0" aria-expanded="false">
+      <i class="fas fa-th-large" style="width:16px;text-align:center;opacity:.5"></i> Services <i class="fas fa-chevron-down" style="margin-left:auto;font-size:.6rem;opacity:.4"></i>
     </div>
+    <div class="mob-sub" id="mobSvcSub">
+      <a href="/web_dev">Web Development</a>
+      <a href="/graphic_design">Graphic Design</a>
+      <a href="/seo">SEO & Marketing</a>
+      <a href="/ai-solutions">AI Solutions</a>
+      <a href="/cybersecurity">Cybersecurity</a>
+      <a href="/ecommerce">E-Commerce</a>
+      <a href="/uiux">UI/UX Design</a>
+    </div>
+    <a href="/learn" class="mob-link"><i class="fas fa-graduation-cap"></i> Academy</a>
+    <a href="/portfolio" class="mob-link"><i class="fas fa-briefcase"></i> Portfolio</a>
+    <a href="/blog" class="mob-link"><i class="fas fa-rss"></i> Blog</a>
+    <a href="/about" class="mob-link"><i class="fas fa-info-circle"></i> About</a>
+    <a href="/contact" class="mob-link"><i class="fas fa-envelope"></i> Contact</a>
+  </nav>
+  <div class="mob-footer-links">
+    <a href="/login">Sign In</a>
+    <a href="/contact" class="mob-cta-primary">Get Started <i class="fas fa-arrow-right"></i></a>
+    <a href="/learn" class="mob-cta-orange"><i class="fas fa-graduation-cap"></i> Explore Academy</a>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="mainNav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand" aria-label="NeurowexTech Home">
+      <div class="nav-logo-circle">
+        <img src="/images/logo.png" alt="NeurowexTech logo" onerror="this.parentElement.style.background='var(--primary)';this.parentElement.innerHTML='<span style=\'color:#fff;font-weight:700;font-size:.85rem;font-family:var(--font-body)\'>N</span>';this.remove()">
+      </div>
+      <div class="nav-brand-text">Neurowex<em>Tech</em></div>
+    </a>
+    <ul class="nav-links" role="list">
+      <li class="nl-item"><a href="/" class="nl-a">Home</a></li>
+      <li class="nl-item">
+        <a href="/#services" class="nl-a">Services <i class="fas fa-chevron-down arrow"></i></a>
+        <div class="mega-drop" role="menu">
+          <div class="mega-grid">
+            <div>
+              <span class="mega-col-label">Development</span>
+              <a class="mega-link" href="/web_dev"><i class="fas fa-laptop-code"></i> Web & App Dev</a>
+              <a class="mega-link" href="/ecommerce"><i class="fas fa-shopping-cart"></i> E-Commerce</a>
+              <a class="mega-link" href="/uiux"><i class="fas fa-pencil-ruler"></i> UI/UX Design</a>
+            </div>
+            <div>
+              <span class="mega-col-label">Marketing & Growth</span>
+              <a class="mega-link" href="/seo"><i class="fas fa-search"></i> SEO & Marketing</a>
+              <a class="mega-link" href="/social-media"><i class="fas fa-share-alt"></i> Social Media</a>
+              <a class="mega-link" href="/analytics"><i class="fas fa-chart-bar"></i> Data Analytics</a>
+            </div>
+            <div>
+              <span class="mega-col-label">Specialist</span>
+              <a class="mega-link" href="/graphic_design"><i class="fas fa-palette"></i> Graphic Design</a>
+              <a class="mega-link" href="/ai-solutions"><i class="fas fa-robot"></i> AI Solutions</a>
+              <a class="mega-link" href="/cybersecurity"><i class="fas fa-shield-alt"></i> Cybersecurity</a>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="nl-item"><a href="/learn" class="nl-a">Learn</a></li>
+      <li class="nl-item"><a href="/portfolio" class="nl-a">Portfolio</a></li>
+      <li class="nl-item"><a href="/blog" class="nl-a">Blog</a></li>
+      <li class="nl-item"><a href="/about" class="nl-a about-active">About</a></li>
+      <li class="nl-item"><a href="/contact" class="nl-a">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <button id="theme-toggle" aria-label="Toggle dark mode">
+        <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
+      <a href="/login" class="btn-nav-signin">Sign In</a>
+      <a href="/learn" class="btn-nav-orange"><i class="fas fa-graduation-cap"></i> Learn</a>
+      <a href="/contact" class="btn-nav-start">Get Started <i class="fas fa-arrow-right" style="font-size:.7rem"></i></a>
+    </div>
+    <div class="mob-quick" id="mobQuick">
+      <button class="mob-quick-btn" id="mobThemeBtn" aria-label="Toggle dark mode"><i class="fas fa-moon"></i></button>
+      <a href="https://wa.me/254769329340?text=Hello%20NeurowexTech!" target="_blank" rel="noopener noreferrer" class="mob-quick-wa" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      <button class="ham-btn" id="hamBtn" aria-label="Open menu" aria-expanded="false">
+        <span class="ham-line"></span><span class="ham-line"></span><span class="ham-line"></span>
+      </button>
+    </div>
+  </div>
 </nav>
 
-<!-- ======================== PAGE HEADER ======================== -->
-<section class="page-header">
-    <div class="container">
-        <h1 data-aos="fade-up">About NeurowexTech</h1>
-        <p data-aos="fade-up" data-aos-delay="100">We're on a mission to help businesses launch amazing digital products.</p>
+<!-- HERO -->
+<section class="about-hero" aria-label="About hero">
+  <div class="hero-orb-1" aria-hidden="true"></div>
+  <div class="hero-orb-2" aria-hidden="true"></div>
+  <div class="hero-mesh" aria-hidden="true"></div>
+  <div class="container">
+    <div class="hero-eyebrow" data-aos="fade-up"><i class="fas fa-info-circle" style="font-size:.65rem"></i> Our Story</div>
+    <h1 data-aos="fade-up" data-aos-delay="40">
+      Building Africa's<br>
+      <em>Digital Future</em>
+    </h1>
+    <p data-aos="fade-up" data-aos-delay="80">We're on a mission to help businesses launch amazing digital products — fast, scalable, and built to last. Based in Nairobi, working globally.</p>
+    <div class="hero-stats" data-aos="fade-up" data-aos-delay="120">
+      <div class="h-stat">
+        <div class="h-stat-val"><span class="accent">500+</span></div>
+        <div class="h-stat-lbl">Projects Delivered</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-val" style="color:#fff">98%</div>
+        <div class="h-stat-lbl">Client Satisfaction</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-val"><span class="blue">50+</span></div>
+        <div class="h-stat-lbl">Expert Developers</div>
+      </div>
+      <div class="h-stat">
+        <div class="h-stat-val" style="color:#fff">20+</div>
+        <div class="h-stat-lbl">Countries Served</div>
+      </div>
     </div>
+  </div>
 </section>
 
-<!-- ======================== ABOUT CONTENT ======================== -->
-<section class="about-section">
-    <div class="container">
-        <div class="row g-4">
-            <div class="col-lg-6" data-aos="fade-right">
-                <div class="about-card">
-                    <div class="about-icon">
-                        <i class="fas fa-rocket"></i>
-                    </div>
-                    <h2>Our Mission</h2>
-                    <p class="text-muted">To empower businesses and startups with innovative, scalable, and high-performance digital solutions that drive growth and transform ideas into reality.</p>
-                </div>
-            </div>
-            <div class="col-lg-6" data-aos="fade-left">
-                <div class="about-card">
-                    <div class="about-icon">
-                        <i class="fas fa-eye"></i>
-                    </div>
-                    <h2>Our Vision</h2>
-                    <p class="text-muted">To become Africa's leading technology partner, recognized for excellence in web and mobile app development, innovation, and client success.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Our Story -->
-        <div class="row mt-5" data-aos="fade-up">
-            <div class="col-12">
-                <div class="about-card">
-                    <div class="about-icon">
-                        <i class="fas fa-history"></i>
-                    </div>
-                    <h2>Our Story</h2>
-                    <p>Founded in 2024, NeurowexTech started with a simple belief: technology should work for people, not the other way around. We saw too many businesses struggling with complex, overpriced, and delayed software projects.</p>
-                    <p class="mt-3">Today, we've grown into a trusted technology partner for startups and businesses across Africa. Our team of passionate developers, designers, and strategists work together to deliver exceptional digital products that actually ship.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Stats Section -->
-        <div class="row mt-5 g-4">
-            <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="100">
-                <div class="stats-card">
-                    <div class="stats-number">500+</div>
-                    <p class="text-muted">Projects Delivered</p>
-                </div>
-            </div>
-            <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="200">
-                <div class="stats-card">
-                    <div class="stats-number">98%</div>
-                    <p class="text-muted">Client Satisfaction</p>
-                </div>
-            </div>
-            <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="300">
-                <div class="stats-card">
-                    <div class="stats-number">50+</div>
-                    <p class="text-muted">Expert Developers</p>
-                </div>
-            </div>
-            <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="400">
-                <div class="stats-card">
-                    <div class="stats-number">20+</div>
-                    <p class="text-muted">Countries Served</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Core Values -->
-        <div class="row mt-5">
-            <div class="col-12" data-aos="fade-up">
-                <h2 class="text-center mb-4">Our Core Values</h2>
-            </div>
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-                <div class="about-card text-center">
-                    <div class="about-icon" style="margin: 0 auto 20px;">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3>Speed & Delivery</h3>
-                    <p class="text-muted">We ship in weeks, not months. Agile processes ensure you see progress constantly.</p>
-                </div>
-            </div>
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                <div class="about-card text-center">
-                    <div class="about-icon" style="margin: 0 auto 20px;">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3>Quality & Security</h3>
-                    <p class="text-muted">Production-grade code, thorough testing, and enterprise security standards.</p>
-                </div>
-            </div>
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
-                <div class="about-card text-center">
-                    <div class="about-icon" style="margin: 0 auto 20px;">
-                        <i class="fas fa-handshake"></i>
-                    </div>
-                    <h3>Client Partnership</h3>
-                    <p class="text-muted">We succeed when you succeed. Transparent communication and long-term relationships.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Team Section -->
-        <div class="row mt-5">
-            <div class="col-12" data-aos="fade-up">
-                <h2 class="text-center mb-4">Meet Our Leadership</h2>
-            </div>
-            <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="100">
-                <div class="team-member">
-                    <div class="team-avatar">
-                        <img src="/images/johnstone_j.jpg" alt="Johnstone J." onerror="this.src='https://placehold.co/120x120/2563eb/white?text=JJ'">
-                    </div>
-                    <h4>Johnstone J.</h4>
-                    <p class="text-muted">Founder & CTO</p>
-                    <p>10+ years building products at scale. Former Google engineer passionate about technology.</p>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="200">
-                <div class="team-member">
-                    <div class="team-avatar">
-                        <img src="/images/sarah_c.jpg" alt="Sarah C." onerror="this.src='https://placehold.co/120x120/f97316/white?text=SC'">
-                    </div>
-                    <h4>Sarah C.</h4>
-                    <p class="text-muted">Head of Design</p>
-                    <p>Award-winning UI/UX designer obsessed with creating intuitive experiences.</p>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="300">
-                <div class="team-member">
-                    <div class="team-avatar">
-                        <img src="/images/david_o.jpg" alt="David O." onerror="this.src='https://placehold.co/120x120/10b981/white?text=DO'">
-                    </div>
-                    <h4>David O.</h4>
-                    <p class="text-muted">Lead AI Engineer</p>
-                    <p>ML specialist and published researcher in NLP and computer vision.</p>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="400">
-                <div class="team-member">
-                    <div class="team-avatar">
-                        <img src="/images/sriya_s.jpg" alt="Priya S." onerror="this.src='https://placehold.co/120x120/8b5cf6/white?text=PS'">
-                    </div>
-                    <h4>Priya S.</h4>
-                    <p class="text-muted">Project Manager</p>
-                    <p>PMP certified, ensuring every project ships on time and on budget.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- CTA -->
-        <div class="row mt-5" data-aos="fade-up">
-            <div class="col-12 text-center">
-                <a href="/#contact" class="back-home">
-                    Start Your Project <i class="fas fa-arrow-right ms-2"></i>
-                </a>
-                <a href="/" class="back-home" style="background: var(--orange); margin-left: 15px;">
-                    <i class="fas fa-home"></i> Back to Home
-                </a>
-            </div>
-        </div>
+<!-- MISSION & VISION -->
+<section class="section-py" aria-label="Mission and vision">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:44px" data-aos="fade-up">
+      <div class="section-tag">Who We Are</div>
+      <h2 class="section-title">Purpose That <span class="g-blue">Drives</span> Us</h2>
     </div>
+    <div class="mv-grid">
+      <div class="about-card" data-aos="fade-right">
+        <div class="card-icon icon-blue"><i class="fas fa-rocket"></i></div>
+        <h2>Our Mission</h2>
+        <p>To empower businesses and startups with innovative, scalable, and high-performance digital solutions that drive growth and transform ideas into reality.</p>
+      </div>
+      <div class="about-card" data-aos="fade-left">
+        <div class="card-icon icon-accent"><i class="fas fa-eye"></i></div>
+        <h2>Our Vision</h2>
+        <p>To become Africa's leading technology partner, recognized for excellence in web and mobile app development, innovation, and long-term client success.</p>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- ======================== FOOTER ======================== -->
+<!-- STORY -->
+<section style="padding-bottom:88px" aria-label="Our story">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:44px" data-aos="fade-up">
+      <div class="section-tag orange">Our Journey</div>
+      <h2 class="section-title">From Idea to <span class="g-accent">Impact</span></h2>
+    </div>
+    <div class="story-block" data-aos="fade-up" data-aos-delay="60">
+      <div class="story-year" aria-hidden="true">2024</div>
+      <div>
+        <p>Founded in 2024, NeurowexTech started with a simple belief: technology should work for people, not the other way around. We saw too many businesses struggling with complex, overpriced, and delayed software projects.</p>
+        <p>We set out to change that — building a team of passionate developers, designers, and strategists who share a single goal: deliver exceptional digital products that <em>actually ship</em>.</p>
+        <p>Today, we've grown into a trusted technology partner for startups and businesses across Africa. From MVPs built in weeks to full-scale enterprise platforms, NeurowexTech has earned its reputation for speed, quality, and transparency.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section style="padding:60px 0;background:var(--surface)" aria-label="Company statistics">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card" data-aos="zoom-in" data-aos-delay="60">
+        <div class="stat-num" style="background:var(--g-accent);-webkit-background-clip:text;background-clip:text;color:transparent">500+</div>
+        <div class="stat-lbl">Projects Delivered</div>
+      </div>
+      <div class="stat-card" data-aos="zoom-in" data-aos-delay="120">
+        <div class="stat-num" style="background:var(--g-blue);-webkit-background-clip:text;background-clip:text;color:transparent">98%</div>
+        <div class="stat-lbl">Client Satisfaction</div>
+      </div>
+      <div class="stat-card" data-aos="zoom-in" data-aos-delay="180">
+        <div class="stat-num" style="background:linear-gradient(135deg,var(--teal),var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent">50+</div>
+        <div class="stat-lbl">Expert Developers</div>
+      </div>
+      <div class="stat-card" data-aos="zoom-in" data-aos-delay="240">
+        <div class="stat-num" style="background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent">20+</div>
+        <div class="stat-lbl">Countries Served</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CORE VALUES -->
+<section class="section-py" aria-label="Core values">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:44px" data-aos="fade-up">
+      <div class="section-tag teal">What We Stand For</div>
+      <h2 class="section-title">Our Core <span class="g-blue">Values</span></h2>
+    </div>
+    <div class="values-grid">
+      <div class="value-card" data-aos="fade-up" data-aos-delay="60">
+        <div class="card-icon icon-blue"><i class="fas fa-bolt"></i></div>
+        <h3>Speed & Delivery</h3>
+        <p>We ship in weeks, not months. Agile processes ensure you see progress constantly and never wait in the dark.</p>
+      </div>
+      <div class="value-card" data-aos="fade-up" data-aos-delay="120">
+        <div class="card-icon icon-accent"><i class="fas fa-shield-alt"></i></div>
+        <h3>Quality & Security</h3>
+        <p>Production-grade code, thorough testing, and enterprise security standards baked into every project from day one.</p>
+      </div>
+      <div class="value-card" data-aos="fade-up" data-aos-delay="180">
+        <div class="card-icon icon-teal"><i class="fas fa-handshake"></i></div>
+        <h3>Client Partnership</h3>
+        <p>We succeed when you succeed. Transparent communication and long-term relationships are at the core of how we work.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section style="padding-bottom:88px" aria-label="Leadership team">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:44px" data-aos="fade-up">
+      <div class="section-tag orange">The People</div>
+      <h2 class="section-title">Meet Our <span class="g-accent">Leadership</span></h2>
+      <p class="section-sub" style="margin:0 auto">The passionate minds behind NeurowexTech — building, designing, and growing digital products every day.</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card" data-aos="zoom-in" data-aos-delay="60">
+        <div class="team-avatar">
+          <img src="/images/johnstone_j.jpg" alt="Johnstone J." loading="lazy" onerror="this.src='https://placehold.co/90x90/2563eb/white?text=JJ'">
+        </div>
+        <div class="team-role">Founder & CTO</div>
+        <h4>Johnstone J.</h4>
+        <p>10+ years building products at scale. Former Google engineer passionate about technology and Africa's digital future.</p>
+      </div>
+      <div class="team-card" data-aos="zoom-in" data-aos-delay="120">
+        <div class="team-avatar">
+          <img src="/images/sarah_c.jpg" alt="Sarah C." loading="lazy" onerror="this.src='https://placehold.co/90x90/e05c2a/white?text=SC'">
+        </div>
+        <div class="team-role">Head of Design</div>
+        <h4>Sarah C.</h4>
+        <p>Award-winning UI/UX designer obsessed with creating intuitive, beautiful experiences that users actually love.</p>
+      </div>
+      <div class="team-card" data-aos="zoom-in" data-aos-delay="180">
+        <div class="team-avatar">
+          <img src="/images/david_o.jpg" alt="David O." loading="lazy" onerror="this.src='https://placehold.co/90x90/059669/white?text=DO'">
+        </div>
+        <div class="team-role">Lead AI Engineer</div>
+        <h4>David O.</h4>
+        <p>ML specialist and published researcher in NLP and computer vision. Bridging research and real-world product impact.</p>
+      </div>
+      <div class="team-card" data-aos="zoom-in" data-aos-delay="240">
+        <div class="team-avatar">
+          <img src="/images/sriya_s.jpg" alt="Priya S." loading="lazy" onerror="this.src='https://placehold.co/90x90/8b5cf6/white?text=PS'">
+        </div>
+        <div class="team-role">Project Manager</div>
+        <h4>Priya S.</h4>
+        <p>PMP certified, ensuring every project ships on time and on budget — no surprises, no excuses.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section section-py" aria-label="Call to action">
+  <div class="container" style="position:relative;z-index:1;text-align:center">
+    <div class="section-tag" style="display:inline-flex;margin-bottom:20px;background:rgba(37,99,235,.15);border-color:rgba(37,99,235,.3);color:rgba(147,197,253,.85)" data-aos="zoom-in">Let's Build Together</div>
+    <h2 style="font-weight:400;color:#fff;font-size:clamp(1.8rem,5vw,3.4rem);margin-bottom:14px;line-height:1.06;" data-aos="zoom-in" data-aos-delay="40">
+      Your Project Could Be<br>
+      <span style="font-style:italic;color:rgba(255,255,255,.38);font-weight:300;font-size:clamp(1.2rem,3.3vw,2.2rem)">our next success story.</span>
+    </h2>
+    <p style="color:rgba(255,255,255,.5);font-size:clamp(.9rem,2.3vw,1.08rem);margin-bottom:34px;max-width:520px;margin-left:auto;margin-right:auto;line-height:1.76;" data-aos="zoom-in" data-aos-delay="80">
+      Free 30-minute consultation. We'll scope your project, answer every question, and give you a realistic plan — no strings attached.
+    </p>
+    <div class="cta-actions" style="margin-bottom:32px" data-aos="zoom-in" data-aos-delay="120">
+      <a href="/contact" class="cta-btn-white">Start Your Project <i class="fas fa-arrow-right"></i></a>
+      <a href="/learn" class="cta-btn-orange"><i class="fas fa-graduation-cap"></i> Explore Academy</a>
+      <a href="https://wa.me/254769329340?text=Hello%20NeurowexTech!" target="_blank" rel="noopener noreferrer" class="btn-wa"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</a>
+    </div>
+    <div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;padding-top:24px;border-top:1px solid rgba(255,255,255,.07)" data-aos="fade-up" data-aos-delay="160">
+      <div style="display:flex;align-items:center;gap:6px;font-size:.78rem;color:rgba(255,255,255,.45);font-weight:600"><i class="fas fa-check-circle" style="color:rgba(52,211,153,.8)"></i> No upfront cost</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:.78rem;color:rgba(255,255,255,.45);font-weight:600"><i class="fas fa-check-circle" style="color:rgba(147,197,253,.8)"></i> NDA signed on request</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:.78rem;color:rgba(255,255,255,.45);font-weight:600"><i class="fas fa-check-circle" style="color:rgba(251,146,60,.8)"></i> Response within 2 hours</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:.78rem;color:rgba(255,255,255,.45);font-weight:600"><i class="fas fa-check-circle" style="color:rgba(52,211,153,.8)"></i> Fixed price, no surprises</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
 <footer>
+  <div class="footer-accent-bar"></div>
+  <div class="footer-cta-strip">
     <div class="container">
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="footer-logo mb-3">
-                    <img src="/images/logo.png" alt="Neurowex Tech Logo" class="footer-logo-img" onerror="this.style.display='none'">
-                </div>
-                <p style="max-width:300px;font-size:0.88rem;">We turn ideas into successful digital products. Fast, scalable, and built to last.</p>
-                <div class="d-flex gap-2 mt-3">
-                    <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#" class="social-btn"><i class="fab fa-github"></i></a>
-                    <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
-                    <a href="https://wa.me/254769329340" target="_blank" class="social-btn wa"><i class="fab fa-whatsapp"></i></a>
-                </div>
-            </div>
-            <div class="col-6 col-md-2">
-                <h5>Company</h5>
-                <ul class="list-unstyled">
-                    <li><a href="/#home">Home</a></li>
-                    <li><a href="/#services">Services</a></li>
-                    <li><a href="/#portfolio">Portfolio</a></li>
-                    <li><a href="/about">About</a></li>
-                    <li><a href="/#contact">Contact</a></li>
-                </ul>
-            </div>
-            <div class="col-6 col-md-2">
-                <h5>Resources</h5>
-                <ul class="list-unstyled">
-                    <li><a href="/#blog">Blog</a></li>
-                    <li><a href="/#faq">FAQ</a></li>
-                    <li><a href="/#pricing">Pricing</a></li>
-                    <li><a href="/#graphic">Graphic Design</a></li>
-                    <li><a href="/#process">Process</a></li>
-                </ul>
-            </div>
-            <div class="col-md-4">
-                <h5>Contact Us</h5>
-                <ul class="list-unstyled">
-                    <li class="mb-1"><i class="fas fa-envelope me-2"></i><a href="mailto:techneurowex@gmail.com">techneurowex@gmail.com</a></li>
-                    <li class="mb-1"><i class="fas fa-phone me-2"></i><a href="tel:+254769329340">+254 769 329 340</a></li>
-                    <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>Nairobi, Kenya</li>
-                </ul>
-                <div style="background:rgba(255,255,255,0.05);border-radius:var(--radius-sm);padding:12px 14px;border:1px solid rgba(255,255,255,0.07);font-size:0.8rem; margin-top: 12px;">
-                    <i class="fas fa-clock me-2"></i>Mon – Fri, 9am – 6pm EAT
-                </div>
-            </div>
+      <div class="footer-cta-inner">
+        <div class="footer-cta-text"><h4>Ready to build something great?</h4><p>Free 30-min consultation — no strings attached.</p></div>
+        <div class="footer-cta-actions">
+          <a href="/contact" class="btn-primary" style="padding:10px 22px;font-size:.84rem;">Start a Project <i class="fas fa-arrow-right"></i></a>
+          <a href="https://wa.me/254769329340?text=Hello%20NeurowexTech!" target="_blank" rel="noopener noreferrer" class="btn-wa" style="padding:10px 18px;font-size:.84rem;"><i class="fab fa-whatsapp"></i> WhatsApp Us</a>
         </div>
-        <hr class="footer-divider">
-        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 footer-bottom">
-            <span>© 2026 NeurowexTech. All rights reserved.</span>
-            <div class="d-flex gap-3">
-                <a href="/privacy-policy">Privacy Policy</a>
-                <a href="/terms-of-service">Terms of Service</a>
-                <a href="/cookie-policy">Cookie Policy</a>
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
+  <div class="footer-body">
+    <div class="container">
+      <div class="footer-cols">
+        <div class="footer-col-brand">
+          <div class="footer-brand-name"><span class="footer-brand-dot"></span>Neurowex<em>Tech</em></div>
+          <p class="footer-tagline">We turn bold ideas into successful digital products — fast, scalable, and built to last.</p>
+          <div class="footer-socials">
+            <a href="https://www.facebook.com/share/1928ETerkE/" target="_blank" rel="noopener noreferrer" class="fsoc fb" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.linkedin.com/in/neurowex-tech-588045312" target="_blank" rel="noopener noreferrer" class="fsoc li" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://www.instagram.com/neorowex_tech_solutions" target="_blank" rel="noopener noreferrer" class="fsoc ig" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://youtube.com/@neurowextech?si=CSiI92E2peTQmngO" target="_blank" rel="noopener noreferrer" class="fsoc yt" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://wa.me/254769329340" target="_blank" rel="noopener noreferrer" class="fsoc wa" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span style="background:rgba(5,150,105,.1);color:#34d399;border:1px solid rgba(5,150,105,.2);border-radius:6px;padding:3px 9px;font-size:.67rem;font-weight:700">✓ NDA Protected</span>
+            <span style="background:rgba(37,99,235,.1);color:rgba(147,197,253,.9);border:1px solid rgba(37,99,235,.2);border-radius:6px;padding:3px 9px;font-size:.67rem;font-weight:700">⭐ 4.9/5 Rating</span>
+            <span style="background:rgba(224,92,42,.1);color:rgba(251,146,60,.9);border:1px solid rgba(224,92,42,.2);border-radius:6px;padding:3px 9px;font-size:.67rem;font-weight:700">🚀 6-Week MVPs</span>
+          </div>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-links">
+            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="/#services"><i class="fas fa-th-large"></i> Services</a></li>
+            <li><a href="/portfolio"><i class="fas fa-briefcase"></i> Portfolio</a></li>
+            <li><a href="/contact"><i class="fas fa-envelope"></i> Contact</a></li>
+            <li><a href="/learn" class="academy-link"><i class="fas fa-graduation-cap"></i> Academy 🎓</a></li>
+            <li><a href="/blog"><i class="fas fa-rss"></i> Blog</a></li>
+            <li><a href="/about"><i class="fas fa-info-circle"></i> About Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Services</div>
+          <ul class="footer-links">
+            <li><a href="/web_dev"><i class="fas fa-laptop-code"></i> Web Development</a></li>
+            <li><a href="/graphic_design"><i class="fas fa-palette"></i> Graphic Design</a></li>
+            <li><a href="/seo"><i class="fas fa-search"></i> SEO & Marketing</a></li>
+            <li><a href="/ai-solutions"><i class="fas fa-robot"></i> AI Solutions</a></li>
+            <li><a href="/cybersecurity"><i class="fas fa-shield-alt"></i> Cybersecurity</a></li>
+            <li><a href="/ecommerce"><i class="fas fa-shopping-cart"></i> E-Commerce</a></li>
+          </ul>
+        </div>
+        <div class="footer-col-contact">
+          <div class="footer-col-title">Contact Us</div>
+          <div class="footer-contact-item"><div class="fci-icon"><i class="fas fa-envelope"></i></div><div class="fci-text"><span class="fci-label">Email</span><span class="fci-val"><a href="mailto:techneurowex@gmail.com">techneurowex@gmail.com</a></span></div></div>
+          <div class="footer-contact-item"><div class="fci-icon"><i class="fas fa-phone-alt"></i></div><div class="fci-text"><span class="fci-label">Phone / WhatsApp</span><span class="fci-val"><a href="tel:+254769329340">+254 769 329 340</a></span></div></div>
+          <div class="footer-contact-item"><div class="fci-icon"><i class="fas fa-map-marker-alt"></i></div><div class="fci-text"><span class="fci-label">Location</span><span class="fci-val">Nairobi, Kenya 🇰🇪</span></div></div>
+          <div class="footer-hours"><span class="hours-dot"></span> Mon – Fri &nbsp;·&nbsp; 9 am – 6 pm EAT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr class="footer-divider">
+  <div class="footer-bottom-bar">
+    <div class="container">
+      <div class="footer-bottom-inner">
+        <p class="footer-copy">© {{currentYear}} NeurowexTech. All rights reserved.</p>
+        <nav class="footer-legal" aria-label="Legal links">
+          <a href="/about">About</a>
+          <a href="/privacy-policy">Privacy</a>
+          <a href="/terms-of-service">Terms</a>
+          <a href="/cookie-policy">Cookies</a>
+        </nav>
+        <p class="footer-made-in">Made with <span>♥</span> in Nairobi</p>
+      </div>
+    </div>
+  </div>
 </footer>
 
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<!-- BACK TO TOP -->
+<button id="back-to-top" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
+
+<!-- WA FLOAT -->
+<div id="wa-float">
+  <div id="wa-tooltip">
+    <button id="waTooltipClose" aria-label="Close"><i class="fas fa-times"></i></button>
+    <p>Chat with us on WhatsApp</p>
+    <span>Usually replies within minutes</span>
+  </div>
+  <a href="https://wa.me/254769329340?text=Hello%20NeurowexTech!" target="_blank" rel="noopener noreferrer" class="wa-fab" aria-label="Chat on WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+    <span id="wa-badge" aria-hidden="true"></span>
+  </a>
+</div>
+
+<!-- COOKIE BANNER -->
+<div id="cookie-bar" role="alert" aria-live="polite">
+  <p>We use cookies to improve your experience. <a href="/cookie-policy">Learn more</a>.</p>
+  <button id="cookie-accept">Got it</button>
+</div>
+
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 <script>
-    AOS.init({ duration: 800, once: true });
-    
-    // Navbar scroll effect
-    window.addEventListener('scroll', () => {
-        const navbar = document.querySelector('.navbar');
-        if (window.scrollY > 50) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
-    });
-    
-    // Dark Mode
-    let dark = localStorage.getItem('theme') === 'dark';
-    function applyTheme() {
-        document.body.classList.toggle('dark', dark);
-    }
-    applyTheme();
+AOS.init({duration:720,once:true,offset:50,easing:'ease-out-cubic'});
+
+/* CURSOR */
+(function(){var dot=document.getElementById('cursor-dot'),ring=document.getElementById('cursor-ring');if(!dot||!ring)return;var mx=window.innerWidth/2,my=window.innerHeight/2,rx=mx,ry=my;document.addEventListener('mouseleave',function(){document.body.classList.add('cursor-hidden');});document.addEventListener('mouseenter',function(){document.body.classList.remove('cursor-hidden');});document.addEventListener('mousedown',function(){document.body.classList.add('cursor-click');});document.addEventListener('mouseup',function(){document.body.classList.remove('cursor-click');});window.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';},{passive:true});(function loop(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();document.querySelectorAll('a,button,[role="button"]').forEach(function(el){el.addEventListener('mouseenter',function(){document.body.classList.add('cursor-hover');});el.addEventListener('mouseleave',function(){document.body.classList.remove('cursor-hover');});});})();
+
+/* SCROLL / NAV */
+var navbar=document.getElementById('mainNav'),backToTop=document.getElementById('back-to-top'),scrollPrg=document.getElementById('scroll-progress');
+window.addEventListener('scroll',function(){var st=window.pageYOffset,docH=document.documentElement.scrollHeight-window.innerHeight;scrollPrg.style.width=(docH>0?(st/docH)*100:0)+'%';navbar.classList.toggle('scrolled',st>40);backToTop.classList.toggle('visible',st>400);},{passive:true});
+backToTop.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+
+/* MOBILE NAV */
+var mobOverlay=document.getElementById('mobOverlay'),mobPanel=document.getElementById('mobPanel'),hamBtn=document.getElementById('hamBtn'),mobClose=document.getElementById('mobClose'),mobSvcToggle=document.getElementById('mobSvcToggle'),mobSvcSub=document.getElementById('mobSvcSub');
+function openMob(){mobOverlay.classList.add('open');mobPanel.classList.add('open');hamBtn.classList.add('open');hamBtn.setAttribute('aria-expanded','true');document.body.style.overflow='hidden';}
+function closeMob(){mobPanel.classList.remove('open');mobOverlay.classList.remove('open');hamBtn.classList.remove('open');hamBtn.setAttribute('aria-expanded','false');document.body.style.overflow='';}
+hamBtn.addEventListener('click',openMob);mobClose.addEventListener('click',closeMob);mobOverlay.addEventListener('click',closeMob);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&mobPanel.classList.contains('open'))closeMob();});
+mobSvcToggle.addEventListener('click',function(){var o=mobSvcSub.classList.toggle('open');mobSvcToggle.classList.toggle('open',o);mobSvcToggle.setAttribute('aria-expanded',o);});
+
+/* THEME */
+var themeBtn=document.getElementById('theme-toggle'),mobThemeBtn=document.getElementById('mobThemeBtn');
+var dark=localStorage.getItem('nw-theme')==='dark'||(!localStorage.getItem('nw-theme')&&window.matchMedia('(prefers-color-scheme:dark)').matches);
+var MOON='<svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>';
+var SUN='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+function applyTheme(){document.body.classList.toggle('dark',dark);themeBtn.innerHTML=dark?SUN:MOON;if(mobThemeBtn)mobThemeBtn.innerHTML=dark?'<i class="fas fa-sun"></i>':'<i class="fas fa-moon"></i>';}
+applyTheme();
+function toggleTheme(){dark=!dark;localStorage.setItem('nw-theme',dark?'dark':'light');applyTheme();}
+themeBtn.addEventListener('click',toggleTheme);if(mobThemeBtn)mobThemeBtn.addEventListener('click',toggleTheme);
+
+/* COOKIE */
+var cookieBar=document.getElementById('cookie-bar');
+if(!localStorage.getItem('nw-cookie'))setTimeout(function(){cookieBar.classList.add('show');},2800);
+document.getElementById('cookie-accept').addEventListener('click',function(){localStorage.setItem('nw-cookie','1');cookieBar.classList.remove('show');});
+
+/* WA TOOLTIP */
+(function(){var shown=sessionStorage.getItem('nw-wa-tip');if(!shown){setTimeout(function(){var tip=document.getElementById('wa-tooltip');if(tip){tip.classList.add('show');sessionStorage.setItem('nw-wa-tip','1');}},5500);}var closeBtn=document.getElementById('waTooltipClose');if(closeBtn){closeBtn.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();document.getElementById('wa-tooltip').classList.remove('show');});}})();
 </script>
+<style>
+#soc-sidebar{position:fixed;right:0;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;z-index:9000;border-radius:6px 0 0 6px;overflow:hidden;box-shadow:-2px 0 16px rgba(0,0,0,.2)}
+.ss-link{width:42px;height:42px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.88rem;text-decoration:none;transition:width .2s,opacity .15s}
+.ss-link:hover{width:52px;opacity:.9}
+.ss-link.fb{background:#1877f2}
+.ss-link.yt{background:#ff0000}
+.ss-link.li{background:#0077b5}
+.ss-link.ig{background:linear-gradient(180deg,#f58529,#dd2a7b,#8134af,#515bd4)}
+@media(max-width:640px){#soc-sidebar{display:none}}
+@media print{#soc-sidebar{display:none}}
+</style>
+<aside id="soc-sidebar" aria-label="Follow us on social media">
+  <a href="https://www.facebook.com/share/1928ETerkE/" target="_blank" rel="noopener noreferrer" class="ss-link fb" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+  <a href="https://youtube.com/@neurowextech?si=CSiI92E2peTQmngO" target="_blank" rel="noopener noreferrer" class="ss-link yt" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+  <a href="https://www.linkedin.com/in/neurowex-tech-588045312" target="_blank" rel="noopener noreferrer" class="ss-link li" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+  <a href="https://www.instagram.com/neorowex_tech_solutions" target="_blank" rel="noopener noreferrer" class="ss-link ig" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+</aside>
 {{> widget}}
 </body>
 </html>
