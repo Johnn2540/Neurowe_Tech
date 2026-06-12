@@ -989,6 +989,9 @@ button,input,select,textarea{font-family:'DM Sans',sans-serif}
                data-duration="{{this.duration}}"
                data-module-title="{{../title}}"
                data-completed="{{this.completed}}"
+               data-attachment-url="{{this.attachment_url}}"
+               data-attachment-name="{{this.attachment_name}}"
+               data-content="{{this.content}}"
                tabindex="0"
                role="button"
                aria-label="{{this.title}}{{#if this.completed}} — completed{{/if}}{{#if this.isCurrent}} — currently playing{{/if}}">
@@ -1047,12 +1050,15 @@ var STATE = {
   allLessons: [
     {{#each modules}}{{#each this.lessons}}
     {
-      id:          {{this.id}},
-      title:       {{{json this.title}}},
-      videoUrl:    {{{json this.video_url}}},
-      duration:    {{{json this.duration}}},
-      moduleTitle: {{{json ../title}}},
-      completed:   {{#if this.completed}}true{{else}}false{{/if}}
+      id:             {{this.id}},
+      title:          {{{json this.title}}},
+      videoUrl:       {{{json this.video_url}}},
+      duration:       {{{json this.duration}}},
+      moduleTitle:    {{{json ../title}}},
+      attachmentUrl:  {{{json this.attachment_url}}},
+      attachmentName: {{{json this.attachment_name}}},
+      content:        {{{json this.content}}},
+      completed:      {{#if this.completed}}true{{else}}false{{/if}}
     }{{#unless @last}},{{/unless}}
     {{/each}}{{#unless @last}},{{/unless}}{{/each}}
   ]
@@ -1123,11 +1129,14 @@ qsa('.sb-module-btn').forEach(function(btn){
 function loadLesson(lessonEl) {
   if(!lessonEl) return;
 
-  var id          = lessonEl.dataset.lessonId;
-  var title       = lessonEl.dataset.lessonTitle;
-  var videoUrl    = lessonEl.dataset.videoUrl;
-  var moduleTitle = lessonEl.dataset.moduleTitle;
-  var isCompleted = lessonEl.dataset.completed === 'true';
+  var id             = lessonEl.dataset.lessonId;
+  var title          = lessonEl.dataset.lessonTitle;
+  var videoUrl       = lessonEl.dataset.videoUrl;
+  var moduleTitle    = lessonEl.dataset.moduleTitle;
+  var isCompleted    = lessonEl.dataset.completed === 'true';
+  var attachmentUrl  = lessonEl.dataset.attachmentUrl  || '';
+  var attachmentName = lessonEl.dataset.attachmentName || '';
+  var content        = lessonEl.dataset.content        || '';
 
   /* ── update STATE ── */
   STATE.currentLessonId        = id;
@@ -1173,6 +1182,12 @@ function loadLesson(lessonEl) {
 
   /* ── load notes ── */
   loadNotes(id);
+
+  /* ── update resources tab ── */
+  updateResourcesTab(attachmentUrl, attachmentName);
+
+  /* ── update lesson content tab ── */
+  updateLessonContent(content);
 
   /* ── update prev/next buttons ── */
   updateNavArrows();
@@ -1338,6 +1353,46 @@ qsa('.tab-btn').forEach(function(btn){
     if(pane) pane.classList.add('active');
   });
 });
+
+/* ══════════════════════════════════════════════════════════════
+   RESOURCES TAB — update when switching lessons
+═══════════════════════════════════════════════════════════════= */
+function updateResourcesTab(attachmentUrl, attachmentName) {
+  var pane = el('tab-resources');
+  if(!pane) return;
+  if(attachmentUrl && attachmentUrl.trim()) {
+    var name = attachmentName && attachmentName.trim() ? attachmentName : 'Download Attachment';
+    var ext  = name.split('.').pop().toLowerCase();
+    var iconClass = ext === 'pdf' ? 'fa-file-pdf' : /^(mp4|mov|webm|avi)$/.test(ext) ? 'fa-video' : 'fa-file-alt';
+    var typeLabel = ext === 'pdf' ? 'PDF' : /^(mp4|mov|webm|avi)$/.test(ext) ? 'Video' : 'File';
+    pane.innerHTML = '<a href="' + attachmentUrl + '" target="_blank" rel="noopener noreferrer" class="res-item">'
+      + '<div class="res-icon"><i class="fas ' + iconClass + '"></i></div>'
+      + '<div><div class="res-name">' + name + '</div><div class="res-type">' + typeLabel + '</div></div>'
+      + '<i class="fas fa-external-link-alt" style="color:var(--c-text3);font-size:.72rem;margin-left:auto;flex-shrink:0"></i>'
+      + '</a>';
+  } else {
+    pane.innerHTML = '<div class="tab-empty"><i class="fas fa-paperclip"></i>No resources attached to this lesson yet.</div>';
+  }
+}
+
+function updateLessonContent(content) {
+  var pane = el('tab-overview');
+  if(!pane) return;
+  var existing = pane.querySelector('.lesson-content-body');
+  if(content && content.trim()) {
+    if(!existing) {
+      var div = document.createElement('div');
+      div.className = 'lesson-content-body';
+      div.style.cssText = 'margin-top:20px;padding-top:20px;border-top:1px solid var(--c-border)';
+      pane.querySelector('[style]') ? pane.querySelector('[style]').after(div) : pane.appendChild(div);
+      existing = div;
+    }
+    existing.innerHTML = '<h3 style="font-size:1rem;color:var(--c-text);margin-bottom:10px">Lesson Notes</h3>'
+      + '<div style="font-size:.87rem;color:var(--c-text2);line-height:1.8;white-space:pre-wrap">' + content + '</div>';
+  } else if(existing) {
+    existing.remove();
+  }
+}
 
 /* ══════════════════════════════════════════════════════════════
    NOTES — per-lesson localStorage

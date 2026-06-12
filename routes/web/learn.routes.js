@@ -178,11 +178,12 @@ router.get('/learn/course/:id/dashboard', isAuthenticated, async (req, res) => {
         const modulesR = await db.query(`
             SELECT cm.*,
                    COALESCE(json_agg(
-                       json_build_object('id',cl.id,'title',cl.title,'description','',
+                       json_build_object('id',cl.id,'title',cl.title,'content',cl.content,
                            'duration',cl.duration,'lesson_order',cl.lesson_order,'video_url',cl.video_url,
+                           'attachment_url',cl.attachment_url,'attachment_name',cl.attachment_name,
                            'completed',COALESCE(ulp.completed,false))
                        ORDER BY cl.lesson_order
-                   ) FILTER (WHERE cl.id IS NOT NULL),'[]') AS lessons
+                   ) FILTER (WHERE cl.id IS NOT NULL AND COALESCE(cl.is_published,true)=true),'[]') AS lessons
             FROM course_modules cm
             LEFT JOIN course_lessons cl ON cm.id=cl.module_id
             LEFT JOIN user_lesson_progress ulp ON cl.id=ulp.lesson_id AND ulp.user_id=$1
@@ -219,6 +220,14 @@ router.get('/learn/course/:id/dashboard', isAuthenticated, async (req, res) => {
             });
         });
 
+        const currentLessonResources = [];
+        if (currentLesson?.attachment_url) {
+            const name = currentLesson.attachment_name || 'Download Attachment';
+            const ext  = name.split('.').pop().toLowerCase();
+            const type = ext === 'pdf' ? 'pdf' : /^(mp4|mov|webm|avi)$/.test(ext) ? 'video' : 'file';
+            currentLessonResources.push({ url: currentLesson.attachment_url, title: name, type });
+        }
+
         return res.render('course-dashboard', {
             title:                   `${enrollment.title} – My Learning`,
             courseId,
@@ -230,12 +239,13 @@ router.get('/learn/course/:id/dashboard', isAuthenticated, async (req, res) => {
             progress,
             completedLessons,
             totalLessons,
-            currentLessonId:         currentLesson?.id         ?? null,
-            currentLessonTitle:      currentLesson?.title       ?? '',
-            currentLessonDescription:'',
-            currentVideoUrl:         currentLesson?.video_url   ?? '',
-            currentModuleTitle:      currentLesson?.moduleTitle ?? '',
-            currentLessonCompleted:  currentLesson?.completed   ?? false,
+            currentLessonId:         currentLesson?.id              ?? null,
+            currentLessonTitle:      currentLesson?.title            ?? '',
+            currentLessonContent:    currentLesson?.content          ?? '',
+            currentVideoUrl:         currentLesson?.video_url        ?? '',
+            currentModuleTitle:      currentLesson?.moduleTitle      ?? '',
+            currentLessonCompleted:  currentLesson?.completed        ?? false,
+            currentLessonResources,
             hasPrevLesson:           currentIdx > 0,
             hasNextLesson:           currentIdx >= 0 && currentIdx < allLessons.length-1,
             enrolledAt:              enrollment.enrolled_at,

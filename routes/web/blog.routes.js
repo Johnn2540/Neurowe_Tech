@@ -42,13 +42,9 @@ router.get('/blog/:slug', async (req, res) => {
             return res.status(404).render('404', { title: 'Post Not Found' });
 
         const post = r.rows[0];
-        // Single query: prefer same-category posts, fall back to recent posts
         const relatedR = await db.query(
-            `SELECT * FROM blog_posts
-             WHERE published=true AND id != $1
-             ORDER BY (CASE WHEN category=$2 THEN 0 ELSE 1 END), created_at DESC
-             LIMIT 3`,
-            [post.id, post.category || '']
+            `SELECT * FROM blog_posts WHERE published=true AND id != $1 ORDER BY created_at DESC LIMIT 3`,
+            [post.id]
         );
         const relatedPosts = relatedR.rows;
 
