@@ -3,30 +3,25 @@
 
 const nodemailer = require('nodemailer');
 
-const {
-    SMTP_HOST  = 'smtp.gmail.com',
-    SMTP_PORT  = '587',
-    SMTP_USER  = '',
-    SMTP_PASS  = '',
-    SMTP_FROM  = '',
-} = process.env;
-
 function createTransporter() {
-    if (!SMTP_USER || !SMTP_PASS) return null;
+    const user = process.env.SMTP_USER || '';
+    const pass = process.env.SMTP_PASS || '';
+    if (!user || !pass) return null;
     return nodemailer.createTransport({
-        host:   SMTP_HOST,
-        port:   parseInt(SMTP_PORT, 10),
-        secure: parseInt(SMTP_PORT, 10) === 465,
-        auth: { user: SMTP_USER, pass: SMTP_PASS },
+        host:   process.env.SMTP_HOST || 'smtp.gmail.com',
+        port:   parseInt(process.env.SMTP_PORT || '587', 10),
+        secure: parseInt(process.env.SMTP_PORT || '587', 10) === 465,
+        auth:   { user, pass },
     });
 }
 
 async function sendResetEmail(toEmail, resetLink) {
     const transporter = createTransporter();
     if (!transporter) return false;
+    console.log('[mailer] sendResetEmail →', toEmail);
 
     await transporter.sendMail({
-        from:    SMTP_FROM || `"NeurowexTech" <${SMTP_USER}>`,
+        from:    process.env.SMTP_FROM || `"NeurowexTech" <${process.env.SMTP_USER}>`,
         to:      toEmail,
         subject: 'Reset your NeurowexTech password',
         text:    `Hi,\n\nYou requested a password reset. Click the link below to set a new password:\n\n${resetLink}\n\nThis link expires in 1 hour. If you did not request this, ignore this email.\n\n— NeurowexTech`,
@@ -64,10 +59,11 @@ async function sendResetEmail(toEmail, resetLink) {
 async function sendVerificationEmail(toEmail, verifyLink, username) {
     const transporter = createTransporter();
     if (!transporter) return false;
+    console.log('[mailer] sendVerificationEmail →', toEmail);
 
     const name = username || 'there';
     await transporter.sendMail({
-        from:    SMTP_FROM || `"NeurowexTech" <${SMTP_USER}>`,
+        from:    process.env.SMTP_FROM || `"NeurowexTech" <${process.env.SMTP_USER}>`,
         to:      toEmail,
         subject: 'Verify your NeurowexTech email address',
         text:    `Hi ${name},\n\nThank you for creating a NeurowexTech account!\n\nClick the link below to verify your email address:\n\n${verifyLink}\n\nThis link expires in 24 hours.\n\nIf you did not create this account, ignore this email.\n\n— NeurowexTech`,

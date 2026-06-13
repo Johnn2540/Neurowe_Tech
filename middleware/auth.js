@@ -11,7 +11,8 @@ function isAuthenticated(req, res, next) {
     if (req.session.userId) return next();
     if (req.is('application/json'))
         return res.status(401).json({ success: false, message: 'Please sign in to continue' });
-    return res.redirect('/login');
+    const next_ = encodeURIComponent(req.originalUrl);
+    return res.redirect(`/login?next=${next_}`);
 }
 
 /**

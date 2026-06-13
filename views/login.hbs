@@ -208,11 +208,16 @@ document.getElementById('loginForm').addEventListener('submit',async function(e)
   if(!password){fieldErr('pwdErr','Please enter your password.');valid=false;}
   if(!valid)return;
   setLoading(true);
+  // Capture ?next= from the URL (set by isAuthenticated when redirecting here)
+  var nextUrl=new URLSearchParams(window.location.search).get('next')||'{{next}}';
   try{
     var rememberMe=document.getElementById('rememberMe').checked;
-    var res=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password,rememberMe})});
+    var res=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password,rememberMe,next:nextUrl})});
     var data=await res.json();
-    if(res.ok&&data.success){showAlert('Signed in! Redirecting…','success');setTimeout(()=>{window.location.href=data.redirect||(data.role==='admin'?'/admin_dashboard':'/user_dashboard');},800);}
+    if(res.ok&&data.success){
+      showAlert('Signed in! Redirecting…','success');
+      setTimeout(()=>{window.location.href=data.redirect||'/user_dashboard';},800);
+    }
     else if(data.needsVerify){
       document.getElementById('verifyBanner').style.display='block';
       document.getElementById('verifyBanner')._email=data.email||'';

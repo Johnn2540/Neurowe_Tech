@@ -218,6 +218,20 @@ async function runStartupMigrations() {
 
         // user_activities — fetched per user on dashboard
         `CREATE INDEX IF NOT EXISTS idx_ua_created ON user_activities(created_at DESC)`,
+
+        // ── Missing columns added retroactively ───────────────────────────────
+        // enrolled_count — cached counter used by enrollment API endpoints
+        `ALTER TABLE courses ADD COLUMN IF NOT EXISTS enrolled_count INTEGER DEFAULT 0`,
+        // external_id — used by free-course enrollment to link external courses
+        `ALTER TABLE courses ADD COLUMN IF NOT EXISTS external_id VARCHAR(255)`,
+        // unique partial index so ON CONFLICT (external_id) works
+        `CREATE UNIQUE INDEX IF NOT EXISTS idx_c_external_id ON courses(external_id) WHERE external_id IS NOT NULL`,
+        // content column on lessons (text/markdown body for lesson overview)
+        `ALTER TABLE course_lessons ADD COLUMN IF NOT EXISTS content TEXT`,
+        // sale_price — used by instructor course update endpoint
+        `ALTER TABLE courses ADD COLUMN IF NOT EXISTS sale_price NUMERIC(10,2)`,
+        // allow_free_preview — used by instructor course update endpoint
+        `ALTER TABLE courses ADD COLUMN IF NOT EXISTS allow_free_preview BOOLEAN DEFAULT false`,
     ];
 
     for (const sql of migrations) {

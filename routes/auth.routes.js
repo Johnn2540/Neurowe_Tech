@@ -8,11 +8,17 @@ const ctrl = require('../controllers/auth.controller');
 
 const router = Router();
 
+function redirectForRole(role) {
+    if (role === 'admin')       return '/admin_dashboard';
+    if (role === 'instructor')  return '/instructor/dashboard';
+    return '/user_dashboard';
+}
+
 // ── View routes ──────────────────────────────────────────────────────────────
 
 router.get('/sign_up', (req, res) => {
     if (req.session.userId)
-        return res.redirect(req.session.userRole === 'admin' ? '/admin_dashboard' : '/user_dashboard');
+        return res.redirect(redirectForRole(req.session.userRole));
     res.render('sign_up', {
         title:          'Create Account – NeurowexTech',
         googleClientId: process.env.GOOGLE_CLIENT_ID || '',
@@ -22,13 +28,18 @@ router.get('/signup', (req, res) => res.redirect('/sign_up'));
 
 router.get('/login', (req, res) => {
     if (req.session.userId)
-        return res.redirect(req.session.userRole === 'admin' ? '/admin_dashboard' : '/user_dashboard');
+        return res.redirect(redirectForRole(req.session.userRole));
+    const next = req.query.next || '';
     res.render('login', {
         title:          'Sign In – NeurowexTech',
         googleClientId: process.env.GOOGLE_CLIENT_ID || '',
+        next,
     });
 });
-router.get('/signin', (req, res) => res.redirect('/login'));
+router.get('/signin', (req, res) => {
+    const qs = req.query.next ? `?next=${encodeURIComponent(req.query.next)}` : '';
+    return res.redirect(`/login${qs}`);
+});
 
 router.get('/forgot-password', (req, res) =>
     res.render('reset-password', { title: 'Forgot Password – NeurowexTech', mode: 'forgot' }));

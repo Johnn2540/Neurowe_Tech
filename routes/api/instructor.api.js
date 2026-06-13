@@ -241,17 +241,19 @@ router.delete('/course/:id', async (req, res) => {
                 return res.status(403).json({ success:false, message:'Only the course owner can delete this course' });
         }
 
-        const modulesR = await db.query('SELECT id FROM course_modules WHERE course_id=$1', [courseId]);
-        for (const mod of modulesR.rows) {
-            const lessonsR = await db.query('SELECT id FROM course_lessons WHERE module_id=$1', [mod.id]);
-            for (const les of lessonsR.rows)
-                await db.query('DELETE FROM user_lesson_progress WHERE lesson_id=$1', [les.id]);
-            await db.query('DELETE FROM course_lessons WHERE module_id=$1', [mod.id]);
-        }
-        await db.query('DELETE FROM course_modules WHERE course_id=$1', [courseId]);
-        await db.query('DELETE FROM enrollments WHERE course_id=$1', [courseId]);
-        await db.query('DELETE FROM instructor_course_assignments WHERE course_id=$1', [courseId]);
-        await db.query('DELETE FROM courses WHERE id=$1', [courseId]);
+        // Delete all progress, lessons, modules, enrollments in 5 flat queries (no N+1)
+        await db.query(`
+            DELETE FROM user_lesson_progress
+            WHERE lesson_id IN (
+                SELECT cl.id FROM course_lessons cl
+                JOIN course_modules cm ON cl.module_id = cm.id
+                WHERE cm.course_id = $1
+            )`, [courseId]);
+        await db.query(`DELETE FROM course_lessons WHERE module_id IN (SELECT id FROM course_modules WHERE course_id=$1)`, [courseId]);
+        await db.query(`DELETE FROM course_modules WHERE course_id=$1`, [courseId]);
+        await db.query(`DELETE FROM enrollments WHERE course_id=$1`, [courseId]);
+        await db.query(`DELETE FROM instructor_course_assignments WHERE course_id=$1`, [courseId]);
+        await db.query(`DELETE FROM courses WHERE id=$1`, [courseId]);
 
         return res.json({ success:true, message:'Course deleted' });
     } catch (err) {

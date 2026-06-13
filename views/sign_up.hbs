@@ -240,7 +240,7 @@ document.getElementById('signupForm').addEventListener('submit',async function(e
   setLoading(true);
   var username=(first+' '+last).trim();
   try{
-    var res=await fetch('/api/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,email,password:pwd})});
+    var res=await fetch('/api/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({firstName:first,lastName:last,email,password:pwd})});
     var data=await res.json();
     if(res.ok&&data.success){
       if(data.needsVerify){

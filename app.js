@@ -36,6 +36,10 @@ for (const [name, val] of Object.entries(required)) {
 // ── App ───────────────────────────────────────────────────────────────────────
 const app = express();
 
+// Trust Vercel's reverse proxy so req.protocol returns 'https' and
+// req.ip reflects the real client IP (needed for rate limiting + email links)
+app.set('trust proxy', 1);
+
 // ── Compression (gzip) — must be first middleware ─────────────────────────────
 app.use(compression({
     level: 6,
@@ -112,9 +116,11 @@ const authLimiter = rateLimit({
     message: { success: false, message: 'Too many requests, please try again in 15 minutes.' },
     skip: () => process.env.NODE_ENV === 'test',
 });
-app.use('/api/login',    authLimiter);
-app.use('/api/register', authLimiter);
-app.use('/api/auth',     authLimiter);
+app.use('/api/login',                authLimiter);
+app.use('/api/register',             authLimiter);
+app.use('/api/auth',                 authLimiter);
+app.use('/api/forgot-password',      authLimiter);
+app.use('/api/resend-verification',  authLimiter);
 
 // ── Request logging (dev only) ────────────────────────────────────────────────
 if (process.env.NODE_ENV !== 'production') {

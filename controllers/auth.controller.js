@@ -80,7 +80,7 @@ async function register(req, res) {
 
 async function login(req, res) {
     try {
-        const { email, password, rememberMe } = req.body;
+        const { email, password, rememberMe, next: nextUrl } = req.body;
         if (!email || !password)
             return res.status(400).json({ success: false, message: 'Please enter email and password' });
 
@@ -103,10 +103,10 @@ async function login(req, res) {
 
         if (user.email_verified === false)
             return res.status(403).json({
-                success:       false,
-                needsVerify:   true,
-                email:         user.email,
-                message:       'Please verify your email before signing in. Check your inbox or resend the link.',
+                success:     false,
+                needsVerify: true,
+                email:       user.email,
+                message:     'Please verify your email before signing in. Check your inbox or resend the link.',
             });
 
         req.session.userId    = user.id;
@@ -116,6 +116,13 @@ async function login(req, res) {
 
         if (rememberMe) req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 30;
 
+        // Only allow same-origin relative paths as the post-login redirect
+        const safeNext = nextUrl
+            && typeof nextUrl === 'string'
+            && nextUrl.startsWith('/')
+            && !nextUrl.startsWith('//')
+            ? nextUrl : null;
+
         req.session.save(err => {
             if (err) {
                 console.error('[auth] session save error:', err);
@@ -123,10 +130,10 @@ async function login(req, res) {
             }
             db.query('UPDATE users SET last_login = NOW() WHERE id = $1', [user.id]).catch(() => {});
             return res.json({
-                success: true,
-                message: 'Signed in!',
+                success:  true,
+                message:  'Signed in!',
                 role:     user.role,
-                redirect: redirectForRole(user.role),
+                redirect: safeNext || redirectForRole(user.role),
             });
         });
     } catch (err) {
@@ -156,18 +163,23 @@ async function googleAuth(req, res) {
 
         if (!existing.rows.length) {
             const r = await db.query(
-                `INSERT INTO users (username, email, google_id, password_hash, role, is_active, created_at)
-                 VALUES ($1,$2,$3,'','user',true,NOW())
+                `INSERT INTO users (username, email, google_id, password_hash, role, is_active, email_verified, created_at)
+                 VALUES ($1,$2,$3,'','user',true,true,NOW())
                  RETURNING id, username, email, role`,
                 [name, email.toLowerCase(), googleId]
             );
             userRow = r.rows[0];
         } else {
             userRow = existing.rows[0];
-            if (!userRow.google_id)
-                await db.query('UPDATE users SET google_id=$1 WHERE id=$2', [googleId, userRow.id]);
             if (!userRow.is_active)
                 return res.status(401).json({ success: false, message: 'Your account has been deactivated.' });
+            if (!userRow.google_id && userRow.email_verified !== false) {
+                await db.query('UPDATE users SET google_id=$1 WHERE id=$2', [googleId, userRow.id]);
+            } else if (!userRow.google_id && userRow.email_verified === false) {
+                await db.query('UPDATE users SET google_id=$1, email_verified=true WHERE id=$2', [googleId, userRow.id]);
+            } else if (userRow.email_verified === false) {
+                await db.query('UPDATE users SET email_verified=true WHERE id=$1', [userRow.id]);
+            }
         }
 
         req.session.userId    = userRow.id;
