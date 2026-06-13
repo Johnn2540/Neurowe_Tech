@@ -219,6 +219,9 @@ async function runStartupMigrations() {
         // user_activities — fetched per user on dashboard
         `CREATE INDEX IF NOT EXISTS idx_ua_created ON user_activities(created_at DESC)`,
 
+        // username is a display name — email is the real unique key, drop the redundant constraint
+        `ALTER TABLE users DROP CONSTRAINT IF EXISTS users_username_key`,
+
         // ── Missing columns added retroactively ───────────────────────────────
         // enrolled_count — cached counter used by enrollment API endpoints
         `ALTER TABLE courses ADD COLUMN IF NOT EXISTS enrolled_count INTEGER DEFAULT 0`,

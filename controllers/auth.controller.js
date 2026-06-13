@@ -22,8 +22,10 @@ function redirectForRole(role) {
 async function register(req, res) {
     try {
         const { firstName, lastName, username, email, password, fullname } = req.body;
-        const name  = firstName && lastName ? `${firstName} ${lastName}`.trim() : (fullname || '');
-        const uname = username || name;
+        const name  = firstName && lastName ? `${firstName} ${lastName}`.trim()
+                    : (fullname || username || '');
+        // Display name stored as username — never empty, max 100 chars
+        const uname = (name || email.split('@')[0]).substring(0, 100);
 
         if (!name  || name.length < 2)
             return res.status(400).json({ success: false, message: 'Please enter your full name' });
