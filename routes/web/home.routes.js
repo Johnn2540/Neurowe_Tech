@@ -6,21 +6,33 @@ const db                 = require('../../db/postgres');
 
 const router = Router();
 
+// Keys are lowercase so lookup works regardless of how names are cased in the DB
 const PROJECT_META = {
-    FitSync:      { image_url: '/images/FitSync.jpg',      live_demo_url: 'https://fitsync.com' },
-    ChatSphere:   { image_url: '/images/ChatSphere.jpg',   live_demo_url: 'https://chatsphere.io/' },
-    TaskFlow:     { image_url: '/images/TaskFlow.jpg',     live_demo_url: 'https://taskflowapp.com/' },
-    MediBook:     { image_url: '/images/MediBook.jpg',     live_demo_url: 'https://edu365.uk/' },
-    ShopEase:     { image_url: '/images/ShopEase.jpg',     live_demo_url: 'https://www.shopeaseapp.com/' },
-    EcoShop:      { image_url: '/images/eco_shop.png' },
-    'Eco Shop':   { image_url: '/images/eco_shop.png' },
-    Medicare:     { image_url: '/images/medicare.png' },
-    EduLearn:     { image_url: '/images/edulearn.png' },
-    DocuAI:       { image_url: '/images/docuai.png' },
-    FitTrack:     { image_url: '/images/fittrack.png' },
-    DataDash:     { image_url: '/images/datadash.png' },
-    'Dashboard UI': { image_url: '/images/dashboard ui.jpg' },
+    'fitsync':      { image_url: '/images/FitSync.jpg',    live_demo_url: 'https://fitsync.com' },
+    'chatsphere':   { image_url: '/images/ChatSphere.jpg', live_demo_url: 'https://chatsphere.io/' },
+    'taskflow':     { image_url: '/images/TaskFlow.jpg',   live_demo_url: 'https://taskflowapp.com/' },
+    'medibook':     { image_url: '/images/MediBook.jpg',   live_demo_url: 'https://edu365.uk/' },
+    'shopease':     { image_url: '/images/ShopEase.jpg',   live_demo_url: 'https://www.shopeaseapp.com/' },
+    'ecoshop':      { image_url: '/images/eco_shop.png' },
+    'eco shop':     { image_url: '/images/eco_shop.png' },
+    'medicare':     { image_url: '/images/medicare.png' },
+    'edulearn':     { image_url: '/images/edulearn.png' },
+    'docuai':       { image_url: '/images/docuai.png' },
+    'fittrack':     { image_url: '/images/fittrack.png' },
+    'datadash':     { image_url: '/images/datadash.png' },
+    'dashboard ui': { image_url: '/images/dashboard ui.jpg' },
+    'dashboardui':  { image_url: '/images/dashboard ui.jpg' },
 };
+
+function enrichProject(p) {
+    const meta = PROJECT_META[(p.name || '').toLowerCase().trim()] || {};
+    return {
+        ...p,
+        // META wins — these are known-good paths; DB value is fallback
+        image_url:     meta.image_url     || p.image_url     || null,
+        live_demo_url: meta.live_demo_url || p.live_demo_url || null,
+    };
+}
 
 // ─── Homepage ─────────────────────────────────────────────────────────────────
 
@@ -47,14 +59,7 @@ router.get('/', async (req, res) => {
                   }) : '',
         }));
         const courseCount = parseInt(coursesR.rows[0]?.total_count || 0, 10);
-        const featuredProjects = featuredR.rows.map(p => {
-            const meta = PROJECT_META[p.name] || {};
-            return {
-                ...p,
-                image_url:     p.image_url     || meta.image_url     || null,
-                live_demo_url: p.live_demo_url || meta.live_demo_url || null,
-            };
-        });
+        const featuredProjects = featuredR.rows.map(enrichProject);
         return res.render('home', {
             title:            'NeurowexTech – Web & Mobile Apps That Actually Ship',
             description:      'Custom web and mobile app development for startups and businesses.',
