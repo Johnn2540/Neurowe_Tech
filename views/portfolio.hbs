@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -24,7 +24,7 @@
   <meta name="twitter:title"      content="Portfolio | NeurowexTech" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
 <style>
@@ -49,20 +49,20 @@
   --sh-blue:0 4px 18px rgba(37,99,235,.28);
   --sh-accent:0 4px 18px rgba(224,92,42,.28);
   --ease:cubic-bezier(.4,0,.2,1);--spring:cubic-bezier(.34,1.56,.64,1);--t:.22s var(--ease);
-  --font-display:'Fraunces',Georgia,serif;
-  --font-body:'Plus Jakarta Sans',system-ui,sans-serif;
+  --font-display:'Instrument Serif',Georgia,serif;
+  --font-body:'DM Sans',system-ui,sans-serif;
   --font-mono:'JetBrains Mono',monospace;
 }
 
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 body{font-family:var(--font-body);background:var(--ghost);color:var(--ink);overflow-x:hidden;font-size:16px;line-height:1.6}
-h1,h2,h3,h4,h5,h6{font-family:var(--font-display);line-height:1.1;letter-spacing:-.02em}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-display);line-height:1.15;font-weight:400}
 a{text-decoration:none;color:inherit}
 img{max-width:100%;display:block}
 ::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:var(--ink)}
-::-webkit-scrollbar-thumb{background:var(--blue);border-radius:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(37,99,235,.3);border-radius:4px}::-webkit-scrollbar-thumb:hover{background:var(--blue)}
 
 @media(pointer:fine){body{cursor:none}a,button,[role="button"],input,textarea,select,label{cursor:none}}
 #cursor-dot{position:fixed;width:8px;height:8px;border-radius:50%;background:var(--accent);pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:background .25s,transform .2s var(--spring),opacity .2s,width .18s,height .18s,border-radius .18s;will-change:left,top}
@@ -121,7 +121,7 @@ body.dark .empty-state{background:#1a2236;border-color:rgba(255,255,255,.07)}
 .section-tag{display:inline-flex;align-items:center;gap:6px;background:var(--blue-pale);color:var(--blue);border-radius:var(--r-pill);padding:5px 16px;font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;border:1px solid var(--blue-pale2);font-family:var(--font-body)}
 .section-tag.orange{background:var(--accent-pale);color:var(--accent);border-color:rgba(224,92,42,.18)}
 .section-tag.dark-tag{background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.14)}
-.section-title{font-size:clamp(1.8rem,4.5vw,3rem);font-weight:400;margin-bottom:18px;line-height:1.08}
+.section-title{font-size:clamp(1.8rem,4.5vw,3rem);font-weight:400;margin-bottom:18px;line-height:1.15}
 .section-sub{color:var(--slate);font-size:clamp(.9rem,2vw,1.06rem);line-height:1.78;max-width:600px}
 .section-divider{border:none;border-top:1px solid var(--mist);margin:0}
 
@@ -430,7 +430,7 @@ footer{background:#060d1e;color:rgba(255,255,255,.5);font-size:.82rem;border-top
   .pf-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(min-width:992px){
-  :root{--nav-h:68px}
+  :root{--nav-h:66px}
   .container{padding:0 28px}
   .nav-inner{padding:0 28px}
   .nav-links{display:flex}
