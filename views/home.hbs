@@ -858,7 +858,7 @@ footer{background:#060d1e;color:rgba(255,255,255,.5);font-size:.82rem;border-top
 .port-card:hover .port-link{gap:9px}
 
 /* HOME FEATURED PROJECTS — portfolio-style cards */
-.pf-grid{display:grid;grid-template-columns:1fr;gap:22px}
+.pf-grid{display:grid;grid-template-columns:1fr;gap:24px}
 .pf-card-wrap{transition:opacity .28s,transform .28s}
 .pf-card{display:flex;flex-direction:column;background:#fff;border-radius:var(--r-2xl);border:1px solid var(--mist);overflow:hidden;transition:var(--t);position:relative}
 .pf-card:hover{transform:translateY(-7px);box-shadow:var(--sh-xl);border-color:rgba(37,99,235,.18)}
@@ -889,20 +889,20 @@ footer{background:#060d1e;color:rgba(255,255,255,.5);font-size:.82rem;border-top
 .pf-desc{font-size:.82rem;color:var(--slate);line-height:1.7;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .tech-stack{display:flex;gap:6px;flex-wrap:wrap}
 .tech-pill{display:inline-flex;align-items:center;padding:3px 9px;background:var(--surface);border:1px solid var(--mist);border-radius:var(--r-pill);font-size:.68rem;font-weight:700;color:var(--slate);font-family:var(--font-mono)}
-.pf-actions{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
+.pf-actions{display:flex;gap:8px;margin-top:4px}
+.btn-live{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:var(--r-md);font-size:.78rem;font-weight:700;font-family:var(--font-body);background:linear-gradient(135deg,var(--primary),var(--blue));color:#fff;transition:var(--t);border:none;text-decoration:none}
+.btn-live:hover{opacity:.9;transform:translateY(-1px);box-shadow:var(--sh-blue)}
+.btn-live i{font-size:.65rem}
 .btn-detail{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:var(--r-md);font-size:.78rem;font-weight:700;font-family:var(--font-body);background:var(--blue-pale);color:var(--blue);border:1.5px solid var(--blue-pale2);transition:var(--t);text-decoration:none}
 .btn-detail:hover{background:var(--blue);color:#fff;border-color:transparent}
 .btn-detail i{font-size:.65rem;transition:transform .2s}
 .btn-detail:hover i{transform:translateX(3px)}
-.btn-req-same{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:var(--r-md);font-size:.78rem;font-weight:700;font-family:var(--font-body);background:linear-gradient(135deg,var(--accent),var(--accent-d));color:#fff;border:none;transition:var(--t);text-decoration:none;cursor:pointer}
-.btn-req-same:hover{opacity:.9;transform:translateY(-1px);box-shadow:var(--sh-accent);color:#fff}
-.btn-req-same i{font-size:.65rem}
 body.dark .pf-card{background:#1a2236;border-color:rgba(255,255,255,.07)}
 body.dark .pf-name{color:rgba(255,255,255,.88)}
 body.dark .pf-desc{color:rgba(255,255,255,.45)}
 body.dark .tech-pill{background:#1a2236;border-color:rgba(255,255,255,.09);color:rgba(255,255,255,.7)}
 @media(min-width:600px){.pf-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:767px){.pf-actions{flex-direction:column}.btn-detail,.btn-req-same{justify-content:center}}
+@media(max-width:767px){.pf-actions{flex-direction:column}.btn-live,.btn-detail{justify-content:center}}
 
 /* BLOG GRID */
 .blog-grid{display:grid;grid-template-columns:1fr;gap:20px}
@@ -1419,8 +1419,14 @@ body.dark .course-meta{color:rgba(255,255,255,.3);border-top-color:rgba(255,255,
             </div>
             {{/if}}
             <div class="pf-actions">
-              <a href="/portfolio/{{id}}" class="btn-detail">View Details <i class="fas fa-arrow-right"></i></a>
-              <a href="/contact" class="btn-req-same">Request the Same <i class="fas fa-paper-plane"></i></a>
+              {{#if live_demo_url}}
+              <a href="{{live_demo_url}}" target="_blank" rel="noopener noreferrer" class="btn-live">
+                <i class="fas fa-external-link-alt"></i> Live Preview
+              </a>
+              {{/if}}
+              <a href="/portfolio/{{id}}" class="btn-detail">
+                View Details <i class="fas fa-arrow-right"></i>
+              </a>
             </div>
           </div>
         </article>
