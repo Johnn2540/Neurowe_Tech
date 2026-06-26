@@ -564,6 +564,7 @@ body.dark .impact-card{background:#1a2236;border-color:rgba(255,255,255,.07)}
 .learn-banner-content h4{font-family:var(--font-body);font-size:.92rem;font-weight:800;color:#fff;margin-bottom:2px}
 .learn-banner-content p{font-size:.76rem;color:rgba(255,255,255,.52);margin:0}
 .learn-badge{padding:3px 11px;border-radius:var(--r-pill);font-size:.66rem;font-weight:700;background:rgba(255,255,255,.07);color:rgba(255,255,255,.68);border:1px solid rgba(255,255,255,.09)}
+.lb-badges{display:flex;gap:7px;flex-wrap:wrap}
 
 /* MARQUEE */
 .marquee-wrap{background:var(--primary);padding:11px 0;overflow:hidden;white-space:nowrap}
@@ -834,9 +835,9 @@ footer{background:#060d1e;color:rgba(255,255,255,.5);font-size:.82rem;border-top
   .footer-legal{justify-content:center;gap:11px}
 }
 @media(max-width:639px){
-  .learn-banner-inner{flex-direction:column;align-items:stretch;gap:10px}
-  .learn-banner-inner > div:nth-child(2){display:none}
-  .learn-banner-inner > a.btn-orange{display:flex;justify-content:center;align-items:center;flex-shrink:unset;width:100%}
+  .learn-banner-inner{flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:10px}
+  .lb-badges{display:none}
+  .learn-banner-inner > a.btn-orange{display:flex;width:100%;justify-content:center}
 }
 @media print{.navbar,#wa-float,#wa-tooltip,#theme-toggle,#back-to-top,#scroll-progress,#cookie-bar{display:none!important}}
 
@@ -1226,7 +1227,7 @@ body.dark .course-meta{color:rgba(255,255,255,.3);border-top-color:rgba(255,255,
           <p>Master web dev, mobile apps, UI/UX & AI — designed for Kenyan builders</p>
         </div>
       </div>
-      <div style="display:flex;gap:7px;flex-wrap:wrap;">
+      <div class="lb-badges">
         <span class="learn-badge">📹 Video courses</span>
         <span class="learn-badge">🤝 Mentorship</span>
         <span class="learn-badge">📜 Certificate</span>
