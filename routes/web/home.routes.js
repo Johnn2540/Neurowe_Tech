@@ -6,6 +6,14 @@ const db                 = require('../../db/postgres');
 
 const router = Router();
 
+const PROJECT_META = {
+    FitSync:    { image_url: '/images/FitSync.jpg',    live_demo_url: 'https://fitsync.com' },
+    ChatSphere: { image_url: '/images/ChatSphere.jpg', live_demo_url: 'https://chatsphere.io/' },
+    TaskFlow:   { image_url: '/images/TaskFlow.jpg',   live_demo_url: 'https://taskflowapp.com/' },
+    MediBook:   { image_url: '/images/MediBook.jpg',   live_demo_url: 'https://edu365.uk/' },
+    ShopEase:   { image_url: '/images/ShopEase.jpg',   live_demo_url: 'https://www.shopeaseapp.com/' },
+};
+
 // ─── Homepage ─────────────────────────────────────────────────────────────────
 
 router.get('/', async (req, res) => {
@@ -31,10 +39,18 @@ router.get('/', async (req, res) => {
                   }) : '',
         }));
         const courseCount = parseInt(coursesR.rows[0]?.total_count || 0, 10);
+        const featuredProjects = featuredR.rows.map(p => {
+            const meta = PROJECT_META[p.name] || {};
+            return {
+                ...p,
+                image_url:     p.image_url     || meta.image_url     || null,
+                live_demo_url: p.live_demo_url || meta.live_demo_url || null,
+            };
+        });
         return res.render('home', {
             title:            'NeurowexTech – Web & Mobile Apps That Actually Ship',
             description:      'Custom web and mobile app development for startups and businesses.',
-            featuredProjects: featuredR.rows,
+            featuredProjects,
             recentBlogs:      blogs,
             featuredCourses:  coursesR.rows,
             courseCount,
