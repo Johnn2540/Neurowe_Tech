@@ -838,6 +838,24 @@ footer{background:#060d1e;color:rgba(255,255,255,.5);font-size:.82rem;border-top
   .learn-banner-inner{flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:10px}
   .lb-badges{display:none}
   .learn-banner-inner > a.btn-orange{display:flex;width:100%;justify-content:center}
+  /* HERO — side-by-side on mobile */
+  .hero-inner{display:grid;grid-template-columns:1fr 130px;gap:14px;align-items:center;padding:calc(var(--nav-h) + 24px) 0 36px}
+  .hero-copy{min-width:0}
+  .hero-image-panel{display:flex!important;width:130px;align-self:stretch;min-height:270px}
+  .hero-img-frame{height:100%;min-height:250px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.4)!important}
+  .hero-img-badge,.hero-float-card{display:none!important}
+  .hero-heading .main-line{display:none}
+  .hero-heading h1{font-size:clamp(1.5rem,5.5vw,2rem)}
+  .hero-heading .big-line{font-size:clamp(1.7rem,6vw,2.3rem)}
+  .hero-eyebrow{font-size:.58rem;letter-spacing:2px;margin-bottom:10px}
+  .hero-eyebrow::before{width:14px}
+  .hero-badge{margin-bottom:12px;font-size:.64rem;padding:5px 10px 5px 6px}
+  .hero-typewriter,.hero-tagline,.hero-desc{display:none}
+  .hero-heading{margin-bottom:14px}
+  .hero-actions{flex-direction:column;gap:7px;margin-bottom:14px}
+  .hero-actions a{min-width:0;max-width:100%;flex:none;font-size:.8rem;padding:10px 14px}
+  .hero-proof{gap:10px;padding-top:12px}
+  .hero-proof .proof-divider,.hero-proof .proof-stat{display:none}
 }
 @media print{.navbar,#wa-float,#wa-tooltip,#theme-toggle,#back-to-top,#scroll-progress,#cookie-bar{display:none!important}}
 
@@ -1113,24 +1131,24 @@ body.dark .course-meta{color:rgba(255,255,255,.3);border-top-color:rgba(255,255,
       <div class="hero-copy">
         <div class="hero-badge h-anim-1">
           <div class="hero-badge-dot"></div>
-          <span>Available for projects</span>
+          <span>Now Accepting Projects</span>
           <span class="hero-badge-sep"></span>
           <span>{{currentYear}}</span>
         </div>
         <div class="hero-heading h-anim-2">
-          <div class="hero-eyebrow">Kenya's Premier Digital Agency</div>
+          <div class="hero-eyebrow">Kenya's #1 Digital Agency</div>
           <h1>
-            <span class="main-line">Transforming Ideas Into</span>
-            <span class="big-line">Powerful Digital</span>
-            <span class="big-line" style="font-size:clamp(2rem,5.5vw,3.8rem);font-style:normal;color:#fff;font-weight:300;">Experiences</span>
+            <span class="main-line">We Build</span>
+            <span class="big-line">Digital Products</span>
+            <span class="big-line" style="font-size:clamp(2rem,5.5vw,3.8rem)">That Ship.</span>
           </h1>
           <div class="hero-typewriter" id="heroTypewriter"><span id="tw-text" class="tw-text"></span><span class="tw-cursor"></span></div>
-          <div class="hero-tagline">Build &nbsp;·&nbsp; Brand &nbsp;·&nbsp; Grow &nbsp;·&nbsp; Succeed</div>
+          <div class="hero-tagline">Web &nbsp;·&nbsp; Mobile &nbsp;·&nbsp; AI &nbsp;·&nbsp; Design</div>
         </div>
-        <p class="hero-desc h-anim-3">At <strong>NeuroWex Tech</strong>, we empower businesses, startups, and individuals with innovative digital solutions that drive growth and visibility. From professional websites and mobile apps to creative branding, SEO, and digital skills training — we help you <strong>stay ahead</strong> in the digital world.</p>
+        <p class="hero-desc h-anim-3"><strong>NeuroWex Tech</strong> turns your idea into a live, revenue-generating product — websites, apps, AI tools, and digital campaigns. Built in Nairobi. Trusted across <strong>20+ countries</strong>. Delivered in 6 weeks.</p>
         <div class="hero-actions h-anim-4">
-          <a href="/contact" class="btn-hero-primary">Get Started <i class="fas fa-arrow-right"></i></a>
-          <a href="#services" class="btn-hero-ghost"><i class="fas fa-th-large"></i> Explore Services</a>
+          <a href="/contact" class="btn-hero-primary">Start Your Project <i class="fas fa-arrow-right"></i></a>
+          <a href="#services" class="btn-hero-ghost"><i class="fas fa-th-large"></i> Our Services</a>
         </div>
         <div class="hero-proof h-anim-5">
           <div class="proof-avatars">
