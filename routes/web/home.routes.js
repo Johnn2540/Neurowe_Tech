@@ -7,11 +7,19 @@ const db                 = require('../../db/postgres');
 const router = Router();
 
 const PROJECT_META = {
-    FitSync:    { image_url: '/images/FitSync.jpg',    live_demo_url: 'https://fitsync.com' },
-    ChatSphere: { image_url: '/images/ChatSphere.jpg', live_demo_url: 'https://chatsphere.io/' },
-    TaskFlow:   { image_url: '/images/TaskFlow.jpg',   live_demo_url: 'https://taskflowapp.com/' },
-    MediBook:   { image_url: '/images/MediBook.jpg',   live_demo_url: 'https://edu365.uk/' },
-    ShopEase:   { image_url: '/images/ShopEase.jpg',   live_demo_url: 'https://www.shopeaseapp.com/' },
+    FitSync:      { image_url: '/images/FitSync.jpg',      live_demo_url: 'https://fitsync.com' },
+    ChatSphere:   { image_url: '/images/ChatSphere.jpg',   live_demo_url: 'https://chatsphere.io/' },
+    TaskFlow:     { image_url: '/images/TaskFlow.jpg',     live_demo_url: 'https://taskflowapp.com/' },
+    MediBook:     { image_url: '/images/MediBook.jpg',     live_demo_url: 'https://edu365.uk/' },
+    ShopEase:     { image_url: '/images/ShopEase.jpg',     live_demo_url: 'https://www.shopeaseapp.com/' },
+    EcoShop:      { image_url: '/images/eco_shop.png' },
+    'Eco Shop':   { image_url: '/images/eco_shop.png' },
+    Medicare:     { image_url: '/images/medicare.png' },
+    EduLearn:     { image_url: '/images/edulearn.png' },
+    DocuAI:       { image_url: '/images/docuai.png' },
+    FitTrack:     { image_url: '/images/fittrack.png' },
+    DataDash:     { image_url: '/images/datadash.png' },
+    'Dashboard UI': { image_url: '/images/dashboard ui.jpg' },
 };
 
 // ─── Homepage ─────────────────────────────────────────────────────────────────
@@ -19,7 +27,7 @@ const PROJECT_META = {
 router.get('/', async (req, res) => {
     try {
         const [featuredR, blogsR, coursesR] = await Promise.all([
-            db.query('SELECT * FROM projects ORDER BY created_at DESC LIMIT 4')
+            db.query('SELECT * FROM projects ORDER BY featured DESC, created_at DESC LIMIT 4')
               .catch(() => ({ rows: [] })),
             db.query("SELECT id,title,slug,category,excerpt,image_url,created_at FROM blog_posts WHERE published=true ORDER BY created_at DESC LIMIT 3")
               .catch(() => ({ rows: [] })),
