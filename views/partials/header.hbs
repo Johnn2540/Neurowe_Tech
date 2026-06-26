@@ -1,16 +1,55 @@
-<header class="site-header">
-    <nav class="container">
-        <div class="logo">
-            <a href="/">Neurowex<span>Tech</span></a>
+<nav class="navbar" id="mainNav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand" aria-label="NeurowexTech Home">
+      <div class="nav-logo-circle">
+        <img src="/images/logo.png" alt="NeurowexTech Logo" onerror="this.parentElement.style.background='#1c2b4a';this.parentElement.innerHTML='<span style=\'color:#fff;font-weight:700;font-size:.85rem\'>N</span>';this.remove()">
+      </div>
+      <div class="nav-brand-text">Neurowex<em>Tech</em></div>
+    </a>
+    <ul class="nav-links" role="list">
+      <li class="nl-item"><a href="/" class="nl-a">Home</a></li>
+      <li class="nl-item">
+        <a href="/services" class="nl-a">Services <i class="fas fa-chevron-down arrow"></i></a>
+        <div class="mega-drop" role="menu">
+          <div class="mega-grid">
+            <div>
+              <span class="mega-col-label">Development</span>
+              <a class="mega-link" href="/web_dev"><i class="fas fa-laptop-code"></i> Web & App Dev</a>
+              <a class="mega-link" href="/ecommerce"><i class="fas fa-shopping-cart"></i> E-Commerce</a>
+              <a class="mega-link" href="/uiux"><i class="fas fa-pencil-ruler"></i> UI/UX Design</a>
+            </div>
+            <div>
+              <span class="mega-col-label">Marketing & Growth</span>
+              <a class="mega-link" href="/seo"><i class="fas fa-search"></i> SEO & Marketing</a>
+              <a class="mega-link" href="/social-media"><i class="fas fa-share-alt"></i> Social Media</a>
+              <a class="mega-link" href="/analytics"><i class="fas fa-chart-bar"></i> Data Analytics</a>
+            </div>
+            <div>
+              <span class="mega-col-label">Specialist</span>
+              <a class="mega-link" href="/graphic_design"><i class="fas fa-palette"></i> Graphic Design</a>
+              <a class="mega-link" href="/ai-solutions"><i class="fas fa-robot"></i> AI Solutions</a>
+              <a class="mega-link" href="/cybersecurity"><i class="fas fa-shield-alt"></i> Cybersecurity</a>
+            </div>
+          </div>
         </div>
-        <div class="nav-links">
-            <a href="/">Home</a>
-            <a href="/services">Services</a>
-            <a href="/portfolio">Portfolio</a>
-            <a href="/blog">Blog</a>
-            <a href="/about">About</a>
-            <a href="/contact" class="btn-primary">Start a Project</a>
-        </div>
-        <button class="mobile-menu-btn" aria-label="Menu">☰</button>
-    </nav>
-</header>
+      </li>
+      <li class="nl-item"><a href="/learn" class="nl-a">Learn</a></li>
+      <li class="nl-item"><a href="/portfolio" class="nl-a">Portfolio</a></li>
+      <li class="nl-item"><a href="/blog" class="nl-a">Blog</a></li>
+      <li class="nl-item"><a href="/about" class="nl-a">About</a></li>
+      <li class="nl-item"><a href="/contact" class="nl-a">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="/login" class="btn-nav-signin">Sign In</a>
+      <a href="/learn" class="btn-nav-orange"><i class="fas fa-graduation-cap"></i> Learn</a>
+      <a href="/contact" class="btn-nav-start">Get Started <i class="fas fa-arrow-right" style="font-size:.7rem"></i></a>
+    </div>
+    <div class="mob-quick" id="mobQuick">
+      <button class="mob-quick-btn" id="mobThemeBtn" aria-label="Toggle dark mode"><i class="fas fa-moon"></i></button>
+      <a href="https://wa.me/254769329340" target="_blank" rel="noopener noreferrer" class="mob-quick-wa" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      <button class="ham-btn" id="hamBtn" aria-label="Open menu" aria-expanded="false">
+        <span class="ham-line"></span><span class="ham-line"></span><span class="ham-line"></span>
+      </button>
+    </div>
+  </div>
+</nav>

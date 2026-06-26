@@ -11,7 +11,7 @@ const router = Router();
 router.get('/', async (req, res) => {
     try {
         const [featuredR, blogsR, coursesR] = await Promise.all([
-            db.query('SELECT * FROM projects WHERE featured=true ORDER BY created_at DESC LIMIT 6')
+            db.query('SELECT * FROM projects ORDER BY created_at DESC LIMIT 4')
               .catch(() => ({ rows: [] })),
             db.query("SELECT id,title,slug,category,excerpt,image_url,created_at FROM blog_posts WHERE published=true ORDER BY created_at DESC LIMIT 3")
               .catch(() => ({ rows: [] })),

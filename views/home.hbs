@@ -857,6 +857,53 @@ footer{background:#060d1e;color:rgba(255,255,255,.5);font-size:.82rem;border-top
 .port-link{font-size:.78rem;font-weight:700;color:var(--blue);display:inline-flex;align-items:center;gap:5px;transition:gap .18s}
 .port-card:hover .port-link{gap:9px}
 
+/* HOME FEATURED PROJECTS — portfolio-style cards */
+.pf-grid{display:grid;grid-template-columns:1fr;gap:22px}
+.pf-card-wrap{transition:opacity .28s,transform .28s}
+.pf-card{display:flex;flex-direction:column;background:#fff;border-radius:var(--r-2xl);border:1px solid var(--mist);overflow:hidden;transition:var(--t);position:relative}
+.pf-card:hover{transform:translateY(-7px);box-shadow:var(--sh-xl);border-color:rgba(37,99,235,.18)}
+.pf-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--primary),var(--blue),var(--accent));transform:scaleX(0);transform-origin:left;transition:transform .38s;z-index:3}
+.pf-card:hover::before{transform:scaleX(1)}
+.pf-thumb{position:relative;width:100%;height:210px;overflow:hidden;background:var(--surface);flex-shrink:0}
+.pf-img{width:100%;height:100%;object-fit:cover;transition:transform .55s}
+.pf-card:hover .pf-img{transform:scale(1.07)}
+.pf-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3rem}
+.pf-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(6,9,26,.9) 100%);display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:18px;opacity:0;transition:opacity .32s}
+.pf-card:hover .pf-overlay{opacity:1}
+.pf-ov-cat{display:inline-block;border-radius:var(--r-pill);padding:3px 11px;font-size:.64rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;background:rgba(37,99,235,.4);color:rgba(147,197,253,.95)}
+.pf-ov-name{font-family:var(--font-body);font-size:1rem;font-weight:700;color:#fff}
+.pf-featured-badge{position:absolute;top:14px;right:14px;z-index:4;background:linear-gradient(135deg,var(--accent),var(--accent-d));color:#fff;border-radius:var(--r-pill);padding:4px 11px;font-size:.64rem;font-weight:800;letter-spacing:.5px;text-transform:uppercase;box-shadow:var(--sh-accent)}
+.pf-body{padding:20px 22px 22px;display:flex;flex-direction:column;flex:1;gap:10px}
+.pf-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pf-cat-badge{display:inline-flex;align-items:center;gap:5px;border-radius:var(--r-pill);padding:3px 11px;font-size:.66rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;font-family:var(--font-body)}
+[data-cat="Web App"] .pf-cat-badge{background:var(--blue-pale);color:var(--blue);border:1px solid var(--blue-pale2)}
+[data-cat="Mobile App"] .pf-cat-badge{background:rgba(224,92,42,.08);color:var(--accent);border:1px solid rgba(224,92,42,.2)}
+[data-cat="E-commerce"] .pf-cat-badge{background:rgba(5,150,105,.08);color:var(--emerald);border:1px solid rgba(5,150,105,.2)}
+[data-cat="Healthcare"] .pf-cat-badge{background:rgba(225,29,72,.07);color:var(--rose);border:1px solid rgba(225,29,72,.18)}
+[data-cat="Web App"] .pf-cat-badge i{color:var(--blue)}
+[data-cat="Mobile App"] .pf-cat-badge i{color:var(--accent)}
+[data-cat="E-commerce"] .pf-cat-badge i{color:var(--emerald)}
+[data-cat="Healthcare"] .pf-cat-badge i{color:var(--rose)}
+.pf-year{font-family:var(--font-mono);font-size:.68rem;color:var(--slate-l);font-weight:500}
+.pf-name{font-family:var(--font-body);font-size:1.05rem;font-weight:800;color:var(--ink);line-height:1.3;margin:0}
+.pf-desc{font-size:.82rem;color:var(--slate);line-height:1.7;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tech-stack{display:flex;gap:6px;flex-wrap:wrap}
+.tech-pill{display:inline-flex;align-items:center;padding:3px 9px;background:var(--surface);border:1px solid var(--mist);border-radius:var(--r-pill);font-size:.68rem;font-weight:700;color:var(--slate);font-family:var(--font-mono)}
+.pf-actions{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}
+.btn-detail{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:var(--r-md);font-size:.78rem;font-weight:700;font-family:var(--font-body);background:var(--blue-pale);color:var(--blue);border:1.5px solid var(--blue-pale2);transition:var(--t);text-decoration:none}
+.btn-detail:hover{background:var(--blue);color:#fff;border-color:transparent}
+.btn-detail i{font-size:.65rem;transition:transform .2s}
+.btn-detail:hover i{transform:translateX(3px)}
+.btn-req-same{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:var(--r-md);font-size:.78rem;font-weight:700;font-family:var(--font-body);background:linear-gradient(135deg,var(--accent),var(--accent-d));color:#fff;border:none;transition:var(--t);text-decoration:none;cursor:pointer}
+.btn-req-same:hover{opacity:.9;transform:translateY(-1px);box-shadow:var(--sh-accent);color:#fff}
+.btn-req-same i{font-size:.65rem}
+body.dark .pf-card{background:#1a2236;border-color:rgba(255,255,255,.07)}
+body.dark .pf-name{color:rgba(255,255,255,.88)}
+body.dark .pf-desc{color:rgba(255,255,255,.45)}
+body.dark .tech-pill{background:#1a2236;border-color:rgba(255,255,255,.09);color:rgba(255,255,255,.7)}
+@media(min-width:600px){.pf-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:767px){.pf-actions{flex-direction:column}.btn-detail,.btn-req-same{justify-content:center}}
+
 /* BLOG GRID */
 .blog-grid{display:grid;grid-template-columns:1fr;gap:20px}
 .blog-card{display:flex;flex-direction:column;background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);overflow:hidden;transition:var(--t);text-decoration:none;color:inherit}
@@ -944,14 +991,14 @@ body.dark .course-meta{color:rgba(255,255,255,.3);border-top-color:rgba(255,255,
 <div class="mob-overlay" id="mobOverlay" aria-hidden="true"></div>
 <div class="mob-panel" id="mobPanel" role="dialog" aria-modal="true" aria-label="Navigation menu">
   <div class="mob-head">
-    <a href="#home" class="nav-brand" aria-label="NeurowexTech Home">
+    <a href="/" class="nav-brand" aria-label="NeurowexTech Home">
       <div class="nav-logo-circle"><img src="/images/logo.png" alt="NeuroWex Tech Logo" onerror="this.parentElement.style.background='var(--primary)';this.parentElement.innerHTML='<span style=\'color:#fff;font-weight:700;font-size:.9rem;font-family:var(--font-body)\'>N</span>';this.remove()"></div>
       <div class="nav-brand-text">Neurowex<em>Tech</em></div>
     </a>
     <button class="mob-close" id="mobClose" aria-label="Close menu"><i class="fas fa-times"></i></button>
   </div>
   <nav class="mob-body" aria-label="Mobile navigation">
-    <a href="#home" class="mob-link"><i class="fas fa-home"></i> Home</a>
+    <a href="/" class="mob-link"><i class="fas fa-home"></i> Home</a>
     <div class="mob-sub-toggle" id="mobSvcToggle" role="button" tabindex="0" aria-expanded="false">
       <div class="left"><i class="fas fa-th-large"></i> Services</div>
       <i class="fas fa-chevron-down chev"></i>
@@ -969,7 +1016,9 @@ body.dark .course-meta{color:rgba(255,255,255,.3);border-top-color:rgba(255,255,
       <a href="/social-media"><i class="fas fa-share-alt"></i> Social Media</a>
     </div>
     <a href="/learn" class="mob-link" style="color:var(--teal)"><i class="fas fa-graduation-cap" style="color:var(--teal)"></i> Learn</a>
+    <a href="/portfolio" class="mob-link"><i class="fas fa-briefcase"></i> Portfolio</a>
     <a href="/blog" class="mob-link"><i class="fas fa-rss"></i> Blog</a>
+    <a href="/about" class="mob-link"><i class="fas fa-info-circle"></i> About</a>
     <a href="/contact" class="mob-link"><i class="fas fa-envelope"></i> Contact</a>
     <hr class="mob-hr">
   </nav>
@@ -983,16 +1032,16 @@ body.dark .course-meta{color:rgba(255,255,255,.3);border-top-color:rgba(255,255,
 <!-- NAVBAR -->
 <nav class="navbar" id="mainNav" role="navigation" aria-label="Main navigation">
   <div class="nav-inner">
-    <a href="#home" class="nav-brand" aria-label="NeurowexTech Home">
+    <a href="/" class="nav-brand" aria-label="NeurowexTech Home">
       <div class="nav-logo-circle">
         <img src="/images/logo.png" alt="NeuroWex Tech Logo" onerror="this.parentElement.style.background='var(--primary)';this.parentElement.innerHTML='<span style=\'color:#fff;font-weight:700;font-size:.85rem;font-family:var(--font-body)\'>N</span>';this.remove()">
       </div>
       <div class="nav-brand-text">Neurowex<em>Tech</em></div>
     </a>
     <ul class="nav-links" role="list">
-      <li class="nl-item"><a href="#home" class="nl-a">Home</a></li>
+      <li class="nl-item"><a href="/" class="nl-a">Home</a></li>
       <li class="nl-item">
-        <a href="#services" class="nl-a">Services <i class="fas fa-chevron-down arrow"></i></a>
+        <a href="/#services" class="nl-a">Services <i class="fas fa-chevron-down arrow"></i></a>
         <div class="mega-drop" role="menu">
           <div class="mega-grid">
             <div>
@@ -1017,7 +1066,9 @@ body.dark .course-meta{color:rgba(255,255,255,.3);border-top-color:rgba(255,255,
         </div>
       </li>
       <li class="nl-item"><a href="/learn" class="nl-a">Learn</a></li>
+      <li class="nl-item"><a href="/portfolio" class="nl-a">Portfolio</a></li>
       <li class="nl-item"><a href="/blog" class="nl-a">Blog</a></li>
+      <li class="nl-item"><a href="/about" class="nl-a">About</a></li>
       <li class="nl-item"><a href="/contact" class="nl-a">Contact</a></li>
     </ul>
     <div class="nav-cta">
@@ -1224,52 +1275,52 @@ body.dark .course-meta{color:rgba(255,255,255,.3);border-top-color:rgba(255,255,
       <p class="section-sub" style="margin:0 auto;">Innovative digital solutions designed to help businesses, professionals, and organizations succeed in the digital age.</p>
     </div>
     <div class="services-grid">
-      <a href="/web_dev" class="service-card card-white" data-aos="zoom-in" data-aos-delay="40">
+      <a href="/web_dev" class="service-card card-white" data-aos="zoom-in" data-aos-delay="0">
         <div class="svc-img-wrap"><img src="/images/web-development.jpg" alt="Web & App Development" class="svc-img" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="svc-img-fallback" style="display:none;background:linear-gradient(135deg,#dbeafe,#bfdbfe)">💻</div></div>
         <div class="svc-icon-wrap"><i class="fas fa-laptop-code fa-lg" style="color:var(--blue)"></i></div>
         <div class="svc-body"><h3>Web & App Development</h3><p>Build modern websites, web applications, and mobile solutions tailored to your business goals.</p><span class="svc-btn">Learn More <i class="fas fa-arrow-right"></i></span></div>
       </a>
-      <a href="/graphic_design" class="service-card card-white" data-aos="zoom-in" data-aos-delay="80">
+      <a href="/graphic_design" class="service-card card-white" data-aos="zoom-in" data-aos-delay="40">
         <div class="svc-img-wrap"><img src="/images/graphic-design.jpg" alt="Graphic Design" class="svc-img" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="svc-img-fallback" style="display:none;background:linear-gradient(135deg,#fce7f3,#fbcfe8)">🎨</div></div>
         <div class="svc-icon-wrap"><i class="fas fa-palette fa-lg" style="color:var(--accent)"></i></div>
         <div class="svc-body"><h3>Graphic Design & Branding</h3><p>Create eye-catching logos, posters, banners, social media graphics, and complete brand identities.</p><span class="svc-btn">Learn More <i class="fas fa-arrow-right"></i></span></div>
       </a>
-      <a href="/learn" class="service-card card-white" data-aos="zoom-in" data-aos-delay="120">
+      <a href="/learn" class="service-card card-white" data-aos="zoom-in" data-aos-delay="80">
         <div class="svc-img-wrap"><img src="/images/digital-skills.jpg" alt="Digital Skills Training" class="svc-img" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="svc-img-fallback" style="display:none;background:linear-gradient(135deg,#d1fae5,#a7f3d0)">🎓</div></div>
         <div class="svc-icon-wrap"><i class="fas fa-graduation-cap fa-lg" style="color:var(--teal)"></i></div>
         <div class="svc-body"><h3>Digital Skills Training</h3><p>Master web development, AI, cybersecurity, programming, graphic design, and more through practical training.</p><span class="svc-btn">Start Learning <i class="fas fa-arrow-right"></i></span></div>
       </a>
-      <a href="/seo" class="service-card card-white" data-aos="zoom-in" data-aos-delay="160">
+      <a href="/seo" class="service-card card-white" data-aos="zoom-in" data-aos-delay="0">
         <div class="svc-img-wrap"><img src="/images/seo-marketing.jpg" alt="SEO" class="svc-img" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="svc-img-fallback" style="display:none;background:linear-gradient(135deg,#fef3c7,#fde68a)">📈</div></div>
         <div class="svc-icon-wrap"><i class="fas fa-search fa-lg" style="color:var(--gold)"></i></div>
         <div class="svc-body"><h3>SEO & Digital Marketing</h3><p>Improve your search rankings, attract more customers, and increase your online visibility.</p><span class="svc-btn">Learn More <i class="fas fa-arrow-right"></i></span></div>
       </a>
-      <a href="/ai-solutions" class="service-card card-white" data-aos="zoom-in" data-aos-delay="200">
+      <a href="/ai-solutions" class="service-card card-white" data-aos="zoom-in" data-aos-delay="40">
         <div class="svc-img-wrap"><img src="/images/ai-solutions.jpg" alt="AI Solutions" class="svc-img" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="svc-img-fallback" style="display:none;background:linear-gradient(135deg,#ede9fe,#ddd6fe)">🤖</div></div>
         <div class="svc-icon-wrap"><i class="fas fa-robot fa-lg" style="color:#7c3aed"></i></div>
         <div class="svc-body"><h3>Artificial Intelligence Solutions</h3><p>Leverage AI-powered tools, automation, chatbots, and machine learning to streamline operations.</p><span class="svc-btn">Learn More <i class="fas fa-arrow-right"></i></span></div>
       </a>
-      <a href="/cybersecurity" class="service-card card-white" data-aos="zoom-in" data-aos-delay="240">
+      <a href="/cybersecurity" class="service-card card-white" data-aos="zoom-in" data-aos-delay="80">
         <div class="svc-img-wrap"><img src="/images/cybersecurity.jpg" alt="Cybersecurity" class="svc-img" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="svc-img-fallback" style="display:none;background:linear-gradient(135deg,#fee2e2,#fecaca)">🛡️</div></div>
         <div class="svc-icon-wrap"><i class="fas fa-shield-alt fa-lg" style="color:#ef4444"></i></div>
         <div class="svc-body"><h3>Cybersecurity Services</h3><p>Protect your business with security assessments, vulnerability testing, and consulting.</p><span class="svc-btn">Learn More <i class="fas fa-arrow-right"></i></span></div>
       </a>
-      <a href="/uiux" class="service-card card-white" data-aos="zoom-in" data-aos-delay="280">
+      <a href="/uiux" class="service-card card-white" data-aos="zoom-in" data-aos-delay="0">
         <div class="svc-img-wrap"><img src="/images/uiux-design.jpg" alt="UI/UX Design" class="svc-img" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="svc-img-fallback" style="display:none;background:linear-gradient(135deg,#e0f2fe,#bae6fd)">✏️</div></div>
         <div class="svc-icon-wrap"><i class="fas fa-pencil-ruler fa-lg" style="color:var(--primary)"></i></div>
         <div class="svc-body"><h3>UI/UX Design</h3><p>Design intuitive and engaging digital experiences that keep users coming back for more.</p><span class="svc-btn">Learn More <i class="fas fa-arrow-right"></i></span></div>
       </a>
-      <a href="/ecommerce" class="service-card card-white" data-aos="zoom-in" data-aos-delay="320">
+      <a href="/ecommerce" class="service-card card-white" data-aos="zoom-in" data-aos-delay="40">
         <div class="svc-img-wrap"><img src="/images/ecommerce.jpg" alt="E-Commerce" class="svc-img" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="svc-img-fallback" style="display:none;background:linear-gradient(135deg,#dcfce7,#bbf7d0)">🛒</div></div>
         <div class="svc-icon-wrap"><i class="fas fa-shopping-cart fa-lg" style="color:var(--emerald)"></i></div>
         <div class="svc-body"><h3>E-Commerce Solutions</h3><p>Launch online stores with secure payments, inventory management, and seamless shopping experiences.</p><span class="svc-btn">Learn More <i class="fas fa-arrow-right"></i></span></div>
       </a>
-      <a href="/analytics" class="service-card card-white" data-aos="zoom-in" data-aos-delay="360">
+      <a href="/analytics" class="service-card card-white" data-aos="zoom-in" data-aos-delay="80">
         <div class="svc-img-wrap"><img src="/images/analytics.jpg" alt="Data Analytics" class="svc-img" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="svc-img-fallback" style="display:none;background:linear-gradient(135deg,#fff7ed,#fed7aa)">📊</div></div>
         <div class="svc-icon-wrap"><i class="fas fa-chart-bar fa-lg" style="color:var(--accent)"></i></div>
         <div class="svc-body"><h3>Data Analytics & BI</h3><p>Turn raw data into actionable insights for smarter decision-making and business growth.</p><span class="svc-btn">Learn More <i class="fas fa-arrow-right"></i></span></div>
       </a>
-      <a href="/social-media" class="service-card card-white" data-aos="zoom-in" data-aos-delay="400">
+      <a href="/social-media" class="service-card card-white" data-aos="zoom-in" data-aos-delay="0">
         <div class="svc-img-wrap"><img src="/images/social-media.jpg" alt="Social Media" class="svc-img" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="svc-img-fallback" style="display:none;background:linear-gradient(135deg,#f0abfc,#e879f9)">📱</div></div>
         <div class="svc-icon-wrap"><i class="fas fa-share-alt fa-lg" style="color:#a855f7"></i></div>
         <div class="svc-body"><h3>Content & Social Media</h3><p>Build your brand through engaging content, social media strategy, and audience growth.</p><span class="svc-btn">Learn More <i class="fas fa-arrow-right"></i></span></div>
@@ -1328,29 +1379,52 @@ body.dark .course-meta{color:rgba(255,255,255,.3);border-top-color:rgba(255,255,
       <h2 class="section-title">Featured <span class="g-blue">Projects</span></h2>
       <p class="section-sub" style="margin:0 auto;">A selection of recent work — from product launches to enterprise platforms built for scale.</p>
     </div>
-    <div class="port-grid">
+    <div class="pf-grid">
       {{#each featuredProjects}}
-      <a href="/portfolio/{{id}}" class="port-card card-white" data-aos="zoom-in" data-aos-delay="60">
-        <div class="port-thumb">
-          {{#if image_url}}
-          <img src="{{image_url}}" alt="{{name}}" loading="lazy" class="port-img" onerror="this.style.display='none';this.parentElement.querySelector('.port-fallback').style.display='flex'"/>
-          <div class="port-fallback" style="display:none"><div class="port-fallback-letter">{{firstChar name}}</div>{{#if category}}<div class="port-fallback-cat">{{category}}</div>{{/if}}</div>
-          {{else}}
-          <div class="port-fallback"><div class="port-fallback-letter">{{firstChar name}}</div>{{#if category}}<div class="port-fallback-cat">{{category}}</div>{{/if}}</div>
-          {{/if}}
-          <div class="port-overlay">
-            <div>
-              <div class="port-ov-cat">{{category}}</div>
-              <div class="port-ov-name">{{name}}</div>
+      <div class="pf-card-wrap" data-category="{{category}}" data-cat="{{category}}" data-aos="zoom-in" data-aos-delay="60">
+        <article class="pf-card">
+          <div class="pf-thumb">
+            {{#if image_url}}
+            <img src="{{image_url}}" alt="{{name}} project screenshot" class="pf-img" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="pf-fallback" style="display:none;background:linear-gradient(135deg,var(--blue-pale),rgba(224,92,42,.06))">
+              {{#if (eq category "Web App")}}🌐{{else}}{{#if (eq category "Mobile App")}}📱{{else}}{{#if (eq category "E-commerce")}}🛒{{else}}{{#if (eq category "Healthcare")}}🏥{{else}}💡{{/if}}{{/if}}{{/if}}{{/if}}
+            </div>
+            {{else}}
+            <div class="pf-fallback" style="background:linear-gradient(135deg,var(--blue-pale),rgba(224,92,42,.06))">
+              {{#if (eq category "Web App")}}🌐{{else}}{{#if (eq category "Mobile App")}}📱{{else}}{{#if (eq category "E-commerce")}}🛒{{else}}{{#if (eq category "Healthcare")}}🏥{{else}}💡{{/if}}{{/if}}{{/if}}{{/if}}
+            </div>
+            {{/if}}
+            <div class="pf-overlay" aria-hidden="true">
+              <span class="pf-ov-cat">{{category}}</span>
+              <span class="pf-ov-name">{{name}}</span>
+            </div>
+            {{#if featured}}<span class="pf-featured-badge">&#11088; Featured</span>{{/if}}
+          </div>
+          <div class="pf-body" data-cat="{{category}}">
+            <div class="pf-meta">
+              <span class="pf-cat-badge">
+                {{#if (eq category "Web App")}}<i class="fas fa-laptop-code"></i>{{/if}}
+                {{#if (eq category "Mobile App")}}<i class="fas fa-mobile-alt"></i>{{/if}}
+                {{#if (eq category "E-commerce")}}<i class="fas fa-shopping-cart"></i>{{/if}}
+                {{#if (eq category "Healthcare")}}<i class="fas fa-heartbeat"></i>{{/if}}
+                {{category}}
+              </span>
+              {{#if year}}<span class="pf-year">{{year}}</span>{{/if}}
+            </div>
+            <h3 class="pf-name">{{name}}</h3>
+            {{#if description}}<p class="pf-desc">{{description}}</p>{{/if}}
+            {{#if tech_stack}}
+            <div class="tech-stack">
+              {{#each tech_stack}}<span class="tech-pill">{{this}}</span>{{/each}}
+            </div>
+            {{/if}}
+            <div class="pf-actions">
+              <a href="/portfolio/{{id}}" class="btn-detail">View Details <i class="fas fa-arrow-right"></i></a>
+              <a href="/contact" class="btn-req-same">Request the Same <i class="fas fa-paper-plane"></i></a>
             </div>
           </div>
-        </div>
-        <div class="port-body">
-          <div class="port-cat">{{category}}{{#if year}} · {{year}}{{/if}}</div>
-          <div class="port-name">{{name}}</div>
-          <div class="port-link"><i class="fas fa-arrow-right"></i> View Project</div>
-        </div>
-      </a>
+        </article>
+      </div>
       {{/each}}
     </div>
     <div style="text-align:center;margin-top:40px;" data-aos="fade-up">
