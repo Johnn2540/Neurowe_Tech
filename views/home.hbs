@@ -487,7 +487,7 @@ body.dark .impact-card{background:#1a2236;border-color:rgba(255,255,255,.07)}
 .hero-eyebrow::before,.hero-eyebrow::after{content:'';width:28px;height:1.5px;background:linear-gradient(90deg,rgba(224,92,42,.8),rgba(37,99,235,.6));flex-shrink:0}
 
 .hero-heading{margin-bottom:16px}
-.hero-heading h1{font-family:var(--font-display);font-size:clamp(2rem,5.5vw,4rem);font-weight:400;color:#fff;line-height:1.06;letter-spacing:-.03em;margin:0}
+.hero-heading h1{font-family:var(--font-display);font-size:clamp(2.2rem,5.5vw,4rem);font-weight:400;color:#fff;line-height:1.08;letter-spacing:-.03em;margin:0}
 .hero-heading .main-line{display:block;font-style:normal;font-weight:300;color:rgba(255,255,255,.68);font-size:clamp(1.1rem,2.5vw,1.7rem);letter-spacing:.05em;text-transform:uppercase;font-family:var(--font-body);margin-bottom:6px}
 .hero-heading .big-line{display:block;font-style:italic;font-size:clamp(2.5rem,7vw,5rem);line-height:.95;background:linear-gradient(135deg,rgba(248,200,130,.95),rgba(224,92,42,.9),rgba(195,60,18,.85));-webkit-background-clip:text;background-clip:text;color:transparent}
 
@@ -498,7 +498,7 @@ body.dark .impact-card{background:#1a2236;border-color:rgba(255,255,255,.07)}
 .hero-tagline{font-family:var(--font-body);font-size:.8rem;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:4px;text-transform:uppercase;margin-top:8px;margin-bottom:22px;display:flex;align-items:center;gap:8px}
 .hero-tagline::before,.hero-tagline::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.1);max-width:40px}
 
-.hero-desc{color:rgba(255,255,255,.68);font-size:clamp(.88rem,1.8vw,1rem);line-height:1.85;margin-bottom:32px;max-width:600px;margin-left:auto;margin-right:auto}
+.hero-desc{color:rgba(255,255,255,.80);font-family:var(--font-body);font-size:clamp(.92rem,1.8vw,1.05rem);line-height:1.82;margin-bottom:32px;max-width:680px;margin-left:auto;margin-right:auto}
 .hero-desc strong{color:rgba(255,255,255,.85);font-weight:600}
 
 .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:34px;justify-content:center}
@@ -841,15 +841,16 @@ footer{background:#060d1e;color:rgba(255,255,255,.5);font-size:.82rem;border-top
   .hero-inner{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:calc(var(--nav-h) + 28px) 0 52px}
   .hero-copy{width:100%;display:flex;flex-direction:column;align-items:center;text-align:center}
   .hero-heading .main-line{display:none}
-  .hero-heading h1{font-size:clamp(1.35rem,5vw,2.1rem)}
-  .hero-heading .big-line{font-size:clamp(1.6rem,5.8vw,2.35rem)}
+  .hero-heading h1{font-size:clamp(1.55rem,5.5vw,2.2rem)}
+  .hero-heading .big-line{font-size:clamp(1.7rem,6.2vw,2.5rem)}
   .hero-eyebrow{font-size:.57rem;letter-spacing:2.2px;margin-bottom:8px}
   .hero-eyebrow::before{width:14px}
   .hero-badge{margin-bottom:14px;font-size:.64rem;padding:5px 10px 5px 6px}
-  .hero-typewriter,.hero-tagline,.hero-desc{display:none}
-  .hero-heading{margin-bottom:16px}
-  .hero-actions{flex-direction:column;gap:8px;margin-bottom:16px}
-  .hero-actions a{min-width:0;max-width:100%;flex:none;font-size:.82rem;padding:11px 16px}
+  .hero-typewriter,.hero-tagline{display:none}
+  .hero-desc{font-size:.82rem;line-height:1.7;margin-bottom:20px;max-width:100%}
+  .hero-heading{margin-bottom:14px}
+  .hero-actions{flex-direction:row;flex-wrap:wrap;gap:8px;margin-bottom:16px;justify-content:center}
+  .hero-actions a{flex:1;min-width:130px;max-width:none;font-size:.82rem;padding:11px 16px;justify-content:center}
   .hero-proof{gap:10px;padding-top:14px}
   .hero-proof .proof-divider,.hero-proof .proof-stat{display:none}
 }
@@ -1134,14 +1135,13 @@ body.dark .course-meta{color:rgba(255,255,255,.3);border-top-color:rgba(255,255,
         <div class="hero-heading h-anim-2">
           <div class="hero-eyebrow">Kenya's #1 Digital Agency</div>
           <h1>
-            <span class="main-line">Websites · Apps · AI — Built to Grow</span>
-            <span class="big-line">Ship Your MVP</span>
-            <span class="big-line" style="font-size:clamp(2rem,5.5vw,3.8rem);font-style:normal;color:#fff;font-weight:300;">in 6 Weeks.</span>
+            <span class="big-line">Transforming Ideas Into</span>
+            <span class="big-line" style="font-size:clamp(1.9rem,4.6vw,3.5rem);font-style:normal;color:#fff;font-weight:400;letter-spacing:-.025em;">Powerful Digital Solutions</span>
           </h1>
           <div class="hero-typewriter" id="heroTypewriter"><span id="tw-text" class="tw-text"></span><span class="tw-cursor"></span></div>
           <div class="hero-tagline">Build &nbsp;·&nbsp; Brand &nbsp;·&nbsp; Grow &nbsp;·&nbsp; Succeed</div>
         </div>
-        <p class="hero-desc h-anim-3">We help businesses, startups, and organizations grow through innovative web development, AI solutions, digital marketing, cybersecurity, and creative design.</p>
+        <p class="hero-desc h-anim-3">NeuroWex Tech empowers businesses, startups, and organizations with innovative web and app development, AI-powered solutions, cybersecurity, digital marketing, and creative design services that accelerate growth and drive lasting impact.</p>
         <div class="hero-actions h-anim-4">
           <a href="/contact" class="btn-hero-primary">Get a Free Quote <i class="fas fa-arrow-right"></i></a>
           <a href="#services" class="btn-hero-ghost"><i class="fas fa-th-large"></i> Our Services</a>
