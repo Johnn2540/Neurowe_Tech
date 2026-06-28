@@ -498,7 +498,7 @@ body.dark .impact-card{background:#1a2236;border-color:rgba(255,255,255,.07)}
 .hero-tagline{font-family:var(--font-body);font-size:.8rem;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:4px;text-transform:uppercase;margin-top:8px;margin-bottom:22px;display:flex;align-items:center;gap:8px}
 .hero-tagline::before,.hero-tagline::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.1);max-width:40px}
 
-.hero-desc{color:rgba(255,255,255,.56);font-size:clamp(.88rem,1.8vw,1rem);line-height:1.85;margin-bottom:32px;max-width:540px}
+.hero-desc{color:rgba(255,255,255,.68);font-size:clamp(.88rem,1.8vw,1rem);line-height:1.85;margin-bottom:32px;max-width:540px}
 .hero-desc strong{color:rgba(255,255,255,.85);font-weight:600}
 
 .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:34px}
@@ -847,8 +847,8 @@ footer{background:#060d1e;color:rgba(255,255,255,.5);font-size:.82rem;border-top
   .hero-img-frame::before{background:linear-gradient(90deg,rgba(6,12,26,.52) 0%,transparent 52%)}
   .hero-img-badge,.hero-float-card{display:none!important}
   .hero-heading .main-line{display:none}
-  .hero-heading h1{font-size:clamp(1.5rem,5.5vw,2.1rem)}
-  .hero-heading .big-line{font-size:clamp(1.75rem,6.2vw,2.35rem)}
+  .hero-heading h1{font-size:clamp(1.35rem,5vw,2.1rem)}
+  .hero-heading .big-line{font-size:clamp(1.6rem,5.8vw,2.35rem)}
   .hero-eyebrow{font-size:.57rem;letter-spacing:2.2px;margin-bottom:8px}
   .hero-eyebrow::before{width:14px}
   .hero-badge{margin-bottom:14px;font-size:.64rem;padding:5px 10px 5px 6px}
@@ -1133,24 +1133,24 @@ body.dark .course-meta{color:rgba(255,255,255,.3);border-top-color:rgba(255,255,
       <div class="hero-copy">
         <div class="hero-badge h-anim-1">
           <div class="hero-badge-dot"></div>
-          <span>Available for projects</span>
+          <span>Accepting new projects</span>
           <span class="hero-badge-sep"></span>
-          <span>{{currentYear}}</span>
+          <span>From KSh 13K</span>
         </div>
         <div class="hero-heading h-anim-2">
-          <div class="hero-eyebrow">Kenya's Premier Digital Agency</div>
+          <div class="hero-eyebrow">Kenya's #1 Digital Agency</div>
           <h1>
-            <span class="main-line">Transforming Ideas Into</span>
-            <span class="big-line">Powerful Digital</span>
-            <span class="big-line" style="font-size:clamp(2rem,5.5vw,3.8rem);font-style:normal;color:#fff;font-weight:300;">Experiences</span>
+            <span class="main-line">Websites · Apps · AI — Built to Grow</span>
+            <span class="big-line">Ship Your MVP</span>
+            <span class="big-line" style="font-size:clamp(2rem,5.5vw,3.8rem);font-style:normal;color:#fff;font-weight:300;">in 6 Weeks.</span>
           </h1>
           <div class="hero-typewriter" id="heroTypewriter"><span id="tw-text" class="tw-text"></span><span class="tw-cursor"></span></div>
           <div class="hero-tagline">Build &nbsp;·&nbsp; Brand &nbsp;·&nbsp; Grow &nbsp;·&nbsp; Succeed</div>
         </div>
-        <p class="hero-desc h-anim-3">At <strong>NeuroWex Tech</strong>, we empower businesses, startups, and individuals with innovative digital solutions that drive growth and visibility. From professional websites and mobile apps to creative branding, SEO, and digital skills training — we help you <strong>stay ahead</strong> in the digital world.</p>
+        <p class="hero-desc h-anim-3"><strong>NeurowexTech</strong> is Nairobi's most trusted digital agency. We design, build, and ship professional websites, mobile apps, AI tools, and M-Pesa-integrated e-commerce stores — backed by a <strong>6-week MVP guarantee</strong> and prices starting from KSh 13,000.</p>
         <div class="hero-actions h-anim-4">
-          <a href="/contact" class="btn-hero-primary">Get Started <i class="fas fa-arrow-right"></i></a>
-          <a href="#services" class="btn-hero-ghost"><i class="fas fa-th-large"></i> Explore Services</a>
+          <a href="/contact" class="btn-hero-primary">Get a Free Quote <i class="fas fa-arrow-right"></i></a>
+          <a href="#services" class="btn-hero-ghost"><i class="fas fa-th-large"></i> Our Services</a>
         </div>
         <div class="hero-proof h-anim-5">
           <div class="proof-avatars">
@@ -1162,12 +1162,12 @@ body.dark .course-meta{color:rgba(255,255,255,.3);border-top-color:rgba(255,255,
           </div>
           <div class="proof-text">
             <div><span class="proof-stars">★★★★★</span><span class="proof-score">4.9</span></div>
-            <div class="proof-label">Trusted by 200+ founders</div>
+            <div class="proof-label">200+ clients served</div>
           </div>
           <div class="proof-divider"></div>
           <div class="proof-stat"><div class="stat-val">500+</div><div class="stat-lbl">Projects</div></div>
           <div class="proof-divider"></div>
-          <div class="proof-stat"><div class="stat-val">~6 Wks</div><div class="stat-lbl">MVP Avg</div></div>
+          <div class="proof-stat"><div class="stat-val">6 Wks</div><div class="stat-lbl">MVP Guaranteed</div></div>
           <div class="proof-divider"></div>
           <div class="proof-stat"><div class="stat-val">20+</div><div class="stat-lbl">Countries</div></div>
         </div>
@@ -1800,7 +1800,7 @@ AOS.init({duration:780,once:true,offset:55,easing:'ease-out-cubic'});
 (function(){var canvas=document.getElementById('hero-canvas');if(!canvas)return;var ctx=canvas.getContext('2d');var particles=[];function resize(){canvas.width=canvas.offsetWidth;canvas.height=canvas.offsetHeight;}resize();window.addEventListener('resize',resize,{passive:true});function rand(a,b){return Math.random()*(b-a)+a;}for(var i=0;i<55;i++){particles.push({x:rand(0,canvas.width),y:rand(0,canvas.height),vx:rand(-.18,.18),vy:rand(-.18,.18),r:rand(.8,2.2),alpha:rand(.12,.48),color:Math.random()>.55?'rgba(224,92,42,':Math.random()>.5?'rgba(37,99,235,':'rgba(28,43,74,'});}function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(function(p){p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=canvas.width;if(p.x>canvas.width)p.x=0;if(p.y<0)p.y=canvas.height;if(p.y>canvas.height)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.color+p.alpha+')';ctx.fill();});for(var a=0;a<particles.length;a++)for(var b=a+1;b<particles.length;b++){var dx=particles[a].x-particles[b].x,dy=particles[a].y-particles[b].y,d=Math.sqrt(dx*dx+dy*dy);if(d<110){ctx.beginPath();ctx.moveTo(particles[a].x,particles[a].y);ctx.lineTo(particles[b].x,particles[b].y);ctx.strokeStyle='rgba(37,99,235,'+(0.04*(1-d/110))+')';ctx.lineWidth=.5;ctx.stroke();}}requestAnimationFrame(draw);}draw();})();
 
 /* TYPEWRITER */
-(function(){var el=document.getElementById('tw-text');if(!el)return;var phrases=['We Build Professional Websites','We Create Stunning Logos & Posters','We Help Businesses Grow Online','We Teach In-Demand Digital Skills'];var pIdx=0,cIdx=0,del=false;function tick(){var p=phrases[pIdx];if(!del){cIdx++;el.textContent=p.slice(0,cIdx);if(cIdx===p.length){del=true;setTimeout(tick,2500);return;}setTimeout(tick,52);}else{cIdx--;el.textContent=p.slice(0,cIdx);if(cIdx===0){del=false;pIdx=(pIdx+1)%phrases.length;setTimeout(tick,480);return;}setTimeout(tick,28);}}setTimeout(tick,1000);})();
+(function(){var el=document.getElementById('tw-text');if(!el)return;var phrases=['We build websites from KSh 13,000','We ship MVPs in 6 weeks — guaranteed','We integrate M-Pesa into your store','We train the next generation of devs'];var pIdx=0,cIdx=0,del=false;function tick(){var p=phrases[pIdx];if(!del){cIdx++;el.textContent=p.slice(0,cIdx);if(cIdx===p.length){del=true;setTimeout(tick,2500);return;}setTimeout(tick,52);}else{cIdx--;el.textContent=p.slice(0,cIdx);if(cIdx===0){del=false;pIdx=(pIdx+1)%phrases.length;setTimeout(tick,480);return;}setTimeout(tick,28);}}setTimeout(tick,1000);})();
 
 /* SCROLL / NAV */
 function smoothTo(id){var el=document.querySelector(id);if(!el)return;var off=document.getElementById('mainNav').offsetHeight;window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-off,behavior:'smooth'});}
