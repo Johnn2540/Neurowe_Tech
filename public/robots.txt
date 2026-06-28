@@ -1,7 +1,11 @@
+# NeurowexTech — robots.txt
+# https://neurowextech.co.ke
+
+# ── Default: allow all crawlers ──────────────────────────────────────────────
 User-agent: *
 Allow: /
 
-# Block private/admin paths
+# Block private/auth/dashboard paths
 Disallow: /admin_dashboard
 Disallow: /api/
 Disallow: /login
@@ -10,7 +14,50 @@ Disallow: /forgot-password
 Disallow: /reset-password
 Disallow: /user_dashboard
 Disallow: /instructor/
+Disallow: /instructor_dashboard
 Disallow: /learn/*/dashboard
+Disallow: /course-dashboard
+Disallow: /my-learning
 
-# Sitemap
+# Block query-string noise (prevents duplicate-content crawl)
+Disallow: /*?*utm_
+Disallow: /*?*ref=
+Disallow: /*?*source=
+
+Crawl-delay: 2
+
+# ── Googlebot: faster crawl, full access ─────────────────────────────────────
+User-agent: Googlebot
+Allow: /
+Disallow: /admin_dashboard
+Disallow: /api/
+Disallow: /login
+Disallow: /sign_up
+Disallow: /user_dashboard
+Disallow: /instructor/
+Disallow: /instructor_dashboard
+Disallow: /learn/*/dashboard
+Crawl-delay: 1
+
+# ── Bingbot ──────────────────────────────────────────────────────────────────
+User-agent: Bingbot
+Allow: /
+Disallow: /admin_dashboard
+Disallow: /api/
+Disallow: /login
+Disallow: /sign_up
+Disallow: /user_dashboard
+Crawl-delay: 2
+
+# ── Block aggressive scrapers ────────────────────────────────────────────────
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+User-agent: MJ12bot
+Disallow: /
+
+# ── Sitemap ───────────────────────────────────────────────────────────────────
 Sitemap: https://neurowextech.co.ke/sitemap.xml

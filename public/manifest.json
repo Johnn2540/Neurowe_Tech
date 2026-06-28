@@ -1,7 +1,7 @@
 {
-  "name": "NeurowexTech",
+  "name": "NeurowexTech — Nairobi's Digital Agency",
   "short_name": "NeurowexTech",
-  "description": "Professional web development, mobile apps, graphic design, SEO and digital skills training in Kenya.",
+  "description": "Web development, AI solutions, mobile apps, cybersecurity & digital training from Nairobi, Kenya. 500+ projects delivered globally.",
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
@@ -10,7 +10,8 @@
   "theme_color": "#1c2b4a",
   "lang": "en-KE",
   "dir": "ltr",
-  "categories": ["business", "education"],
+  "categories": ["business", "education", "productivity"],
+  "keywords": ["web development", "AI solutions", "digital agency", "Nairobi", "Kenya", "mobile apps", "cybersecurity"],
   "icons": [
     {
       "src": "/icons/icon.svg",
@@ -33,22 +34,36 @@
   ],
   "shortcuts": [
     {
-      "name": "Contact Us",
-      "short_name": "Contact",
+      "name": "Get a Free Quote",
+      "short_name": "Quote",
       "url": "/contact",
-      "description": "Get in touch with NeurowexTech"
+      "description": "Get a free consultation from NeurowexTech"
     },
     {
       "name": "Our Services",
       "short_name": "Services",
       "url": "/services",
-      "description": "View all our digital services"
+      "description": "View all digital services offered by NeurowexTech"
     },
     {
       "name": "Learn Digital Skills",
       "short_name": "Academy",
       "url": "/learn",
-      "description": "Learn web development, AI and more"
+      "description": "Learn web development, AI, cybersecurity and more"
+    },
+    {
+      "name": "Our Portfolio",
+      "short_name": "Portfolio",
+      "url": "/portfolio",
+      "description": "Browse 500+ projects delivered by NeurowexTech"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/images/og-home.jpg",
+      "sizes": "1200x630",
+      "type": "image/jpeg",
+      "label": "NeurowexTech Homepage"
     }
   ]
 }
