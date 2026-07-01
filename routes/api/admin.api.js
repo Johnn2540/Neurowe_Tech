@@ -629,6 +629,112 @@ router.post('/certificates/issue', async (req, res) => {
     }
 });
 
+// ─── WhatsApp Payments ────────────────────────────────────────────────────────
+
+router.get('/whatsapp-payments', async (req, res) => {
+    try {
+        const r = await db.query(`
+            SELECT wp.id, wp.amount, wp.status, wp.notes, wp.created_at, wp.updated_at,
+                   u.id AS user_id, u.username, u.email,
+                   c.id AS course_id, c.title AS course_title
+            FROM whatsapp_payments wp
+            JOIN users u ON wp.user_id = u.id
+            JOIN courses c ON wp.course_id = c.id
+            ORDER BY (wp.status = 'pending') DESC, wp.created_at DESC
+        `);
+        return res.json({ success: true, payments: r.rows });
+    } catch (err) {
+        console.error('[admin] whatsapp-payments list error:', err);
+        return res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+router.post('/whatsapp-payments/:id/approve', async (req, res) => {
+    try {
+        const wpR = await db.query('SELECT * FROM whatsapp_payments WHERE id=$1', [req.params.id]);
+        if (!wpR.rows.length) return res.status(404).json({ success: false, message: 'Payment not found' });
+        const wp = wpR.rows[0];
+        if (wp.status === 'approved') return res.json({ success: true, message: 'Already approved' });
+
+        const enrollR = await db.query(
+            'SELECT id FROM enrollments WHERE user_id=$1 AND course_id=$2', [wp.user_id, wp.course_id]
+        );
+        if (!enrollR.rows.length) {
+            await db.query(
+                "INSERT INTO enrollments (user_id,course_id,enrolled_at,progress,status) VALUES ($1,$2,NOW(),0,'active')",
+                [wp.user_id, wp.course_id]
+            );
+            await db.query('UPDATE courses SET enrolled_count=COALESCE(enrolled_count,0)+1 WHERE id=$1', [wp.course_id]);
+            const cR = await db.query('SELECT title FROM courses WHERE id=$1', [wp.course_id]);
+            await db.query(
+                "INSERT INTO user_activities (user_id,activity,type,created_at) VALUES ($1,$2,'enrollment',NOW())",
+                [wp.user_id, `Enrolled in ${cR.rows[0]?.title || 'a course'}`]
+            ).catch(() => {});
+        }
+        await db.query(
+            "UPDATE whatsapp_payments SET status='approved',updated_at=NOW() WHERE id=$1", [req.params.id]
+        );
+        return res.json({ success: true, message: 'Payment approved — user enrolled' });
+    } catch (err) {
+        console.error('[admin] whatsapp-payments approve error:', err);
+        return res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+router.post('/whatsapp-payments/:id/reject', async (req, res) => {
+    try {
+        const { notes } = req.body;
+        const r = await db.query(
+            "UPDATE whatsapp_payments SET status='rejected',notes=$1,updated_at=NOW() WHERE id=$2 RETURNING id",
+            [notes || null, req.params.id]
+        );
+        if (!r.rows.length) return res.status(404).json({ success: false, message: 'Payment not found' });
+        return res.json({ success: true, message: 'Payment rejected' });
+    } catch (err) {
+        console.error('[admin] whatsapp-payments reject error:', err);
+        return res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// POST /api/admin/manual-enroll — enroll any user by email + course
+router.post('/manual-enroll', async (req, res) => {
+    try {
+        const { email, courseId } = req.body;
+        if (!email || !courseId)
+            return res.status(400).json({ success: false, message: 'email and courseId required' });
+
+        const uR = await db.query('SELECT id,username FROM users WHERE LOWER(email)=LOWER($1)', [email]);
+        if (!uR.rows.length) return res.status(404).json({ success: false, message: 'No account found with that email' });
+
+        const cR = await db.query('SELECT id,title FROM courses WHERE id=$1', [courseId]);
+        if (!cR.rows.length) return res.status(404).json({ success: false, message: 'Course not found' });
+
+        const { id: userId, username } = uR.rows[0];
+        const { title } = cR.rows[0];
+
+        const existR = await db.query(
+            'SELECT id FROM enrollments WHERE user_id=$1 AND course_id=$2', [userId, courseId]
+        );
+        if (existR.rows.length)
+            return res.json({ success: true, message: `${username} is already enrolled in "${title}"` });
+
+        await db.query(
+            "INSERT INTO enrollments (user_id,course_id,enrolled_at,progress,status) VALUES ($1,$2,NOW(),0,'active')",
+            [userId, courseId]
+        );
+        await db.query('UPDATE courses SET enrolled_count=COALESCE(enrolled_count,0)+1 WHERE id=$1', [courseId]);
+        await db.query(
+            "INSERT INTO user_activities (user_id,activity,type,created_at) VALUES ($1,$2,'enrollment',NOW())",
+            [userId, `Enrolled in ${title}`]
+        ).catch(() => {});
+
+        return res.json({ success: true, message: `${username} enrolled in "${title}"` });
+    } catch (err) {
+        console.error('[admin] manual-enroll error:', err);
+        return res.status(500).json({ success: false, message: err.message });
+    }
+});
+
 // DELETE /api/admin/certificates/:id
 router.delete('/certificates/:id', async (req, res) => {
     try {

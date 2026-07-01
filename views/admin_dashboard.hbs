@@ -642,6 +642,7 @@ textarea.adm-input{resize:vertical}
     <div class="adm-sec-label">Academy</div>
     <div class="adm-nav-item" data-page="courses"><a class="adm-nav-link" data-label="Courses"><div class="adm-nav-icon"><i class="fas fa-graduation-cap"></i></div><span class="adm-nav-label">Courses</span></a></div>
     <div class="adm-nav-item" data-page="enrollments"><a class="adm-nav-link" data-label="Enrollments"><div class="adm-nav-icon"><i class="fas fa-user-graduate"></i></div><span class="adm-nav-label">Enrollments</span></a></div>
+    <div class="adm-nav-item" data-page="payments"><a class="adm-nav-link" data-label="Payments"><div class="adm-nav-icon" style="color:#25d366"><i class="fab fa-whatsapp"></i></div><span class="adm-nav-label">Payments</span><span class="adm-nav-badge" id="sbPaymentsCount" style="display:none;background:#25d366;color:#fff"></span></a></div>
     <div class="adm-nav-item" data-page="instructors">
       <a class="adm-nav-link" data-label="Instructors"><div class="adm-nav-icon"><i class="fas fa-chalkboard-teacher"></i></div><span class="adm-nav-label">Instructors</span><span class="adm-nav-badge" id="sbInstructorCount">{{stats.total_instructors}}</span></a>
     </div>
@@ -875,6 +876,42 @@ textarea.adm-input{resize:vertical}
   <div class="panel">
     <div class="panel-head"><div class="panel-title"><i class="fas fa-user-graduate"></i> All Enrollments</div></div>
     <div style="overflow-x:auto"><table class="adm-table"><thead><tr><th>Student</th><th>Email</th><th>Course</th><th>Enrolled On</th><th>Progress</th><th>Actions</th></tr></thead><tbody id="enrollmentsBody"><tr><td colspan="6"><div class="adm-empty"><i class="fas fa-spinner fa-spin"></i></div></td></tr></tbody></table></div>
+  </div>
+</div>
+
+<!-- ─────────── WHATSAPP PAYMENTS ─────────── -->
+<div class="adm-page" id="page-payments">
+  <div class="pg-head">
+    <div><div class="section-tag" style="color:#25d366;border-color:rgba(37,211,102,.2);background:rgba(37,211,102,.08)">Payments</div><h2>WhatsApp <span style="background:linear-gradient(135deg,#25d366,#128C7E);-webkit-background-clip:text;background-clip:text;color:transparent">Payment Requests</span></h2><div class="sub">Verify M-PESA screenshots sent on WhatsApp and enrol students</div></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn-adm ghost sm" onclick="loadPayments()"><i class="fas fa-arrows-rotate"></i> Refresh</button>
+      <button class="btn-adm" style="background:linear-gradient(135deg,#128C7E,#075E54)" onclick="openManualEnrollModal()"><i class="fas fa-user-plus"></i> Manual Enroll</button>
+    </div>
+  </div>
+  <div class="adm-stats" style="grid-template-columns:repeat(3,1fr);margin-bottom:22px">
+    <div class="adm-stat" style="border-top:3px solid #f59e0b"><div class="adm-stat-icon" style="color:#f59e0b"><i class="fas fa-clock"></i></div><div class="adm-stat-val" id="wpStatPending">—</div><div class="adm-stat-label">Pending</div></div>
+    <div class="adm-stat" style="border-top:3px solid #25d366"><div class="adm-stat-icon" style="color:#25d366"><i class="fas fa-check-circle"></i></div><div class="adm-stat-val" id="wpStatApproved">—</div><div class="adm-stat-label">Approved</div></div>
+    <div class="adm-stat" style="border-top:3px solid #ef4444"><div class="adm-stat-icon" style="color:#ef4444"><i class="fas fa-times-circle"></i></div><div class="adm-stat-val" id="wpStatRejected">—</div><div class="adm-stat-label">Rejected</div></div>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><div class="panel-title"><i class="fab fa-whatsapp" style="color:#25d366"></i> Payment Requests</div></div>
+    <div style="overflow-x:auto"><table class="adm-table"><thead><tr><th>Student</th><th>Email</th><th>Course</th><th>Amount</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead><tbody id="paymentsBody"><tr><td colspan="7"><div class="adm-empty"><i class="fas fa-spinner fa-spin"></i></div></td></tr></tbody></table></div>
+  </div>
+</div>
+
+<!-- Manual Enroll Modal -->
+<div class="adm-modal-bg" id="manualEnrollBg" onclick="if(event.target===this)closeManualEnrollModal()">
+  <div class="adm-modal" style="max-width:440px">
+    <div class="adm-modal-head"><h3>Manual Enroll</h3><button class="adm-modal-close" onclick="closeManualEnrollModal()"><i class="fas fa-times"></i></button></div>
+    <div class="adm-modal-body" style="display:flex;flex-direction:column;gap:14px">
+      <div><label class="adm-label">Student Email</label><input id="meEmail" class="adm-input" type="email" placeholder="student@example.com"></div>
+      <div>
+        <label class="adm-label">Course</label>
+        <select id="meCourse" class="adm-input"><option value="">Select a course…</option></select>
+      </div>
+      <div id="meMsg" style="display:none;padding:10px 12px;border-radius:8px;font-size:.82rem;font-weight:600"></div>
+    </div>
+    <div class="adm-modal-foot"><button class="btn-adm ghost" onclick="closeManualEnrollModal()">Cancel</button><button class="btn-adm" id="meSubmitBtn" onclick="submitManualEnroll()"><i class="fas fa-user-plus"></i> Enroll</button></div>
   </div>
 </div>
 
@@ -1394,6 +1431,7 @@ const PAGE_META={
   pricing:['Pricing','Pricing plans'],
   courses:['Courses','Academy course catalogue'],
   enrollments:['Enrollments','Course enrollments'],
+  payments:['Payments','WhatsApp payment requests'],
   instructors:['Instructors','Manage the teaching team'],
   'instructor-apps':['Instructor Applications','Review & approve applications'],
   settings:['Settings','Platform configuration'],
@@ -1404,6 +1442,7 @@ const LOADERS={
   projects:loadProjects,services:loadServices,blog:loadBlog,
   testimonials:loadTestimonials,team:loadTeam,faqs:loadFAQs,
   pricing:loadPricing,courses:loadCourses,enrollments:loadEnrollments,
+  payments:loadPayments,
   instructors:loadInstructors,'instructor-apps':loadInstructorApps,
 };
 
@@ -1803,6 +1842,77 @@ async function loadEnrollments(){
 async function deleteEnrollment(id){if(!confirm('Remove enrollment?'))return;const r=await api(`/api/learn/enrollments/${id}`,{method:'DELETE'});if(r?.success){toast('Removed');loadEnrollments();}}
 
 /* ════════════════════════════════════
+   WHATSAPP PAYMENTS
+════════════════════════════════════ */
+async function loadPayments(){
+  const d=await api('/api/admin/whatsapp-payments');
+  const arr=d?.payments||[];
+  const tb=document.getElementById('paymentsBody');if(!tb)return;
+  const pending=arr.filter(p=>p.status==='pending').length;
+  const approved=arr.filter(p=>p.status==='approved').length;
+  const rejected=arr.filter(p=>p.status==='rejected').length;
+  setEl('wpStatPending',pending);setEl('wpStatApproved',approved);setEl('wpStatRejected',rejected);
+  const badge=document.getElementById('sbPaymentsCount');
+  if(badge){badge.textContent=pending;badge.style.display=pending?'':'none';}
+  const statusPill=(s)=>{
+    if(s==='pending')return'<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:.68rem;font-weight:700;background:rgba(245,158,11,.15);color:#f59e0b"><i class="fas fa-clock"></i> Pending</span>';
+    if(s==='approved')return'<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:.68rem;font-weight:700;background:rgba(37,211,102,.12);color:#25d366"><i class="fas fa-check"></i> Approved</span>';
+    return'<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:.68rem;font-weight:700;background:rgba(239,68,68,.12);color:#ef4444"><i class="fas fa-times"></i> Rejected</span>';
+  };
+  tb.innerHTML=arr.length?arr.map(p=>`<tr>
+    <td class="td-name">${esc(p.username||'—')}</td>
+    <td><a href="mailto:${esc(p.email)}" style="color:var(--blue-l)">${esc(p.email||'—')}</a></td>
+    <td>${esc(p.course_title||'—')}</td>
+    <td style="font-weight:700;color:#25d366">Ksh ${Number(p.amount||0).toLocaleString()}</td>
+    <td>${fmt(p.created_at)}</td>
+    <td>${statusPill(p.status)}</td>
+    <td style="display:flex;gap:6px;flex-wrap:wrap">
+      ${p.status==='pending'?`<button class="act-btn" style="background:rgba(37,211,102,.15);color:#25d366;border:1px solid rgba(37,211,102,.25)" onclick="approveWaPayment(${p.id})"><i class="fas fa-check"></i> Approve</button>
+      <button class="act-btn act-del" onclick="rejectWaPayment(${p.id})"><i class="fas fa-times"></i> Reject</button>`
+      :`<span style="font-size:.72rem;color:rgba(255,255,255,.3)">—</span>`}
+    </td>
+  </tr>`).join(''):`<tr><td colspan="7"><div class="adm-empty"><i class="fab fa-whatsapp" style="font-size:2rem;color:#25d366"></i><p>No payment requests yet</p></div></td></tr>`;
+}
+
+async function approveWaPayment(id){
+  if(!confirm('Approve this payment and enrol the student?'))return;
+  const r=await api(`/api/admin/whatsapp-payments/${id}/approve`,{method:'POST'});
+  if(r?.success){toast('Student enrolled!','success');loadPayments();}
+}
+async function rejectWaPayment(id){
+  const notes=prompt('Reason for rejection (optional):');
+  if(notes===null)return;
+  const r=await api(`/api/admin/whatsapp-payments/${id}/reject`,{method:'POST',body:JSON.stringify({notes})});
+  if(r?.success){toast('Payment rejected');loadPayments();}
+}
+
+async function openManualEnrollModal(){
+  setEl('meMsg','');document.getElementById('meMsg').style.display='none';
+  document.getElementById('meEmail').value='';
+  if(!allCourses||!allCourses.length){const d=await api('/api/learn/courses');allCourses=d?.courses||[];}
+  const sel=document.getElementById('meCourse');
+  sel.innerHTML='<option value="">Select a course…</option>'+(allCourses||[]).filter(c=>c.published).map(c=>`<option value="${c.id}">${esc(c.title)}</option>`).join('');
+  document.getElementById('manualEnrollBg').classList.add('open');
+}
+function closeManualEnrollModal(){document.getElementById('manualEnrollBg').classList.remove('open');}
+async function submitManualEnroll(){
+  const email=document.getElementById('meEmail').value.trim();
+  const courseId=document.getElementById('meCourse').value;
+  const msgEl=document.getElementById('meMsg');
+  if(!email||!courseId){msgEl.style.display='';msgEl.style.background='rgba(239,68,68,.1)';msgEl.style.color='#ef4444';msgEl.textContent='Please enter an email and select a course.';return;}
+  const btn=document.getElementById('meSubmitBtn');btn.disabled=true;
+  const r=await api('/api/admin/manual-enroll',{method:'POST',body:JSON.stringify({email,courseId:parseInt(courseId)})});
+  btn.disabled=false;
+  if(r?.success){
+    msgEl.style.display='';msgEl.style.background='rgba(37,211,102,.1)';msgEl.style.color='#25d366';msgEl.textContent=r.message;
+    setTimeout(closeManualEnrollModal,1800);
+    if(document.getElementById('page-enrollments').classList.contains('active'))loadEnrollments();
+  } else {
+    msgEl.style.display='';msgEl.style.background='rgba(239,68,68,.1)';msgEl.style.color='#ef4444';msgEl.textContent=r?.message||'Enrollment failed.';
+  }
+}
+
+/* ════════════════════════════════════
    INSTRUCTOR MANAGEMENT (full)
 ════════════════════════════════════ */
 var _allInstructorUsers=[];
@@ -2102,6 +2212,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   loadDashboard();
   loadInstructors();
   loadInstructorApps();
+  loadPayments();
   setInterval(loadDashboard,30000);
 });
 </script>

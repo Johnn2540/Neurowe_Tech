@@ -23,6 +23,7 @@ const coursesApi   = require('./api/courses.api');
 const instructorApi = require('./api/instructor.api');
 const uploadApi    = require('./api/upload.api');
 const publicApi    = require('./api/public.api');
+const mpesaApi     = require('./api/mpesa.api');
 
 const router = Router();
 
@@ -43,6 +44,7 @@ router.use('/api/contacts',   contactsApi);
 router.use('/api',            coursesApi);      // /api/enroll, /api/lesson/*, /api/learn/*, /api/courses/*
 router.use('/api/instructor', instructorApi);
 router.use('/api/upload',     uploadApi);
+router.use('/api/mpesa',      mpesaApi);
 router.use('/api',            publicApi);       // /api/projects/public, /api/subscribe
 
 module.exports = router;

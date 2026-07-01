@@ -668,7 +668,9 @@ body.dark .no-results{color:rgba(255,255,255,.38)}
 }
 .cc-enroll-btn:hover{transform:translateY(-2px);box-shadow:var(--sh-blue)}
 .cc-enroll-btn.locked{background:var(--ghost);color:var(--slate);border:1.5px solid var(--mist);box-shadow:none}
-.cc-enroll-btn.locked:hover{background:var(--g-blue);color:#fff;border-color:transparent;box-shadow:var(--sh-blue)}
+.cc-enroll-btn.locked:hover{background:var(--ink);color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(8,12,24,.22)}
+.cc-enroll-btn.pay{background:linear-gradient(135deg,#0d1e40,#1a4fd6);color:#fff;box-shadow:0 4px 16px rgba(26,79,214,.3)}
+.cc-enroll-btn.pay:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(26,79,214,.42)}
 .cc-enroll-btn.enrolled{background:var(--g-green);box-shadow:0 4px 14px rgba(5,150,105,.26)}
 .cc-enroll-btn.enrolled:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(5,150,105,.36)}
 
@@ -738,23 +740,33 @@ body.dark .kids-section-wrapper{background:linear-gradient(180deg,#130a2a 0%,#0e
 .kids-mini-age{display:inline-flex;align-items:center;gap:4px;background:rgba(124,58,237,.1);color:var(--kids-purple);border-radius:var(--r-pill);padding:2px 9px;font-size:.64rem;font-weight:800;margin-top:auto;width:fit-content}
 
 /* ═══════════════════════════════════════════════════════════
-   ENROLL MODAL
+   ENROLL MODAL (login prompt for unauthenticated users)
 ═══════════════════════════════════════════════════════════ */
 @keyframes modal-in{from{transform:scale(.92) translateY(12px);opacity:0}to{transform:none;opacity:1}}
-.enroll-modal-bg{position:fixed;inset:0;background:rgba(8,12,24,.6);backdrop-filter:blur(8px);z-index:3000;display:none;align-items:center;justify-content:center;padding:16px}
+.enroll-modal-bg{position:fixed;inset:0;background:rgba(8,12,24,.65);backdrop-filter:blur(12px);z-index:3000;display:none;align-items:center;justify-content:center;padding:16px}
 .enroll-modal-bg.open{display:flex}
-.enroll-modal{background:#fff;border-radius:var(--r-2xl);width:100%;max-width:420px;box-shadow:0 28px 72px rgba(0,0,0,.4);overflow:hidden;animation:modal-in .3s var(--spring) both}
-.em-top{background:var(--g-blue);padding:28px 28px 22px;text-align:center}
-.em-icon{width:56px;height:56px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:1.4rem;color:#fff}
-.em-top h3{font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:4px}
-.em-top p{font-size:.8rem;color:rgba(255,255,255,.7);margin:0}
-.em-body{padding:22px 26px 26px;display:flex;flex-direction:column;gap:10px}
-.em-course-name{background:var(--blue-pale);border-radius:var(--r-md);padding:9px 13px;font-size:.8rem;font-weight:600;color:var(--blue);text-align:center}
-.em-btn-primary{display:flex;align-items:center;justify-content:center;gap:7px;background:var(--g-blue);color:#fff;padding:11px;border-radius:var(--r-pill);font-weight:700;font-size:.87rem;text-decoration:none;transition:var(--t);box-shadow:var(--sh-blue)}
-.em-btn-primary:hover{transform:translateY(-2px)}
-.em-btn-secondary{display:flex;align-items:center;justify-content:center;gap:7px;background:transparent;color:var(--blue);padding:10px;border-radius:var(--r-pill);font-weight:700;font-size:.87rem;text-decoration:none;border:1.5px solid var(--blue);transition:var(--t)}
-.em-btn-secondary:hover{background:var(--g-blue);color:#fff}
-.em-dismiss{background:none;border:none;color:var(--slate-l);font-size:.76rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:var(--t);text-align:center}
+.enroll-modal{background:#fff;border-radius:var(--r-2xl);width:100%;max-width:420px;box-shadow:0 36px 88px rgba(0,0,0,.45);overflow:hidden;animation:modal-in .3s var(--spring) both}
+body.dark .enroll-modal{background:var(--ink-2)}
+/* dark hero header — matches payment modal premium feel */
+.em-top{background:linear-gradient(135deg,#050e20,#0d1e40);padding:32px 28px 26px;text-align:center;position:relative}
+.em-top::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(26,79,214,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(26,79,214,.04) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}
+.em-icon{width:60px;height:60px;background:linear-gradient(135deg,var(--blue),var(--blue-d));border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:1.45rem;color:#fff;box-shadow:0 8px 28px rgba(26,79,214,.4);position:relative;z-index:1}
+.em-top h3{font-family:'Instrument Serif',Georgia,serif;font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:6px;position:relative;z-index:1}
+.em-top p{font-size:.8rem;color:rgba(255,255,255,.5);margin:0;position:relative;z-index:1;line-height:1.6}
+.em-body{padding:22px 24px 26px;display:flex;flex-direction:column;gap:10px}
+.em-course-label{font-size:.64rem;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--slate-l);text-align:center;margin-bottom:2px}
+.em-course-name{background:var(--blue-pale);border:1px solid rgba(26,79,214,.12);border-radius:var(--r-md);padding:10px 14px;font-size:.82rem;font-weight:600;color:var(--blue);text-align:center;line-height:1.4}
+body.dark .em-course-name{background:rgba(26,79,214,.12);color:var(--blue-l)}
+.em-divider{display:flex;align-items:center;gap:10px;margin:2px 0}
+.em-divider::before,.em-divider::after{content:'';flex:1;height:1px;background:var(--mist)}
+body.dark .em-divider::before,body.dark .em-divider::after{background:rgba(255,255,255,.08)}
+.em-divider span{font-size:.68rem;color:var(--slate-l);font-weight:600;white-space:nowrap}
+.em-btn-primary{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--g-blue);color:#fff;padding:13px;border-radius:var(--r-pill);font-weight:700;font-size:.88rem;text-decoration:none;transition:var(--t);box-shadow:var(--sh-blue);font-family:'DM Sans',sans-serif}
+.em-btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(26,79,214,.4)}
+.em-btn-secondary{display:flex;align-items:center;justify-content:center;gap:8px;background:transparent;color:var(--slate);padding:12px;border-radius:var(--r-pill);font-weight:600;font-size:.85rem;text-decoration:none;border:1.5px solid var(--mist);transition:var(--t);font-family:'DM Sans',sans-serif}
+body.dark .em-btn-secondary{color:rgba(255,255,255,.6);border-color:rgba(255,255,255,.1)}
+.em-btn-secondary:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-pale)}
+.em-dismiss{background:none;border:none;color:var(--slate-l);font-size:.74rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:var(--t);text-align:center;padding:4px 8px}
 .em-dismiss:hover{color:var(--rose)}
 
 /* ═══════════════════════════════════════════════════════════
@@ -903,6 +915,105 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
 /* filter overlay only exists on mobile */
 .filter-overlay{display:none}
 @media(max-width:767px){.filter-overlay{display:block}}
+
+/* ═══════════════════════════════════════════════════════════
+   PAYMENT MODAL
+═══════════════════════════════════════════════════════════ */
+.pay-modal-bg{position:fixed;inset:0;background:rgba(8,12,24,.7);backdrop-filter:blur(12px);z-index:3100;display:none;align-items:center;justify-content:center;padding:16px}
+.pay-modal-bg.open{display:flex}
+.pay-modal{background:#fff;border-radius:var(--r-2xl);width:100%;max-width:460px;box-shadow:0 36px 90px rgba(0,0,0,.5);overflow:hidden;animation:modal-in .3s var(--spring) both;max-height:calc(100dvh - 48px);display:flex;flex-direction:column}
+body.dark .pay-modal{background:var(--ink-2)}
+
+.pm-header{background:linear-gradient(135deg,#050e20,#0d1e40);padding:26px 24px 22px;position:relative;flex-shrink:0}
+.pm-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border:none;background:rgba(255,255,255,.1);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.65);font-size:.78rem;transition:var(--t)}
+.pm-close:hover{background:rgba(255,255,255,.2);color:#fff}
+.pm-secure-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(5,150,105,.2);border:1px solid rgba(5,150,105,.3);border-radius:var(--r-pill);padding:3px 11px;font-size:.65rem;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:#34d399;margin-bottom:10px}
+.pm-amount-row{display:flex;align-items:baseline;gap:5px;margin-bottom:5px}
+.pm-currency{font-size:1rem;font-weight:700;color:rgba(255,255,255,.5);margin-top:4px}
+.pm-amount{font-family:'Instrument Serif',Georgia,serif;font-size:2.6rem;font-weight:700;color:#fff;line-height:1}
+.pm-course-name{font-size:.8rem;color:rgba(255,255,255,.45);line-height:1.5;max-width:340px}
+.pm-trust-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.07)}
+.pm-trust-item{display:flex;align-items:center;gap:5px;font-size:.67rem;color:rgba(255,255,255,.38);font-weight:600}
+.pm-trust-item i{color:#34d399;font-size:.62rem}
+
+.pm-tabs{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--mist);flex-shrink:0}
+body.dark .pm-tabs{border-color:rgba(255,255,255,.08)}
+.pm-tab{display:flex;align-items:center;justify-content:center;gap:6px;padding:13px 10px;font-size:.8rem;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--slate);transition:var(--t);border-bottom:2.5px solid transparent;margin-bottom:-1px;font-family:'DM Sans',sans-serif}
+body.dark .pm-tab{color:rgba(255,255,255,.4)}
+.pm-tab:hover{color:var(--blue);background:var(--blue-pale)}
+.pm-tab.active{color:var(--blue);border-bottom-color:var(--blue);background:var(--blue-pale)}
+body.dark .pm-tab.active{background:rgba(26,79,214,.12);color:var(--blue-l)}
+.pm-tab-wa.active{color:#075E54;border-bottom-color:#25D366;background:rgba(37,211,102,.06)}
+body.dark .pm-tab-wa.active{color:#34d399}
+
+.pm-body{padding:22px 24px 26px;overflow-y:auto;flex:1}
+.pm-pane{display:none}
+.pm-pane.active{display:block}
+
+.pm-err{font-size:.78rem;color:var(--rose);background:rgba(225,29,72,.06);border-radius:var(--r-sm);padding:9px 12px;border-left:3px solid var(--rose);display:none;margin-bottom:14px;line-height:1.5}
+.pm-err.show{display:flex;align-items:flex-start;gap:7px}
+
+.pm-info-box{font-size:.81rem;color:var(--ink);line-height:1.64;padding:11px 13px;background:var(--blue-pale);border-radius:var(--r-md);border-left:3px solid var(--blue);margin-bottom:16px}
+body.dark .pm-info-box{background:rgba(26,79,214,.12);color:rgba(255,255,255,.7)}
+.pm-label{font-size:.74rem;font-weight:800;color:var(--ink);margin-bottom:7px;display:block;letter-spacing:.2px}
+body.dark .pm-label{color:rgba(255,255,255,.7)}
+.pm-phone-wrap{display:flex;align-items:center;background:var(--ghost);border:1.5px solid var(--mist);border-radius:var(--r-md);overflow:hidden;margin-bottom:14px;transition:var(--t)}
+body.dark .pm-phone-wrap{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.1)}
+.pm-phone-wrap:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-pale)}
+.pm-prefix{padding:11px 13px;font-size:.82rem;font-weight:700;color:var(--slate);background:var(--mist);border-right:1.5px solid var(--mist);flex-shrink:0;display:flex;align-items:center;gap:6px}
+body.dark .pm-prefix{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.08);color:rgba(255,255,255,.45)}
+.pm-phone-wrap input{flex:1;border:none;outline:none;background:transparent;padding:11px 13px;font-size:.92rem;color:var(--ink);font-family:'DM Sans',sans-serif;letter-spacing:.3px}
+body.dark .pm-phone-wrap input{color:rgba(255,255,255,.88)}
+.pm-phone-wrap input::placeholder{color:var(--slate-l)}
+.pm-btn{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--g-blue);color:#fff;padding:13px;border-radius:var(--r-pill);font-size:.9rem;font-weight:700;border:none;cursor:pointer;transition:var(--t);box-shadow:var(--sh-blue);width:100%;font-family:'DM Sans',sans-serif}
+.pm-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 14px 32px rgba(26,79,214,.4)}
+.pm-btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+
+/* Waiting / polling */
+.pm-waiting{text-align:center;padding:20px 0 10px;display:none}
+.pm-waiting.show{display:block}
+.pm-phone-ring{width:70px;height:70px;border-radius:50%;background:var(--blue-pale);border:3px solid var(--blue);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;animation:pm-ring 1.8s ease-in-out infinite}
+@keyframes pm-ring{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(26,79,214,.35)}70%{transform:scale(1.06);box-shadow:0 0 0 14px rgba(26,79,214,0)}}
+.pm-waiting-title{font-size:1.05rem;font-weight:700;color:var(--ink);margin-bottom:5px}
+body.dark .pm-waiting-title{color:#fff}
+.pm-waiting-sub{font-size:.82rem;color:var(--slate);line-height:1.65;margin-bottom:2px}
+.pm-countdown{font-family:'Instrument Serif',serif;font-size:1.6rem;font-weight:700;color:var(--blue);margin:8px 0 4px}
+.pm-dots{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:8px}
+.pm-dot{width:7px;height:7px;border-radius:50%;background:var(--blue);opacity:.3;animation:pm-dot .9s ease-in-out infinite}
+.pm-dot:nth-child(2){animation-delay:.18s}.pm-dot:nth-child(3){animation-delay:.36s}
+@keyframes pm-dot{0%,80%,100%{opacity:.3;transform:scale(1)}40%{opacity:1;transform:scale(1.3)}}
+
+/* Success */
+.pm-success{text-align:center;padding:18px 0 10px;display:none}
+.pm-success.show{display:block}
+.pm-success-circle{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--emerald),#10b981);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:1.7rem;color:#fff;animation:pm-pop .4s var(--spring)}
+@keyframes pm-pop{from{transform:scale(0.6);opacity:0}to{transform:scale(1);opacity:1}}
+.pm-success-title{font-family:'Instrument Serif',serif;font-size:1.3rem;font-weight:700;color:var(--ink);margin-bottom:5px}
+body.dark .pm-success-title{color:#fff}
+.pm-success-sub{font-size:.82rem;color:var(--slate);margin-bottom:14px}
+.pm-progress-track{height:5px;background:var(--mist);border-radius:3px;overflow:hidden}
+.pm-progress-fill{height:100%;background:var(--g-green);width:0%;transition:width 1.8s linear;border-radius:3px}
+
+/* WhatsApp pane */
+.pm-wa-card{background:rgba(37,211,102,.06);border:1px solid rgba(37,211,102,.2);border-radius:var(--r-lg);padding:16px;margin-bottom:16px}
+.pm-wa-till{text-align:center;padding:10px;background:rgba(37,211,102,.08);border-radius:var(--r-md);margin-bottom:14px}
+.pm-wa-till-label{font-size:.65rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:rgba(18,140,126,.8);margin-bottom:3px}
+.pm-wa-till-num{font-family:'JetBrains Mono','Courier New',monospace;font-size:1.6rem;font-weight:700;color:#075E54;letter-spacing:2px}
+body.dark .pm-wa-till-num{color:#34d399}
+.pm-wa-steps{list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:16px}
+.pm-wa-step{display:flex;gap:11px;align-items:flex-start}
+.pm-wa-num{min-width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#128C7E,#075E54);color:#fff;font-size:.7rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.pm-wa-text{font-size:.82rem;color:var(--ink);line-height:1.55}
+body.dark .pm-wa-text{color:rgba(255,255,255,.72)}
+.pm-wa-text strong{font-weight:700;color:var(--ink)}
+body.dark .pm-wa-text strong{color:#fff}
+.pm-wa-btn{display:flex;align-items:center;justify-content:center;gap:9px;background:linear-gradient(135deg,#128C7E,#075E54);color:#fff;padding:13px;border-radius:var(--r-pill);font-size:.9rem;font-weight:800;text-decoration:none;transition:var(--t);box-shadow:0 6px 22px rgba(18,140,126,.35);font-family:'DM Sans',sans-serif}
+.pm-wa-btn:hover{transform:translateY(-2px);box-shadow:0 12px 34px rgba(18,140,126,.48)}
+.pm-wa-note{font-size:.72rem;color:var(--slate-l);text-align:center;margin-top:10px;line-height:1.55}
+.pm-wa-notify-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;margin-top:10px;padding:12px;border-radius:var(--r-pill);background:rgba(37,211,102,.1);color:#25d366;border:1.5px solid rgba(37,211,102,.3);font-size:.88rem;font-weight:800;cursor:pointer;transition:var(--t);font-family:'DM Sans',sans-serif}
+.pm-wa-notify-btn:hover:not(:disabled){background:rgba(37,211,102,.18);border-color:rgba(37,211,102,.5)}
+.pm-wa-notify-btn:disabled{opacity:.55;cursor:not-allowed}
+.pm-wa-notify-ok{display:flex;align-items:center;gap:8px;margin-top:10px;padding:11px 14px;border-radius:var(--r-md);background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.25);color:#25d366;font-size:.82rem;font-weight:700}
 </style>
 </head>
 <body>
@@ -1417,12 +1528,12 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
                 <i class="fas fa-play-circle"></i> Continue Learning
               </button>
               {{else}}
-              <button class="cc-hover-btn" onclick="window.location.href='/checkout?course={{this.id}}'">
-                <i class="fas fa-shopping-cart"></i> Enrol Now
+              <button class="cc-hover-btn" onclick="openPayModal({{this.id}},this.closest('.course-card').querySelector('.cc-title').textContent,{{this.price}})">
+                <i class="fas fa-credit-card"></i> Enrol — Ksh {{this.price}}
               </button>
               {{/if}}
             {{else}}
-            <button class="cc-hover-btn" onclick="window.location.href='/login?redirect=/learn/course/{{this.id}}'">
+            <button class="cc-hover-btn" onclick="window.location.href='/login?redirect=/learn'">
               <i class="fas fa-lock"></i> Log In to Enrol
             </button>
             {{/if}}
@@ -1455,13 +1566,13 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
                 <i class="fas fa-play-circle"></i> Continue
               </button>
               {{else}}
-              <button class="cc-enroll-btn" onclick="window.location.href='/checkout?course={{this.id}}'">
-                Enrol Now <i class="fas fa-arrow-right"></i>
+              <button class="cc-enroll-btn pay" onclick="openPayModal({{this.id}},'{{this.title}}',{{this.price}})">
+                <i class="fas fa-bolt"></i> Enrol Now
               </button>
               {{/if}}
             {{else}}
-            <button class="cc-enroll-btn locked" onclick="window.location.href='/login?redirect=/learn/course/{{this.id}}'">
-              <i class="fas fa-lock"></i> Log In
+            <button class="cc-enroll-btn locked" onclick="window.location.href='/login?redirect=/learn'">
+              <i class="fas fa-lock"></i> Log In to Enrol
             </button>
             {{/if}}
           </div>
@@ -1571,21 +1682,153 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
 <!-- ══════════════════════════════════════════════════════════
      ENROLL MODAL
 ══════════════════════════════════════════════════════════ -->
-<div class="enroll-modal-bg" id="enrollModal" onclick="if(event.target===this)closeEnrollModal()">
+<div class="enroll-modal-bg" id="enrollModal" onclick="if(event.target===this)closeEnrollModal()" role="dialog" aria-modal="true" aria-label="Sign up to enrol">
   <div class="enroll-modal">
     <div class="em-top">
       <div class="em-icon"><i class="fas fa-graduation-cap"></i></div>
-      <h3>Ready to enrol?</h3>
-      <p>Create a free account or log in to access this course.</p>
+      <h3>Join NeurowexTech Academy</h3>
+      <p>Create a free account or log in to start learning</p>
     </div>
     <div class="em-body">
+      <div class="em-course-label">You're enrolling in</div>
       <div class="em-course-name" id="modalCourseName">Course Name</div>
-      <a href="/sign_up" class="em-btn-primary"><i class="fas fa-user-plus"></i> Sign Up Free — It's Quick</a>
-      <a href="/login"   class="em-btn-secondary"><i class="fas fa-sign-in-alt"></i> Already have an account? Log In</a>
+      <a href="/sign_up" class="em-btn-primary" style="margin-top:4px">
+        <i class="fas fa-user-plus"></i> Create Free Account
+      </a>
+      <div class="em-divider"><span>or</span></div>
+      <a href="/login" class="em-btn-secondary">
+        <i class="fas fa-sign-in-alt"></i> Log In to Existing Account
+      </a>
       <button class="em-dismiss" onclick="closeEnrollModal()">Maybe later</button>
     </div>
   </div>
 </div>
+
+<!-- ══════════════════════════════════════════════════════════
+     PAYMENT MODAL — M-PESA STK Push + WhatsApp
+══════════════════════════════════════════════════════════ -->
+<div class="pay-modal-bg" id="payModal" onclick="if(event.target===this)closePayModal()" role="dialog" aria-modal="true" aria-label="Course payment">
+  <div class="pay-modal">
+
+    <!-- Header -->
+    <div class="pm-header">
+      <button class="pm-close" onclick="closePayModal()" aria-label="Close"><i class="fas fa-times"></i></button>
+      <div class="pm-secure-chip"><i class="fas fa-lock"></i> Secure Payment</div>
+      <div class="pm-amount-row">
+        <span class="pm-currency">Ksh</span>
+        <span class="pm-amount" id="pmAmount">0</span>
+      </div>
+      <div class="pm-course-name" id="pmCourseName">Course Name</div>
+      <div class="pm-trust-row">
+        <span class="pm-trust-item"><i class="fas fa-check-circle"></i> Instant access</span>
+        <span class="pm-trust-item"><i class="fas fa-check-circle"></i> M-PESA protected</span>
+        <span class="pm-trust-item"><i class="fas fa-check-circle"></i> 100% secure</span>
+      </div>
+    </div>
+
+    <!-- Method tabs -->
+    <div class="pm-tabs">
+      <button class="pm-tab active" id="tabStk" onclick="switchPayTab('stk')">
+        <i class="fas fa-mobile-alt"></i> M-PESA STK Push
+      </button>
+      <button class="pm-tab pm-tab-wa" id="tabWa" onclick="switchPayTab('wa')">
+        <i class="fab fa-whatsapp"></i> Pay via WhatsApp
+      </button>
+    </div>
+
+    <div class="pm-body">
+
+      <!-- ── STK Push pane ── -->
+      <div class="pm-pane active" id="paneStk">
+        <div class="pm-err" id="pmErr"><i class="fas fa-exclamation-circle"></i> <span id="pmErrText"></span></div>
+
+        <!-- Input state -->
+        <div id="stkInput">
+          <div class="pm-info-box">
+            <i class="fas fa-mobile-alt" style="color:var(--blue);margin-right:5px"></i>
+            Enter your <strong>Safaricom number</strong> below. You'll receive an M-PESA prompt — enter your PIN to complete payment. Course access is granted instantly.
+          </div>
+          <label class="pm-label" for="pmPhone">Safaricom Phone Number</label>
+          <div class="pm-phone-wrap">
+            <span class="pm-prefix"><span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#cf0000,#007a3d);font-size:.5rem;font-weight:900;color:#fff;letter-spacing:0;flex-shrink:0">M</span> +254</span>
+            <input type="tel" id="pmPhone" placeholder="712 345 678" maxlength="9" inputmode="numeric" autocomplete="tel"/>
+          </div>
+          <button class="pm-btn" id="stkSendBtn" onclick="sendStkPush()">
+            <i class="fas fa-paper-plane"></i> Send M-PESA Request
+          </button>
+        </div>
+
+        <!-- Waiting / polling state -->
+        <div class="pm-waiting" id="stkWaiting">
+          <div class="pm-phone-ring"><i class="fas fa-mobile-alt" style="font-size:1.5rem;color:var(--blue)"></i></div>
+          <div class="pm-waiting-title">Check Your Phone</div>
+          <div class="pm-waiting-sub">An M-PESA STK push has been sent to your phone.<br>Enter your PIN to complete the payment.</div>
+          <div class="pm-countdown" id="stkCountdown">2:00</div>
+          <div class="pm-waiting-sub" style="font-size:.75rem;opacity:.65">Confirming payment automatically…</div>
+          <div class="pm-dots"><span class="pm-dot"></span><span class="pm-dot"></span><span class="pm-dot"></span></div>
+          <button style="margin-top:18px;background:none;border:none;font-size:.77rem;color:var(--slate-l);cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:5px;margin-left:auto;margin-right:auto" onclick="resetStkState()">
+            <i class="fas fa-redo"></i> Try a different number
+          </button>
+        </div>
+
+        <!-- Success state -->
+        <div class="pm-success" id="stkSuccess">
+          <div class="pm-success-circle"><i class="fas fa-check"></i></div>
+          <div class="pm-success-title">Payment Confirmed!</div>
+          <div class="pm-success-sub">You're now enrolled. Redirecting to your course…</div>
+          <div class="pm-progress-track">
+            <div class="pm-progress-fill" id="stkProgressFill"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── WhatsApp pane ── -->
+      <div class="pm-pane" id="paneWa">
+        <div class="pm-wa-card">
+          <div class="pm-wa-till">
+            <div class="pm-wa-till-label">M-PESA Buy Goods — Till Number</div>
+            <div class="pm-wa-till-num">4928849</div>
+          </div>
+          <ol class="pm-wa-steps">
+            <li class="pm-wa-step">
+              <span class="pm-wa-num">1</span>
+              <span class="pm-wa-text">Open <strong>M-PESA</strong> → <strong>Lipa na M-PESA</strong> → <strong>Buy Goods &amp; Services</strong></span>
+            </li>
+            <li class="pm-wa-step">
+              <span class="pm-wa-num">2</span>
+              <span class="pm-wa-text">Enter Till <strong style="color:#075E54">4928849</strong>, amount <strong id="waAmount" style="color:var(--emerald)">Ksh 0</strong>, then enter your PIN</span>
+            </li>
+            <li class="pm-wa-step">
+              <span class="pm-wa-num">3</span>
+              <span class="pm-wa-text">Take a <strong>screenshot of the M-PESA confirmation SMS</strong></span>
+            </li>
+            <li class="pm-wa-step">
+              <span class="pm-wa-num">4</span>
+              <span class="pm-wa-text">Send the screenshot to us on WhatsApp — we enrol you within minutes</span>
+            </li>
+            <li class="pm-wa-step">
+              <span class="pm-wa-num">5</span>
+              <span class="pm-wa-text">Click <strong>"Notify Us"</strong> below so our team knows to look out for your payment</span>
+            </li>
+          </ol>
+        </div>
+        <a id="waPayLink" href="#" target="_blank" rel="noopener noreferrer" class="pm-wa-btn">
+          <i class="fab fa-whatsapp" style="font-size:1.1rem"></i> Open WhatsApp &amp; Send Confirmation
+        </a>
+        {{#if isAuthenticated}}
+        <button id="waNotifyBtn" class="pm-wa-notify-btn" onclick="notifyWaPayment()">
+          <i class="fas fa-bell"></i> I've Paid — Notify Our Team
+        </button>
+        <div id="waNotifySuccess" class="pm-wa-notify-ok" style="display:none">
+          <i class="fas fa-check-circle"></i> Notification sent! We'll verify your screenshot and enrol you shortly.
+        </div>
+        {{/if}}
+        <div class="pm-wa-note">Mon – Fri · 9 am – 6 pm EAT &nbsp;·&nbsp; Usually within 15 minutes</div>
+      </div>
+
+    </div><!-- /pm-body -->
+  </div><!-- /pay-modal -->
+</div><!-- /pay-modal-bg -->
 
 <!-- CTA — TEACH -->
 <div class="cta-teach-section">
@@ -2076,6 +2319,220 @@ if(filterOverlay) filterOverlay.addEventListener('click', closeFilter);
 document.addEventListener('DOMContentLoaded', function(){
   loadLiveStats();
   checkEnrollments();
+});
+
+/* ══════════════════════════════════════════════════════════
+   PAYMENT MODAL — M-PESA STK Push + WhatsApp
+══════════════════════════════════════════════════════════ */
+var _pay = { courseId:null, price:null, checkoutId:null, pollT:null, countT:null };
+
+function openPayModal(courseId, title, price) {
+  _pay.courseId = courseId;
+  _pay.price    = price;
+  document.getElementById('pmAmount').textContent     = price;
+  document.getElementById('pmCourseName').textContent = title;
+  document.getElementById('waAmount').textContent     = 'Ksh ' + price;
+  var wa = document.getElementById('waPayLink');
+  if(wa) {
+    var msg = encodeURIComponent(
+      'Hello NeurowexTech!\n\nI have paid *Ksh ' + price +
+      '* via M-PESA Buy Goods (Till 4928849) for the course:\n*' + title +
+      '*\n\nPlease find my M-PESA confirmation screenshot attached. Kindly activate my access.'
+    );
+    wa.href = 'https://wa.me/254769329340?text=' + msg;
+  }
+  resetStkState();
+  var nb = document.getElementById('waNotifyBtn');
+  var ns = document.getElementById('waNotifySuccess');
+  if (nb) { nb.disabled = false; nb.innerHTML = '<i class="fas fa-bell"></i> I\'ve Paid — Notify Our Team'; nb.style.display = ''; }
+  if (ns) ns.style.display = 'none';
+  switchPayTab('stk');
+  document.getElementById('payModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(function(){ var p = document.getElementById('pmPhone'); if(p) p.focus(); }, 300);
+}
+
+function closePayModal() {
+  document.getElementById('payModal').classList.remove('open');
+  document.body.style.overflow = '';
+  clearInterval(_pay.pollT);
+  clearInterval(_pay.countT);
+}
+
+function switchPayTab(tab) {
+  document.getElementById('tabStk').classList.toggle('active', tab === 'stk');
+  document.getElementById('tabWa').classList.toggle('active',  tab === 'wa');
+  document.getElementById('paneStk').classList.toggle('active', tab === 'stk');
+  document.getElementById('paneWa').classList.toggle('active',  tab === 'wa');
+}
+
+function resetStkState() {
+  clearInterval(_pay.pollT);
+  clearInterval(_pay.countT);
+  _pay.checkoutId = null;
+  document.getElementById('stkInput').style.display = '';
+  document.getElementById('stkWaiting').classList.remove('show');
+  document.getElementById('stkSuccess').classList.remove('show');
+  hidePmErr();
+  var ph = document.getElementById('pmPhone'); if(ph) ph.value = '';
+  var btn = document.getElementById('stkSendBtn');
+  if(btn){ btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send M-PESA Request'; }
+  var fill = document.getElementById('stkProgressFill'); if(fill) fill.style.width = '0%';
+}
+
+function showPmErr(msg) {
+  var el = document.getElementById('pmErr');
+  var tx = document.getElementById('pmErrText');
+  if(tx) tx.textContent = msg;
+  if(el) el.classList.add('show');
+}
+function hidePmErr() {
+  var el = document.getElementById('pmErr'); if(el) el.classList.remove('show');
+}
+
+async function sendStkPush() {
+  var raw = (document.getElementById('pmPhone').value || '').trim().replace(/\s/g,'');
+  if(!/^\d{9}$/.test(raw)) {
+    showPmErr('Enter a valid 9-digit Safaricom number (e.g. 712 345 678).');
+    return;
+  }
+  hidePmErr();
+  var btn = document.getElementById('stkSendBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending request…';
+  try {
+    var res  = await fetch('/api/mpesa/stk-push', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ courseId: _pay.courseId, phone: '254' + raw })
+    });
+    var data = await res.json();
+    if(data.success) {
+      _pay.checkoutId = data.checkoutRequestId;
+      showStkWaiting();
+    } else if(data.alreadyEnrolled) {
+      closePayModal();
+      toast('Already enrolled! Redirecting…', 'info');
+      setTimeout(function(){ window.location.href = '/learn/course/' + _pay.courseId + '/dashboard'; }, 1200);
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send M-PESA Request';
+      showPmErr(data.message || 'Could not initiate payment. Please try again.');
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send M-PESA Request';
+    showPmErr('Network error. Please check your connection and try again.');
+  }
+}
+
+function showStkWaiting() {
+  document.getElementById('stkInput').style.display = 'none';
+  document.getElementById('stkWaiting').classList.add('show');
+  var secs = 120;
+  function tick() {
+    var m = Math.floor(secs / 60), s = secs % 60;
+    var cd = document.getElementById('stkCountdown');
+    if(cd) cd.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+    if(secs-- <= 0) {
+      clearInterval(_pay.countT);
+      clearInterval(_pay.pollT);
+      document.getElementById('stkWaiting').classList.remove('show');
+      document.getElementById('stkInput').style.display = '';
+      showPmErr('Payment timed out. Please try again or use WhatsApp.');
+      var btn = document.getElementById('stkSendBtn');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send M-PESA Request';
+    }
+  }
+  tick();
+  _pay.countT = setInterval(tick, 1000);
+  _pay.pollT  = setInterval(pollStkStatus, 4000);
+}
+
+async function pollStkStatus() {
+  if(!_pay.checkoutId) return;
+  try {
+    var res  = await fetch('/api/mpesa/status/' + _pay.checkoutId);
+    var data = await res.json();
+    if(data.status === 'success') {
+      clearInterval(_pay.pollT);
+      clearInterval(_pay.countT);
+      showStkSuccess();
+    } else if(data.status === 'failed') {
+      clearInterval(_pay.pollT);
+      clearInterval(_pay.countT);
+      document.getElementById('stkWaiting').classList.remove('show');
+      document.getElementById('stkInput').style.display = '';
+      showPmErr('Payment was declined or cancelled. Please try again or pay via WhatsApp.');
+      var btn = document.getElementById('stkSendBtn');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send M-PESA Request';
+    }
+  } catch(e) {}
+}
+
+function showStkSuccess() {
+  document.getElementById('stkWaiting').classList.remove('show');
+  document.getElementById('stkSuccess').classList.add('show');
+  setTimeout(function(){
+    var fill = document.getElementById('stkProgressFill');
+    if(fill) fill.style.width = '100%';
+  }, 60);
+  toast('Payment confirmed! Welcome aboard.');
+  var cid = _pay.courseId;
+  document.querySelectorAll('.course-card[data-id="' + cid + '"] .cc-enroll-btn').forEach(function(b){
+    b.innerHTML = '<i class="fas fa-play-circle"></i> Continue';
+    b.classList.add('enrolled');
+    b.onclick = function(){ window.location.href = '/learn/course/' + cid + '/dashboard'; };
+  });
+  setTimeout(function(){
+    closePayModal();
+    window.location.href = '/learn/course/' + cid + '/dashboard';
+  }, 2200);
+}
+
+async function notifyWaPayment() {
+  var btn  = document.getElementById('waNotifyBtn');
+  var succ = document.getElementById('waNotifySuccess');
+  if (!btn) return;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending…';
+  try {
+    var res  = await fetch('/api/mpesa/whatsapp-notify', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ courseId: _pay.courseId })
+    });
+    var data = await res.json();
+    if (data.success) {
+      btn.style.display = 'none';
+      if (succ) succ.style.display = 'flex';
+    } else if (data.alreadyEnrolled) {
+      closePayModal();
+      toast('You are already enrolled in this course!', 'info');
+      setTimeout(function(){ window.location.href = '/learn/course/' + _pay.courseId + '/dashboard'; }, 1200);
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-bell"></i> I\'ve Paid — Notify Our Team';
+      showPmErr(data.message || 'Could not send notification. Please try again.');
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-bell"></i> I\'ve Paid — Notify Our Team';
+    showPmErr('Network error. Please try again.');
+  }
+}
+
+/* Close payment modal on Escape */
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape') closePayModal();
+});
+
+/* Phone input — digits only */
+document.addEventListener('DOMContentLoaded', function(){
+  var ph = document.getElementById('pmPhone');
+  if(ph) ph.addEventListener('input', function(){
+    this.value = this.value.replace(/\D/g,'').slice(0,9);
+  });
 });
 </script>
 <style>
