@@ -1529,7 +1529,7 @@ body.dark .pm-wa-text strong{color:#fff}
                 <i class="fas fa-play-circle"></i> Continue Learning
               </button>
               {{else}}
-              <button class="cc-hover-btn" onclick="openPayModal({{this.id}},this.closest('.course-card').querySelector('.cc-title').textContent,{{this.price}})">
+              <button class="cc-hover-btn" data-cid="{{this.id}}" data-ctitle="{{this.title}}" data-cprice="{{this.price}}" onclick="openPayModal(Number(this.dataset.cid),this.dataset.ctitle,Number(this.dataset.cprice))">
                 <i class="fas fa-credit-card"></i> Enrol — Ksh {{this.price}}
               </button>
               {{/if}}
@@ -1567,7 +1567,7 @@ body.dark .pm-wa-text strong{color:#fff}
                 <i class="fas fa-play-circle"></i> Continue
               </button>
               {{else}}
-              <button class="cc-enroll-btn pay" onclick="openPayModal({{this.id}},'{{this.title}}',{{this.price}})">
+              <button class="cc-enroll-btn pay" data-cid="{{this.id}}" data-ctitle="{{this.title}}" data-cprice="{{this.price}}" onclick="openPayModal(Number(this.dataset.cid),this.dataset.ctitle,Number(this.dataset.cprice))">
                 <i class="fas fa-bolt"></i> Enrol Now
               </button>
               {{/if}}
