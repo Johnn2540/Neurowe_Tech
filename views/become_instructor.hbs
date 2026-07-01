@@ -58,8 +58,10 @@ button,input,textarea,select{font-family:'DM Sans',sans-serif}
 .navbar.scrolled{box-shadow:0 2px 20px rgba(8,12,24,.07)}
 .nav-inner{max-width:1280px;margin:0 auto;padding:0 24px;height:100%;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .nav-brand{font-family:var(--font-display);font-size:1.18rem;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:7px;flex-shrink:0;letter-spacing:-.04em}
-.brand-mark{width:30px;height:30px;background:var(--g-blue);border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-family:'Instrument Serif',Georgia,serif;font-weight:700;font-size:.85rem;color:#fff;flex-shrink:0}
-.nav-brand em{font-style:italic;color:var(--orange)}
+.nav-logo-circle{width:38px;height:38px;border-radius:50%;overflow:hidden;border:2px solid var(--orange);flex-shrink:0;background:#1c2b4a}
+.nav-logo-circle img{width:100%;height:100%;object-fit:cover}
+.nav-brand-text{font-size:1.15rem;font-weight:600;letter-spacing:-.3px;line-height:1}
+.nav-brand-text em{font-style:normal;color:var(--orange)}
 .nav-links{display:none;align-items:center;gap:2px;list-style:none;flex:1;justify-content:center}
 .nl-a{font-size:.82rem;font-weight:600;color:var(--slate);padding:7px 12px;border-radius:var(--r-sm);transition:var(--t);display:inline-flex;align-items:center;gap:5px}
 .nl-a:hover,.nl-a.active{color:var(--blue);background:var(--blue-pale)}
@@ -524,15 +526,16 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
 <div class="mob-overlay" id="mobOverlay" aria-hidden="true"></div>
 <div class="mob-panel" id="mobPanel" role="dialog" aria-modal="true" aria-label="Navigation">
   <div class="mob-head">
-    <a href="/" class="nav-brand" style="font-size:1.1rem;" aria-label="NeurowexTech">
-      <span class="brand-mark">N</span>Neurowex<em>Tech</em>
+    <a href="/" class="nav-brand" aria-label="NeurowexTech">
+      <div class="nav-logo-circle"><img src="/images/logo.png" alt="NeurowexTech" onerror="this.parentElement.style.background='#1c2b4a';this.remove()"></div>
+      <div class="nav-brand-text">Neurowex<em>Tech</em></div>
     </a>
     <button class="mob-close" id="mobClose" aria-label="Close menu"><i class="fas fa-times"></i></button>
   </div>
   <nav class="mob-body" aria-label="Mobile navigation">
     <a href="/"                  class="mob-link"><i class="fas fa-home"></i> Home</a>
     <a href="/learn"             class="mob-link"><i class="fas fa-graduation-cap"></i> Academy</a>
-    <a href="/#services"         class="mob-link"><i class="fas fa-th-large"></i> Services</a>
+    <a href="/contact"           class="mob-link"><i class="fas fa-th-large"></i> Services</a>
     <a href="/contact"           class="mob-link"><i class="fas fa-envelope"></i> Contact</a>
     <a href="/become-instructor" class="mob-link cur"><i class="fas fa-chalkboard-teacher"></i> Teach Here</a>
     <hr class="mob-hr">
@@ -555,12 +558,13 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
 <nav class="navbar" id="mainNav" role="navigation" aria-label="Main navigation">
   <div class="nav-inner">
     <a href="/" class="nav-brand" aria-label="NeurowexTech Home">
-      <span class="brand-mark">N</span>Neurowex<em>Tech</em>
+      <div class="nav-logo-circle"><img src="/images/logo.png" alt="NeurowexTech" onerror="this.parentElement.style.background='#1c2b4a';this.remove()"></div>
+      <div class="nav-brand-text">Neurowex<em>Tech</em></div>
     </a>
     <ul class="nav-links" role="list">
       <li><a href="/"                  class="nl-a">Home</a></li>
       <li><a href="/learn"             class="nl-a">Academy</a></li>
-      <li><a href="/#services"         class="nl-a">Services</a></li>
+      <li><a href="/contact"           class="nl-a">Services</a></li>
       <li><a href="/contact"           class="nl-a">Contact</a></li>
       <li><a href="/become-instructor" class="nl-a active">Teach Here</a></li>
     </ul>

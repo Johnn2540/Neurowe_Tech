@@ -109,9 +109,11 @@ button,input,textarea,select{font-family:'DM Sans',sans-serif}
 .navbar{position:fixed;top:0;left:0;right:0;z-index:1040;height:var(--nav-h);background:rgba(255,255,255,.96);backdrop-filter:blur(24px) saturate(2);border-bottom:1px solid rgba(8,12,24,.06);transition:var(--t)}
 .navbar.scrolled{box-shadow:0 2px 24px rgba(8,12,24,.07)}
 .nav-inner{max-width:1320px;margin:0 auto;padding:0 24px;height:100%;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.nav-brand{font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:7px;flex-shrink:0;letter-spacing:-.04em}
-.brand-mark{width:30px;height:30px;background:var(--g-blue);border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-family:'Instrument Serif',Georgia,serif;font-weight:700;font-size:.85rem;color:#fff;flex-shrink:0}
-.nav-brand em{font-style:italic;color:var(--orange)}
+.nav-brand{display:flex;align-items:center;gap:10px;flex-shrink:0;text-decoration:none}
+.nav-logo-circle{width:38px;height:38px;border-radius:50%;overflow:hidden;border:2px solid var(--orange);flex-shrink:0;background:var(--primary)}
+.nav-logo-circle img{width:100%;height:100%;object-fit:cover}
+.nav-brand-text{font-family:var(--font-display);font-size:1.15rem;font-weight:600;color:var(--ink);letter-spacing:-.3px;line-height:1}
+.nav-brand-text em{font-style:normal;color:var(--orange)}
 .nav-links{display:none;align-items:center;gap:2px;list-style:none;flex:1;justify-content:center}
 .nl-a{font-size:.82rem;font-weight:600;color:var(--slate);padding:7px 12px;border-radius:var(--r-sm);transition:var(--t);display:inline-flex;align-items:center;gap:5px}
 .nl-a:hover,.nl-a.active{color:var(--blue);background:var(--blue-pale)}
@@ -528,39 +530,41 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
 <div class="mob-overlay" id="mobOverlay" aria-hidden="true"></div>
 <div class="mob-panel" id="mobPanel" role="dialog" aria-modal="true" aria-label="Navigation menu">
   <div class="mob-head">
-    <a href="/" class="nav-brand" style="font-size:1.1rem;" aria-label="NeurowexTech">
-      <span class="brand-mark">N</span>Neurowex<em>Tech</em>
+    <a href="/" class="nav-brand" aria-label="NeurowexTech Home">
+      <div class="nav-logo-circle"><img src="/images/logo.png" alt="NeurowexTech" onerror="this.parentElement.style.background='#1c2b4a';this.remove()"></div>
+      <div class="nav-brand-text">Neurowex<em>Tech</em></div>
     </a>
     <button class="mob-close" id="mobClose" aria-label="Close menu"><i class="fas fa-times"></i></button>
   </div>
   <nav class="mob-body" aria-label="Mobile navigation">
-    <a href="/"          class="mob-link"><i class="fas fa-home"></i> Home</a>
+    <a href="/" class="mob-link"><i class="fas fa-home"></i> Home</a>
     <div class="mob-sub-toggle" id="mobSvcToggle" role="button" tabindex="0" aria-expanded="false">
       <div class="left"><i class="fas fa-th-large"></i> Services</div>
-      <i class="fas fa-chevron-down ci"></i>
+      <i class="fas fa-chevron-down chev"></i>
     </div>
     <div class="mob-sub" id="mobSvcSub">
-      <a href="/contact?service=Web+Development"><i class="fas fa-laptop-code"></i> Web Development</a>
-      <a href="/contact?service=Mobile+Apps"><i class="fas fa-mobile-alt"></i> Mobile Apps</a>
-      <a href="/contact?service=E-commerce"><i class="fas fa-shopping-cart"></i> E-commerce</a>
-      <a href="/contact?service=MVP+Development"><i class="fas fa-rocket"></i> MVP Development</a>
-      <a href="/contact?service=AI+Integration"><i class="fas fa-robot"></i> AI Integration</a>
-      <a href="/contact?service=Graphic+Design"><i class="fas fa-palette"></i> Graphic Design</a>
+      <a href="/web_dev"><i class="fas fa-laptop-code"></i> Web & App Development</a>
+      <a href="/graphic_design"><i class="fas fa-palette"></i> Graphic Design</a>
+      <a href="/learn"><i class="fas fa-graduation-cap"></i> Digital Skills Training</a>
+      <a href="/seo"><i class="fas fa-search"></i> SEO & Marketing</a>
+      <a href="/ai-solutions"><i class="fas fa-robot"></i> AI Solutions</a>
+      <a href="/cybersecurity"><i class="fas fa-shield-alt"></i> Cybersecurity</a>
+      <a href="/uiux"><i class="fas fa-pencil-ruler"></i> UI/UX Design</a>
+      <a href="/ecommerce"><i class="fas fa-shopping-cart"></i> E-Commerce</a>
+      <a href="/analytics"><i class="fas fa-chart-bar"></i> Data Analytics</a>
+      <a href="/social-media"><i class="fas fa-share-alt"></i> Social Media</a>
     </div>
-    <a href="/#process"   class="mob-link"><i class="fas fa-sitemap"></i> Process</a>
-    <a href="/#portfolio" class="mob-link"><i class="fas fa-briefcase"></i> Portfolio</a>
-    <a href="/#team"      class="mob-link"><i class="fas fa-users"></i> Team</a>
-    <a href="/#pricing"   class="mob-link"><i class="fas fa-tags"></i> Pricing</a>
-    <a href="/#blog"      class="mob-link"><i class="fas fa-rss"></i> Blog</a>
-    <a href="/#faq"       class="mob-link"><i class="fas fa-question-circle"></i> FAQ</a>
-    <a href="/contact"    class="mob-link cur"><i class="fas fa-envelope"></i> Contact</a>
+    <a href="/learn" class="mob-link" style="color:var(--teal)"><i class="fas fa-graduation-cap" style="color:var(--teal)"></i> Learn</a>
+    <a href="/portfolio" class="mob-link"><i class="fas fa-briefcase"></i> Portfolio</a>
+    <a href="/blog" class="mob-link"><i class="fas fa-rss"></i> Blog</a>
+    <a href="/about" class="mob-link"><i class="fas fa-info-circle"></i> About</a>
+    <a href="/contact" class="mob-link cur"><i class="fas fa-envelope"></i> Contact</a>
     <hr class="mob-hr">
-    <a href="/learn" class="mob-link" style="color:var(--teal)"><i class="fas fa-graduation-cap" style="color:var(--teal)"></i> Academy</a>
   </nav>
   <div class="mob-footer">
     <a href="/login"   class="btn btn-outline"  style="justify-content:center;">Sign In</a>
-    <a href="/learn"   class="btn btn-orange"   style="justify-content:center;"><i class="fas fa-graduation-cap"></i> Academy</a>
-    <a href="/contact" class="btn btn-primary"  style="justify-content:center;">Start Project <i class="fas fa-arrow-right"></i></a>
+    <a href="/learn"   class="btn btn-orange"   style="justify-content:center;"><i class="fas fa-graduation-cap"></i> Learn</a>
+    <a href="/contact" class="btn btn-primary"  style="justify-content:center;">Get Started <i class="fas fa-arrow-right"></i></a>
   </div>
 </div>
 
@@ -568,50 +572,48 @@ footer{background:#050810;color:rgba(255,255,255,.48);font-size:.82rem;border-to
 <nav class="navbar" id="mainNav" role="navigation" aria-label="Main navigation">
   <div class="nav-inner">
     <a href="/" class="nav-brand" aria-label="NeurowexTech Home">
-      <span class="brand-mark">N</span>Neurowex<em>Tech</em>
+      <div class="nav-logo-circle">
+        <img src="/images/logo.png" alt="NeurowexTech" onerror="this.parentElement.style.background='#1c2b4a';this.remove()">
+      </div>
+      <div class="nav-brand-text">Neurowex<em>Tech</em></div>
     </a>
     <ul class="nav-links" role="list">
       <li class="nl-item"><a href="/" class="nl-a">Home</a></li>
       <li class="nl-item">
-        <a href="/#services" class="nl-a">Services <i class="fas fa-chevron-down chev"></i></a>
+        <a href="/#services" class="nl-a">Services <i class="fas fa-chevron-down arrow"></i></a>
         <div class="mega-drop" role="menu">
           <div class="mega-grid">
             <div>
               <span class="mega-col-label">Development</span>
-              <a class="mega-link" href="/contact?service=Web+Development"><i class="fas fa-laptop-code"></i> Web Dev</a>
-              <a class="mega-link" href="/contact?service=Mobile+Apps"><i class="fas fa-mobile-alt"></i> Mobile Apps</a>
-              <a class="mega-link" href="/contact?service=E-commerce"><i class="fas fa-shopping-cart"></i> E-commerce</a>
-              <a class="mega-link" href="/contact?service=MVP+Development"><i class="fas fa-rocket"></i> MVP Dev</a>
+              <a class="mega-link" href="/web_dev"><i class="fas fa-laptop-code"></i> Web & App Dev</a>
+              <a class="mega-link" href="/ecommerce"><i class="fas fa-shopping-cart"></i> E-Commerce</a>
+              <a class="mega-link" href="/uiux"><i class="fas fa-pencil-ruler"></i> UI/UX Design</a>
             </div>
             <div>
-              <span class="mega-col-label">Cloud & Security</span>
-              <a class="mega-link" href="/contact?service=Cloud+Solutions"><i class="fas fa-cloud-upload-alt"></i> Cloud</a>
-              <a class="mega-link" href="/contact?service=Cyber+Security"><i class="fas fa-shield-alt"></i> Cyber Security</a>
-              <a class="mega-link" href="/contact?service=AI+Integration"><i class="fas fa-robot"></i> AI Integration</a>
-              <a class="mega-link" href="/#graphic"><i class="fas fa-palette"></i> Graphic Design</a>
+              <span class="mega-col-label">Marketing & Growth</span>
+              <a class="mega-link" href="/seo"><i class="fas fa-search"></i> SEO & Marketing</a>
+              <a class="mega-link" href="/social-media"><i class="fas fa-share-alt"></i> Social Media</a>
+              <a class="mega-link" href="/analytics"><i class="fas fa-chart-bar"></i> Data Analytics</a>
             </div>
             <div>
-              <span class="mega-col-label">Data & Support</span>
-              <a class="mega-link" href="/contact?service=Analytics"><i class="fas fa-chart-line"></i> Analytics</a>
-              <a class="mega-link" href="/contact?service=IT+Consulting"><i class="fas fa-headset"></i> IT Consulting</a>
-              <a class="mega-link" href="/contact?service=Database"><i class="fas fa-database"></i> Database</a>
-              <a class="mega-link" href="/contact?service=SEO"><i class="fas fa-search"></i> SEO</a>
+              <span class="mega-col-label">Specialist</span>
+              <a class="mega-link" href="/graphic_design"><i class="fas fa-palette"></i> Graphic Design</a>
+              <a class="mega-link" href="/ai-solutions"><i class="fas fa-robot"></i> AI Solutions</a>
+              <a class="mega-link" href="/cybersecurity"><i class="fas fa-shield-alt"></i> Cybersecurity</a>
             </div>
           </div>
         </div>
       </li>
-      <li class="nl-item"><a href="/#process"   class="nl-a">Process</a></li>
-      <li class="nl-item"><a href="/#portfolio" class="nl-a">Portfolio</a></li>
-      <li class="nl-item"><a href="/#team"      class="nl-a">Team</a></li>
-      <li class="nl-item"><a href="/#pricing"   class="nl-a">Pricing</a></li>
-      <li class="nl-item"><a href="/#blog"      class="nl-a">Blog</a></li>
-      <li class="nl-item"><a href="/#faq"       class="nl-a">FAQ</a></li>
-      <li class="nl-item"><a href="/contact"    class="nl-a active">Contact</a></li>
+      <li class="nl-item"><a href="/learn" class="nl-a">Learn</a></li>
+      <li class="nl-item"><a href="/portfolio" class="nl-a">Portfolio</a></li>
+      <li class="nl-item"><a href="/blog" class="nl-a">Blog</a></li>
+      <li class="nl-item"><a href="/about" class="nl-a">About</a></li>
+      <li class="nl-item"><a href="/contact" class="nl-a active">Contact</a></li>
     </ul>
     <div class="nav-cta">
       <a href="/login"   class="btn-nav-signin">Sign In</a>
-      <a href="/learn"   class="btn-nav-orange"><i class="fas fa-graduation-cap"></i> Academy</a>
-      <a href="/contact" class="btn-nav-start">Start Project <i class="fas fa-arrow-right" style="font-size:.7rem"></i></a>
+      <a href="/learn"   class="btn-nav-orange"><i class="fas fa-graduation-cap"></i> Learn</a>
+      <a href="/contact" class="btn-nav-start">Get Started <i class="fas fa-arrow-right" style="font-size:.7rem"></i></a>
     </div>
     <div class="mob-quick" id="mobQuick">
       <button class="mob-quick-btn" id="mobThemeBtn" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>

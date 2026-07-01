@@ -150,7 +150,7 @@ body.dark .mob-link{color:rgba(255,255,255,.82)}
 body.dark .mob-close{background:rgba(255,255,255,.07);color:rgba(255,255,255,.7)}
 body.dark .mob-hr{border-color:rgba(255,255,255,.07)}
 body.dark .mob-footer{border-color:rgba(255,255,255,.07)}
-body.dark .btn-nav-signin{color:rgba(255,255,255,.52);border-color:rgba(255,255,255,.1);background:transparent}
+body.dark .btn-nav-signin{color:rgba(255,255,255,.6);border-color:rgba(255,255,255,.12);background:transparent}
 body.dark .nav-search-wrap{background:var(--ink-2);border-color:rgba(255,255,255,.1)}
 body.dark .nav-search-wrap input{color:#fff}
 body.dark .nav-search-wrap input::placeholder{color:rgba(255,255,255,.28)}
@@ -221,7 +221,11 @@ body.dark .no-results{color:rgba(255,255,255,.38)}
 .navbar.scrolled{background:rgba(255,255,255,.99);box-shadow:0 2px 24px rgba(8,12,24,.07)}
 .nav-inner{max-width:1320px;margin:0 auto;padding:0 24px;height:100%;display:flex;align-items:center;gap:8px}
 .nav-brand{font-family:var(--font-display);font-size:1.18rem;font-weight:700;color:var(--ink);flex-shrink:0;letter-spacing:-.04em;display:flex;align-items:center;gap:7px}
-.brand-mark{width:30px;height:30px;background:var(--g-blue);border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:#fff;flex-shrink:0}
+.nav-logo-circle{width:40px;height:40px;border-radius:50%;overflow:hidden;border:2.5px solid var(--accent);flex-shrink:0;box-shadow:0 0 0 3px rgba(224,92,42,.12),0 0 0 5px rgba(37,99,235,.08);transition:var(--t);background:var(--primary)}
+.nav-logo-circle img{width:100%;height:100%;object-fit:cover}
+.nav-brand-text{font-family:var(--font-display);font-size:1.18rem;font-weight:600;color:var(--primary);letter-spacing:-.3px;line-height:1}
+.nav-brand-text em{font-style:normal;color:var(--accent)}
+.nav-brand:hover .nav-logo-circle{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.15),0 0 0 6px rgba(224,92,42,.06)}
 .nav-brand em{font-style:italic;color:var(--orange)}
 .nav-links{display:none;align-items:center;gap:2px;list-style:none;flex:1;justify-content:center}
 .nl-item{position:relative}
@@ -229,6 +233,8 @@ body.dark .no-results{color:rgba(255,255,255,.38)}
 .nl-a:hover,.nl-a.active{color:var(--blue);background:var(--blue-pale)}
 .nl-chev{font-size:.52rem;transition:transform .22s}
 .nl-item:hover .nl-chev{transform:rotate(180deg)}
+.nl-a .arrow{font-size:.55rem;transition:transform .25s}
+.nl-item:hover .nl-a .arrow{transform:rotate(180deg)}
 .mega-drop{position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(8px);min-width:520px;background:#fff;border-radius:var(--r-xl);border:1px solid var(--mist);box-shadow:0 24px 64px rgba(8,12,24,.14);padding:20px;opacity:0;visibility:hidden;pointer-events:none;transition:all .2s var(--ease)}
 .nl-item:hover .mega-drop{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0)}
 .mega-drop::before{content:'';position:absolute;top:-5px;left:50%;width:10px;height:10px;background:#fff;border-left:1px solid var(--mist);border-top:1px solid var(--mist);transform:translateX(-50%) rotate(45deg)}
@@ -260,10 +266,13 @@ body.dark .no-results{color:rgba(255,255,255,.38)}
 .user-menu a i{width:14px;color:var(--blue);font-size:.74rem}
 .user-menu a:hover{background:var(--blue-pale);color:var(--blue)}
 .user-menu-divider{border:none;border-top:1px solid var(--mist);margin:5px 0}
-.btn-nav-signin{font-size:.79rem;font-weight:600;color:var(--slate);padding:7px 14px;border:1.5px solid var(--mist);border-radius:var(--r-pill);background:#fff;cursor:pointer;transition:var(--t)}
+.btn-nav-signin{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:700;color:var(--slate);padding:7px 14px;border:1.5px solid var(--mist);border-radius:var(--r-md);transition:var(--t);background:#fff;cursor:pointer;font-family:var(--font-body)}
 .btn-nav-signin:hover{color:var(--blue);border-color:var(--blue)}
-.btn-nav-signup{font-size:.79rem;font-weight:700;color:#fff;padding:8px 18px;border:none;border-radius:var(--r-pill);background:var(--g-blue);cursor:pointer;box-shadow:var(--sh-blue);display:inline-flex;align-items:center;gap:5px;transition:var(--t)}
-.btn-nav-signup:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(26,79,214,.38)}
+.btn-nav-orange{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:700;color:var(--accent);padding:7px 14px;border:1.5px solid rgba(224,92,42,.3);border-radius:var(--r-md);transition:var(--t);background:var(--accent-pale);cursor:pointer;font-family:var(--font-body)}
+.btn-nav-orange:hover{background:var(--accent);color:#fff;border-color:transparent}
+.btn-nav-start{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:700;color:#fff;padding:8px 18px;border:none;border-radius:var(--r-md);transition:var(--t);background:linear-gradient(135deg,var(--primary),var(--blue));cursor:pointer;font-family:var(--font-body)}
+.btn-nav-start:hover{opacity:.9;transform:translateY(-1px);box-shadow:var(--sh-blue)}
+.mob-quick-wa{width:38px;height:38px;border-radius:var(--r-md);background:rgba(37,211,102,.1);color:#25D366;display:flex;align-items:center;justify-content:center;font-size:.88rem;transition:var(--t)}
 /* hamburger */
 .ham-btn{display:flex;flex-direction:column;gap:5px;align-items:center;justify-content:center;width:44px;height:44px;background:none;border:none;cursor:pointer;border-radius:var(--r-sm);transition:var(--t);flex-shrink:0}
 .ham-btn:hover{background:var(--blue-pale)}
@@ -287,6 +296,18 @@ body.dark .no-results{color:rgba(255,255,255,.38)}
 .mob-link:hover,.mob-link.cur{background:var(--blue-pale);color:var(--blue);padding-left:28px}
 .mob-hr{border:none;border-top:1px solid var(--mist);margin:6px 18px}
 .mob-footer{padding:14px 18px 30px;border-top:1px solid var(--mist);display:flex;flex-direction:column;gap:9px}
+.mob-sub-toggle{display:flex;align-items:center;justify-content:space-between;padding:13px 22px;font-size:.91rem;font-weight:600;color:var(--ink);cursor:pointer;transition:var(--t);min-height:48px}
+.mob-sub-toggle .left{display:flex;align-items:center;gap:11px}
+.mob-sub-toggle .left i{width:19px;color:var(--blue);font-size:.84rem}
+.mob-sub-toggle:hover{background:var(--blue-pale);color:var(--blue)}
+.mob-sub-toggle .chev{font-size:.64rem;color:var(--slate);transition:transform .28s;flex-shrink:0}
+.mob-sub-toggle.open .chev{transform:rotate(180deg)}
+.mob-sub{background:rgba(37,99,235,.03);border-top:1px solid rgba(37,99,235,.07);border-bottom:1px solid rgba(37,99,235,.07);max-height:0;overflow:hidden;transition:max-height .35s ease}
+.mob-sub.open{max-height:700px}
+.mob-sub a{display:flex;align-items:center;gap:9px;padding:11px 22px 11px 50px;font-size:.83rem;color:var(--slate);transition:var(--t);min-height:44px}
+.mob-sub a i{width:16px;color:var(--blue);font-size:.76rem;flex-shrink:0}
+.mob-sub a:hover{color:var(--blue);background:rgba(37,99,235,.05);padding-left:56px}
+body.dark .mob-sub a{color:rgba(255,255,255,.55)}
 
 /* ═══════════════════════════════════════════════════════════
    BUTTONS
@@ -1048,107 +1069,94 @@ body.dark .pm-wa-text strong{color:#fff}
 <div class="mob-overlay" id="mobOverlay" aria-hidden="true"></div>
 <div class="mob-panel" id="mobPanel" role="dialog" aria-modal="true" aria-label="Navigation menu">
   <div class="mob-head">
-    <a href="/" class="nav-brand" style="font-size:1.1rem" aria-label="NeurowexTech">
-      <span class="brand-mark">N</span>Neurowex<em>Tech</em>
+    <a href="/" class="nav-brand" aria-label="NeurowexTech Home">
+      <div class="nav-logo-circle"><img src="/images/logo.png" alt="NeuroWex Tech Logo" onerror="this.parentElement.style.background='var(--primary)';this.parentElement.innerHTML='<span style=\'color:#fff;font-weight:700;font-size:.9rem;font-family:var(--font-body)\'>N</span>';this.remove()"></div>
+      <div class="nav-brand-text">Neurowex<em>Tech</em></div>
     </a>
     <button class="mob-close" id="mobClose" aria-label="Close menu"><i class="fas fa-times"></i></button>
   </div>
   <nav class="mob-body" aria-label="Mobile navigation">
-    <a href="/"            class="mob-link"><i class="fas fa-home"></i> Home</a>
-    <a href="/learn"       class="mob-link cur"><i class="fas fa-graduation-cap"></i> Academy</a>
-    <a href="/#services"   class="mob-link"><i class="fas fa-th-large"></i> Services</a>
-    <a href="/#portfolio"  class="mob-link"><i class="fas fa-briefcase"></i> Portfolio</a>
-    <a href="/#team"       class="mob-link"><i class="fas fa-users"></i> Team</a>
-    <a href="/#pricing"    class="mob-link"><i class="fas fa-tags"></i> Pricing</a>
-    <a href="/kids-coding" class="mob-link" style="color:var(--kids-purple)"><i class="fas fa-child" style="color:var(--kids-purple)"></i> Kids Academy</a>
-    <a href="/contact"     class="mob-link"><i class="fas fa-envelope"></i> Contact</a>
+    <a href="/" class="mob-link"><i class="fas fa-home"></i> Home</a>
+    <div class="mob-sub-toggle" id="mobSvcToggle" role="button" tabindex="0" aria-expanded="false">
+      <div class="left"><i class="fas fa-th-large"></i> Services</div>
+      <i class="fas fa-chevron-down chev"></i>
+    </div>
+    <div class="mob-sub" id="mobSvcSub">
+      <a href="/web_dev"><i class="fas fa-laptop-code"></i> Web &amp; App Development</a>
+      <a href="/graphic_design"><i class="fas fa-palette"></i> Graphic Design</a>
+      <a href="/learn"><i class="fas fa-graduation-cap"></i> Digital Skills Training</a>
+      <a href="/seo"><i class="fas fa-search"></i> SEO &amp; Marketing</a>
+      <a href="/ai-solutions"><i class="fas fa-robot"></i> AI Solutions</a>
+      <a href="/cybersecurity"><i class="fas fa-shield-alt"></i> Cybersecurity</a>
+      <a href="/uiux"><i class="fas fa-pencil-ruler"></i> UI/UX Design</a>
+      <a href="/ecommerce"><i class="fas fa-shopping-cart"></i> E-Commerce</a>
+      <a href="/analytics"><i class="fas fa-chart-bar"></i> Data Analytics</a>
+      <a href="/social-media"><i class="fas fa-share-alt"></i> Social Media</a>
+    </div>
+    <a href="/learn" class="mob-link" style="color:var(--teal)"><i class="fas fa-graduation-cap" style="color:var(--teal)"></i> Learn</a>
+    <a href="/portfolio" class="mob-link"><i class="fas fa-briefcase"></i> Portfolio</a>
+    <a href="/blog" class="mob-link"><i class="fas fa-rss"></i> Blog</a>
+    <a href="/about" class="mob-link"><i class="fas fa-info-circle"></i> About</a>
+    <a href="/contact" class="mob-link"><i class="fas fa-envelope"></i> Contact</a>
     <hr class="mob-hr">
-    {{#if isAuthenticated}}
-    <a href="/my-learning"    class="mob-link"><i class="fas fa-book-open"></i> My Learning</a>
-    <a href="/user_dashboard" class="mob-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-    <a href="/logout"         class="mob-link" style="color:var(--rose)"><i class="fas fa-sign-out-alt" style="color:var(--rose)"></i> Sign Out</a>
-    {{else}}
-    <a href="/login"   class="mob-link"><i class="fas fa-sign-in-alt"></i> Log In</a>
-    <a href="/sign_up" class="mob-link"><i class="fas fa-user-plus"></i> Sign Up</a>
-    {{/if}}
   </nav>
   <div class="mob-footer">
-    {{#if isAuthenticated}}
-    <a href="/my-learning" class="btn btn-primary" style="justify-content:center">My Learning <i class="fas fa-arrow-right"></i></a>
-    {{else}}
-    <a href="/login"   class="btn btn-outline" style="justify-content:center">Log In</a>
-    <a href="/sign_up" class="btn btn-primary" style="justify-content:center">Sign Up Free <i class="fas fa-arrow-right"></i></a>
-    {{/if}}
+    <a href="/login" class="btn-outline" style="text-align:center;justify-content:center;">Sign In</a>
+    <a href="/learn" class="btn-orange" style="text-align:center;justify-content:center;"><i class="fas fa-graduation-cap"></i> Learn</a>
+    <a href="/contact" class="btn-primary" style="text-align:center;justify-content:center;">Get Started <i class="fas fa-arrow-right"></i></a>
   </div>
 </div>
 
-<!-- ══ NAVBAR ══ -->
+<!-- NAVBAR -->
 <nav class="navbar" id="mainNav" role="navigation" aria-label="Main navigation">
   <div class="nav-inner">
-    <a href="/" class="nav-brand" aria-label="NeurowexTech">
-      <span class="brand-mark">N</span>Neurowex<em>Tech</em>
+    <a href="/" class="nav-brand" aria-label="NeurowexTech Home">
+      <div class="nav-logo-circle">
+        <img src="/images/logo.png" alt="NeuroWex Tech Logo" onerror="this.parentElement.style.background='var(--primary)';this.parentElement.innerHTML='<span style=\'color:#fff;font-weight:700;font-size:.85rem;font-family:var(--font-body)\'>N</span>';this.remove()">
+      </div>
+      <div class="nav-brand-text">Neurowex<em>Tech</em></div>
     </a>
     <ul class="nav-links" role="list">
-      <li class="nl-item"><a href="/"            class="nl-a">Home</a></li>
-      <li class="nl-item"><a href="/learn"        class="nl-a active">Academy</a></li>
+      <li class="nl-item"><a href="/" class="nl-a">Home</a></li>
       <li class="nl-item">
-        <a href="/#services" class="nl-a">Services <i class="fas fa-chevron-down nl-chev"></i></a>
+        <a href="/#services" class="nl-a">Services <i class="fas fa-chevron-down arrow"></i></a>
         <div class="mega-drop" role="menu">
           <div class="mega-grid">
             <div>
               <span class="mega-col-label">Development</span>
-              <a class="mega-link" href="/contact?service=Web+Development"><i class="fas fa-laptop-code"></i> Web Dev</a>
-              <a class="mega-link" href="/contact?service=Mobile+Apps"><i class="fas fa-mobile-alt"></i> Mobile Apps</a>
-              <a class="mega-link" href="/contact?service=E-commerce"><i class="fas fa-shopping-cart"></i> E-commerce</a>
-              <a class="mega-link" href="/contact?service=MVP+Development"><i class="fas fa-rocket"></i> MVP Dev</a>
+              <a class="mega-link" href="/web_dev"><i class="fas fa-laptop-code"></i> Web &amp; App Dev</a>
+              <a class="mega-link" href="/ecommerce"><i class="fas fa-shopping-cart"></i> E-Commerce</a>
+              <a class="mega-link" href="/uiux"><i class="fas fa-pencil-ruler"></i> UI/UX Design</a>
             </div>
             <div>
-              <span class="mega-col-label">Cloud & Security</span>
-              <a class="mega-link" href="/contact?service=Cloud"><i class="fas fa-cloud-upload-alt"></i> Cloud</a>
-              <a class="mega-link" href="/contact?service=Cyber+Security"><i class="fas fa-shield-alt"></i> Cyber Security</a>
-              <a class="mega-link" href="/contact?service=AI+Integration"><i class="fas fa-robot"></i> AI Integration</a>
-              <a class="mega-link" href="/#graphic"><i class="fas fa-palette"></i> Graphic Design</a>
+              <span class="mega-col-label">Marketing &amp; Growth</span>
+              <a class="mega-link" href="/seo"><i class="fas fa-search"></i> SEO &amp; Marketing</a>
+              <a class="mega-link" href="/social-media"><i class="fas fa-share-alt"></i> Social Media</a>
+              <a class="mega-link" href="/analytics"><i class="fas fa-chart-bar"></i> Data Analytics</a>
             </div>
             <div>
-              <span class="mega-col-label">Data & Support</span>
-              <a class="mega-link" href="/contact?service=Analytics"><i class="fas fa-chart-line"></i> Analytics</a>
-              <a class="mega-link" href="/contact?service=IT+Consulting"><i class="fas fa-headset"></i> IT Consulting</a>
-              <a class="mega-link" href="/contact?service=Database"><i class="fas fa-database"></i> Database</a>
-              <a class="mega-link" href="/contact?service=SEO"><i class="fas fa-search"></i> SEO</a>
+              <span class="mega-col-label">Specialist</span>
+              <a class="mega-link" href="/graphic_design"><i class="fas fa-palette"></i> Graphic Design</a>
+              <a class="mega-link" href="/ai-solutions"><i class="fas fa-robot"></i> AI Solutions</a>
+              <a class="mega-link" href="/cybersecurity"><i class="fas fa-shield-alt"></i> Cybersecurity</a>
             </div>
           </div>
         </div>
       </li>
-      <li class="nl-item"><a href="/#portfolio"  class="nl-a">Portfolio</a></li>
-      <li class="nl-item"><a href="/#pricing"    class="nl-a">Pricing</a></li>
-      <li class="nl-item"><a href="/kids-coding" class="nl-a" style="color:var(--kids-purple)"><i class="fas fa-child" style="font-size:.72rem"></i> Kids</a></li>
-      <li class="nl-item"><a href="/contact"     class="nl-a">Contact</a></li>
+      <li class="nl-item"><a href="/learn" class="nl-a">Learn</a></li>
+      <li class="nl-item"><a href="/portfolio" class="nl-a">Portfolio</a></li>
+      <li class="nl-item"><a href="/blog" class="nl-a">Blog</a></li>
+      <li class="nl-item"><a href="/about" class="nl-a">About</a></li>
+      <li class="nl-item"><a href="/contact" class="nl-a">Contact</a></li>
     </ul>
     <div class="nav-cta">
-      <div class="nav-search-wrap">
-        <i class="fas fa-search"></i>
-        <input type="text" id="navSearchInput" placeholder="Search courses…" aria-label="Search courses"/>
-      </div>
-      <button id="theme-toggle-nav" style="width:36px;height:36px;border-radius:50%;background:var(--blue-pale);border:1.5px solid var(--mist);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--t);color:var(--blue)" aria-label="Toggle dark mode">
-        <i class="fas fa-moon" style="font-size:.82rem"></i>
-      </button>
-      {{#if isAuthenticated}}
-      <div class="user-drop">
-        <button class="user-btn"><i class="fas fa-user"></i> {{userName}} <i class="fas fa-chevron-down udc"></i></button>
-        <div class="user-menu" role="menu">
-          <a href="/my-learning"    role="menuitem"><i class="fas fa-book-open"></i> My Learning</a>
-          <a href="/user_dashboard" role="menuitem"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-          <hr class="user-menu-divider">
-          <a href="/logout" role="menuitem" style="color:var(--rose)"><i class="fas fa-sign-out-alt" style="color:var(--rose)"></i> Sign Out</a>
-        </div>
-      </div>
-      {{else}}
-      <a href="/login"   class="btn-nav-signin">Log in</a>
-      <a href="/sign_up" class="btn-nav-signup">Sign up free <i class="fas fa-arrow-right" style="font-size:.7rem"></i></a>
-      {{/if}}
+      <a href="/login" class="btn-nav-signin">Sign In</a>
+      <a href="/learn" class="btn-nav-orange"><i class="fas fa-graduation-cap"></i> Learn</a>
+      <a href="/contact" class="btn-nav-start">Get Started <i class="fas fa-arrow-right" style="font-size:.7rem"></i></a>
     </div>
     <div class="mob-quick" id="mobQuick">
-      <button class="mob-quick-btn" id="mobThemeBtn" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+      <button class="mob-quick-btn" id="mobThemeBtn" aria-label="Toggle dark mode"><i class="fas fa-moon"></i></button>
+      <a href="https://wa.me/254769329340?text=Hello%20NeurowexTech!" target="_blank" rel="noopener noreferrer" class="mob-quick-wa" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
       <button class="ham-btn" id="hamBtn" aria-label="Open menu" aria-expanded="false">
         <span class="ham-line"></span><span class="ham-line"></span><span class="ham-line"></span>
       </button>
@@ -1980,6 +1988,15 @@ if(ham) ham.addEventListener('click', openMob);
 if(mc)  mc.addEventListener('click', closeMob);
 if(ov)  ov.addEventListener('click', closeMob);
 document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeMob(); closeEnrollModal(); } });
+var mobSvcToggle = document.getElementById('mobSvcToggle');
+var mobSvcSub    = document.getElementById('mobSvcSub');
+if(mobSvcToggle && mobSvcSub) {
+  mobSvcToggle.addEventListener('click', function(){
+    var o = mobSvcSub.classList.toggle('open');
+    mobSvcToggle.classList.toggle('open', o);
+    mobSvcToggle.setAttribute('aria-expanded', o);
+  });
+}
 
 /* ── COOKIE ── */
 var cb = document.getElementById('cookie-bar');
