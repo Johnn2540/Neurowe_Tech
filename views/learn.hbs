@@ -608,7 +608,7 @@ body.dark .no-results{color:rgba(255,255,255,.38)}
   background:#fff;color:var(--blue);
   padding:9px 20px;border-radius:var(--r-pill);
   font-size:.8rem;font-weight:700;transition:var(--t);
-  border:none;cursor:pointer;
+  border:none;cursor:pointer;text-decoration:none;
 }
 .cc-hover-btn:hover{background:var(--g-blue);color:#fff}
 .cc-hover-preview{font-size:.73rem;color:rgba(255,255,255,.6)}
@@ -665,6 +665,7 @@ body.dark .no-results{color:rgba(255,255,255,.38)}
   font-size:.74rem;font-weight:700;
   border:none;cursor:pointer;transition:var(--t);
   box-shadow:0 4px 14px rgba(26,79,214,.26);
+  text-decoration:none;
 }
 .cc-enroll-btn:hover{transform:translateY(-2px);box-shadow:var(--sh-blue)}
 .cc-enroll-btn.locked{background:var(--ghost);color:var(--slate);border:1.5px solid var(--mist);box-shadow:none}
@@ -1400,9 +1401,9 @@ body.dark .pm-wa-text strong{color:#fff}
           </button>
           {{/if}}
         {{else}}
-        <button class="btn btn-primary" data-cid="{{featuredCourse.id}}" data-ctitle="{{featuredCourse.title}}" onclick="showLoginPrompt(this.dataset.cid, this.dataset.ctitle)">
-          <i class="fas fa-graduation-cap"></i> Enrol Free
-        </button>
+        <a class="btn btn-primary" href="/login?next=/learn" onclick="try{sessionStorage.setItem('pendingEnroll',JSON.stringify({id:{{featuredCourse.id}},type:'free'}))}catch(e){}">
+          <i class="fas fa-graduation-cap"></i> Log In to Enrol Free
+        </a>
         {{/if}}
       </div>
     </div>
@@ -1451,9 +1452,9 @@ body.dark .pm-wa-text strong{color:#fff}
               </button>
               {{/if}}
             {{else}}
-            <button class="cc-hover-btn" data-cid="{{this.id}}" data-ctitle="{{this.title}}" onclick="showLoginPrompt(this.dataset.cid, this.dataset.ctitle)">
+            <a class="cc-hover-btn" href="/login?next=/learn" onclick="try{sessionStorage.setItem('pendingEnroll',JSON.stringify({id:{{this.id}},type:'free'}))}catch(e){}">
               <i class="fas fa-lock"></i> Log In to Enrol
-            </button>
+            </a>
             {{/if}}
             <span class="cc-hover-preview"><i class="fas fa-play-circle"></i> Preview available</span>
           </div>
@@ -1490,9 +1491,9 @@ body.dark .pm-wa-text strong{color:#fff}
               </button>
               {{/if}}
             {{else}}
-            <button class="cc-enroll-btn locked" data-cid="{{this.id}}" data-ctitle="{{this.title}}" onclick="showLoginPrompt(this.dataset.cid, this.dataset.ctitle)">
-              <i class="fas fa-lock"></i> Log In
-            </button>
+            <a class="cc-enroll-btn locked" href="/login?next=/learn" onclick="try{sessionStorage.setItem('pendingEnroll',JSON.stringify({id:{{this.id}},type:'free'}))}catch(e){}">
+              <i class="fas fa-lock"></i> Log In to Enrol
+            </a>
             {{/if}}
           </div>
         </div>
@@ -1533,9 +1534,9 @@ body.dark .pm-wa-text strong{color:#fff}
               </button>
               {{/if}}
             {{else}}
-            <button class="cc-hover-btn" data-cid="{{this.id}}" onclick="loginToPay(this.dataset.cid)">
+            <a class="cc-hover-btn" href="/login?next=/learn" onclick="try{sessionStorage.setItem('pendingEnroll',JSON.stringify({id:{{this.id}},type:'pay'}))}catch(e){}">
               <i class="fas fa-lock"></i> Log In to Enrol
-            </button>
+            </a>
             {{/if}}
           </div>
         </div>
@@ -1571,9 +1572,9 @@ body.dark .pm-wa-text strong{color:#fff}
               </button>
               {{/if}}
             {{else}}
-            <button class="cc-enroll-btn locked" data-cid="{{this.id}}" onclick="loginToPay(this.dataset.cid)">
+            <a class="cc-enroll-btn locked" href="/login?next=/learn" onclick="try{sessionStorage.setItem('pendingEnroll',JSON.stringify({id:{{this.id}},type:'pay'}))}catch(e){}">
               <i class="fas fa-lock"></i> Log In to Enrol
-            </button>
+            </a>
             {{/if}}
           </div>
         </div>
