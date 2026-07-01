@@ -1400,7 +1400,7 @@ body.dark .pm-wa-text strong{color:#fff}
           </button>
           {{/if}}
         {{else}}
-        <button class="btn btn-primary" onclick="showLoginPrompt('{{featuredCourse.title}}')">
+        <button class="btn btn-primary" data-cid="{{featuredCourse.id}}" data-ctitle="{{featuredCourse.title}}" onclick="showLoginPrompt(this.dataset.cid, this.dataset.ctitle)">
           <i class="fas fa-graduation-cap"></i> Enrol Free
         </button>
         {{/if}}
@@ -1451,7 +1451,7 @@ body.dark .pm-wa-text strong{color:#fff}
               </button>
               {{/if}}
             {{else}}
-            <button class="cc-hover-btn" onclick="showLoginPrompt('{{this.title}}')">
+            <button class="cc-hover-btn" data-cid="{{this.id}}" data-ctitle="{{this.title}}" onclick="showLoginPrompt(this.dataset.cid, this.dataset.ctitle)">
               <i class="fas fa-lock"></i> Log In to Enrol
             </button>
             {{/if}}
@@ -1490,7 +1490,7 @@ body.dark .pm-wa-text strong{color:#fff}
               </button>
               {{/if}}
             {{else}}
-            <button class="cc-enroll-btn locked" onclick="showLoginPrompt('{{this.title}}')">
+            <button class="cc-enroll-btn locked" data-cid="{{this.id}}" data-ctitle="{{this.title}}" onclick="showLoginPrompt(this.dataset.cid, this.dataset.ctitle)">
               <i class="fas fa-lock"></i> Log In
             </button>
             {{/if}}
@@ -1533,7 +1533,7 @@ body.dark .pm-wa-text strong{color:#fff}
               </button>
               {{/if}}
             {{else}}
-            <button class="cc-hover-btn" onclick="window.location.href='/login?redirect=/learn'">
+            <button class="cc-hover-btn" data-cid="{{this.id}}" onclick="loginToPay(this.dataset.cid)">
               <i class="fas fa-lock"></i> Log In to Enrol
             </button>
             {{/if}}
@@ -1571,7 +1571,7 @@ body.dark .pm-wa-text strong{color:#fff}
               </button>
               {{/if}}
             {{else}}
-            <button class="cc-enroll-btn locked" onclick="window.location.href='/login?redirect=/learn'">
+            <button class="cc-enroll-btn locked" data-cid="{{this.id}}" onclick="loginToPay(this.dataset.cid)">
               <i class="fas fa-lock"></i> Log In to Enrol
             </button>
             {{/if}}
@@ -1696,7 +1696,7 @@ body.dark .pm-wa-text strong{color:#fff}
         <i class="fas fa-user-plus"></i> Create Free Account
       </a>
       <div class="em-divider"><span>or</span></div>
-      <a href="/login" class="em-btn-secondary">
+      <a href="/login?next=/learn" class="em-btn-secondary" id="enrollLoginLink">
         <i class="fas fa-sign-in-alt"></i> Log In to Existing Account
       </a>
       <button class="em-dismiss" onclick="closeEnrollModal()">Maybe later</button>
@@ -1999,16 +1999,52 @@ function toast(msg, type) {
 }
 
 /* ── ENROLL MODAL ── */
-function showLoginPrompt(courseName) {
-  var el = document.getElementById('modalCourseName');
-  if(el) el.textContent = courseName || 'this course';
-  var modal = document.getElementById('enrollModal');
-  if(modal){ modal.classList.add('open'); document.body.style.overflow = 'hidden'; }
+function showLoginPrompt(courseId, courseName) {
+  // Try to get name from card DOM (avoids quoting issues with any title)
+  var name = courseName || 'this course';
+  var card = document.querySelector('.course-card[data-id="'+courseId+'"]');
+  if(card){ var t=card.querySelector('.cc-title'); if(t) name=t.textContent.trim()||name; }
+  // Save intent so we can auto-enroll after login
+  try{ sessionStorage.setItem('pendingEnroll',JSON.stringify({id:Number(courseId)||0,type:'free'})); }catch(e){}
+  var el=document.getElementById('modalCourseName');
+  if(el) el.textContent=name;
+  // Ensure login link returns to learn page
+  var ll=document.getElementById('enrollLoginLink');
+  if(ll) ll.href='/login?next=/learn';
+  var modal=document.getElementById('enrollModal');
+  if(modal){ modal.classList.add('open'); document.body.style.overflow='hidden'; }
 }
 function closeEnrollModal() {
-  var modal = document.getElementById('enrollModal');
-  if(modal){ modal.classList.remove('open'); document.body.style.overflow = ''; }
+  var modal=document.getElementById('enrollModal');
+  if(modal){ modal.classList.remove('open'); document.body.style.overflow=''; }
+  // Clear pending intent if user dismissed the modal without logging in
+  try{ sessionStorage.removeItem('pendingEnroll'); }catch(e){}
 }
+function loginToPay(courseId) {
+  // Save paid-course intent and redirect to login with return URL
+  try{ sessionStorage.setItem('pendingEnroll',JSON.stringify({id:Number(courseId)||0,type:'pay'})); }catch(e){}
+  window.location.href='/login?next=/learn';
+}
+/* Auto-trigger pending enroll/pay after login redirect */
+{{#if isAuthenticated}}
+(function(){
+  var _p=null;
+  try{_p=JSON.parse(sessionStorage.getItem('pendingEnroll'));}catch(e){}
+  if(!_p||!_p.id) return;
+  sessionStorage.removeItem('pendingEnroll');
+  setTimeout(function(){
+    var card=document.querySelector('.course-card[data-id="'+_p.id+'"]');
+    if(!card) return;
+    if(_p.type==='free'){
+      var btn=card.querySelector('.cc-enroll-btn:not(.enrolled):not(.locked)');
+      if(btn) btn.click();
+    } else if(_p.type==='pay'){
+      var btn=card.querySelector('.cc-enroll-btn.pay');
+      if(btn) btn.click();
+    }
+  },700);
+})();
+{{/if}}
 
 /* ── LIVE STATS ── */
 async function loadLiveStats() {
