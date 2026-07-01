@@ -76,7 +76,7 @@ router.post('/subscribe', async (req, res) => {
         return res.json({ success: true, message: 'Subscribed successfully! 🎉' });
     } catch (err) {
         console.error('[public] subscribe error:', err);
-        return res.status(400).json({ success: false, message: err.message || 'Subscription failed' });
+        return res.status(500).json({ success: false, message: 'Subscription failed. Please try again.' });
     }
 });
 

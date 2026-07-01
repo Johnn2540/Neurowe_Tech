@@ -136,7 +136,7 @@ router.get('/kids-academy/course/:id', async (req, res) => {
         });
     } catch (err) {
         console.error('[kids] course detail error:', err);
-        return res.status(500).render('error', { title: 'Error', message: err.message });
+        return res.status(500).render('error', { title: 'Error', message: 'Something went wrong. Please try again later.' });
     }
 });
 
@@ -183,7 +183,7 @@ router.get('/kids-academy/my-kids', isAuthenticated, async (req, res) => {
         });
     } catch (err) {
         console.error('[kids] my-kids error:', err);
-        return res.status(500).render('error', { title: 'Error', message: err.message });
+        return res.status(500).render('error', { title: 'Error', message: 'Something went wrong. Please try again later.' });
     }
 });
 
@@ -296,7 +296,7 @@ router.get('/kids-academy/course/:courseId/learn/:childId', isAuthenticated, asy
         });
     } catch (err) {
         console.error('[kids] learn error:', err);
-        return res.status(500).render('error', { title: 'Error', message: err.message });
+        return res.status(500).render('error', { title: 'Error', message: 'Something went wrong. Please try again later.' });
     }
 });
 

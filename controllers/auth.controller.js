@@ -2,10 +2,13 @@
 'use strict';
 
 const bcrypt          = require('bcryptjs');
+const crypto          = require('crypto');
 const { OAuth2Client} = require('google-auth-library');
 const db              = require('../db/postgres');
 const { ROLES }       = require('../config/constants');
 const { sendResetEmail, sendVerificationEmail } = require('../config/mailer');
+
+const BCRYPT_ROUNDS = 12;
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -31,8 +34,8 @@ async function register(req, res) {
             return res.status(400).json({ success: false, message: 'Please enter your full name' });
         if (!email || !/^\S+@\S+\.\S+$/.test(email))
             return res.status(400).json({ success: false, message: 'Please enter a valid email address' });
-        if (!password || password.length < 6)
-            return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+        if (!password || password.length < 8)
+            return res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
         if (username && !/^[a-zA-Z0-9_]{3,20}$/.test(username))
             return res.status(400).json({ success: false, message: 'Username must be 3–20 chars (letters, numbers, _)' });
 
@@ -40,7 +43,7 @@ async function register(req, res) {
         if (existing.rows.length)
             return res.status(400).json({ success: false, message: 'Email already registered. Please sign in.' });
 
-        const hashed = await bcrypt.hash(password, 12);
+        const hashed = await bcrypt.hash(password, BCRYPT_ROUNDS);
         const result = await db.query(
             `INSERT INTO users (username, email, password_hash, role, is_active, email_verified, created_at)
              VALUES ($1, $2, $3, 'user', true, false, NOW())
@@ -50,7 +53,6 @@ async function register(req, res) {
         const newUser = result.rows[0];
 
         // Generate verification token (24-hour expiry)
-        const crypto     = require('crypto');
         const vToken     = crypto.randomBytes(32).toString('hex');
         const vExpiresAt = new Date(Date.now() + 86_400_000);
         await db.query(
@@ -200,7 +202,7 @@ async function googleAuth(req, res) {
         });
     } catch (err) {
         console.error('[auth] Google auth error:', err);
-        return res.status(500).json({ success: false, message: 'Authentication failed: ' + err.message });
+        return res.status(500).json({ success: false, message: 'Authentication failed. Please try again.' });
     }
 }
 
@@ -226,7 +228,6 @@ async function forgotPassword(req, res) {
         if (!user.rows.length)
             return res.json({ success: true, message: 'If an account exists with that email, a reset link has been sent.' });
 
-        const crypto    = require('crypto');
         const token     = crypto.randomBytes(32).toString('hex');
         const expiresAt = new Date(Date.now() + 3_600_000); // 1 hour
 
@@ -265,8 +266,8 @@ async function forgotPassword(req, res) {
 async function resetPassword(req, res) {
     try {
         const { token, newPassword } = req.body;
-        if (!token || !newPassword || newPassword.length < 6)
-            return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+        if (!token || !newPassword || newPassword.length < 8)
+            return res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
 
         const rec = await db.query(
             'SELECT * FROM password_resets WHERE token=$1 AND expires_at > NOW()', [token]
@@ -274,7 +275,7 @@ async function resetPassword(req, res) {
         if (!rec.rows.length)
             return res.status(400).json({ success: false, message: 'This reset link is invalid or has expired.' });
 
-        const hashed = await bcrypt.hash(newPassword, 10);
+        const hashed = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
         await db.query('UPDATE users SET password_hash=$1 WHERE email=$2', [hashed, rec.rows[0].email]);
         await db.query('DELETE FROM password_resets WHERE token=$1', [token]);
 
@@ -299,7 +300,6 @@ async function resendVerification(req, res) {
         if (!userR.rows.length || userR.rows[0].email_verified)
             return res.json({ success: true, message: 'If that email exists and is unverified, a new link has been sent.' });
 
-        const crypto     = require('crypto');
         const vToken     = crypto.randomBytes(32).toString('hex');
         const vExpiresAt = new Date(Date.now() + 86_400_000);
 

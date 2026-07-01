@@ -55,7 +55,7 @@ async function userDashboard(req, res) {
         });
     } catch (err) {
         console.error('[dashboard] user error:', err);
-        return res.status(500).render('error', { title: 'Error', message: err.message });
+        return res.status(500).render('error', { title: 'Error', message: 'Something went wrong. Please try again later.' });
     }
 }
 
@@ -68,7 +68,7 @@ async function adminDashboard(req, res) {
                 const r = await db.query(sql);
                 return parseInt(r.rows[0].count) || 0;
             } catch (e) {
-                console.log('[dashboard] safeCount skip:', e.message);
+                console.error('[dashboard] safeCount skip:', e.message);
                 return 0;
             }
         };
@@ -91,7 +91,7 @@ async function adminDashboard(req, res) {
         });
     } catch (err) {
         console.error('[dashboard] admin error:', err);
-        return res.status(500).render('error', { title: 'Error', message: err.message });
+        return res.status(500).render('error', { title: 'Error', message: 'Something went wrong. Please try again later.' });
     }
 }
 
@@ -123,7 +123,7 @@ async function instructorDashboard(req, res) {
         });
     } catch (err) {
         console.error('[dashboard] instructor error:', err);
-        return res.status(500).render('error', { title: 'Error', message: err.message });
+        return res.status(500).render('error', { title: 'Error', message: 'Something went wrong. Please try again later.' });
     }
 }
 
@@ -229,7 +229,7 @@ async function instructorCoursePage(req, res) {
         });
     } catch (err) {
         console.error('[dashboard] instructor course page error:', err);
-        return res.status(500).render('error', { title: 'Error', message: err.message });
+        return res.status(500).render('error', { title: 'Error', message: 'Something went wrong. Please try again later.' });
     }
 }
 

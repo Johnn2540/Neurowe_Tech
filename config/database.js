@@ -27,7 +27,7 @@ pool.on('error', (err) => {
 });
 
 pool.on('connect', () => {
-    console.log('[DB] new client connected to Neon');
+    if (process.env.NODE_ENV !== 'production') console.log('[DB] new client connected');
 });
 
 // ─── Keepalive ping ───────────────────────────────────────────────────────────
@@ -51,7 +51,7 @@ function startKeepalive() {
     // Don't hold the Node process open just for this timer
     if (_pingInterval.unref) _pingInterval.unref();
 
-    console.log('[DB] keepalive ping started (every 4 min)');
+    if (process.env.NODE_ENV !== 'production') console.log('[DB] keepalive ping started (every 4 min)');
 }
 
 // ─── Resilient query helper ───────────────────────────────────────────────────

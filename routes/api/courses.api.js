@@ -30,6 +30,8 @@ router.get('/dashboard/public-stats', async (req, res) => {
 router.get('/courses/search', async (req, res) => {
     try {
         const { q, category, level, price } = req.query;
+        if (q && q.length > 200)
+            return res.status(400).json({ success: false, message: 'Search query too long', courses: [] });
         let query = `
             SELECT c.*, COALESCE(u.username,'NeurowexTech') AS instructor_name,
                    COALESCE(e.enrolled_count,0) AS enrolled_count
@@ -67,7 +69,7 @@ router.get('/enrollment-status/:courseId', isAuthenticated, async (req, res) => 
         return res.json({ success:true, isEnrolled:eR.rows.length>0,
                           progress:eR.rows[0]?.progress||0, status:eR.rows[0]?.status||null });
     } catch (err) {
-        return res.status(500).json({ success:false, message:err.message });
+        return res.status(500).json({ success:false, message:'An internal server error occurred.' });
     }
 });
 
@@ -210,7 +212,7 @@ router.get('/learn/courses', isAuthenticated, isAdmin, async (req, res) => {
             ORDER BY c.created_at DESC
         `);
         return res.json({ success:true, courses:r.rows });
-    } catch (err) { return res.status(500).json({ success:false, message:err.message }); }
+    } catch (err) { return res.status(500).json({ success:false, message:'An internal server error occurred.' }); }
 });
 
 router.post('/learn/courses', isAuthenticated, isAdmin, async (req, res) => {
@@ -229,7 +231,7 @@ router.post('/learn/courses', isAuthenticated, isAdmin, async (req, res) => {
             parseFloat(price)||0,instructorId,instructor_name||req.session.userName||'',
             image_url||'',published!==false,bestseller||false,featured||false]);
         return res.json({ success:true, message:'Course created', course:r.rows[0] });
-    } catch (err) { return res.status(500).json({ success:false, message:err.message }); }
+    } catch (err) { return res.status(500).json({ success:false, message:'An internal server error occurred.' }); }
 });
 
 router.put('/learn/courses/:id', isAuthenticated, isAdmin, async (req, res) => {
@@ -250,7 +252,7 @@ router.put('/learn/courses/:id', isAuthenticated, isAdmin, async (req, res) => {
             published,bestseller,featured,image_url,total_duration,instructorId||null,instructor_name||null,req.params.id]);
         if (!r.rows.length) return res.status(404).json({ success:false, message:'Course not found' });
         return res.json({ success:true, message:'Course updated', course:r.rows[0] });
-    } catch (err) { return res.status(500).json({ success:false, message:err.message }); }
+    } catch (err) { return res.status(500).json({ success:false, message:'An internal server error occurred.' }); }
 });
 
 router.delete('/learn/courses/:id', isAuthenticated, isAdmin, async (req, res) => {
@@ -258,7 +260,7 @@ router.delete('/learn/courses/:id', isAuthenticated, isAdmin, async (req, res) =
         const r = await db.query('DELETE FROM courses WHERE id=$1 RETURNING id', [req.params.id]);
         if (!r.rows.length) return res.status(404).json({ success:false, message:'Course not found' });
         return res.json({ success:true, message:'Course deleted' });
-    } catch (err) { return res.status(500).json({ success:false, message:err.message }); }
+    } catch (err) { return res.status(500).json({ success:false, message:'An internal server error occurred.' }); }
 });
 
 // ─── Admin: Enrollments ────────────────────────────────────────────────────────
@@ -271,7 +273,7 @@ router.get('/learn/enrollments', isAuthenticated, isAdmin, async (req, res) => {
             ORDER BY e.enrolled_at DESC
         `);
         return res.json({ success:true, enrollments:r.rows });
-    } catch (err) { return res.status(500).json({ success:false, message:err.message }); }
+    } catch (err) { return res.status(500).json({ success:false, message:'An internal server error occurred.' }); }
 });
 
 router.delete('/learn/enrollments/:id', isAuthenticated, isAdmin, async (req, res) => {
@@ -279,7 +281,7 @@ router.delete('/learn/enrollments/:id', isAuthenticated, isAdmin, async (req, re
         const r = await db.query('DELETE FROM enrollments WHERE id=$1 RETURNING id', [req.params.id]);
         if (!r.rows.length) return res.status(404).json({ success:false, message:'Enrollment not found' });
         return res.json({ success:true, message:'Enrollment removed' });
-    } catch (err) { return res.status(500).json({ success:false, message:err.message }); }
+    } catch (err) { return res.status(500).json({ success:false, message:'An internal server error occurred.' }); }
 });
 
 module.exports = router;

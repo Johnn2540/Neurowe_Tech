@@ -39,21 +39,25 @@ router.get('/portfolio', async (req, res) => {
         const r = await db.query('SELECT * FROM projects ORDER BY featured DESC, created_at DESC');
         const projects = r.rows.map(enrichProject);
         return res.render('portfolio', { title: 'Portfolio – NeurowexTech', projects });
-    } catch {
+    } catch (err) {
+        console.error('[portfolio] list error:', err.message);
         return res.render('portfolio', { title: 'Portfolio', projects: [] });
     }
 });
 
 router.get('/portfolio/:id', async (req, res) => {
     try {
-        const r = await db.query('SELECT * FROM projects WHERE id=$1', [req.params.id]);
+        const id = parseInt(req.params.id, 10);
+        if (isNaN(id)) return res.status(404).render('404', { title: 'Project Not Found' });
+        const r = await db.query('SELECT * FROM projects WHERE id=$1', [id]);
         if (!r.rows.length)
             return res.status(404).render('404', { title: 'Project Not Found' });
         return res.render('portfolio-detail', {
             title: `${r.rows[0].name} – NeurowexTech`, project: r.rows[0],
         });
     } catch (err) {
-        return res.status(500).render('error', { title: 'Error', message: err.message });
+        console.error('[portfolio] detail error:', err.message);
+        return res.status(500).render('error', { title: 'Error', message: 'Something went wrong. Please try again later.' });
     }
 });
 

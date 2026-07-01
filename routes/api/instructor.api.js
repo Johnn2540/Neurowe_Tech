@@ -9,6 +9,13 @@ const { assertCourseAccess }             = require('../services/course.service')
 const router = Router();
 router.use(isAuthenticated, isInstructor);
 
+/** Pass structured (access-control) errors through; hide unexpected DB errors. */
+const handleErr = (res, err, ctx) => {
+    if (err.status) return res.status(err.status).json({ success: false, message: err.message });
+    console.error(`[instructor] ${ctx} error:`, err.message);
+    return res.status(500).json({ success: false, message: 'An internal server error occurred.' });
+};
+
 // ─── Course update ────────────────────────────────────────────────────────────
 
 router.post('/course/update', async (req, res) => {
@@ -37,8 +44,7 @@ router.post('/course/update', async (req, res) => {
         const r = await db.query(`UPDATE courses SET ${fields.join(', ')} WHERE id=$${i} RETURNING *`, vals);
         return res.json({ success:true, message:'Course updated', course:r.rows[0] });
     } catch (err) {
-        console.error('[instructor] course update error:', err);
-        return res.status(err.status||500).json({ success:false, message:err.message });
+        return handleErr(res, err, 'course update');
     }
 });
 
@@ -58,7 +64,7 @@ router.post('/module/create', async (req, res) => {
         );
         return res.json({ success:true, message:'Module created', module:r.rows[0] });
     } catch (err) {
-        return res.status(err.status||500).json({ success:false, message:err.message });
+        return handleErr(res, err, 'request');
     }
 });
 
@@ -75,7 +81,7 @@ router.post('/module/update', async (req, res) => {
         );
         return res.json({ success:true, message:'Module updated', module:r.rows[0] });
     } catch (err) {
-        return res.status(err.status||500).json({ success:false, message:err.message });
+        return handleErr(res, err, 'request');
     }
 });
 
@@ -90,7 +96,7 @@ router.post('/module/delete', async (req, res) => {
         await db.query('DELETE FROM course_modules WHERE id=$1', [moduleId]);
         return res.json({ success:true, message:'Module deleted' });
     } catch (err) {
-        return res.status(err.status||500).json({ success:false, message:err.message });
+        return handleErr(res, err, 'request');
     }
 });
 
@@ -105,7 +111,7 @@ router.post('/module/reorder', async (req, res) => {
         ));
         return res.json({ success:true, message:'Modules reordered' });
     } catch (err) {
-        return res.status(err.status||500).json({ success:false, message:err.message });
+        return handleErr(res, err, 'request');
     }
 });
 
@@ -132,7 +138,7 @@ router.post('/lesson/create', async (req, res) => {
             cloudinaryPublicId||null, attachmentUrl||null, attachmentName||null, attachmentPublicId||null]);
         return res.json({ success:true, message:'Lesson created', lesson:r.rows[0] });
     } catch (err) {
-        return res.status(err.status||500).json({ success:false, message:err.message });
+        return handleErr(res, err, 'request');
     }
 });
 
@@ -162,7 +168,7 @@ router.post('/lesson/update', async (req, res) => {
             lessonId]);
         return res.json({ success:true, message:'Lesson updated', lesson:r.rows[0] });
     } catch (err) {
-        return res.status(err.status||500).json({ success:false, message:err.message });
+        return handleErr(res, err, 'request');
     }
 });
 
@@ -179,7 +185,7 @@ router.post('/lesson/delete', async (req, res) => {
         await db.query('DELETE FROM course_lessons WHERE id=$1', [lessonId]);
         return res.json({ success:true, message:'Lesson deleted' });
     } catch (err) {
-        return res.status(err.status||500).json({ success:false, message:err.message });
+        return handleErr(res, err, 'request');
     }
 });
 
@@ -196,7 +202,7 @@ router.post('/lesson/reorder', async (req, res) => {
         ));
         return res.json({ success:true, message:'Lessons reordered' });
     } catch (err) {
-        return res.status(err.status||500).json({ success:false, message:err.message });
+        return handleErr(res, err, 'request');
     }
 });
 
@@ -224,7 +230,7 @@ router.get('/course/:id/stats', async (req, res) => {
             totalReviews:  parseInt(ratingR.rows[0].total)||0,
         });
     } catch (err) {
-        return res.status(err.status||500).json({ success:false, message:err.message });
+        return handleErr(res, err, 'request');
     }
 });
 
@@ -258,7 +264,7 @@ router.delete('/course/:id', async (req, res) => {
         return res.json({ success:true, message:'Course deleted' });
     } catch (err) {
         console.error('[instructor] course delete error:', err);
-        return res.status(err.status||500).json({ success:false, message:err.message });
+        return handleErr(res, err, 'request');
     }
 });
 

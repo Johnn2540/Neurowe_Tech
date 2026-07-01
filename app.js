@@ -181,6 +181,18 @@ app.use('/api/auth',                 authLimiter);
 app.use('/api/forgot-password',      authLimiter);
 app.use('/api/resend-verification',  authLimiter);
 
+// Enrollment rate limit — prevents spam enrollments and progress manipulation
+const enrollLimiter = rateLimit({
+    windowMs: 60 * 1000,  // 1-minute window
+    max: 10,              // 10 enrollment/lesson actions per minute per IP
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { success: false, message: 'Too many requests. Please slow down.' },
+    skip: () => process.env.NODE_ENV === 'test',
+});
+app.use('/api/enroll',               enrollLimiter);
+app.use('/api/lesson',               enrollLimiter);
+
 // ── CSRF origin-check — blocks cross-site POST/PUT/PATCH/DELETE from foreign origins ──
 // Complements sameSite:'lax' cookies; exempt routes that receive server-to-server calls.
 const CSRF_EXEMPT = ['/api/mpesa/callback', '/api/auth/google'];

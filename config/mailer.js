@@ -18,7 +18,6 @@ function createTransporter() {
 async function sendResetEmail(toEmail, resetLink) {
     const transporter = createTransporter();
     if (!transporter) return false;
-    console.log('[mailer] sendResetEmail →', toEmail);
 
     await transporter.sendMail({
         from:    process.env.SMTP_FROM || `"NeurowexTech" <${process.env.SMTP_USER}>`,
@@ -59,7 +58,6 @@ async function sendResetEmail(toEmail, resetLink) {
 async function sendVerificationEmail(toEmail, verifyLink, username) {
     const transporter = createTransporter();
     if (!transporter) return false;
-    console.log('[mailer] sendVerificationEmail →', toEmail);
 
     const name = username || 'there';
     await transporter.sendMail({

@@ -18,8 +18,12 @@ router.get('/', async (req, res) => {
         const limit  = Math.min(parseInt(req.query.limit) || PAGINATION.CONTACTS_DEFAULT, PAGINATION.CONTACTS_MAX);
         const offset = (page - 1) * limit;
 
-        const countR = await db.query('SELECT COUNT(*) as total FROM contacts');
-        const total  = parseInt(countR.rows[0]?.total) || 0;
+        const [countR, unreadR] = await Promise.all([
+            db.query('SELECT COUNT(*) as total FROM contacts'),
+            db.query("SELECT COUNT(*) as unread FROM contacts WHERE status='new' OR status IS NULL"),
+        ]);
+        const total  = parseInt(countR.rows[0]?.total)  || 0;
+        const unread = parseInt(unreadR.rows[0]?.unread) || 0;
 
         const r = await db.query(`
             SELECT id, name, email, phone, company, project_type, budget, message, status, created_at,
@@ -32,7 +36,7 @@ router.get('/', async (req, res) => {
         return res.json({
             success:    true,
             contacts:   r.rows,
-            unread:     r.rows.filter(c => c.is_unread).length,
+            unread,
             pagination: { page, limit, total, pages: Math.ceil(total/limit),
                           hasNext: offset+limit<total, hasPrev: page>1 },
         });

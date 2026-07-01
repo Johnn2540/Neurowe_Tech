@@ -53,7 +53,7 @@ router.get('/blog/:slug', async (req, res) => {
         });
     } catch (err) {
         console.error('[blog] post error:', err);
-        return res.status(500).render('error', { title: 'Error', message: err.message });
+        return res.status(500).render('error', { title: 'Error', message: 'Something went wrong. Please try again later.' });
     }
 });
 

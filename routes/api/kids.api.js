@@ -18,7 +18,8 @@ router.get('/children', isAuthenticated, async (req, res) => {
         );
         return res.json({ success: true, children: r.rows });
     } catch (err) {
-        return res.status(500).json({ success: false, message: err.message });
+        console.error('[kids] request error:', err.message);
+        return res.status(500).json({ success: false, message: 'An internal server error occurred.' });
     }
 });
 
@@ -37,7 +38,8 @@ router.post('/children', isAuthenticated, async (req, res) => {
         );
         return res.json({ success: true, child: r.rows[0] });
     } catch (err) {
-        return res.status(500).json({ success: false, message: err.message });
+        console.error('[kids] request error:', err.message);
+        return res.status(500).json({ success: false, message: 'An internal server error occurred.' });
     }
 });
 
@@ -45,14 +47,17 @@ router.post('/children', isAuthenticated, async (req, res) => {
 
 router.delete('/children/:id', isAuthenticated, async (req, res) => {
     try {
+        const id = parseInt(req.params.id, 10);
+        if (isNaN(id)) return res.status(400).json({ success: false, message: 'Invalid child ID' });
         const r = await db.query(
             `DELETE FROM user_children WHERE id=$1 AND parent_id=$2 RETURNING id`,
-            [req.params.id, req.session.userId]
+            [id, req.session.userId]
         );
         if (!r.rows.length) return res.status(404).json({ success: false, message: 'Child not found' });
         return res.json({ success: true, message: 'Child removed' });
     } catch (err) {
-        return res.status(500).json({ success: false, message: err.message });
+        console.error('[kids] request error:', err.message);
+        return res.status(500).json({ success: false, message: 'An internal server error occurred.' });
     }
 });
 
@@ -136,7 +141,8 @@ router.get('/enrollments', isAuthenticated, async (req, res) => {
         `, [req.session.userId]);
         return res.json({ success: true, enrollments: r.rows });
     } catch (err) {
-        return res.status(500).json({ success: false, message: err.message });
+        console.error('[kids] request error:', err.message);
+        return res.status(500).json({ success: false, message: 'An internal server error occurred.' });
     }
 });
 

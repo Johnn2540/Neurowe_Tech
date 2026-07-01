@@ -9,6 +9,9 @@ const router = Router();
 // All routes require authentication + admin
 router.use(isAuthenticated, isAdmin);
 
+/** Parse and validate a numeric route param; returns NaN on bad input. */
+const parseId = (v) => parseInt(v, 10);
+
 // ─── Users ────────────────────────────────────────────────────────────────────
 
 router.get('/users', async (req, res) => {
@@ -17,7 +20,7 @@ router.get('/users', async (req, res) => {
             'SELECT id, username, email, role, is_active, created_at, last_login, google_id FROM users ORDER BY created_at DESC'
         );
         return res.json({ success: true, users: r.rows });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 
 router.post('/make-admin', async (req, res) => {
@@ -27,7 +30,7 @@ router.post('/make-admin', async (req, res) => {
             return res.status(400).json({ success: false, message: 'Cannot change your own role' });
         await db.query("UPDATE users SET role='admin' WHERE id=$1", [userId]);
         return res.json({ success: true, message: 'User is now admin' });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 
 router.post('/remove-admin', async (req, res) => {
@@ -37,18 +40,20 @@ router.post('/remove-admin', async (req, res) => {
             return res.status(400).json({ success: false, message: 'Cannot change your own role' });
         await db.query("UPDATE users SET role='user' WHERE id=$1", [userId]);
         return res.json({ success: true, message: 'Admin privileges removed' });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 
 router.delete('/delete-user/:id', async (req, res) => {
     try {
-        if (parseInt(req.params.id) === req.session.userId)
+        const id = parseId(req.params.id);
+        if (isNaN(id)) return res.status(400).json({ success: false, message: 'Invalid user ID' });
+        if (id === req.session.userId)
             return res.status(400).json({ success: false, message: 'Cannot delete your own account' });
-        const r = await db.query('DELETE FROM users WHERE id=$1 RETURNING id', [req.params.id]);
+        const r = await db.query('DELETE FROM users WHERE id=$1 RETURNING id', [id]);
         if (!r.rows.length)
             return res.status(404).json({ success: false, message: 'User not found' });
         return res.json({ success: true, message: 'User deleted' });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 
 // ─── Instructors ──────────────────────────────────────────────────────────────
@@ -76,7 +81,7 @@ router.get('/instructors', async (req, res) => {
         return res.json({ success: true, instructors });
     } catch (err) {
         console.error('[admin] GET /instructors error:', err);
-        return res.status(500).json({ success: false, message: err.message });
+        return res.status(500).json({ success: false, message: 'An internal server error occurred.' });
     }
 });
 
@@ -96,7 +101,7 @@ router.post('/make-instructor', async (req, res) => {
         return res.json({ success: true, message: 'User promoted to instructor' });
     } catch (err) {
         console.error('[admin] make-instructor error:', err);
-        return res.status(500).json({ success: false, message: err.message });
+        return res.status(500).json({ success: false, message: 'An internal server error occurred.' });
     }
 });
 
@@ -118,7 +123,7 @@ router.post('/remove-instructor', async (req, res) => {
         return res.json({ success: true, message: 'Instructor role removed' });
     } catch (err) {
         console.error('[admin] remove-instructor error:', err);
-        return res.status(500).json({ success: false, message: err.message });
+        return res.status(500).json({ success: false, message: 'An internal server error occurred.' });
     }
 });
 
@@ -144,7 +149,7 @@ router.post('/assign-course', async (req, res) => {
         return res.json({ success: true, message: `Course assigned to ${instrR.rows[0].username}` });
     } catch (err) {
         console.error('[admin] assign-course POST error:', err);
-        return res.status(500).json({ success: false, message: err.message });
+        return res.status(500).json({ success: false, message: 'An internal server error occurred.' });
     }
 });
 
@@ -162,7 +167,7 @@ router.delete('/assign-course', async (req, res) => {
         return res.json({ success: true, message: 'Course unassigned from instructor' });
     } catch (err) {
         console.error('[admin] assign-course DELETE error:', err);
-        return res.status(500).json({ success: false, message: err.message });
+        return res.status(500).json({ success: false, message: 'An internal server error occurred.' });
     }
 });
 
@@ -184,7 +189,7 @@ router.get('/instructors/:id/courses', async (req, res) => {
         return res.json({ success: true, courses: r.rows });
     } catch (err) {
         console.error('[admin] GET instructor courses error:', err);
-        return res.status(500).json({ success: false, message: err.message });
+        return res.status(500).json({ success: false, message: 'An internal server error occurred.' });
     }
 });
 
@@ -275,7 +280,7 @@ router.get('/analytics', async (req, res) => {
         });
     } catch (err) {
         console.error('[admin] analytics error:', err);
-        return res.status(500).json({ success: false, message: err.message });
+        return res.status(500).json({ success: false, message: 'An internal server error occurred.' });
     }
 });
 
@@ -285,7 +290,7 @@ router.get('/settings', async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM settings WHERE id=1 LIMIT 1');
         return res.json({ success: true, settings: r.rows[0] || {} });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 
 router.put('/settings', async (req, res) => {
@@ -298,7 +303,7 @@ router.put('/settings', async (req, res) => {
             SET site_name=$1, contact_email=$2, whatsapp_number=$3, location=$4, tagline=$5
         `, [site_name||'NeurowexTech', contact_email||'', whatsapp_number||'', location||'', tagline||'']);
         return res.json({ success: true, message: 'Settings saved' });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 
 // ─── Subscribers ──────────────────────────────────────────────────────────────
@@ -307,16 +312,18 @@ router.get('/subscribers', async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM subscribers ORDER BY subscribed_at DESC');
         return res.json({ success: true, subscribers: r.rows });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 
 router.delete('/subscribers/:id', async (req, res) => {
     try {
-        const r = await db.query('DELETE FROM subscribers WHERE id=$1 RETURNING id', [req.params.id]);
+        const id = parseId(req.params.id);
+        if (isNaN(id)) return res.status(400).json({ success: false, message: 'Invalid subscriber ID' });
+        const r = await db.query('DELETE FROM subscribers WHERE id=$1 RETURNING id', [id]);
         if (!r.rows.length)
             return res.status(404).json({ success: false, message: 'Subscriber not found' });
         return res.json({ success: true, message: 'Subscriber removed' });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 
 // ─── Content CRUD — Projects, Blog, Services, Testimonials, Team, FAQs, Pricing ─
@@ -326,7 +333,7 @@ router.get('/projects', async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM projects ORDER BY created_at DESC');
         return res.json({ success: true, projects: r.rows });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 router.post('/projects', async (req, res) => {
     try {
@@ -339,27 +346,31 @@ router.post('/projects', async (req, res) => {
              featured||false, client_url||'', tech_stack||'']
         );
         return res.json({ success: true, message: 'Project created', project: r.rows[0] });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 router.put('/projects/:id', async (req, res) => {
     try {
+        const id = parseId(req.params.id);
+        if (isNaN(id)) return res.status(400).json({ success: false, message: 'Invalid project ID' });
         const { name,description,category,year,featured,client_url,tech_stack } = req.body;
         const r = await db.query(
             `UPDATE projects SET name=COALESCE($1,name),description=COALESCE($2,description),
              category=COALESCE($3,category),year=COALESCE($4,year),featured=COALESCE($5,featured),
              client_url=COALESCE($6,client_url),tech_stack=COALESCE($7,tech_stack) WHERE id=$8 RETURNING *`,
-            [name,description,category,year,featured,client_url,tech_stack,req.params.id]
+            [name,description,category,year,featured,client_url,tech_stack,id]
         );
         if (!r.rows.length) return res.status(404).json({ success: false, message: 'Project not found' });
         return res.json({ success: true, message: 'Project updated', project: r.rows[0] });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 router.delete('/projects/:id', async (req, res) => {
     try {
-        const r = await db.query('DELETE FROM projects WHERE id=$1 RETURNING id', [req.params.id]);
+        const id = parseId(req.params.id);
+        if (isNaN(id)) return res.status(400).json({ success: false, message: 'Invalid project ID' });
+        const r = await db.query('DELETE FROM projects WHERE id=$1 RETURNING id', [id]);
         if (!r.rows.length) return res.status(404).json({ success: false, message: 'Project not found' });
         return res.json({ success: true, message: 'Project deleted' });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 
 // Blog
@@ -367,7 +378,7 @@ router.get('/blog', async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM blog_posts ORDER BY created_at DESC');
         return res.json({ success: true, posts: r.rows });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 router.post('/blog', async (req, res) => {
     try {
@@ -380,14 +391,16 @@ router.post('/blog', async (req, res) => {
             [title,finalSlug,category||'General',author||'Admin',excerpt||'',external_url||'',published||false]
         );
         return res.json({ success: true, message: 'Post created', post: r.rows[0] });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 router.delete('/blog/:id', async (req, res) => {
     try {
-        const r = await db.query('DELETE FROM blog_posts WHERE id=$1 RETURNING id', [req.params.id]);
+        const id = parseId(req.params.id);
+        if (isNaN(id)) return res.status(400).json({ success: false, message: 'Invalid post ID' });
+        const r = await db.query('DELETE FROM blog_posts WHERE id=$1 RETURNING id', [id]);
         if (!r.rows.length) return res.status(404).json({ success: false, message: 'Post not found' });
         return res.json({ success: true, message: 'Post deleted' });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 
 // Services
@@ -395,7 +408,7 @@ router.get('/services', async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM services ORDER BY id ASC');
         return res.json({ success: true, services: r.rows });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 router.post('/services', async (req, res) => {
     try {
@@ -406,14 +419,16 @@ router.post('/services', async (req, res) => {
             [name,description||'',icon_class||'',price||'']
         );
         return res.json({ success: true, message: 'Service added', service: r.rows[0] });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 router.delete('/services/:id', async (req, res) => {
     try {
-        const r = await db.query('DELETE FROM services WHERE id=$1 RETURNING id', [req.params.id]);
+        const id = parseId(req.params.id);
+        if (isNaN(id)) return res.status(400).json({ success: false, message: 'Invalid service ID' });
+        const r = await db.query('DELETE FROM services WHERE id=$1 RETURNING id', [id]);
         if (!r.rows.length) return res.status(404).json({ success: false, message: 'Service not found' });
         return res.json({ success: true, message: 'Service deleted' });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 
 // Testimonials
@@ -421,7 +436,7 @@ router.get('/testimonials', async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM testimonials ORDER BY created_at DESC');
         return res.json({ success: true, testimonials: r.rows });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 router.post('/testimonials', async (req, res) => {
     try {
@@ -434,14 +449,16 @@ router.post('/testimonials', async (req, res) => {
             [client_name,client_role||'',company||'',rating||5,content]
         );
         return res.json({ success: true, message: 'Testimonial added', testimonial: r.rows[0] });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 router.delete('/testimonials/:id', async (req, res) => {
     try {
-        const r = await db.query('DELETE FROM testimonials WHERE id=$1 RETURNING id', [req.params.id]);
+        const id = parseId(req.params.id);
+        if (isNaN(id)) return res.status(400).json({ success: false, message: 'Invalid testimonial ID' });
+        const r = await db.query('DELETE FROM testimonials WHERE id=$1 RETURNING id', [id]);
         if (!r.rows.length) return res.status(404).json({ success: false, message: 'Testimonial not found' });
         return res.json({ success: true, message: 'Testimonial deleted' });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 
 // Team
@@ -449,7 +466,7 @@ router.get('/team', async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM team ORDER BY id ASC');
         return res.json({ success: true, team: r.rows });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 router.post('/team', async (req, res) => {
     try {
@@ -460,14 +477,16 @@ router.post('/team', async (req, res) => {
             [name,role,bio||'',linkedin_url||'',github_url||'']
         );
         return res.json({ success: true, message: 'Member added', member: r.rows[0] });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 router.delete('/team/:id', async (req, res) => {
     try {
-        const r = await db.query('DELETE FROM team WHERE id=$1 RETURNING id', [req.params.id]);
+        const id = parseId(req.params.id);
+        if (isNaN(id)) return res.status(400).json({ success: false, message: 'Invalid member ID' });
+        const r = await db.query('DELETE FROM team WHERE id=$1 RETURNING id', [id]);
         if (!r.rows.length) return res.status(404).json({ success: false, message: 'Member not found' });
         return res.json({ success: true, message: 'Member removed' });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 
 // FAQs
@@ -475,7 +494,7 @@ router.get('/faqs', async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM faqs ORDER BY display_order ASC, id ASC');
         return res.json({ success: true, faqs: r.rows });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 router.post('/faqs', async (req, res) => {
     try {
@@ -487,26 +506,30 @@ router.post('/faqs', async (req, res) => {
             [question,answer,parseInt(displayOrder)||1,active!==false]
         );
         return res.json({ success: true, message: 'FAQ added', faq: r.rows[0] });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 router.put('/faqs/:id', async (req, res) => {
     try {
+        const id = parseId(req.params.id);
+        if (isNaN(id)) return res.status(400).json({ success: false, message: 'Invalid FAQ ID' });
         const { question,answer,display_order,active } = req.body;
         const r = await db.query(
             `UPDATE faqs SET question=COALESCE($1,question),answer=COALESCE($2,answer),
              display_order=COALESCE($3,display_order),active=COALESCE($4,active) WHERE id=$5 RETURNING *`,
-            [question,answer,display_order,active,req.params.id]
+            [question,answer,display_order,active,id]
         );
         if (!r.rows.length) return res.status(404).json({ success: false, message: 'FAQ not found' });
         return res.json({ success: true, message: 'FAQ updated', faq: r.rows[0] });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 router.delete('/faqs/:id', async (req, res) => {
     try {
-        const r = await db.query('DELETE FROM faqs WHERE id=$1 RETURNING id', [req.params.id]);
+        const id = parseId(req.params.id);
+        if (isNaN(id)) return res.status(400).json({ success: false, message: 'Invalid FAQ ID' });
+        const r = await db.query('DELETE FROM faqs WHERE id=$1 RETURNING id', [id]);
         if (!r.rows.length) return res.status(404).json({ success: false, message: 'FAQ not found' });
         return res.json({ success: true, message: 'FAQ deleted' });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 
 // Pricing
@@ -514,7 +537,7 @@ router.get('/pricing', async (req, res) => {
     try {
         const r = await db.query('SELECT * FROM pricing_plans ORDER BY price ASC');
         return res.json({ success: true, plans: r.rows });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 router.post('/pricing', async (req, res) => {
     try {
@@ -529,14 +552,16 @@ router.post('/pricing', async (req, res) => {
             [name,tier||'',parseInt(price)||0,price_label||`Kshs ${price}`,JSON.stringify(featuresArr),popular||false]
         );
         return res.json({ success: true, message: 'Plan added', plan: r.rows[0] });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 router.delete('/pricing/:id', async (req, res) => {
     try {
-        const r = await db.query('DELETE FROM pricing_plans WHERE id=$1 RETURNING id', [req.params.id]);
+        const id = parseId(req.params.id);
+        if (isNaN(id)) return res.status(400).json({ success: false, message: 'Invalid plan ID' });
+        const r = await db.query('DELETE FROM pricing_plans WHERE id=$1 RETURNING id', [id]);
         if (!r.rows.length) return res.status(404).json({ success: false, message: 'Plan not found' });
         return res.json({ success: true, message: 'Plan deleted' });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) { return res.status(500).json({ success: false, message: 'An internal server error occurred.' }); }
 });
 
 // ─── Certificates ─────────────────────────────────────────────────────────────
@@ -563,7 +588,7 @@ router.get('/certificates/eligible', async (req, res) => {
         return res.json({ success: true, eligible: r.rows });
     } catch (err) {
         console.error('[admin] certificates/eligible error:', err);
-        return res.status(500).json({ success: false, message: err.message });
+        return res.status(500).json({ success: false, message: 'An internal server error occurred.' });
     }
 });
 
@@ -589,7 +614,7 @@ router.get('/certificates', async (req, res) => {
         return res.json({ success: true, certificates: r.rows });
     } catch (err) {
         console.error('[admin] certificates list error:', err);
-        return res.status(500).json({ success: false, message: err.message });
+        return res.status(500).json({ success: false, message: 'An internal server error occurred.' });
     }
 });
 
@@ -625,7 +650,7 @@ router.post('/certificates/issue', async (req, res) => {
         return res.json({ success: true, message: 'Certificate issued', certificate: r.rows[0] });
     } catch (err) {
         console.error('[admin] certificates/issue error:', err);
-        return res.status(500).json({ success: false, message: err.message });
+        return res.status(500).json({ success: false, message: 'An internal server error occurred.' });
     }
 });
 
@@ -645,7 +670,7 @@ router.get('/whatsapp-payments', async (req, res) => {
         return res.json({ success: true, payments: r.rows });
     } catch (err) {
         console.error('[admin] whatsapp-payments list error:', err);
-        return res.status(500).json({ success: false, message: err.message });
+        return res.status(500).json({ success: false, message: 'An internal server error occurred.' });
     }
 });
 
@@ -677,7 +702,7 @@ router.post('/whatsapp-payments/:id/approve', async (req, res) => {
         return res.json({ success: true, message: 'Payment approved — user enrolled' });
     } catch (err) {
         console.error('[admin] whatsapp-payments approve error:', err);
-        return res.status(500).json({ success: false, message: err.message });
+        return res.status(500).json({ success: false, message: 'An internal server error occurred.' });
     }
 });
 
@@ -692,7 +717,7 @@ router.post('/whatsapp-payments/:id/reject', async (req, res) => {
         return res.json({ success: true, message: 'Payment rejected' });
     } catch (err) {
         console.error('[admin] whatsapp-payments reject error:', err);
-        return res.status(500).json({ success: false, message: err.message });
+        return res.status(500).json({ success: false, message: 'An internal server error occurred.' });
     }
 });
 
@@ -731,7 +756,7 @@ router.post('/manual-enroll', async (req, res) => {
         return res.json({ success: true, message: `${username} enrolled in "${title}"` });
     } catch (err) {
         console.error('[admin] manual-enroll error:', err);
-        return res.status(500).json({ success: false, message: err.message });
+        return res.status(500).json({ success: false, message: 'An internal server error occurred.' });
     }
 });
 
@@ -751,7 +776,7 @@ router.delete('/certificates/:id', async (req, res) => {
         });
     } catch (err) {
         console.error('[admin] certificates delete error:', err);
-        return res.status(500).json({ success: false, message: err.message });
+        return res.status(500).json({ success: false, message: 'An internal server error occurred.' });
     }
 });
 

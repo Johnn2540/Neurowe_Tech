@@ -45,7 +45,7 @@ function handleImageUpload(folder, transformation) {
                 });
             } catch (err) {
                 console.error(`[upload] ${folder} error:`, err);
-                return res.status(500).json({ success: false, message: err.message || 'Upload failed.' });
+                return res.status(500).json({ success: false, message: 'Upload failed. Please try again.' });
             }
         },
     ];
@@ -94,7 +94,7 @@ router.post('/lesson-video',
             });
         } catch (err) {
             console.error('[upload] lesson-video error:', err);
-            return res.status(500).json({ success: false, message: err.message || 'Video upload failed.' });
+            return res.status(500).json({ success: false, message: 'Video upload failed. Please try again.' });
         }
     }
 );
@@ -122,7 +122,7 @@ router.post('/lesson-attachment',
             });
         } catch (err) {
             console.error('[upload] lesson-attachment error:', err);
-            return res.status(500).json({ success: false, message: err.message || 'Attachment upload failed.' });
+            return res.status(500).json({ success: false, message: 'Attachment upload failed. Please try again.' });
         }
     }
 );
@@ -147,7 +147,7 @@ router.delete('/delete',
             return res.status(500).json({ success: false, message: 'Delete failed.' });
         } catch (err) {
             console.error('[upload] delete error:', err);
-            return res.status(500).json({ success: false, message: err.message });
+            return res.status(500).json({ success: false, message: 'Delete failed. Please try again.' });
         }
     }
 );

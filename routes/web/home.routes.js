@@ -126,7 +126,7 @@ router.post('/contact', async (req, res) => {
              VALUES ($1,$2,$3,$4,$5,$6,$7,'new',NOW())`,
             [name.trim(), email.trim(), phone||'', resolvedType, budget||'', message.trim(), company||'']
         );
-        console.log(`[contact] New message from ${name} <${email}> — ${resolvedType}`);
+        console.log(`[contact] New submission received (id will be assigned by DB)`);
 
         if (isJson) return res.json({ success: true, message: "Thank you! We'll respond within 24 hours." });
         return res.render('contact', { title: 'Contact', success: "Thank you! We'll respond within 24 hours." });
@@ -152,8 +152,27 @@ router.post('/subscribe', async (req, res) => {
         return res.json({ success: true, message: 'Subscribed successfully! 🎉' });
     } catch (err) {
         console.error('[subscribe] error:', err);
-        return res.status(400).json({ success: false, message: err.message || 'Subscription failed' });
+        return res.status(500).json({ success: false, message: 'Subscription failed. Please try again.' });
     }
+});
+
+// ─── Robots.txt ───────────────────────────────────────────────────────────────
+
+router.get('/robots.txt', (req, res) => {
+    res.type('text/plain');
+    res.send(
+        'User-agent: *\n' +
+        'Allow: /\n' +
+        'Disallow: /admin_dashboard\n' +
+        'Disallow: /user_dashboard\n' +
+        'Disallow: /instructor/dashboard\n' +
+        'Disallow: /api/\n' +
+        'Disallow: /login\n' +
+        'Disallow: /sign_up\n' +
+        'Disallow: /reset-password\n' +
+        'Disallow: /forgot-password\n' +
+        `Sitemap: ${SITE}/sitemap.xml\n`
+    );
 });
 
 // ─── Sitemap ──────────────────────────────────────────────────────────────────

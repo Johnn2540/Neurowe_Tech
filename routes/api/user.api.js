@@ -2,6 +2,8 @@
 'use strict';
 
 const { Router }         = require('express');
+const bcrypt             = require('bcryptjs');
+const BCRYPT_ROUNDS      = 12;
 const { isAuthenticated} = require('../../middleware/auth');
 const db                 = require('../../db/postgres');
 
@@ -31,7 +33,8 @@ router.get('/stats', isAuthenticated, async (req, res) => {
             activeEnrollments: parseInt(row.active_enrollments) || 0,
             avgProgress:       parseInt(row.avg_progress)       || 0,
         });
-    } catch {
+    } catch (err) {
+        console.error('[user] GET /stats error:', err.message);
         return res.json({ success: true, totalProjects: 0, completedProjects: 0,
                           activeProjects: 0, totalEnrollments: 0, activeEnrollments: 0, avgProgress: 0 });
     }
@@ -52,7 +55,10 @@ router.get('/enrollments', isAuthenticated, async (req, res) => {
             WHERE e.user_id=$1 ORDER BY e.enrolled_at DESC
         `, [req.session.userId]);
         return res.json({ success: true, enrollments: r.rows });
-    } catch { return res.json({ success: true, enrollments: [] }); }
+    } catch (err) {
+        console.error('[user] GET /enrollments error:', err.message);
+        return res.json({ success: true, enrollments: [] });
+    }
 });
 
 // ─── Projects ─────────────────────────────────────────────────────────────────
@@ -63,7 +69,10 @@ router.get('/projects', isAuthenticated, async (req, res) => {
             'SELECT * FROM projects WHERE user_id=$1 ORDER BY created_at DESC', [req.session.userId]
         );
         return res.json({ success: true, projects: r.rows });
-    } catch { return res.json({ success: true, projects: [] }); }
+    } catch (err) {
+        console.error('[user] GET /projects error:', err.message);
+        return res.json({ success: true, projects: [] });
+    }
 });
 
 router.post('/request-project', isAuthenticated, async (req, res) => {
@@ -75,9 +84,12 @@ router.post('/request-project', isAuthenticated, async (req, res) => {
             `INSERT INTO projects (user_id, name, project_type, description, budget, status, created_at)
              VALUES ($1,$2,$3,$4,$5,'Planning',NOW())`,
             [req.session.userId, name, type || 'Web Development', description, budget || 0]
-        ).catch(() => {});
+        ).catch(e => console.error('[user] project insert error:', e.message));
         return res.json({ success: true, message: 'Project request submitted!' });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) {
+        console.error('[user] POST /request-project error:', err.message);
+        return res.status(500).json({ success: false, message: 'Failed to submit project request. Please try again.' });
+    }
 });
 
 // ─── Activities ───────────────────────────────────────────────────────────────
@@ -89,7 +101,10 @@ router.get('/activities', isAuthenticated, async (req, res) => {
             [req.session.userId]
         );
         return res.json({ success: true, activities: r.rows });
-    } catch { return res.json({ success: true, activities: [] }); }
+    } catch (err) {
+        console.error('[user] GET /activities error:', err.message);
+        return res.json({ success: true, activities: [] });
+    }
 });
 
 router.get('/recent-activity', isAuthenticated, async (req, res) => {
@@ -102,7 +117,8 @@ router.get('/recent-activity', isAuthenticated, async (req, res) => {
             activity: 'Account set up', type: 'system', created_at: new Date(),
         }];
         return res.json({ success: true, activities: acts });
-    } catch {
+    } catch (err) {
+        console.error('[user] GET /recent-activity error:', err.message);
         return res.json({ success: true, activities: [{
             activity: 'Account set up', type: 'system', created_at: new Date(),
         }] });
@@ -123,25 +139,30 @@ router.put('/profile', isAuthenticated, async (req, res) => {
         req.session.userName  = name;
         req.session.userEmail = email;
         return res.json({ success: true, message: 'Profile updated successfully' });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) {
+        console.error('[user] PUT /profile error:', err.message);
+        return res.status(500).json({ success: false, message: 'Failed to update profile. Please try again.' });
+    }
 });
 
 router.post('/change-password', isAuthenticated, async (req, res) => {
     try {
-        const bcrypt = require('bcryptjs');
         const { currentPassword, newPassword } = req.body;
-        if (!newPassword || newPassword.length < 6)
-            return res.status(400).json({ success: false, message: 'New password must be at least 6 characters' });
+        if (!newPassword || newPassword.length < 8)
+            return res.status(400).json({ success: false, message: 'New password must be at least 8 characters' });
         const user = await db.query('SELECT password_hash FROM users WHERE id=$1', [req.session.userId]);
         if (!user.rows[0].password_hash)
             return res.status(400).json({ success: false, message: 'Google Sign-In accounts cannot set a password here' });
         const valid = await bcrypt.compare(currentPassword, user.rows[0].password_hash);
         if (!valid)
             return res.status(401).json({ success: false, message: 'Current password is incorrect' });
-        const hashed = await bcrypt.hash(newPassword, 10);
+        const hashed = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
         await db.query('UPDATE users SET password_hash=$1 WHERE id=$2', [hashed, req.session.userId]);
         return res.json({ success: true, message: 'Password changed successfully' });
-    } catch (err) { return res.status(500).json({ success: false, message: err.message }); }
+    } catch (err) {
+        console.error('[user] POST /change-password error:', err.message);
+        return res.status(500).json({ success: false, message: 'Failed to change password. Please try again.' });
+    }
 });
 
 module.exports = router;

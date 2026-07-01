@@ -75,7 +75,7 @@ router.get('/learn', async (req, res) => {
                     'SELECT course_id FROM enrollments WHERE user_id=$1', [req.session.userId]
                 );
                 userEnrollments = enrollR.rows.map(e => e.course_id);
-            } catch {}
+            } catch (e) { console.error('[learn] user enrollment check error:', e.message); }
         }
 
         return res.render('learn', {
@@ -155,7 +155,7 @@ router.get('/learn/course/:id', async (req, res) => {
         });
     } catch (err) {
         console.error('[learn] course detail error:', err);
-        return res.status(500).render('error', { title: 'Error', message: err.message });
+        return res.status(500).render('error', { title: 'Error', message: 'Something went wrong. Please try again later.' });
     }
 });
 
@@ -252,7 +252,7 @@ router.get('/learn/course/:id/dashboard', isAuthenticated, async (req, res) => {
         });
     } catch (err) {
         console.error('[learn] course dashboard error:', err);
-        return res.status(500).render('error', { title: 'Error', message: err.message });
+        return res.status(500).render('error', { title: 'Error', message: 'Something went wrong. Please try again later.' });
     }
 });
 
@@ -324,7 +324,7 @@ router.get('/my-learning', isAuthenticated, async (req, res) => {
         });
     } catch (err) {
         console.error('[learn] my-learning error:', err);
-        return res.status(500).render('error', { title: 'Error', message: err.message });
+        return res.status(500).render('error', { title: 'Error', message: 'Something went wrong. Please try again later.' });
     }
 });
 

@@ -85,7 +85,7 @@ router.post('/stk-push', isAuthenticated, async (req, res) => {
         });
     } catch (err) {
         console.error('[mpesa] stk-push error:', err.message);
-        return res.status(500).json({ success: false, message: err.message || 'STK Push failed' });
+        return res.status(500).json({ success: false, message: 'STK Push failed. Please try again.' });
     }
 });
 

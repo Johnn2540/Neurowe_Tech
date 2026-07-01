@@ -107,24 +107,10 @@ router.get('/services/social-media', (req, res) => {
     });
 });
 
-// Test route to verify module loads
-router.get('/services-test', (req, res) => {
-    res.json({ 
-        success: true, 
-        message: 'Services routes are loaded!',
-        routes: [
-            '/services',
-            '/services/web-development',
-            '/services/graphic-design',
-            '/services/seo',
-            '/services/ai-solutions',
-            '/services/cybersecurity',
-            '/services/ui-ux',
-            '/services/ecommerce',
-            '/services/analytics',
-            '/services/social-media'
-        ]
+if (process.env.NODE_ENV !== 'production') {
+    router.get('/services-test', (req, res) => {
+        res.json({ success: true, message: 'Services routes are loaded!' });
     });
-});
+}
 
 module.exports = router;
