@@ -1287,7 +1287,7 @@ body.dark .nl-mini-input { background: rgba(255,255,255,.05); border-color: rgba
       <!-- Post content -->
       <div class="post-body" id="postBody" data-aos="fade-up">
         {{#if post.content}}
-          {{{post.content}}}
+          {{{safeHtml post.content}}}
         {{else if post.excerpt}}
           <p>{{post.excerpt}}</p>
           {{#if post.external_url}}

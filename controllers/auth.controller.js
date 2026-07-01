@@ -40,7 +40,7 @@ async function register(req, res) {
         if (existing.rows.length)
             return res.status(400).json({ success: false, message: 'Email already registered. Please sign in.' });
 
-        const hashed = await bcrypt.hash(password, 10);
+        const hashed = await bcrypt.hash(password, 12);
         const result = await db.query(
             `INSERT INTO users (username, email, password_hash, role, is_active, email_verified, created_at)
              VALUES ($1, $2, $3, 'user', true, false, NOW())

@@ -1,4 +1,4 @@
-// config/handlebars.js — HBS engine setup + all helpers
+﻿// config/handlebars.js — HBS engine setup + all helpers
 'use strict';
 
 const path = require('path');
@@ -64,7 +64,32 @@ function registerHelpers() {
                       '<': v1 < v2, '<=': v1 <= v2, '>': v1 > v2, '>=': v1 >= v2 };
         return ops[operator] ? options.fn(this) : options.inverse(this);
     });
-    hbs.registerHelper('json',      value => JSON.stringify(value));
+    // Strips dangerous tags/attributes from HTML before rendering with triple-stache.
+    // Allows safe formatting tags; blocks scripts, event handlers, javascript: URIs.
+    hbs.registerHelper('safeHtml', function(html) {
+        if (!html) return '';
+        const clean = String(html)
+            .replace(/<script[\s\S]*?<\/script>/gi, '')
+            .replace(/<iframe[\s\S]*?>/gi, '')
+            .replace(/<object[\s\S]*?>/gi, '')
+            .replace(/<embed[\s\S]*?>/gi, '')
+            .replace(/<link[\s\S]*?>/gi, '')
+            .replace(/<meta[\s\S]*?>/gi, '')
+            .replace(/<base[\s\S]*?>/gi, '')
+            .replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, '')
+            .replace(/href\s*=\s*["']?\s*javascript:[^"'\s>]*/gi, 'href="#"')
+            .replace(/src\s*=\s*["']?\s*javascript:[^"'\s>]*/gi, 'src=""');
+        return new hbs.SafeString(clean);
+    });
+
+    hbs.registerHelper('json', function(value) {
+        var s = JSON.stringify(value);
+        if (!s) return 'null';
+        return s
+            .replace(/</g, '\\u003c')
+            .replace(/>/g, '\\u003e')
+            .replace(/&/g, '\\u0026');
+    });
     hbs.registerHelper('firstChar', str => str ? str.charAt(0).toUpperCase() : 'N');
     hbs.registerHelper('slice',     (str, start, end) => str ? String(str).slice(start, end) : '');
     hbs.registerHelper('currentYear', () => new Date().getFullYear());

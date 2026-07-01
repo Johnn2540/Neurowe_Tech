@@ -35,9 +35,10 @@ function apiErrorHandler(err, req, res, next) {
 /** 404 handler for API routes. */
 function apiNotFound(req, res, next) {
     if (req.path.startsWith('/api/')) {
+        // Don't reflect req.originalUrl — it's user-controlled and could be used for injection
         return res.status(404).json({
             success: false,
-            message: `API endpoint not found: ${req.method} ${req.originalUrl}`,
+            message: 'API endpoint not found',
         });
     }
     next();

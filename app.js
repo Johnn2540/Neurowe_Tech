@@ -99,13 +99,71 @@ app.use((req, res, next) => {
 });
 
 // ── Body parsing ──────────────────────────────────────────────────────────────
-app.use(express.urlencoded({ extended: true, limit: '2mb' }));
-app.use(express.json({ limit: '2mb' }));
+// 200 kb covers the largest legitimate API payload (lesson content with base64 thumbnails).
+// File uploads go through multer/Cloudinary — they never hit this limit.
+app.use(express.urlencoded({ extended: true, limit: '200kb' }));
+app.use(express.json({ limit: '200kb' }));
 
-// ── Security headers (Helmet) ─────────────────────────────────────────────────
-// CSP disabled — pages load assets from Google Fonts, cdnjs, etc.
-// Enable and configure CSP directives before hardening further.
-app.use(helmet({ contentSecurityPolicy: false }));
+// ── Security headers (Helmet + CSP) ──────────────────────────────────────────
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc:     ["'self'"],
+            scriptSrc: [
+                "'self'",
+                "'unsafe-inline'",          // HBS templates embed inline scripts
+                'https://cdnjs.cloudflare.com',
+                'https://cdn.jsdelivr.net',
+                'https://www.youtube.com',
+                'https://s.ytimg.com',
+                'https://www.googletagmanager.com',
+                'https://www.google-analytics.com',
+                'https://accounts.google.com',
+            ],
+            styleSrc: [
+                "'self'",
+                "'unsafe-inline'",
+                'https://fonts.googleapis.com',
+                'https://cdnjs.cloudflare.com',
+                'https://cdn.jsdelivr.net',
+            ],
+            fontSrc: [
+                "'self'",
+                'https://fonts.gstatic.com',
+                'https://cdnjs.cloudflare.com',
+            ],
+            imgSrc: [
+                "'self'",
+                'data:',
+                'blob:',
+                'https://res.cloudinary.com',
+                'https://*.cloudinary.com',
+                'https://i.ytimg.com',
+                'https://lh3.googleusercontent.com',
+                'https://www.google-analytics.com',
+                'https://www.googletagmanager.com',
+            ],
+            connectSrc: [
+                "'self'",
+                'https://www.google-analytics.com',
+                'https://accounts.google.com',
+            ],
+            frameSrc: [
+                "'self'",
+                'https://www.youtube.com',
+                'https://www.youtube-nocookie.com',
+                'https://accounts.google.com',
+            ],
+            objectSrc:      ["'none'"],     // no Flash/plugins
+            baseUri:        ["'self'"],     // blocks base-tag hijacking
+            formAction:     ["'self'"],     // forms only submit to own origin
+            frameAncestors: ["'self'"],     // prevents clickjacking
+            upgradeInsecureRequests: [],
+        },
+    },
+    // Keep all other Helmet defaults (HSTS, X-Frame-Options, etc.)
+    crossOriginEmbedderPolicy: false,       // YouTube embeds need this off
+}));
 
 // ── Auth rate limiting ────────────────────────────────────────────────────────
 const authLimiter = rateLimit({
@@ -121,6 +179,36 @@ app.use('/api/register',             authLimiter);
 app.use('/api/auth',                 authLimiter);
 app.use('/api/forgot-password',      authLimiter);
 app.use('/api/resend-verification',  authLimiter);
+
+// ── CSRF origin-check — blocks cross-site POST/PUT/PATCH/DELETE from foreign origins ──
+// Complements sameSite:'lax' cookies; exempt routes that receive server-to-server calls.
+const CSRF_EXEMPT = ['/api/mpesa/callback', '/api/auth/google'];
+app.use((req, res, next) => {
+    if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) return next();
+    if (!req.path.startsWith('/api/')) return next();
+    if (CSRF_EXEMPT.some(p => req.path.startsWith(p))) return next();
+
+    const origin  = req.headers.origin;
+    const referer = req.headers.referer;
+
+    // Server-to-server calls (no browser headers) — allow
+    if (!origin && !referer) return next();
+
+    // Derive the expected host from the request
+    const proto = req.secure || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
+    const host  = req.headers['x-forwarded-host'] || req.headers.host || '';
+
+    if (origin) {
+        try {
+            const { origin: reqOrigin } = new URL(`${proto}://${host}`);
+            if (origin !== reqOrigin) {
+                console.warn(`[CSRF] blocked ${req.method} ${req.path} — origin "${origin}" != "${reqOrigin}"`);
+                return res.status(403).json({ success: false, message: 'Forbidden' });
+            }
+        } catch (_) { /* malformed host — let session auth handle it */ }
+    }
+    next();
+});
 
 // ── Request logging (dev only) ────────────────────────────────────────────────
 if (process.env.NODE_ENV !== 'production') {

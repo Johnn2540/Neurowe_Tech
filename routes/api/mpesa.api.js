@@ -133,6 +133,13 @@ router.get('/status/:checkoutRequestId', isAuthenticated, async (req, res) => {
 
 // ─── POST /api/mpesa/callback — Safaricom pushes result here ──────────────────
 router.post('/callback', async (req, res) => {
+    // Reject forged callbacks — Safaricom includes our secret token in the URL
+    const expectedToken = process.env.MPESA_CALLBACK_TOKEN;
+    if (expectedToken && req.query.token !== expectedToken) {
+        console.warn('[mpesa] callback rejected: invalid token from', req.ip);
+        return res.status(403).json({ ResultCode: 1, ResultDesc: 'Unauthorized' });
+    }
+
     try {
         const body   = req.body?.Body?.stkCallback;
         const reqId  = body?.CheckoutRequestID;

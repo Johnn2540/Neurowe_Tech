@@ -21,8 +21,10 @@ const sessionStore = new pgSession({
 const sessionMiddleware = session({
     store: sessionStore,
     secret: (() => {
-        if (!process.env.SESSION_SECRET) throw new Error('SESSION_SECRET environment variable must be set');
-        return process.env.SESSION_SECRET;
+        const s = process.env.SESSION_SECRET;
+        if (!s)         throw new Error('SESSION_SECRET environment variable must be set');
+        if (s.length < 32) throw new Error('SESSION_SECRET must be at least 32 characters');
+        return s;
     })(),
     resave: false,
     saveUninitialized: false,
