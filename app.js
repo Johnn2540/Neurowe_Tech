@@ -154,6 +154,7 @@ app.use(helmet({
                 'https://www.youtube-nocookie.com',
                 'https://accounts.google.com',
             ],
+            "script-src-attr": ["'unsafe-inline'"], // allow inline onclick handlers (HBS templates)
             objectSrc:      ["'none'"],     // no Flash/plugins
             baseUri:        ["'self'"],     // blocks base-tag hijacking
             formAction:     ["'self'"],     // forms only submit to own origin
