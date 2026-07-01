@@ -1529,7 +1529,7 @@ body.dark .pm-wa-text strong{color:#fff}
                 <i class="fas fa-play-circle"></i> Continue Learning
               </button>
               {{else}}
-              <button class="cc-hover-btn" data-cid="{{this.id}}" data-ctitle="{{this.title}}" data-cprice="{{this.price}}" onclick="openPayModal(Number(this.dataset.cid),this.dataset.ctitle,Number(this.dataset.cprice))">
+              <button class="cc-hover-btn" data-cid="{{this.id}}" data-ctitle="{{this.title}}" data-cprice="{{this.price}}" onclick="openPayModal(Number(this.dataset.cid),this.dataset.ctitle,Number(this.dataset.cprice));return false;">
                 <i class="fas fa-credit-card"></i> Enrol — Ksh {{this.price}}
               </button>
               {{/if}}
@@ -1567,7 +1567,7 @@ body.dark .pm-wa-text strong{color:#fff}
                 <i class="fas fa-play-circle"></i> Continue
               </button>
               {{else}}
-              <button class="cc-enroll-btn pay" data-cid="{{this.id}}" data-ctitle="{{this.title}}" data-cprice="{{this.price}}" onclick="openPayModal(Number(this.dataset.cid),this.dataset.ctitle,Number(this.dataset.cprice))">
+              <button class="cc-enroll-btn pay" data-cid="{{this.id}}" data-ctitle="{{this.title}}" data-cprice="{{this.price}}" onclick="openPayModal(Number(this.dataset.cid),this.dataset.ctitle,Number(this.dataset.cprice));return false;">
                 <i class="fas fa-bolt"></i> Enrol Now
               </button>
               {{/if}}
@@ -2364,52 +2364,63 @@ document.addEventListener('DOMContentLoaded', function(){
 var _pay = { courseId:null, price:null, checkoutId:null, pollT:null, countT:null };
 
 function openPayModal(courseId, title, price) {
-  _pay.courseId = courseId;
-  _pay.price    = price;
-  document.getElementById('pmAmount').textContent     = price;
-  document.getElementById('pmCourseName').textContent = title;
-  document.getElementById('waAmount').textContent     = 'Ksh ' + price;
-  var wa = document.getElementById('waPayLink');
-  if(wa) {
-    var msg = encodeURIComponent(
-      'Hello NeurowexTech!\n\nI have paid *Ksh ' + price +
-      '* via M-PESA Buy Goods (Till 4928849) for the course:\n*' + title +
-      '*\n\nPlease find my M-PESA confirmation screenshot attached. Kindly activate my access.'
-    );
-    wa.href = 'https://wa.me/254769329340?text=' + msg;
+  try {
+    _pay.courseId = courseId;
+    _pay.price    = price;
+    var elAmt  = document.getElementById('pmAmount');
+    var elName = document.getElementById('pmCourseName');
+    var elWaAmt= document.getElementById('waAmount');
+    if(elAmt)  elAmt.textContent  = price;
+    if(elName) elName.textContent = title;
+    if(elWaAmt) elWaAmt.textContent = 'Ksh ' + price;
+    var wa = document.getElementById('waPayLink');
+    if(wa) {
+      try {
+        var msg = encodeURIComponent(
+          'Hello NeurowexTech!\n\nI have paid *Ksh ' + price +
+          '* via M-PESA Buy Goods (Till 4928849) for the course:\n*' + title +
+          '*\n\nPlease find my M-PESA confirmation screenshot attached. Kindly activate my access.'
+        );
+        wa.href = 'https://wa.me/254769329340?text=' + msg;
+      } catch(e2) {}
+    }
+    resetStkState();
+    var nb = document.getElementById('waNotifyBtn');
+    var ns = document.getElementById('waNotifySuccess');
+    if(nb) { nb.disabled = false; nb.innerHTML = '<i class="fas fa-bell"></i> I\'ve Paid — Notify Our Team'; nb.style.display = ''; }
+    if(ns) ns.style.display = 'none';
+    switchPayTab('stk');
+  } catch(err) {
+    console.error('[openPayModal] error:', err);
   }
-  resetStkState();
-  var nb = document.getElementById('waNotifyBtn');
-  var ns = document.getElementById('waNotifySuccess');
-  if (nb) { nb.disabled = false; nb.innerHTML = '<i class="fas fa-bell"></i> I\'ve Paid — Notify Our Team'; nb.style.display = ''; }
-  if (ns) ns.style.display = 'none';
-  switchPayTab('stk');
-  document.getElementById('payModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  /* Always open the modal regardless of any error above */
+  var modal = document.getElementById('payModal');
+  if(modal) { modal.classList.add('open'); document.body.style.overflow = 'hidden'; }
   setTimeout(function(){ var p = document.getElementById('pmPhone'); if(p) p.focus(); }, 300);
 }
 
 function closePayModal() {
-  document.getElementById('payModal').classList.remove('open');
+  var modal = document.getElementById('payModal');
+  if(modal) modal.classList.remove('open');
   document.body.style.overflow = '';
   clearInterval(_pay.pollT);
   clearInterval(_pay.countT);
 }
 
 function switchPayTab(tab) {
-  document.getElementById('tabStk').classList.toggle('active', tab === 'stk');
-  document.getElementById('tabWa').classList.toggle('active',  tab === 'wa');
-  document.getElementById('paneStk').classList.toggle('active', tab === 'stk');
-  document.getElementById('paneWa').classList.toggle('active',  tab === 'wa');
+  var ts = document.getElementById('tabStk');  if(ts) ts.classList.toggle('active', tab === 'stk');
+  var tw = document.getElementById('tabWa');   if(tw) tw.classList.toggle('active',  tab === 'wa');
+  var ps = document.getElementById('paneStk'); if(ps) ps.classList.toggle('active', tab === 'stk');
+  var pw = document.getElementById('paneWa');  if(pw) pw.classList.toggle('active',  tab === 'wa');
 }
 
 function resetStkState() {
   clearInterval(_pay.pollT);
   clearInterval(_pay.countT);
   _pay.checkoutId = null;
-  document.getElementById('stkInput').style.display = '';
-  document.getElementById('stkWaiting').classList.remove('show');
-  document.getElementById('stkSuccess').classList.remove('show');
+  var si = document.getElementById('stkInput');   if(si) si.style.display = '';
+  var sw = document.getElementById('stkWaiting'); if(sw) sw.classList.remove('show');
+  var ss = document.getElementById('stkSuccess'); if(ss) ss.classList.remove('show');
   hidePmErr();
   var ph = document.getElementById('pmPhone'); if(ph) ph.value = '';
   var btn = document.getElementById('stkSendBtn');
