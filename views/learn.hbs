@@ -1396,7 +1396,7 @@ body.dark .pm-wa-text strong{color:#fff}
             <i class="fas fa-play-circle"></i> Continue
           </a>
           {{else}}
-          <button class="btn btn-primary" onclick="enrollInCourse({{featuredCourse.id}}, event)">
+          <button type="button" class="btn btn-primary" onclick="enrollInCourse({{featuredCourse.id}}, this)">
             <i class="fas fa-graduation-cap"></i> Enrol Free
           </button>
           {{/if}}
@@ -1447,7 +1447,7 @@ body.dark .pm-wa-text strong{color:#fff}
                 <i class="fas fa-play-circle"></i> Continue Learning
               </button>
               {{else}}
-              <button class="cc-hover-btn" onclick="enrollInCourse({{this.id}}, event)">
+              <button type="button" class="cc-hover-btn" onclick="enrollInCourse({{this.id}}, this)">
                 <i class="fas fa-graduation-cap"></i> Enrol Free
               </button>
               {{/if}}
@@ -1463,7 +1463,7 @@ body.dark .pm-wa-text strong{color:#fff}
         <div class="cc-body">
           <div class="cc-cat">{{this.category}}</div>
           <div class="cc-title">{{this.title}}</div>
-          <div class="cc-desc">{{this.description}}</div>
+          <div class="cc-desc">{{truncate this.description 90}}</div>
           <div class="cc-instr">
             <div class="cc-av">{{#if this.instructor_name}}{{firstChar this.instructor_name}}{{else}}N{{/if}}</div>
             <span class="cc-instr-name">{{this.instructor_name}}</span>
@@ -1482,11 +1482,11 @@ body.dark .pm-wa-text strong{color:#fff}
             <div class="cc-price-free">Free</div>
             {{#if ../isAuthenticated}}
               {{#if (contains ../userEnrollments this.id)}}
-              <button class="cc-enroll-btn enrolled" onclick="window.location.href='/learn/course/{{this.id}}/dashboard'">
+              <button type="button" class="cc-enroll-btn enrolled" onclick="window.location.href='/learn/course/{{this.id}}/dashboard'">
                 <i class="fas fa-play-circle"></i> Continue
               </button>
               {{else}}
-              <button class="cc-enroll-btn" onclick="enrollInCourse({{this.id}}, event)">
+              <button type="button" class="cc-enroll-btn" onclick="enrollInCourse({{this.id}}, this)">
                 <i class="fas fa-graduation-cap"></i> Enrol Free
               </button>
               {{/if}}
@@ -1999,51 +1999,30 @@ function toast(msg, type) {
   t._t = setTimeout(function(){ t.classList.remove('show'); }, 3600);
 }
 
-/* ── ENROLL MODAL ── */
-function showLoginPrompt(courseId, courseName) {
-  // Try to get name from card DOM (avoids quoting issues with any title)
-  var name = courseName || 'this course';
-  var card = document.querySelector('.course-card[data-id="'+courseId+'"]');
-  if(card){ var t=card.querySelector('.cc-title'); if(t) name=t.textContent.trim()||name; }
-  // Save intent so we can auto-enroll after login
-  try{ sessionStorage.setItem('pendingEnroll',JSON.stringify({id:Number(courseId)||0,type:'free'})); }catch(e){}
-  var el=document.getElementById('modalCourseName');
-  if(el) el.textContent=name;
-  // Ensure login link returns to learn page
-  var ll=document.getElementById('enrollLoginLink');
-  if(ll) ll.href='/login?next=/learn';
-  var modal=document.getElementById('enrollModal');
-  if(modal){ modal.classList.add('open'); document.body.style.overflow='hidden'; }
-}
+/* ── ENROLL MODAL (close only — open via <a href> links now) ── */
 function closeEnrollModal() {
-  var modal=document.getElementById('enrollModal');
-  if(modal){ modal.classList.remove('open'); document.body.style.overflow=''; }
-  // Clear pending intent if user dismissed the modal without logging in
-  try{ sessionStorage.removeItem('pendingEnroll'); }catch(e){}
+  var modal = document.getElementById('enrollModal');
+  if(modal) { modal.classList.remove('open'); document.body.style.overflow = ''; }
 }
-function loginToPay(courseId) {
-  // Save paid-course intent and redirect to login with return URL
-  try{ sessionStorage.setItem('pendingEnroll',JSON.stringify({id:Number(courseId)||0,type:'pay'})); }catch(e){}
-  window.location.href='/login?next=/learn';
-}
+
 /* Auto-trigger pending enroll/pay after login redirect */
 {{#if isAuthenticated}}
 (function(){
-  var _p=null;
-  try{_p=JSON.parse(sessionStorage.getItem('pendingEnroll'));}catch(e){}
-  if(!_p||!_p.id) return;
+  var _p = null;
+  try { _p = JSON.parse(sessionStorage.getItem('pendingEnroll')); } catch(e) {}
+  if(!_p || !_p.id) return;
   sessionStorage.removeItem('pendingEnroll');
   setTimeout(function(){
-    var card=document.querySelector('.course-card[data-id="'+_p.id+'"]');
+    var card = document.querySelector('.course-card[data-id="'+_p.id+'"]');
     if(!card) return;
-    if(_p.type==='free'){
-      var btn=card.querySelector('.cc-enroll-btn:not(.enrolled):not(.locked)');
+    if(_p.type === 'free') {
+      var btn = card.querySelector('.cc-enroll-btn:not(.enrolled):not(.locked)');
       if(btn) btn.click();
-    } else if(_p.type==='pay'){
-      var btn=card.querySelector('.cc-enroll-btn.pay');
+    } else if(_p.type === 'pay') {
+      var btn = card.querySelector('.cc-enroll-btn.pay');
       if(btn) btn.click();
     }
-  },700);
+  }, 700);
 })();
 {{/if}}
 
@@ -2065,86 +2044,103 @@ async function loadLiveStats() {
   } catch(e) {}
 }
 
-/* ── ENROLL ── */
-async function enrollInCourse(courseId, event) {
-  var btn = event ? event.target : null;
+/* ── ENROLL (free courses) ── */
+async function enrollInCourse(courseId, btnEl) {
+  /* btnEl is `this` from the inline onclick — always the button element */
+  var btn = btnEl;
+  if(!btn || btn.tagName !== 'BUTTON') { btn = btnEl && btnEl.closest ? btnEl.closest('button') : null; }
   if(!btn) return;
-  /* walk up to button if clicked on icon */
-  if(btn.tagName !== 'BUTTON') btn = btn.closest('button');
+
   var orig = btn.innerHTML;
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enrolling…';
+
   try {
     var response = await fetch('/api/enroll', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({courseId: courseId})
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ courseId: courseId })
     });
     var data = await response.json();
-    if(data.success) {
-      btn.innerHTML = '<i class="fas fa-play-circle"></i> Continue';
-      btn.classList.add('enrolled');
-      btn.disabled = false;
-      btn.onclick = function(){ window.location.href = '/learn/course/'+courseId+'/dashboard'; };
-      /* update enrolled count in card */
+
+    if(data.success || data.alreadyEnrolled) {
+      var dest = '/learn/course/' + courseId + '/dashboard';
+
+      /* update every enroll/hover button on this card */
       var card = btn.closest('.course-card');
       if(card) {
-        var ci = card.querySelector('.cc-meta-item');
-        if(ci && ci.textContent.includes('enrolled')) {
-          var m = ci.textContent.match(/(\d+)/);
-          if(m) ci.innerHTML = '<i class="fas fa-users"></i> '+(parseInt(m[1])+1)+' enrolled';
-        }
-        /* add enrolled badge to image */
-        var img = card.querySelector('.cc-img');
-        if(img && !img.querySelector('.cc-enrolled-badge')) {
+        card.querySelectorAll('.cc-enroll-btn, .cc-hover-btn').forEach(function(b){
+          var isHover = b.classList.contains('cc-hover-btn');
+          b.innerHTML = isHover
+            ? '<i class="fas fa-play-circle"></i> Continue Learning'
+            : '<i class="fas fa-play-circle"></i> Continue';
+          b.classList.remove('pay', 'locked');
+          b.classList.add('enrolled');
+          b.disabled = false;
+          b.onclick  = function(){ window.location.href = dest; };
+        });
+        /* add enrolled badge to card image if not already there */
+        var imgWrap = card.querySelector('.cc-img');
+        if(imgWrap && !imgWrap.querySelector('.cc-enrolled-badge')) {
           var eb = document.createElement('span');
           eb.className = 'cc-enrolled-badge';
           eb.innerHTML = '<i class="fas fa-check"></i> Enrolled';
-          img.appendChild(eb);
+          imgWrap.appendChild(eb);
         }
+        /* bump enrolled count label */
+        card.querySelectorAll('.cc-meta-item').forEach(function(ci){
+          if(ci.textContent.includes('enrolled')) {
+            var m = ci.textContent.match(/(\d+)/);
+            if(m) ci.innerHTML = '<i class="fas fa-users"></i> ' + (parseInt(m[1]) + 1) + ' enrolled';
+          }
+        });
       }
-      /* update strip counter */
-      ['stripEnrolled','statEnrolled'].forEach(function(id){
+
+      /* bump site-wide enrollment counters */
+      ['stripEnrolled', 'statEnrolled'].forEach(function(id){
         var el = document.getElementById(id);
-        if(el){ var n = parseInt(el.textContent)||0; el.textContent = n+1; }
+        if(el) { var n = parseInt(el.textContent) || 0; el.textContent = n + 1; }
       });
-      loadLiveStats();
-      toast('Enrolled! Redirecting…');
-      setTimeout(function(){ window.location.href = '/learn/course/'+courseId+'/dashboard'; }, 1400);
-    } else if(data.alreadyEnrolled) {
-      btn.innerHTML = '<i class="fas fa-play-circle"></i> Continue';
-      btn.classList.add('enrolled');
-      btn.disabled = false;
-      btn.onclick = function(){ window.location.href = '/learn/course/'+courseId+'/dashboard'; };
-      toast('Already enrolled!', 'info');
+
+      if(data.alreadyEnrolled) {
+        toast('Already enrolled — taking you there…', 'info');
+      } else {
+        toast('Enrolled! Taking you to the course…');
+      }
+      setTimeout(function(){ window.location.href = dest; }, 1200);
+
     } else {
       btn.innerHTML = orig; btn.disabled = false;
-      toast(data.message || 'Enrollment failed.', 'error');
+      toast(data.message || 'Enrollment failed. Please try again.', 'error');
     }
   } catch(err) {
     btn.innerHTML = orig; btn.disabled = false;
-    toast('Network error. Please try again.', 'error');
+    toast('Network error. Please check your connection.', 'error');
   }
 }
 
-/* ── CHECK ENROLLMENT STATUS (for locked buttons) ── */
+/* ── CHECK ENROLLMENT STATUS (for unauthenticated-rendered locked buttons) ── */
 async function checkEnrollments() {
   if(!document.querySelector('.cc-enroll-btn.locked')) return;
   try {
     var res  = await fetch('/api/user/enrollments');
     var data = await res.json();
-    if(data.success && data.enrollments) {
-      var ids = data.enrollments.map(function(e){ return e.course_id; });
-      document.querySelectorAll('.course-card').forEach(function(card){
-        var btn = card.querySelector('.cc-enroll-btn');
-        var id  = parseInt(card.dataset.id);
-        if(btn && ids.indexOf(id) !== -1) {
-          btn.innerHTML = '<i class="fas fa-play-circle"></i> Continue';
-          btn.classList.remove('locked'); btn.classList.add('enrolled');
-          btn.disabled = false;
-          btn.onclick  = function(){ window.location.href = '/learn/course/'+id+'/dashboard'; };
-        }
+    if(!data.success || !data.enrollments) return;
+    var ids = data.enrollments.map(function(e){ return e.course_id; });
+    document.querySelectorAll('.course-card').forEach(function(card){
+      var id = parseInt(card.dataset.id);
+      if(ids.indexOf(id) === -1) return;
+      var dest = '/learn/course/' + id + '/dashboard';
+      card.querySelectorAll('.cc-enroll-btn, .cc-hover-btn').forEach(function(b){
+        var isHover = b.classList.contains('cc-hover-btn');
+        b.innerHTML = isHover
+          ? '<i class="fas fa-play-circle"></i> Continue Learning'
+          : '<i class="fas fa-play-circle"></i> Continue';
+        b.classList.remove('locked', 'pay');
+        b.classList.add('enrolled');
+        b.disabled = false;
+        b.onclick  = function(){ window.location.href = dest; };
       });
-    }
+    });
   } catch(e) {}
 }
 
@@ -2356,6 +2352,11 @@ if(filterOverlay) filterOverlay.addEventListener('click', closeFilter);
 document.addEventListener('DOMContentLoaded', function(){
   loadLiveStats();
   checkEnrollments();
+  /* phone input — digits only, max 9 */
+  var ph = document.getElementById('pmPhone');
+  if(ph) ph.addEventListener('input', function(){
+    this.value = this.value.replace(/\D/g, '').slice(0, 9);
+  });
 });
 
 /* ══════════════════════════════════════════════════════════
@@ -2439,18 +2440,18 @@ function hidePmErr() {
 }
 
 async function sendStkPush() {
-  var raw = (document.getElementById('pmPhone').value || '').trim().replace(/\s/g,'');
+  var phoneEl = document.getElementById('pmPhone');
+  var raw = (phoneEl ? phoneEl.value : '').trim().replace(/\s/g, '');
   if(!/^\d{9}$/.test(raw)) {
     showPmErr('Enter a valid 9-digit Safaricom number (e.g. 712 345 678).');
     return;
   }
   hidePmErr();
   var btn = document.getElementById('stkSendBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending request…';
+  if(btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending request…'; }
   try {
     var res  = await fetch('/api/mpesa/stk-push', {
-      method:'POST', headers:{'Content-Type':'application/json'},
+      method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ courseId: _pay.courseId, phone: '254' + raw })
     });
     var data = await res.json();
@@ -2462,20 +2463,18 @@ async function sendStkPush() {
       toast('Already enrolled! Redirecting…', 'info');
       setTimeout(function(){ window.location.href = '/learn/course/' + _pay.courseId + '/dashboard'; }, 1200);
     } else {
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send M-PESA Request';
+      if(btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send M-PESA Request'; }
       showPmErr(data.message || 'Could not initiate payment. Please try again.');
     }
   } catch(e) {
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send M-PESA Request';
+    if(btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send M-PESA Request'; }
     showPmErr('Network error. Please check your connection and try again.');
   }
 }
 
 function showStkWaiting() {
-  document.getElementById('stkInput').style.display = 'none';
-  document.getElementById('stkWaiting').classList.add('show');
+  var si = document.getElementById('stkInput');   if(si) si.style.display = 'none';
+  var sw = document.getElementById('stkWaiting'); if(sw) sw.classList.add('show');
   var secs = 120;
   function tick() {
     var m = Math.floor(secs / 60), s = secs % 60;
@@ -2484,12 +2483,11 @@ function showStkWaiting() {
     if(secs-- <= 0) {
       clearInterval(_pay.countT);
       clearInterval(_pay.pollT);
-      document.getElementById('stkWaiting').classList.remove('show');
-      document.getElementById('stkInput').style.display = '';
+      var sw2 = document.getElementById('stkWaiting'); if(sw2) sw2.classList.remove('show');
+      var si2 = document.getElementById('stkInput');   if(si2) si2.style.display = '';
       showPmErr('Payment timed out. Please try again or use WhatsApp.');
-      var btn = document.getElementById('stkSendBtn');
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send M-PESA Request';
+      var b = document.getElementById('stkSendBtn');
+      if(b) { b.disabled = false; b.innerHTML = '<i class="fas fa-paper-plane"></i> Send M-PESA Request'; }
     }
   }
   tick();
@@ -2509,33 +2507,39 @@ async function pollStkStatus() {
     } else if(data.status === 'failed') {
       clearInterval(_pay.pollT);
       clearInterval(_pay.countT);
-      document.getElementById('stkWaiting').classList.remove('show');
-      document.getElementById('stkInput').style.display = '';
-      showPmErr('Payment was declined or cancelled. Please try again or pay via WhatsApp.');
-      var btn = document.getElementById('stkSendBtn');
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send M-PESA Request';
+      var sw = document.getElementById('stkWaiting'); if(sw) sw.classList.remove('show');
+      var si = document.getElementById('stkInput');   if(si) si.style.display = '';
+      showPmErr('Payment was declined or cancelled. Please try again or use WhatsApp.');
+      var b = document.getElementById('stkSendBtn');
+      if(b) { b.disabled = false; b.innerHTML = '<i class="fas fa-paper-plane"></i> Send M-PESA Request'; }
     }
   } catch(e) {}
 }
 
 function showStkSuccess() {
-  document.getElementById('stkWaiting').classList.remove('show');
-  document.getElementById('stkSuccess').classList.add('show');
+  var sw = document.getElementById('stkWaiting'); if(sw) sw.classList.remove('show');
+  var ss = document.getElementById('stkSuccess'); if(ss) ss.classList.add('show');
   setTimeout(function(){
     var fill = document.getElementById('stkProgressFill');
     if(fill) fill.style.width = '100%';
   }, 60);
   toast('Payment confirmed! Welcome aboard.');
-  var cid = _pay.courseId;
-  document.querySelectorAll('.course-card[data-id="' + cid + '"] .cc-enroll-btn').forEach(function(b){
-    b.innerHTML = '<i class="fas fa-play-circle"></i> Continue';
+  var cid  = _pay.courseId;
+  var dest = '/learn/course/' + cid + '/dashboard';
+  /* update both footer and hover overlay buttons on the paid card */
+  document.querySelectorAll('.course-card[data-id="' + cid + '"] .cc-enroll-btn, .course-card[data-id="' + cid + '"] .cc-hover-btn').forEach(function(b){
+    var isHover = b.classList.contains('cc-hover-btn');
+    b.innerHTML = isHover
+      ? '<i class="fas fa-play-circle"></i> Continue Learning'
+      : '<i class="fas fa-play-circle"></i> Continue';
+    b.classList.remove('pay', 'locked');
     b.classList.add('enrolled');
-    b.onclick = function(){ window.location.href = '/learn/course/' + cid + '/dashboard'; };
+    b.disabled = false;
+    b.onclick  = function(){ window.location.href = dest; };
   });
   setTimeout(function(){
     closePayModal();
-    window.location.href = '/learn/course/' + cid + '/dashboard';
+    window.location.href = dest;
   }, 2200);
 }
 
@@ -2575,13 +2579,6 @@ document.addEventListener('keydown', function(e){
   if(e.key === 'Escape') closePayModal();
 });
 
-/* Phone input — digits only */
-document.addEventListener('DOMContentLoaded', function(){
-  var ph = document.getElementById('pmPhone');
-  if(ph) ph.addEventListener('input', function(){
-    this.value = this.value.replace(/\D/g,'').slice(0,9);
-  });
-});
 </script>
 <style>
 /* ── Social sidebar ── */
