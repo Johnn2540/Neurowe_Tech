@@ -900,9 +900,9 @@ textarea.adm-input{resize:vertical}
 </div>
 
 <!-- Manual Enroll Modal -->
-<div class="adm-modal-backdrop" id="manualEnrollBg" onclick="if(event.target===this)closeManualEnrollModal()">
+<div class="adm-modal-backdrop" id="manualEnrollBg">
   <div class="adm-modal" style="max-width:440px">
-    <div class="adm-modal-head"><h3>Manual Enroll</h3><button class="adm-modal-close" onclick="closeManualEnrollModal()"><i class="fas fa-times"></i></button></div>
+    <div class="adm-modal-head"><h5><i class="fas fa-user-plus" style="color:var(--blue-l)"></i> Manual Enroll</h5><button class="adm-modal-close" onclick="closeManualEnrollModal()"><i class="fas fa-times"></i></button></div>
     <div class="adm-modal-body" style="display:flex;flex-direction:column;gap:14px">
       <div><label class="adm-label">Student Email</label><input id="meEmail" class="adm-input" type="email" placeholder="student@example.com"></div>
       <div>
@@ -1887,12 +1887,12 @@ async function rejectWaPayment(id){
 }
 
 async function openManualEnrollModal(){
-  setEl('meMsg','');document.getElementById('meMsg').style.display='none';
+  document.getElementById('meMsg').style.display='none';
   document.getElementById('meEmail').value='';
-  document.getElementById('manualEnrollBg').classList.add('open');
   const sel=document.getElementById('meCourse');
   sel.innerHTML='<option value="">Loading courses…</option>';
   sel.disabled=true;
+  openModal('manualEnrollBg');
   const d=await api('/api/learn/courses');
   const courses=d?.courses||[];
   sel.disabled=false;
@@ -1903,7 +1903,7 @@ async function openManualEnrollModal(){
   }
   allCourses=courses;
 }
-function closeManualEnrollModal(){document.getElementById('manualEnrollBg').classList.remove('open');}
+function closeManualEnrollModal(){closeModal('manualEnrollBg');}
 async function submitManualEnroll(){
   const email=document.getElementById('meEmail').value.trim();
   const courseId=document.getElementById('meCourse').value;

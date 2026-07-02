@@ -2028,9 +2028,11 @@ function closeEnrollModal() {
   var _p = null;
   try { _p = JSON.parse(sessionStorage.getItem('pendingEnroll')); } catch(e) {}
   if(!_p || !_p.id) return;
+  var _safeId = parseInt(_p.id, 10);
+  if(isNaN(_safeId) || _safeId <= 0) return;
   sessionStorage.removeItem('pendingEnroll');
   setTimeout(function(){
-    var card = document.querySelector('.course-card[data-id="'+_p.id+'"]');
+    var card = document.querySelector('.course-card[data-id="'+_safeId+'"]');
     if(!card) return;
     if(_p.type === 'free') {
       var btn = card.querySelector('.cc-enroll-btn:not(.enrolled):not(.locked)');
@@ -2058,7 +2060,7 @@ async function loadLiveStats() {
     if(stats.total_courses)     { animNum(document.getElementById('statCourses'),   parseInt(stats.total_courses));     animNum(document.getElementById('stripCourses'),  parseInt(stats.total_courses)); }
     if(stats.total_enrollments) { animNum(document.getElementById('statEnrolled'),  parseInt(stats.total_enrollments)); animNum(document.getElementById('stripEnrolled'), parseInt(stats.total_enrollments)); }
     if(stats.total_instructors) { animNum(document.getElementById('statInstructors'),parseInt(stats.total_instructors));animNum(document.getElementById('stripInstructors'),parseInt(stats.total_instructors)); }
-  } catch(e) {}
+  } catch(e) { console.error('[learn] loadLiveStats error:', e); }
 }
 
 /* ── ENROLL (free courses) ── */
@@ -2158,7 +2160,7 @@ async function checkEnrollments() {
         b.onclick  = function(){ window.location.href = dest; };
       });
     });
-  } catch(e) {}
+  } catch(e) { console.error('[learn] checkEnrollments error:', e); }
 }
 
 /* ── HERO STATS COUNTER ── */
@@ -2530,7 +2532,7 @@ async function pollStkStatus() {
       var b = document.getElementById('stkSendBtn');
       if(b) { b.disabled = false; b.innerHTML = '<i class="fas fa-paper-plane"></i> Send M-PESA Request'; }
     }
-  } catch(e) {}
+  } catch(e) { console.error('[learn] pollStkStatus error:', e); }
 }
 
 function showStkSuccess() {

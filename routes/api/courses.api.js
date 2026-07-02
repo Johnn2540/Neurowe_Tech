@@ -138,12 +138,16 @@ router.post('/enroll/free', isAuthenticated, async (req, res) => {
 
 router.post('/enroll', isAuthenticated, async (req, res) => {
     try {
-        const { courseId } = req.body;
+        const courseId = parseInt(req.body.courseId, 10);
+        if (isNaN(courseId)) return res.status(400).json({ success:false, message:'Invalid course ID' });
         const userId = req.session.userId;
-        if (!courseId) return res.status(400).json({ success:false, message:'Course ID required' });
 
         const cR = await db.query('SELECT id,title,price FROM courses WHERE id=$1 AND published=true', [courseId]);
         if (!cR.rows.length) return res.status(404).json({ success:false, message:'Course not found' });
+
+        // Prevent bypassing payment — paid courses must go through the M-PESA flow
+        if (parseFloat(cR.rows[0].price) > 0)
+            return res.status(403).json({ success:false, message:'This course requires payment. Please complete payment to enrol.' });
 
         const eR = await db.query('SELECT id FROM enrollments WHERE user_id=$1 AND course_id=$2', [userId, courseId]);
         if (eR.rows.length)
@@ -154,7 +158,7 @@ router.post('/enroll', isAuthenticated, async (req, res) => {
         await db.query(`INSERT INTO enrollments (user_id,course_id,enrolled_at,progress,status) VALUES ($1,$2,NOW(),0,'active')`, [userId, courseId]);
         db.query('UPDATE courses SET enrolled_count=COALESCE(enrolled_count,0)+1 WHERE id=$1', [courseId]).catch(() => {});
         db.query(`INSERT INTO user_activities (user_id,activity,type,created_at) VALUES ($1,$2,'enrollment',NOW())`,
-            [userId, `Enrolled in ${cR.rows[0].title}`]).catch(e=>console.log('[activity log]',e.message));
+            [userId, `Enrolled in ${cR.rows[0].title}`]).catch(e => console.error('[courses] activity log error:', e.message));
 
         const statsR = await db.query('SELECT COUNT(*) as total FROM enrollments');
         return res.json({ success:true, message:'Successfully enrolled!',
