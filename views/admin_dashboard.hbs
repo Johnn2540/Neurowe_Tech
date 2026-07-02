@@ -1889,10 +1889,19 @@ async function rejectWaPayment(id){
 async function openManualEnrollModal(){
   setEl('meMsg','');document.getElementById('meMsg').style.display='none';
   document.getElementById('meEmail').value='';
-  if(!allCourses||!allCourses.length){const d=await api('/api/learn/courses');allCourses=d?.courses||[];}
-  const sel=document.getElementById('meCourse');
-  sel.innerHTML='<option value="">Select a course…</option>'+(allCourses||[]).filter(c=>c.published).map(c=>`<option value="${c.id}">${esc(c.title)}</option>`).join('');
   document.getElementById('manualEnrollBg').classList.add('open');
+  const sel=document.getElementById('meCourse');
+  sel.innerHTML='<option value="">Loading courses…</option>';
+  sel.disabled=true;
+  const d=await api('/api/learn/courses');
+  const courses=d?.courses||[];
+  sel.disabled=false;
+  if(!courses.length){
+    sel.innerHTML='<option value="">No courses found</option>';
+  } else {
+    sel.innerHTML='<option value="">Select a course…</option>'+courses.map(c=>`<option value="${c.id}">${esc(c.title)}${c.published?'':' (Draft)'}</option>`).join('');
+  }
+  allCourses=courses;
 }
 function closeManualEnrollModal(){document.getElementById('manualEnrollBg').classList.remove('open');}
 async function submitManualEnroll(){
